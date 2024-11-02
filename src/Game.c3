@@ -2,8 +2,8 @@ module armadillo_madness_c3;
 import raylib5::rl;
 import std::io;
 
-const float FPS = 60; //target FPS
-const float DELAY_TIME = 10000 / FPS;
+const float FPS = 60.0; //target FPS
+const float DELAY_TIME = 1000.0 / FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const char* GAME_NAME = "Armadillo Madness";
@@ -15,7 +15,7 @@ fn void handle_events(){
 }
 
 fn void handle_physics (){
-    io::printn("Handle Game Physics!!");
+    //io::printn("Handle Game Physics!!");
 }
 
 enum GameState {
@@ -23,7 +23,7 @@ enum GameState {
 	MAIN,
 	GAME,
     PAUSE,
-	GAMEOVER,
+	GAME_OVER,
 	CREDITS,
 }
 
@@ -71,18 +71,22 @@ fn void main() {
 	int width = rl::getMonitorWidth(0);
 	int height = rl::getMonitorHeight(0);
 	if (width <= WINDOW_WIDTH && height <= WINDOW_HEIGHT && rl::isWindowFullscreen() == false) {rl::toggleFullscreen();}
-	float frameStart, frameTime; 
-    GameState state = LOGO;
+	float frameStart, frameTime, frameCounter; 
+    //set intial game state
+	GameState state = LOGO;
+	rl::playSound(logoSound);
 	while (!rl::windowShouldClose()) {
 	    frameStart = rl::getFrameTime();
 		rl::beginDrawing();
 		rl::clearBackground(rl::RAYWHITE);
 		rl::drawFPS(10,10);
-		
+
+		handle_events();
+		handle_physics();
+
 		switch (state) {
 
         	case LOGO:
-				int frameCounter;
 				rl::clearBackground(rl::BLACK);
 				rl::drawTexture(logoTexture, 760, 440, rl::WHITE);
 				rl::drawText("Hammer Forged Games", 560, 340, 60, rl::ORANGE);
@@ -90,30 +94,42 @@ fn void main() {
 				rl::drawTexture(raylibTexture, 815, 700, rl::WHITE);
 				rl::drawTexture(c3Texture, 890, 725, rl::WHITE);
 					frameCounter += 1;
-					if (frameCounter > 250) {
+					if (frameCounter > 400) {
 							state = MAIN;
 					}
-				break;
+				rl::playMusicStream(titleMusic);
+				
 			case MAIN:
-				io::printfn("Title State");
-				break;
+				rl::updateMusicStream(titleMusic);
+                rl::drawTexture(titlePageTexture, 0, 0, rl::WHITE);
+                rl::drawText("Armadillo Madness", 500, 200, 105, rl::BLACK);
+                rl::drawText(
+                    "Press ENTER to Start !\n\n\n   or ESC to close :)",
+                    750,
+                    440,
+                    40,
+                    rl::BLACK,
+				);
+				
 			case GAME:
 				io::printfn("Game State");
-				break;
-			case GAMEOVER:
+				
+			case GAME_OVER:
 				io::printfn("GameOver State");
-				break;
+				
 			case CREDITS:
 				io::printfn("Credits State");
-				break;
+				
 			case PAUSE:
 				io::printfn("Pause State");
-				break;
+				
    		}
-		rl::endDrawing();
+		
 		frameTime = rl::getFrameTime() - frameStart;
 			if (frameTime < DELAY_TIME) {
 				rl::waitTime(DELAY_TIME - frameTime);
+		rl::endDrawing();
+		
 		}
 	}
 }
