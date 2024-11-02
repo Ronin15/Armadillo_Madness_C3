@@ -1,6 +1,5 @@
 module armadillo_madness_c3;
 import raylib5::rl;
-import load_assets;
 import game;
 import std::io;
 
@@ -27,7 +26,6 @@ fn void main()
 	float frameStart, frameTime; 
 
 	while (!rl::windowShouldClose()) {
-       
 	    frameStart = rl::getFrameTime();
 		rl::beginDrawing();
 		rl::clearBackground(rl::RAYWHITE);
