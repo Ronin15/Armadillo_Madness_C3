@@ -2,13 +2,33 @@ module armadillo_madness_c3;
 import raylib5::rl;
 import std::io;
 
+//Game config -------------------------------------------------------------
 const float FPS = 60.0; //target FPS
 const float DELAY_TIME = 1000.0 / FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const char* GAME_NAME = "Armadillo Madness";
 
-fn void handle_events(){
+//GAME Structures ---------------------------------------------------------
+
+ struct Player {
+    Texture2D name;
+    int lives;
+    Vector2 pos;
+    int animFrames;
+
+    union isPlayer{
+    	bool yes;
+    }
+}
+
+struct Obsticle {
+    Texture2D name;
+    Vector2 pos;
+}
+
+
+fn void handle_input(){
     if (rl::isKeyPressed(rl::KEY_SPACE)){
         io::printn("Space Bar Pressed");
     }
@@ -81,8 +101,7 @@ fn void main() {
 		rl::clearBackground(rl::RAYWHITE);
 		rl::drawFPS(10,10);
 
-		handle_events();
-		handle_physics();
+		handle_input();
 
 		switch (state) {
 
