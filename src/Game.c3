@@ -1,43 +1,72 @@
 module armadillo_madness_c3;
+import xtra_functions;
 import raylib5::rl;
 import std::io;
+import std::collections;
 
 //Game config -------------------------------------------------------------
-const float FPS = 60.0; //target FPS
-const float DELAY_TIME = 1000.0 / FPS;
+const int FPS_CAP = 80;
+const double TARGET_FPS = 60.0; //target FPS
+const double TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const char* GAME_NAME = "Armadillo Madness";
 
 //GAME Structures ---------------------------------------------------------
 
- struct Player {
-    Texture2D texName;
-    int lives;
+ struct Entity {
+    int id;
+    char* name;
+    Texture2D texture; 
+    int frameWidth; 
+    int frameHeight; 
+    int currentFrame; 
+    int frameCounter;
+    int maxFrames; 
+    int frameSpeed;
     Vector2 pos;
-    int animFrames;
-    bool collision;
+    int lives;
 
     union isPlayer{
     	bool yes;
     }
 }
 
-struct Obsticle {
-	bool collision;
-    Texture2D texName;
-    Vector2 pos;
-}
 
-
-fn void handle_input(){
+fn void handle_events(){
     if (rl::isKeyPressed(rl::KEY_SPACE)){
         io::printn("Space Bar Pressed");
     }
 }
 
-fn void handle_physics (){
+fn void update (){
     //io::printn("Handle Game Physics!!");
+}
+
+fn void render () {
+	//palce holder for rendering
+
+}
+
+fn Entity createEntity(char* name, Texture2D texture, Vector2 pos, int frameWidth, int frameHeight, int maxFrames, 
+    int lives = 1, int frameSpeed = 0) {
+
+    static int nextId = 1; 
+    Entity c; 
+    c.id = nextId++;
+    
+    c.name = name;
+    c.texture = texture;
+    c.frameWidth = frameWidth;
+    c.frameHeight = frameHeight;
+    c.currentFrame = 0;
+    c.frameCounter = 0;
+    c.frameSpeed = frameSpeed;
+    c.maxFrames = maxFrames;
+    c.lives = lives;
+    c.pos = pos;
+
+    return  c;
 }
 
 enum GameState {
@@ -49,6 +78,8 @@ enum GameState {
 	CREDITS,
 }
 
+
+
 fn void main() {	
 
 	//init Game Systems
@@ -56,8 +87,9 @@ fn void main() {
 	defer rl::closeWindow();
 	rl::initAudioDevice();
 	defer rl::closeAudioDevice();
-	rl::setTargetFPS(100); //FPS CAP
-	
+	rl::setTargetFPS(FPS_CAP);
+	xtra_functions::toggle_fullScreen();
+
 	//loading Game assets
 	 Texture2D backGroundSky = rl::loadTexture("resources/images/sky.png");
 	 Texture2D backGroundMid = rl::loadTexture("resources/images/mid3.png");
@@ -89,21 +121,32 @@ fn void main() {
 	 Music gameMusic = rl::loadMusicStream("resources/sounds/game_loop.mp3"); //game loop music
 	
 	
-	//if screen size is 1920 X 1080 nativley then set full screen
-	int width = rl::getMonitorWidth(0);
-	int height = rl::getMonitorHeight(0);
-	if (width <= WINDOW_WIDTH && height <= WINDOW_HEIGHT && rl::isWindowFullscreen() == false) {rl::toggleFullscreen();}
-	float frameStart, frameTime, frameCounter; 
+	
+	double accumulator;
+	float frameCounter;
+	double lastTime = rl::getTime();
     //set intial game state
 	GameState state = LOGO;
 	rl::playSound(logoSound);
 	while (!rl::windowShouldClose()) {
-	    frameStart = rl::getFrameTime();
+	  	double currentTime = rl::getTime(); 
+	  	double deltaTime = currentTime - lastTime; 
+	  	lastTime = currentTime; 
+	  	accumulator += deltaTime;
+
+	  	//update game logic loop
+	  	while (accumulator >= TIME_STEP) { 
+	  		handle_events();
+	  		update();
+
+	  		accumulator -= TIME_STEP;	
+	  	}
+		
+	  	//render and game states-----------------------------------------------
 		rl::beginDrawing();
+		defer rl::endDrawing();
 		rl::clearBackground(rl::RAYWHITE);
 		rl::drawFPS(10,10);
-
-		handle_input();
 
 		switch (state) {
 
@@ -125,14 +168,15 @@ fn void main() {
                 rl::drawTexture(titlePageTexture, 0, 0, rl::WHITE);
                 rl::drawText("Armadillo Madness", 500, 200, 105, rl::BLACK);
                 rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", 750, 440, 40, rl::BLACK);
-
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
        				 state = GAME;
+       				 rl::playMusicStream(gameMusic);
     			}
 				
 			case GAME:
-				io::printfn("Game State");
-				
+				rl::updateMusicStream(gameMusic);
+				Entity player = createEntity("Player\n", playerRunTexture,{400,500},64,64,2,3,1);
+				io::printn(player.name);
 			case GAME_OVER:
 				io::printfn("GameOver State");
 				
@@ -143,12 +187,5 @@ fn void main() {
 				io::printfn("Pause State");
 				
    		}
-		
-		frameTime = rl::getFrameTime() - frameStart;
-			if (frameTime < DELAY_TIME) {
-				rl::waitTime(DELAY_TIME - frameTime);
-		rl::endDrawing();
-		
-		}
 	}
 }

@@ -8,7 +8,7 @@
   "sources":  [ "src/**" ],
   "output": "build",
   "targets": {
-    "Aramdillo_Madness": {
+    "Forge EngineC3": {
       "type": "executable"
     }
   },
