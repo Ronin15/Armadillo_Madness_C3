@@ -88,7 +88,7 @@ fn void main() {
 	rl::initAudioDevice();
 	defer rl::closeAudioDevice();
 	rl::setTargetFPS(FPS_CAP);
-	xtra_functions::toggle_fullScreen();
+	xtra_functions::toggle_fullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
 
 	//loading Game assets
 	 Texture2D backGroundSky = rl::loadTexture("resources/images/sky.png");
@@ -175,7 +175,7 @@ fn void main() {
 				
 			case GAME:
 				rl::updateMusicStream(gameMusic);
-				Entity player = createEntity("Player\n", playerRunTexture,{400,500},64,64,2,3,1);
+				Entity player = createEntity("Player", playerRunTexture,{400,500},64,64,2,3,1);
 				io::printn(player.name);
 			case GAME_OVER:
 				io::printfn("GameOver State");
