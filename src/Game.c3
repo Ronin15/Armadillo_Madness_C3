@@ -12,10 +12,11 @@ const char* GAME_NAME = "Armadillo Madness";
 //GAME Structures ---------------------------------------------------------
 
  struct Player {
-    Texture2D name;
+    Texture2D texName;
     int lives;
     Vector2 pos;
     int animFrames;
+    bool collision;
 
     union isPlayer{
     	bool yes;
@@ -23,7 +24,8 @@ const char* GAME_NAME = "Armadillo Madness";
 }
 
 struct Obsticle {
-    Texture2D name;
+	bool collision;
+    Texture2D texName;
     Vector2 pos;
 }
 
@@ -122,13 +124,11 @@ fn void main() {
 				rl::updateMusicStream(titleMusic);
                 rl::drawTexture(titlePageTexture, 0, 0, rl::WHITE);
                 rl::drawText("Armadillo Madness", 500, 200, 105, rl::BLACK);
-                rl::drawText(
-                    "Press ENTER to Start !\n\n\n   or ESC to close :)",
-                    750,
-                    440,
-                    40,
-                    rl::BLACK,
-				);
+                rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", 750, 440, 40, rl::BLACK);
+
+				if (rl::isKeyPressed(rl::KEY_ENTER)){
+       				 state = GAME;
+    			}
 				
 			case GAME:
 				io::printfn("Game State");
