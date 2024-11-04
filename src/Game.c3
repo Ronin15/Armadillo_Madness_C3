@@ -2,7 +2,7 @@ module armadillo_madness_c3;
 import xtra_functions;
 import raylib5::rl;
 import std::io;
-import std::collections;
+import std::collections::list;
 
 //Game config -------------------------------------------------------------
 const int FPS_CAP = 80;
@@ -32,21 +32,6 @@ const char* GAME_NAME = "Armadillo Madness";
     }
 }
 
-
-fn void handle_events(){
-    if (rl::isKeyPressed(rl::KEY_SPACE)){
-        io::printn("Space Bar Pressed");
-    }
-}
-
-fn void update (){
-    //io::printn("Handle Game Physics!!");
-}
-
-fn void render () {
-	//palce holder for rendering
-
-}
 
 fn Entity createEntity(char* name, Texture2D texture, Vector2 pos, int frameWidth, int frameHeight, int maxFrames, 
     int lives = 1, int frameSpeed = 0) {
@@ -120,11 +105,15 @@ fn void main() {
 	 Music titleMusic = rl::loadMusicStream("resources/sounds/Intro_song_z.mp3");//intro_tune.wav
 	 Music gameMusic = rl::loadMusicStream("resources/sounds/game_loop.mp3"); //game loop music
 	
-	
-	
+	//Game play scrolling vars
+	float scrollGround = 0.0;
+	float scrollMid = 0.0;
+
+	//game time step vars
 	double accumulator;
 	float frameCounter;
 	double lastTime = rl::getTime();
+    
     //set intial game state
 	GameState state = LOGO;
 	rl::playSound(logoSound);
@@ -134,13 +123,6 @@ fn void main() {
 	  	lastTime = currentTime; 
 	  	accumulator += deltaTime;
 
-	  	//update game logic loop
-	  	while (accumulator >= TIME_STEP) { 
-	  		handle_events();
-	  		update();
-
-	  		accumulator -= TIME_STEP;	
-	  	}
 		
 	  	//render and game states-----------------------------------------------
 		rl::beginDrawing();
@@ -165,6 +147,7 @@ fn void main() {
 				
 			case MAIN:
 				rl::updateMusicStream(titleMusic);
+				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(titlePageTexture, 0, 0, rl::WHITE);
                 rl::drawText("Armadillo Madness", 500, 200, 105, rl::BLACK);
                 rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", 750, 440, 40, rl::BLACK);
@@ -174,9 +157,51 @@ fn void main() {
     			}
 				
 			case GAME:
-				rl::updateMusicStream(gameMusic);
-				Entity player = createEntity("Player", playerRunTexture,{400,500},64,64,2,3,1);
-				io::printn(player.name);
+				
+				//create game objs
+				//Entity player  = createEntity("Player", playerRunTexture,{400,500},64,64,2,3,1);
+				
+				
+				//update game logic loop
+	  			while (accumulator >= TIME_STEP) {
+	  				rl::updateMusicStream(gameMusic);
+	  				rl::beginDrawing();
+	  				rl::clearBackground(rl::BLACK);
+	  				defer rl::endDrawing();
+		  			//update input-------------------------------------------------------------------------------
+					if (rl::isKeyPressed(rl::KEY_SPACE)){
+	        				rl::playSound(jump);
+	    			}
+					
+					
+					//update game logic-------------------------------------------------------------------------------
+					scrollGround -= 6.0;
+					scrollMid -= 0.6;
+					if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
+					if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
+					
+
+
+					//draw game elements------------------------------------------------------------------------------
+					rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
+					// Drawing 2 time for scrolling
+					rl::drawTextureEx(backGroundMid, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+					rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+					/// Drawing 2 time for scrolling
+					rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
+					rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+
+					/*
+					def MyIntList = List(<int>);
+
+					MyIntList list;
+					list.push(123);
+					list.free();
+					*/
+	  			
+	  			accumulator -= TIME_STEP;	
+	  			}
+				
 			case GAME_OVER:
 				io::printfn("GameOver State");
 				
