@@ -32,6 +32,16 @@ const char* GAME_NAME = "Armadillo Madness";
     }
 }
 
+enum GameState {
+	LOGO,
+	MAIN,
+	GAME,
+    PAUSE,
+	GAME_OVER,
+	CREDITS,
+}
+
+//GAME Functions ----------------------------------------------------------
 
 fn Entity createEntity(char* name, Texture2D texture, Vector2 pos, int frameWidth, int frameHeight, int maxFrames, 
     int lives = 1, int frameSpeed = 0) {
@@ -53,17 +63,6 @@ fn Entity createEntity(char* name, Texture2D texture, Vector2 pos, int frameWidt
 
     return  c;
 }
-
-enum GameState {
-	LOGO,
-	MAIN,
-	GAME,
-    PAUSE,
-	GAME_OVER,
-	CREDITS,
-}
-
-
 
 fn void main() {	
 
@@ -165,7 +164,7 @@ fn void main() {
 				//update game logic loop
 	  			while (accumulator >= TIME_STEP) {
 	  				if (rl::isKeyPressed(rl::KEY_ESCAPE)){state = PAUSE;}
-	  				
+
 	  				rl::updateMusicStream(gameMusic);
 	  				rl::beginDrawing();
 	  				rl::clearBackground(rl::BLACK);
