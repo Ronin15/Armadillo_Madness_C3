@@ -164,6 +164,8 @@ fn void main() {
 				
 				//update game logic loop
 	  			while (accumulator >= TIME_STEP) {
+	  				if (rl::isKeyPressed(rl::KEY_ESCAPE)){state = PAUSE;}
+	  				
 	  				rl::updateMusicStream(gameMusic);
 	  				rl::beginDrawing();
 	  				rl::clearBackground(rl::BLACK);
