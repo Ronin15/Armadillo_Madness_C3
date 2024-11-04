@@ -66,7 +66,6 @@ fn Entity createEntity(char* name, Texture2D texture, Vector2 pos, int frameWidt
     c.lives = lives;
     c.pos = pos;
 
-
     return  c;
 }
 
