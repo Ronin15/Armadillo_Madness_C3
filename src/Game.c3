@@ -15,16 +15,17 @@ const char* GAME_NAME = "Armadillo Madness";
 //GAME Structures ---------------------------------------------------------
 
  struct Entity {
-    int id;
-    char* name;
+    
+    Vector2 pos;
     Texture2D texture; 
+    char* name;
+    int id;
     int frameWidth; 
     int frameHeight; 
     int currentFrame; 
     int frameCounter;
     int maxFrames; 
     int frameSpeed;
-    Vector2 pos;
     int lives;
 
     union isPlayer{
@@ -136,8 +137,8 @@ fn void main() {
 				rl::drawTexture(logoTexture, 760, 440, rl::WHITE);
 				rl::drawText("Hammer Forged Games", 560, 340, 60, rl::ORANGE);
 				rl::drawText("Made with", 705, 725, 20, rl::WHITE);
-				rl::drawTexture(raylibTexture, 815, 700, rl::WHITE);
-				rl::drawTexture(c3Texture, 890, 725, rl::WHITE);
+				rl::drawTexture(raylibTexture, 830, 700, rl::WHITE);
+				rl::drawTexture(c3Texture, 910, 713, rl::WHITE);
 					frameCounter += 1;
 					if (frameCounter > 300) {
 							state = MAIN;
