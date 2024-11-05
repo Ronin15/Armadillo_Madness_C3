@@ -5,7 +5,7 @@ import std::io;
 import std::collections::list;
 
 //Game config -------------------------------------------------------------
-const int FPS_CAP = 80;
+const int FPS_CAP = 60; //FPS Cap
 const double TARGET_FPS = 60.0; //target FPS
 const double TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
@@ -139,7 +139,7 @@ fn void main() {
 				rl::drawTexture(raylibTexture, 815, 700, rl::WHITE);
 				rl::drawTexture(c3Texture, 890, 725, rl::WHITE);
 					frameCounter += 1;
-					if (frameCounter > 400) {
+					if (frameCounter > 300) {
 							state = MAIN;
 					}
 				rl::playMusicStream(titleMusic);
@@ -169,6 +169,7 @@ fn void main() {
 	  				rl::beginDrawing();
 	  				rl::clearBackground(rl::BLACK);
 	  				defer rl::endDrawing();
+	  				
 		  			//update input-------------------------------------------------------------------------------
 					if (rl::isKeyPressed(rl::KEY_SPACE)){
 	        				rl::playSound(jump);
@@ -199,8 +200,8 @@ fn void main() {
 					list.push(123);
 					list.free();
 					*/
-	  			
-	  			accumulator -= TIME_STEP;	
+	  			accumulator -= TIME_STEP;
+
 	  			}
 				
 			case GAME_OVER:
