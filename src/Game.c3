@@ -17,6 +17,7 @@ const char* GAME_NAME = "Armadillo Madness";
  struct Entity {
     
     Vector2 pos;
+    Vector2 vel;
     Texture2D texture; 
     char* name;
     int id;
@@ -143,21 +144,20 @@ fn void main() {
 					if (frameCounter > 300) {
 							state = MAIN;
 					}
-				rl::playMusicStream(titleMusic);
 				
 			case MAIN:
+				rl::playMusicStream(titleMusic);
 				rl::updateMusicStream(titleMusic);
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(titlePageTexture, 0, 0, rl::WHITE);
                 rl::drawText("Armadillo Madness", 500, 200, 105, rl::BLACK);
                 rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", 750, 440, 40, rl::BLACK);
-				if (rl::isKeyPressed(rl::KEY_ENTER)){
-       				 state = GAME;
-       				 rl::playMusicStream(gameMusic);
-    			}
+					if (rl::isKeyPressed(rl::KEY_ENTER)){
+       					 state = GAME;
+    				}
 				
 			case GAME:
-				
+				rl::playMusicStream(gameMusic);
 				//create game objs
 				//Entity player  = createEntity("Player", playerRunTexture,{400,500},64,64,2,3,1);
 				
