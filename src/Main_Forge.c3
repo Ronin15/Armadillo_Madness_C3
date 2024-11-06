@@ -1,10 +1,11 @@
 module armadillo_madness_c3;
-import xtra_functions;
+import forge_game;
 import raylib5::rl;
 import std::io;
+import std::math;
 import std::collections::list;
 
-//Game config -------------------------------------------------------------
+//Game Consts-------------------------------------------------------------
 const int FPS_CAP = 60; //FPS Cap
 const double TARGET_FPS = 60.0; //target FPS
 const double TIME_STEP = 1.0 / TARGET_FPS;
@@ -12,27 +13,6 @@ const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const char* GAME_NAME = "Armadillo Madness";
 
-//GAME Structures ---------------------------------------------------------
-
- struct Entity {
-    
-    Vector2 pos;
-    Vector2 vel;
-    Texture2D texture; 
-    char* name;
-    int id;
-    int frameWidth; 
-    int frameHeight; 
-    int currentFrame; 
-    int frameCounter;
-    int maxFrames; 
-    int frameSpeed;
-    int lives;
-
-    union isPlayer{
-    	bool yes;
-    }
-}
 
 enum GameState {
 	LOGO,
@@ -43,28 +23,6 @@ enum GameState {
 	CREDITS,
 }
 
-//GAME Functions ----------------------------------------------------------
-
-fn Entity createEntity(char* name, Texture2D texture, Vector2 pos, int frameWidth, int frameHeight, int maxFrames, 
-    int lives = 1, int frameSpeed = 0) {
-
-    static int nextId = 1; 
-    Entity c; 
-    c.id = nextId++;
-    
-    c.name = name;
-    c.texture = texture;
-    c.frameWidth = frameWidth;
-    c.frameHeight = frameHeight;
-    c.currentFrame = 0;
-    c.frameCounter = 0;
-    c.frameSpeed = frameSpeed;
-    c.maxFrames = maxFrames;
-    c.lives = lives;
-    c.pos = pos;
-
-    return  c;
-}
 
 fn void main() {	
 
@@ -74,7 +32,7 @@ fn void main() {
 	rl::initAudioDevice();
 	defer rl::closeAudioDevice();
 	rl::setTargetFPS(FPS_CAP);
-	xtra_functions::toggle_fullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
+	forge_game::toggle_fullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
 
 	//loading Game assets
 	 Texture2D backGroundSky = rl::loadTexture("resources/images/sky.png");
@@ -159,7 +117,7 @@ fn void main() {
 			case GAME:
 				rl::playMusicStream(gameMusic);
 				//create game objs
-				//Entity player  = createEntity("Player", playerRunTexture,{400,500},64,64,2,3,1);
+				Entity player = forge_game::createEntity("Player", playerRunTexture,{400,500},64,64,2,3,1);
 				
 				
 				//update game logic loop
@@ -191,6 +149,7 @@ fn void main() {
 					rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
 					rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 					rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+					//player
 
 					/*
 					def MyIntList = List(<int>);
