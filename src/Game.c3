@@ -187,10 +187,8 @@ fn void main() {
 
 					//draw game elements------------------------------------------------------------------------------
 					rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
-					// Drawing 2 time for scrolling
 					rl::drawTextureEx(backGroundMid, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
 					rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-					/// Drawing 2 time for scrolling
 					rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 					rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
 
