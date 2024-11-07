@@ -63,6 +63,10 @@ fn void main() {
 	//music
 	 Music titleMusic = rl::loadMusicStream("resources/sounds/Intro_song_z.mp3");//intro_tune.wav
 	 Music gameMusic = rl::loadMusicStream("resources/sounds/game_loop.mp3"); //game loop music
+
+	 //load game char
+	Entity player = forge_game::createEntity("Player", playerRunTexture,{400,500},64,64,2,3,1);
+	io::printfn("Player Object created");
 	
 	//Game play scrolling vars
 	float scrollGround = 0.0;
@@ -76,7 +80,7 @@ fn void main() {
     //set intial game state
 	GameState state = LOGO;
 	rl::playSound(logoSound);
-	while (!rl::windowShouldClose()) {
+	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
 	  	double currentTime = rl::getTime(); 
 	  	double deltaTime = currentTime - lastTime; 
 	  	lastTime = currentTime; 
@@ -116,51 +120,41 @@ fn void main() {
 				
 			case GAME:
 				rl::playMusicStream(gameMusic);
-				//create game objs
-				Entity player = forge_game::createEntity("Player", playerRunTexture,{400,500},64,64,2,3,1);
 				
 				
-				//update game logic loop
-	  			while (accumulator >= TIME_STEP) {
-	  				if (rl::isKeyPressed(rl::KEY_ESCAPE)){state = PAUSE;}
 
-	  				rl::updateMusicStream(gameMusic);
-	  				rl::beginDrawing();
-	  				rl::clearBackground(rl::BLACK);
-	  				defer rl::endDrawing();
+	  			rl::updateMusicStream(gameMusic);
 	  				
-		  			//update input-------------------------------------------------------------------------------
-					if (rl::isKeyPressed(rl::KEY_SPACE)){
-	        				rl::playSound(jump);
-	    			}
+		  		//update input-----------------------------------------------------------------------------------
+		  		if (rl::isKeyPressed(rl::KEY_ESCAPE)){state = PAUSE;}
+				if (rl::isKeyPressed(rl::KEY_SPACE)){
+	        			rl::playSound(jump);
+	    		}
 					
 					
-					//update game logic-------------------------------------------------------------------------------
-					scrollGround -= 6.0;
-					scrollMid -= 0.6;
-					if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
-					if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
+				//update game logic-------------------------------------------------------------------------------
+				scrollGround -= 6.0;
+				scrollMid -= 0.6;
+				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
+				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
 					
 
 
-					//draw game elements------------------------------------------------------------------------------
-					rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
-					rl::drawTextureEx(backGroundMid, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-					rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-					rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
-					rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-					//player
+				//draw game elements------------------------------------------------------------------------------
+				rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
+				rl::drawTextureEx(backGroundMid, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+				//player
 
-					/*
-					def MyIntList = List(<int>);
+				/*
+				def MyIntList = List(<int>);
 
-					MyIntList list;
-					list.push(123);
-					list.free();
-					*/
-	  			accumulator -= TIME_STEP;
-
-	  			}
+				MyIntList list;
+				list.push(123);
+				list.free();
+				*/
 				
 			case GAME_OVER:
 				io::printfn("GameOver State");
@@ -172,5 +166,6 @@ fn void main() {
 				io::printfn("Pause State");
 				
    		}
+   		accumulator -= TIME_STEP;
 	}
 }
