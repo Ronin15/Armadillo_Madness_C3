@@ -119,6 +119,7 @@ fn void main() {
     				}
 				
 			case GAME:
+				rl::clearBackground(rl::BLACK);
 				rl::playMusicStream(gameMusic);
 				
 				
