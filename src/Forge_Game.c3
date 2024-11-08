@@ -3,19 +3,19 @@ import raylib5::rl;
 
 //GAME Structures ---------------------------------------------------------
 
- struct Entity {
+ struct Construct {
     
     Vector2 pos;
+    Vector2 vel;
     Texture2D texture; 
-    char* name;
+    String name;
+    float frameSpeed;
     int id;
-    int velocity;
     int frameWidth; 
     int frameHeight; 
     int currentFrame; 
     int frameCounter;
     int maxFrames; 
-    int frameSpeed;
     int lives;
 
     union isPlayer{
@@ -24,31 +24,64 @@ import raylib5::rl;
 }
 
 //GAME Functions ---------------------------------------------------------
-
-fn Entity createEntity(char* name, Texture2D texture, Vector2 pos, int frameWidth, int frameHeight, int maxFrames, 
-    int lives = 1, int frameSpeed = 0) {
-
-    static int nextId = 1; 
-    Entity e; 
-    e.id = nextId++;
-    
-    e.name = name;
-    e.texture = texture;
-    e.frameWidth = frameWidth;
-    e.frameHeight = frameHeight;
-    e.currentFrame = 0;
-    e.frameCounter = 0;
-    e.frameSpeed = frameSpeed;
-    e.maxFrames = maxFrames;
-    e.lives = lives;
-    e.pos = pos;
-
-    return  e;
-}
-
+//checks and toggles fullscreen if screen is smaller or equal to 1920 by 1080
 fn void toggle_fullScreen (int gsWidth, int gsHeight){
 	//if screen size is 1920 X 1080 nativley then set full screen
 	int width = rl::getMonitorWidth(0);
 	int height = rl::getMonitorHeight(0);
 	if (width <= gsWidth && height <= gsHeight && rl::isWindowFullscreen() == false) {rl::toggleFullscreen();}
+}
+
+//creates game Entity
+fn Construct forgeConstruct(String name, Texture2D texture, Vector2 pos, Vector2 vel, int frameWidth, int frameHeight, int maxFrames, 
+    float frameSpeed = 1, int lives = 1) {
+
+    static int nextId = 1; 
+    Construct c; 
+    c.id = nextId++;
+    c.vel.x = vel.x;
+    c.vel.y = vel.y;
+    c.name = name;
+    c.texture = texture;
+    c.frameWidth = frameWidth;
+    c.frameHeight = frameHeight;
+    c.currentFrame = 1;
+    c.frameCounter = 1;
+    c.frameSpeed = frameSpeed;
+    c.maxFrames = maxFrames;
+    c.lives = lives;
+    c.pos = pos;
+
+    return  c;
+}
+
+
+fn void updateConstruct(Construct *player) { 
+	if (rl::isKeyDown(rl::KEY_LEFT)) {
+							//
+
+							player.pos.x -= 400  * rl::getFrameTime();
+							//playerFlip = true;
+
+
+						} else if (rl::isKeyDown(rl::KEY_RIGHT)) {
+							//
+
+							player.pos.x += 400 * rl::getFrameTime();
+							//playerFlip = false;
+
+
+						} else {
+							player.vel.x = 0;
+						}
+
+}
+
+
+
+fn void drawConstruct(Construct c, float scale = 2.0){
+	scale = scale;
+
+	rl::drawTextureEx(c.texture, {c.pos.x,c.pos.y}, 0.0, scale, rl::WHITE);
+
 }

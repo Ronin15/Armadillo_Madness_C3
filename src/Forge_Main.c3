@@ -1,17 +1,20 @@
 module armadillo_madness_c3;
+//game modules---------------------
 import forge_game;
+import forge_physics;
+//vendor modules-------------------
 import raylib5::rl;
+//C3 standard modules--------------
 import std::io;
-import std::math;
-import std::collections::list;
+//import std::collections::list;
 
-//Game Consts-------------------------------------------------------------
+//Game Consts---------------------------------
 const int FPS_CAP = 60; //FPS Cap
 const double TARGET_FPS = 60.0; //target FPS
 const double TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const char* GAME_NAME = "Armadillo Madness";
+const String GAME_NAME = "Armadillo Madness";
 
 
 enum GameState {
@@ -38,7 +41,7 @@ fn void main() {
 	 Texture2D backGroundSky = rl::loadTexture("resources/images/sky.png");
 	 Texture2D backGroundMid = rl::loadTexture("resources/images/mid3.png");
 	 Texture2D backGroundGround = rl::loadTexture("resources/images/ground3.png");
-	 Texture2D playerRunTexture = rl::loadTexture("resources/images/armadillo_a4.png");
+	 Texture2D playerRunTexture = rl::loadTexture("resources/images/armadillo_a2-sheet.png");
 	 Texture2D sunTexture = rl::loadTexture("resources/images/Sun.png");
 	//obstacles // enimies
 	 Texture2D cactus1Texture = rl::loadTexture("resources/images/Cactus1.png");
@@ -64,9 +67,7 @@ fn void main() {
 	 Music titleMusic = rl::loadMusicStream("resources/sounds/Intro_song_z.mp3");//intro_tune.wav
 	 Music gameMusic = rl::loadMusicStream("resources/sounds/game_loop.mp3"); //game loop music
 
-	 //load game char
-	Entity player = forge_game::createEntity("Player", playerRunTexture,{400,500},64,64,2,3,1);
-	io::printfn("Player Object created");
+	 
 	
 	//Game play scrolling vars
 	float scrollGround = 0.0;
@@ -76,9 +77,13 @@ fn void main() {
 	double accumulator;
 	float frameCounter;
 	double lastTime = rl::getTime();
+
+	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
+	Construct player = forge_game::forgeConstruct("Player", playerRunTexture, {400,500}, {0,600}, 64, 64, 2, 1, 3);
+	io::printfn("Player Object created");
     
-    //set intial game state
-	GameState state = LOGO;
+    //set intial game state --- switch to LOGO for normal OP
+	GameState state = GAME;
 	rl::playSound(logoSound);
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
 	  	double currentTime = rl::getTime(); 
@@ -91,7 +96,6 @@ fn void main() {
 		rl::beginDrawing();
 		defer rl::endDrawing();
 		rl::clearBackground(rl::RAYWHITE);
-		rl::drawFPS(10,10);
 
 		switch (state) {
 
@@ -112,35 +116,35 @@ fn void main() {
 				rl::updateMusicStream(titleMusic);
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(titlePageTexture, 0, 0, rl::WHITE);
-                rl::drawText("Armadillo Madness", 500, 200, 105, rl::BLACK);
+                rl::drawText(GAME_NAME, 500, 200, 105, rl::BLACK);
                 rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", 750, 440, 40, rl::BLACK);
 					if (rl::isKeyPressed(rl::KEY_ENTER)){
        					 state = GAME;
     				}
 				
 			case GAME:
+				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
 				rl::playMusicStream(gameMusic);
-				
-				
-
 	  			rl::updateMusicStream(gameMusic);
-	  				
-		  		//update input-----------------------------------------------------------------------------------
-		  		if (rl::isKeyPressed(rl::KEY_P)){state = PAUSE;}
-				if (rl::isKeyPressed(rl::KEY_SPACE)){
-	        			rl::playSound(jump);
-	    		}
-					
-					
-				//update game logic-------------------------------------------------------------------------------
-				scrollGround -= 6.0;
+	  			scrollGround -= 6.0;
 				scrollMid -= 0.6;
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
+	  			
+		  		//update input -----------------------------------------------------------------------------------
+		  		if (rl::isKeyPressed(rl::KEY_P)){state = PAUSE;}
+		  		if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(moving);}
+		  		if (rl::isKeyPressed(rl::KEY_RIGHT)) {rl::playSound(moving);}
+		  		if (rl::isKeyPressed(rl::KEY_DOWN)) {rl::playSound(poopSound);}
+				
 					
-
+				
+				forge_game::updateConstruct(&player);	
+				//update game logic-------------------------------------------------------------------------------
+				
+					
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
@@ -148,7 +152,11 @@ fn void main() {
 				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+
 				//player
+
+				forge_game::drawConstruct(player);
+
 
 				/*
 				def MyIntList = List(<int>);
@@ -157,15 +165,17 @@ fn void main() {
 				list.push(123);
 				list.free();
 				*/
-				
+			case PAUSE:
+			if (rl::isKeyPressed(rl::KEY_P)){state = GAME;}
+				io::printfn("Pause State");
+					
 			case GAME_OVER:
 				io::printfn("GameOver State");
 				
 			case CREDITS:
 				io::printfn("Credits State");
 				
-			case PAUSE:
-				io::printfn("Pause State");
+
 				
    		}
    		accumulator -= TIME_STEP;
