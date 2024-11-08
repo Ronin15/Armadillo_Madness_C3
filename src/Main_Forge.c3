@@ -119,6 +119,7 @@ fn void main() {
     				}
 				
 			case GAME:
+				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
 				rl::playMusicStream(gameMusic);
 				
@@ -127,7 +128,7 @@ fn void main() {
 	  			rl::updateMusicStream(gameMusic);
 	  				
 		  		//update input-----------------------------------------------------------------------------------
-		  		if (rl::isKeyPressed(rl::KEY_ESCAPE)){state = PAUSE;}
+		  		if (rl::isKeyPressed(rl::KEY_P)){state = PAUSE;}
 				if (rl::isKeyPressed(rl::KEY_SPACE)){
 	        			rl::playSound(jump);
 	    		}
