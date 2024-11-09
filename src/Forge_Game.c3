@@ -12,7 +12,7 @@ import std::io;
     float frameSpeed;
     float gravity;
     float jumpVelocity;
-    double groundLevel;
+    float groundLevel;
     float skylevel;
     int id;
     int frameWidth; 
@@ -22,6 +22,7 @@ import std::io;
     int maxFrames; 
     int lives;
     bool isGrounded;
+
 
     union isPlayer{
     	bool player;
@@ -50,7 +51,7 @@ fn Construct forgeConstruct(String name, Texture2D texture, Vector2 pos, Vector2
     c.vel.y = vel.y;
     c.gravity = 400 * rl::getFrameTime();
     c.jumpVelocity = -600;
-    c.groundLevel = (rl::getScreenHeight()) - 120.0;
+    c.groundLevel = (float)rl::getScreenHeight() - 120.0;
     c.name = name;
     c.texture = texture;
     c.frameWidth = frameWidth;
@@ -61,7 +62,7 @@ fn Construct forgeConstruct(String name, Texture2D texture, Vector2 pos, Vector2
     c.maxFrames = maxFrames;
     c.lives = lives;
     c.pos = pos;
-    c.isGrounded;
+    c.isGrounded = true;
     c.isPlayer.player = isPlayer;
 
     return  c;
@@ -69,11 +70,11 @@ fn Construct forgeConstruct(String name, Texture2D texture, Vector2 pos, Vector2
 
 
 fn void updateConstruct(Construct *c) { 
-//{  player->velocity.y += gravity * deltaTime; if (IsKeyDown(KEY_SPACE) && player->isOnGround) { player->velocity.y = jumpVelocity; player->isOnGround = false; } player->position.y += player->velocity.y * deltaTime; if (player->position.y + player->height >= groundLevel) { player->position.y = groundLevel - player->height; player->velocity.y = 0; player->isOnGround = true;
+//{    player->position.y += player->velocity.y * deltaTime; if (player->position.y + player->height >= groundLevel) { player->position.y = groundLevel - player->height; player->velocity.y = 0; player->isOnGround = true;
    
-   c.pos.y = rl::getScreenHeight() - 120.0;
+   if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { c.vel.y = c.jumpVelocity; c.isGrounded = false; }
 
-	c.vel.y += c.gravity * rl::getFrameTime();
+	c.vel.y += (float)c.gravity * rl::getFrameTime();
 	
 	if (rl::isKeyDown(rl::KEY_LEFT)) {
 							//
