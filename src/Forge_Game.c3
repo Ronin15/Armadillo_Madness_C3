@@ -1,6 +1,6 @@
 module forge_game;
 import raylib5::rl;
-
+import std::io;
 //GAME Structures ---------------------------------------------------------
 
  struct Construct {
@@ -10,6 +10,10 @@ import raylib5::rl;
     Texture2D texture; 
     String name;
     float frameSpeed;
+    float gravity;
+    float jumpVelocity;
+    float groundLevel;
+    float skylevel;
     int id;
     int frameWidth; 
     int frameHeight; 
@@ -17,10 +21,16 @@ import raylib5::rl;
     int frameCounter;
     int maxFrames; 
     int lives;
+    bool isGrounded;
 
     union isPlayer{
-    	bool yes;
+    	bool player;
+    	bool flyer;
+    	bool obsticle;
     }
+
+
+    //{ const float  const float jumpVelocity = -300.0f; const float groundLevel = 400.0f; player->velocity.y += gravity * deltaTime; if (IsKeyDown(KEY_SPACE) && player->isOnGround) { player->velocity.y = jumpVelocity; player->isOnGround = false; } player->position.y += player->velocity.y * deltaTime; if (player->position.y + player->height >= groundLevel) { player->position.y = groundLevel - player->height; player->velocity.y = 0; player->isOnGround = true;
 }
 
 //GAME Functions ---------------------------------------------------------
@@ -34,13 +44,16 @@ fn void toggle_fullScreen (int gsWidth, int gsHeight){
 
 //creates game Entity
 fn Construct forgeConstruct(String name, Texture2D texture, Vector2 pos, Vector2 vel, int frameWidth, int frameHeight, int maxFrames, 
-    float frameSpeed = 1, int lives = 1) {
+    float frameSpeed = 1, int lives = 1, bool isPlayer) {
 
     static int nextId = 1; 
     Construct c; 
     c.id = nextId++;
     c.vel.x = vel.x;
     c.vel.y = vel.y;
+    c.gravity = 400;
+    c.jumpVelocity = -600;
+    c.groundLevel = 1080 - 120;
     c.name = name;
     c.texture = texture;
     c.frameWidth = frameWidth;
@@ -51,29 +64,31 @@ fn Construct forgeConstruct(String name, Texture2D texture, Vector2 pos, Vector2
     c.maxFrames = maxFrames;
     c.lives = lives;
     c.pos = pos;
+    c.isGrounded;
+    c.isPlayer.player = isPlayer;
 
     return  c;
 }
 
 
-fn void updateConstruct(Construct *player) { 
+fn void updateConstruct(Construct *c) { 
 	if (rl::isKeyDown(rl::KEY_LEFT)) {
 							//
+		c.pos.x -= 400  * rl::getFrameTime();
+		//playerFlip = true;
+	} else if (rl::isKeyDown(rl::KEY_RIGHT)){
 
-							player.pos.x -= 400  * rl::getFrameTime();
-							//playerFlip = true;
+		c.pos.x += 400 * rl::getFrameTime();
+		//playerFlip = false;
 
+		} else {
+			c.vel.x = 0;
+	}
 
-						} else if (rl::isKeyDown(rl::KEY_RIGHT)) {
-							//
+	if(c.isPlayer.player == false){
 
-							player.pos.x += 400 * rl::getFrameTime();
-							//playerFlip = false;
-
-
-						} else {
-							player.vel.x = 0;
-						}
+		io::printfn("not player");
+	}
 
 }
 
