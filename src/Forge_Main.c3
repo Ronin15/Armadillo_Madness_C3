@@ -134,7 +134,10 @@ fn void main() {
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
 	  			
 		  		//update input -----------------------------------------------------------------------------------
-		  		if (rl::isKeyPressed(rl::KEY_P)){state = PAUSE;}
+		  		if (rl::isKeyPressed(rl::KEY_P)){
+		  			state = PAUSE;
+		  			rl::playSound(pause);
+		  		}
 		  		if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(moving);}
 		  		if (rl::isKeyPressed(rl::KEY_RIGHT)) {rl::playSound(moving);}
 		  		if (rl::isKeyPressed(rl::KEY_DOWN)) {rl::playSound(poopSound);}
@@ -166,8 +169,19 @@ fn void main() {
 				list.free();
 				*/
 			case PAUSE:
-			if (rl::isKeyPressed(rl::KEY_P)){state = GAME;}
-				io::printfn("Pause State");
+			if (rl::isKeyPressed(rl::KEY_P)){
+				state = GAME;
+				rl::playSound(unpause);	
+			}
+
+
+				rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
+				rl::drawTextureEx(backGroundMid, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+				rl::drawRectangle(0, 100, 1920, 200, rl::BLACK);
+				rl::drawText("Are you sure you want to exit the Game? [ ESC Y / P N  / ENTER to restart]", 180, 180, 30, rl::WHITE);
 					
 			case GAME_OVER:
 				io::printfn("GameOver State");
