@@ -169,13 +169,15 @@ fn void main() {
 				list.free();
 				*/
 			case PAUSE:
-			
+
 				if (rl::isKeyPressed(rl::KEY_P)){
 					state = GAME;
 					rl::playSound(unpause);	
 				}
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
 					state = MAIN;
+
+					//clean all assetes needed here to fully reset
 				}
 
 				rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
