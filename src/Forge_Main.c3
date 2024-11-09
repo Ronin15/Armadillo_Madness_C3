@@ -172,7 +172,7 @@ fn void main() {
 			if (rl::isKeyPressed(rl::KEY_P)){
 				state = GAME;
 				rl::playSound(unpause);	
-			}
+				}
 
 
 				rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
@@ -181,7 +181,8 @@ fn void main() {
 				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
 				rl::drawRectangle(0, 100, 1920, 200, rl::BLACK);
-				rl::drawText("Are you sure you want to exit the Game? [ ESC Y / P N  / ENTER to restart]", 180, 180, 30, rl::WHITE);
+				forge_game::drawConstruct(player);
+				rl::drawText("Are you sure you want to exit the Game? [ ESC key Yes / P key RESUME / ENTER to restart]", 180, 180, 30, rl::WHITE);
 					
 			case GAME_OVER:
 				io::printfn("GameOver State");
