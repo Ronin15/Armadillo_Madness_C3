@@ -70,6 +70,8 @@ fn Construct forgeConstruct(String name, Texture2D texture, Vector2 pos, Vector2
 
 fn void updateConstruct(Construct *c) { 
 //{  player->velocity.y += gravity * deltaTime; if (IsKeyDown(KEY_SPACE) && player->isOnGround) { player->velocity.y = jumpVelocity; player->isOnGround = false; } player->position.y += player->velocity.y * deltaTime; if (player->position.y + player->height >= groundLevel) { player->position.y = groundLevel - player->height; player->velocity.y = 0; player->isOnGround = true;
+   
+   c.pos.y = rl::getScreenHeight() - 120.0;
 
 	c.vel.y += c.gravity * rl::getFrameTime();
 	
