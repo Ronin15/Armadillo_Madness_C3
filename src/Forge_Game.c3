@@ -49,9 +49,9 @@ fn Construct forgeConstruct(String name, Texture2D texture, Vector2 pos, Vector2
     c.id = nextId++;
     c.vel.x = vel.x;
     c.vel.y = vel.y;
-    c.gravity = 400 * rl::getFrameTime();
+    c.gravity = 600;
     c.jumpVelocity = -600;
-    c.groundLevel = (float)rl::getScreenHeight() - 120.0;
+    c.groundLevel = (float)rl::getScreenHeight() - 120;
     c.name = name;
     c.texture = texture;
     c.frameWidth = frameWidth;
@@ -62,7 +62,7 @@ fn Construct forgeConstruct(String name, Texture2D texture, Vector2 pos, Vector2
     c.maxFrames = maxFrames;
     c.lives = lives;
     c.pos = pos;
-    c.isGrounded = true;
+    c.isGrounded = false;
     c.isPlayer.player = isPlayer;
 
     return  c;
@@ -70,11 +70,7 @@ fn Construct forgeConstruct(String name, Texture2D texture, Vector2 pos, Vector2
 
 
 fn void updateConstruct(Construct *c) { 
-//{    player->position.y += player->velocity.y * deltaTime; if (player->position.y + player->height >= groundLevel) { player->position.y = groundLevel - player->height; player->velocity.y = 0; player->isOnGround = true;
    
-   if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { c.vel.y = c.jumpVelocity; c.isGrounded = false; }
-
-	c.vel.y += (float)c.gravity * rl::getFrameTime();
 	
 	if (rl::isKeyDown(rl::KEY_LEFT)) {
 							//
@@ -93,6 +89,24 @@ fn void updateConstruct(Construct *c) {
 
 		io::printfn("not player");
 	}
+
+
+       c.vel.y += c.gravity * rl::getFrameTime();  
+
+   
+   if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { 
+      c.vel.y = c.jumpVelocity; 
+      c.isGrounded = false; 
+   }
+      c.pos.y += c.vel.y * rl::getFrameTime();
+
+   if (c.pos.y > c.groundLevel){
+
+     c.pos.y = c.groundLevel;
+     c.vel.y = 0; 
+     c.isGrounded = true;
+  }
+
 
 }
 

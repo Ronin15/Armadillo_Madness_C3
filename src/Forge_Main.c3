@@ -142,6 +142,7 @@ fn void main() {
 		  		if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(moving);}
 		  		if (rl::isKeyPressed(rl::KEY_RIGHT)) {rl::playSound(moving);}
 		  		if (rl::isKeyPressed(rl::KEY_DOWN)) {rl::playSound(poopSound);}
+		  		if (rl::isKeyPressed(rl::KEY_SPACE)) {rl::playSound(jump);}
 				
 					
 				
