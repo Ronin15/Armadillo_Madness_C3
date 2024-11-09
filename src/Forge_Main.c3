@@ -81,7 +81,8 @@ fn void main() {
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
 	Construct player = forge_game::forgeConstruct("Player", playerRunTexture, {400,500}, {0,600}, 64, 64, 2, 1, 3, true);
 	io::printfn("Player Object created");
-    
+   
+	@pool(){ 
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = GAME;
 	rl::playSound(logoSound);
@@ -97,7 +98,6 @@ fn void main() {
 		defer rl::endDrawing();
 		rl::clearBackground(rl::RAYWHITE);
 
-	@pool(){
 
 		switch (state) {
 
@@ -200,8 +200,9 @@ fn void main() {
 				
 
 				
-   			}
+   		}
    			accumulator -= TIME_STEP;
-   		}; //end pool
 	}
+
+	}; //end pool
 }
