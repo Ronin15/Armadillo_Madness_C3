@@ -28,7 +28,7 @@ enum GameState {
 
 
 fn void main() {	
-
+	@pool(){ 
 	//init Game Systems
 	rl::initWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
 	defer rl::closeWindow();
@@ -77,12 +77,11 @@ fn void main() {
 	double accumulator;
 	float frameCounter;
 	double lastTime = rl::getTime();
-
+   
+	//game loop
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
 	Construct player = forge_game::forgeConstruct("Player", playerRunTexture, {400,500}, {0,600}, 64, 64, 2, 1, 3, true);
 	io::printfn("Player Object created");
-   
-	@pool(){ 
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = GAME;
 	rl::playSound(logoSound);
