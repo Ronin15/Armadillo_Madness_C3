@@ -67,8 +67,6 @@ fn void main() {
 	 Music titleMusic = rl::loadMusicStream("resources/sounds/Intro_song_z.mp3");//intro_tune.wav
 	 Music gameMusic = rl::loadMusicStream("resources/sounds/game_loop.mp3"); //game loop music
 
-	 
-	
 	//Game play scrolling vars
 	float scrollGround = 0.0;
 	float scrollMid = 0.0;
@@ -83,8 +81,10 @@ fn void main() {
 	Construct player = forge_game::forgeConstruct("Player", playerRunTexture, {400,500}, {0,600}, 64, 64, 2, 1, 3, true);
 	io::printfn("Player Object created");
     //set intial game state --- switch to LOGO for normal OP
+	
 	GameState state = GAME;
 	rl::playSound(logoSound);
+	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
 	  	double currentTime = rl::getTime(); 
 	  	double deltaTime = currentTime - lastTime; 
