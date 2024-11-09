@@ -97,6 +97,8 @@ fn void main() {
 		defer rl::endDrawing();
 		rl::clearBackground(rl::RAYWHITE);
 
+	@pool(){
+
 		switch (state) {
 
         	case LOGO:
@@ -180,6 +182,7 @@ fn void main() {
 					//clean all assetes needed here to fully reset
 				}
 
+				rl::clearBackground(rl::BLACK);
 				rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
 				rl::drawTextureEx(backGroundMid, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
@@ -197,7 +200,8 @@ fn void main() {
 				
 
 				
-   		}
-   		accumulator -= TIME_STEP;
+   			}
+   			accumulator -= TIME_STEP;
+   		}; //end pool
 	}
 }
