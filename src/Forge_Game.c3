@@ -71,41 +71,42 @@ fn Construct forgeConstruct(String name, Texture2D texture, Vector2 pos, Vector2
 
 fn void updateConstruct(Construct *c) { 
    
-	
-	if (rl::isKeyDown(rl::KEY_LEFT)) {
-							//
-		c.pos.x -= 400  * rl::getFrameTime();
-		//playerFlip = true;
-	} else if (rl::isKeyDown(rl::KEY_RIGHT)){
+	//player update
 
-		c.pos.x += 400 * rl::getFrameTime();
-		//playerFlip = false;
+   if(c.isPlayer.player == true){
 
-		} else {
-			c.vel.x = 0;
-	}
+   	if (rl::isKeyDown(rl::KEY_LEFT)) {
+   							//
+   		c.pos.x -= 400  * rl::getFrameTime();
+   		//playerFlip = true;
+   	} else if (rl::isKeyDown(rl::KEY_RIGHT)){
 
-	if(c.isPlayer.player == false){
+   		c.pos.x += 400 * rl::getFrameTime();
+   		//playerFlip = false;
 
-		io::printfn("not player");
-	}
+   		} else {
+   			c.vel.x = 0;
+   	}
 
+   	
+         c.vel.y += c.gravity * rl::getFrameTime();  
 
-       c.vel.y += c.gravity * rl::getFrameTime();  
+      
+      if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { 
+         c.vel.y = c.jumpVelocity; 
+         c.isGrounded = false; 
+      }
+         c.pos.y += c.vel.y * rl::getFrameTime();
 
-   
-   if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { 
-      c.vel.y = c.jumpVelocity; 
-      c.isGrounded = false; 
+      if (c.pos.y > c.groundLevel){
+
+        c.pos.y = c.groundLevel;
+        c.vel.y = 0; 
+        c.isGrounded = true;
+     }
+
    }
-      c.pos.y += c.vel.y * rl::getFrameTime();
 
-   if (c.pos.y > c.groundLevel){
-
-     c.pos.y = c.groundLevel;
-     c.vel.y = 0; 
-     c.isGrounded = true;
-  }
 
 
 }
