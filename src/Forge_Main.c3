@@ -169,11 +169,14 @@ fn void main() {
 				list.free();
 				*/
 			case PAUSE:
-			if (rl::isKeyPressed(rl::KEY_P)){
-				state = GAME;
-				rl::playSound(unpause);	
+			
+				if (rl::isKeyPressed(rl::KEY_P)){
+					state = GAME;
+					rl::playSound(unpause);	
 				}
-
+				if (rl::isKeyPressed(rl::KEY_ENTER)){
+					state = MAIN;
+				}
 
 				rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
 				rl::drawTextureEx(backGroundMid, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
