@@ -3,7 +3,7 @@ import raylib5::rl;
 import std::io;
 
 //GAME globals and consts -------------------------------------------------
-float game_gravity = 600.0;
+float game_gravity = 650.0;
 const float MOVE_VELOCITY = -600.0;
 const float SKY_LEVEL = 0.0;
 const float ACCELERATION = 400.0;
@@ -12,7 +12,8 @@ const float ACCELERATION = 400.0;
 //GAME Structures ---------------------------------------------------------
  enum ConstructType {
    PLAYER,
-   ENEMY,
+   ENEMY_GROUND,
+   ENEMEY_FLY,
    OBS,
 }
 
@@ -81,43 +82,53 @@ fn void updateConstruct(Construct *c) {
 
       switch (c.type)
       {
-         case PLAYER:
-         //io::printfn("groundLevel: %f", c.groundLevel);
-         if (rl::isKeyDown(rl::KEY_LEFT)) {
-                        //
-         c.pos.x -= c.acceleration  * rl::getFrameTime();
-         //playerFlip = true;
-      } else if (rl::isKeyDown(rl::KEY_RIGHT)){
+            case PLAYER:
+            //io::printfn("groundLevel: %f", c.groundLevel);
+            if (rl::isKeyDown(rl::KEY_LEFT)) {
+                           //
+               c.pos.x -= c.acceleration  * rl::getFrameTime();
+            //playerFlip = true;
+            } else if (rl::isKeyDown(rl::KEY_RIGHT)){
 
-         c.pos.x += c.acceleration * rl::getFrameTime();
-         //playerFlip = false;
+               c.pos.x += c.acceleration * rl::getFrameTime();
+               //playerFlip = false;
 
-         } else {
-            c.vel.x = 0;
-      }
+            } else {
+               c.vel.x = 0;
+         }
 
-      
-         c.vel.y += c.gravity * rl::getFrameTime();  
+            c.vel.y += c.gravity * rl::getFrameTime();  
 
-      
-      if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { 
-         c.vel.y = c.jumpVelocity; 
-         c.isGrounded = false; 
-      }
-         c.pos.y += c.vel.y * rl::getFrameTime();
+         
+         if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { 
+            c.vel.y = c.jumpVelocity; 
+            c.isGrounded = false; 
+         }
+            c.pos.y += c.vel.y * rl::getFrameTime();
 
-      if (c.pos.y > c.groundLevel){
+         if (c.pos.y >= c.groundLevel){
 
-        c.pos.y = c.groundLevel;
-        c.vel.y = 0; 
-        c.isGrounded = true;
-     }
+           c.pos.y = c.groundLevel;
+           c.vel.y = 0; 
+           c.isGrounded = true;
+         }
+
             break;
-         case ENEMY:
-           io::printfn("ENEMY update reached");
+         case ENEMY_GROUND:           
+           io::printfn("ENEMY_GROUND update reached");
            c.vel.y += c.gravity * rl::getFrameTime();  
            c.pos.y += c.vel.y * rl::getFrameTime();
-            break;
+         
+         break;
+         
+         case ENEMEY_FLY:
+          io::printfn("ENEMEY_FLY update reached");
+          c.vel.y += c.gravity * rl::getFrameTime();  
+          c.pos.y += c.vel.y * rl::getFrameTime();
+         
+         break;
+
+
          case OBS:
           io::printfn("OBS update reached");
             break;

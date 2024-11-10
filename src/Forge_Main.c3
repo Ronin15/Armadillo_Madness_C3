@@ -159,7 +159,7 @@ fn void main() {
 				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				rl::drawTextureEx(sunTexture, {1600, 100}, 0.0, 4.0, rl::WHITE);
+				rl::drawTextureEx(sunTexture, {1600, 50}, 0.0, 4.0, rl::WHITE);
 
 				//player
 				forge_game::drawConstruct(player);
