@@ -10,8 +10,8 @@ import std::io;
 
 //Game Consts---------------------------------
 const int FPS_CAP = 60; //FPS Cap
-const double TARGET_FPS = 60.0; //target FPS
-const double TIME_STEP = 1.0 / TARGET_FPS;
+const float TARGET_FPS = 60.0; //target FPS
+const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness";
@@ -22,6 +22,7 @@ enum GameState {
 	MAIN,
 	GAME,
     PAUSE,
+    GAME_WIN,
 	GAME_OVER,
 	CREDITS,
 }
@@ -46,7 +47,7 @@ fn void main() {
 	//obstacles // enimies
 	 Texture2D cactus1Texture = rl::loadTexture("resources/images/Cactus1.png");
 	 Texture2D bigBoulderTexture = rl::loadTexture("resources/images/BoulderBig.png");
-	 Texture2D bird = rl::loadTexture("resources/images/bird.png");
+	 Texture2D bird = rl::loadTexture("resources/images/bird-sheet.png");
 	 Texture2D ant = rl::loadTexture("resources/images/ant.png");
 	 Texture2D turtle = rl::loadTexture("resources/images/turtle.png");
 	 Texture2D poop = rl::loadTexture("resources/images/poop.png");
@@ -72,13 +73,13 @@ fn void main() {
 	float scrollMid = 0.0;
 
 	//game time step vars
-	double accumulator;
+	float accumulator;
 	float frameCounter;
-	double lastTime = rl::getTime();
+	double lastTime = (float)rl::getTime();
    
 	//game loop
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
-	Construct player = forge_game::forgeConstruct("Player", playerRunTexture, {400,500}, {0,400}, 64, 64, 2, 1, 3, true);
+	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", playerRunTexture, {400,500}, {0,400}, 64, 64, 2, 1, 3);
 	io::printfn("Player Object created");
     
     //set intial game state --- switch to LOGO for normal OP
@@ -86,8 +87,8 @@ fn void main() {
 	//rl::playSound(logoSound);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
-	  	double currentTime = rl::getTime(); 
-	  	double deltaTime = currentTime - lastTime; 
+	  	float currentTime = (float)rl::getTime(); 
+	  	float deltaTime = currentTime - (float)lastTime; 
 	  	lastTime = currentTime; 
 	  	accumulator += deltaTime;
 
@@ -134,7 +135,7 @@ fn void main() {
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
 	  			
-		  		//update input -----------------------------------------------------------------------------------
+		  		//update input and check events -----------------------------------------------------------------------------------
 		  		if (rl::isKeyPressed(rl::KEY_P)){
 		  			state = PAUSE;
 		  			rl::playSound(pause);
@@ -145,7 +146,8 @@ fn void main() {
 		  		if (rl::isKeyPressed(rl::KEY_SPACE)) {rl::playSound(jump);}
 				
 					
-				
+				//check Collisions
+
 				forge_game::updateConstruct(&player);	
 				//update game logic-------------------------------------------------------------------------------
 				
@@ -157,6 +159,7 @@ fn void main() {
 				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+				rl::drawTextureEx(sunTexture, {1600, 100}, 0.0, 4.0, rl::WHITE);
 
 				//player
 				forge_game::drawConstruct(player);
@@ -190,9 +193,12 @@ fn void main() {
 				rl::drawRectangle(0, 100, 1920, 200, rl::BLACK);
 				forge_game::drawConstruct(player);
 				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 180, 30, rl::WHITE);
-					
+			
+			case GAME_WIN:
+				io::printfn("Game_WIN State");	
+
 			case GAME_OVER:
-				io::printfn("GameOver State");
+				io::printfn("Game_Over State");
 				
 			case CREDITS:
 				io::printfn("Credits State");

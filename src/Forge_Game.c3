@@ -1,7 +1,20 @@
 module forge_game;
 import raylib5::rl;
 import std::io;
+
+//GAME globals and consts -------------------------------------------------
+float game_gravity = 600.0;
+const float MOVE_VELOCITY = -600.0;
+const float SKY_LEVEL = 0.0;
+const float ACCELERATION = 400.0;
+
+
 //GAME Structures ---------------------------------------------------------
+ enum ConstructType {
+   PLAYER,
+   ENEMY,
+   OBS,
+}
 
  struct Construct {
     
@@ -14,23 +27,18 @@ import std::io;
     float jumpVelocity;
     float groundLevel;
     float skylevel;
-    int id;
+    float acceleration;
     int frameWidth; 
     int frameHeight; 
     int currentFrame; 
     int frameCounter;
     int maxFrames; 
     int lives;
+    ConstructType type;
     bool isGrounded;
-
-    union isPlayer{
-    	bool player;
-    	bool flyer;
-    	bool obsticle;
-    }
 }
 
-//GAME Functions ---------------------------------------------------------
+//GAME Functions ------------------------------------------------------------
 //checks and toggles fullscreen if screen is smaller or equal to 1920 by 1080
 fn void toggle_fullScreen (int gsWidth, int gsHeight){
 	//if screen size is 1920 X 1080 nativley then set full screen
@@ -40,17 +48,18 @@ fn void toggle_fullScreen (int gsWidth, int gsHeight){
 }
 
 //creates game Entity
-fn Construct forgeConstruct(String name, Texture2D texture, Vector2 pos, Vector2 vel, int frameWidth, int frameHeight, int maxFrames, 
-    float frameSpeed = 1, int lives = 1, bool isPlayer) {
-
-    static int nextId = 1; 
-    Construct c; 
-    c.id = nextId++;
+fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, Vector2 pos, Vector2 vel, int frameWidth, int frameHeight, int maxFrames, 
+    float frameSpeed = 1, int lives = 1) {
+    
+    Construct c;
+    c.type = type;
     c.vel.x = vel.x;
     c.vel.y = vel.y;
-    c.gravity = 600;
-    c.jumpVelocity = -600;
+    c.gravity = game_gravity;
+    c.jumpVelocity = MOVE_VELOCITY;
     c.groundLevel = (float)rl::getScreenHeight() - 120;
+    c.skylevel = SKY_LEVEL;
+    c.acceleration = ACCELERATION;
     c.name = name;
     c.texture = texture;
     c.frameWidth = frameWidth;
@@ -61,8 +70,6 @@ fn Construct forgeConstruct(String name, Texture2D texture, Vector2 pos, Vector2
     c.maxFrames = maxFrames;
     c.lives = lives;
     c.pos = pos;
-    c.isGrounded = false;
-    c.isPlayer.player = isPlayer;
 
     return  c;
 }
@@ -72,22 +79,24 @@ fn void updateConstruct(Construct *c) {
    
 	//player update
 
-   if(c.isPlayer.player == true){
+      switch (c.type)
+      {
+         case PLAYER:
+         //io::printfn("groundLevel: %f", c.groundLevel);
+         if (rl::isKeyDown(rl::KEY_LEFT)) {
+                        //
+         c.pos.x -= c.acceleration  * rl::getFrameTime();
+         //playerFlip = true;
+      } else if (rl::isKeyDown(rl::KEY_RIGHT)){
 
-   	if (rl::isKeyDown(rl::KEY_LEFT)) {
-   							//
-   		c.pos.x -= 400  * rl::getFrameTime();
-   		//playerFlip = true;
-   	} else if (rl::isKeyDown(rl::KEY_RIGHT)){
+         c.pos.x += c.acceleration * rl::getFrameTime();
+         //playerFlip = false;
 
-   		c.pos.x += 400 * rl::getFrameTime();
-   		//playerFlip = false;
+         } else {
+            c.vel.x = 0;
+      }
 
-   		} else {
-   			c.vel.x = 0;
-   	}
-
-   	
+      
          c.vel.y += c.gravity * rl::getFrameTime();  
 
       
@@ -103,8 +112,20 @@ fn void updateConstruct(Construct *c) {
         c.vel.y = 0; 
         c.isGrounded = true;
      }
+            break;
+         case ENEMY:
+           io::printfn("ENEMY update reached");
+           c.vel.y += c.gravity * rl::getFrameTime();  
+           c.pos.y += c.vel.y * rl::getFrameTime();
+            break;
+         case OBS:
+          io::printfn("OBS update reached");
+            break;
+      }
 
-   }
+   	
+
+  // }
 
 
 
