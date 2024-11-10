@@ -5,9 +5,9 @@ import std::io;
 
  struct Construct {
     
+    Texture2D texture;
     Vector2 pos;
-    Vector2 vel;
-    Texture2D texture; 
+    Vector2 vel; 
     String name;
     float frameSpeed;
     float gravity;
@@ -22,7 +22,6 @@ import std::io;
     int maxFrames; 
     int lives;
     bool isGrounded;
-
 
     union isPlayer{
     	bool player;
