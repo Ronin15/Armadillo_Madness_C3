@@ -80,10 +80,10 @@ fn void main() {
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
 	Construct player = forge_game::forgeConstruct("Player", playerRunTexture, {400,500}, {0,400}, 64, 64, 2, 1, 3, true);
 	io::printfn("Player Object created");
+    
     //set intial game state --- switch to LOGO for normal OP
-	
 	GameState state = GAME;
-	rl::playSound(logoSound);
+	//rl::playSound(logoSound);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
 	  	double currentTime = rl::getTime(); 
