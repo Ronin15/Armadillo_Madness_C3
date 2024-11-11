@@ -54,15 +54,14 @@ fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, 
     
     Construct c;
     c.type = type;
-    c.vel.x = vel.x;
-    c.vel.y = vel.y;
+    c.vel = vel;
     c.gravity = game_gravity;
     c.jumpVelocity = MOVE_VELOCITY;
     c.groundLevel = (float)rl::getScreenHeight() - 120;
     c.skylevel = SKY_LEVEL;
     c.acceleration = ACCELERATION;
     c.name = name;
-    c.texture = texture;
+    c.texture = texture;                  
     c.frameWidth = frameWidth;
     c.frameHeight = frameHeight;
     c.currentFrame = 1;
@@ -78,14 +77,12 @@ fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, 
 
 fn void updateConstruct(Construct *c) { 
    
-	//player update
-
       switch (c.type)
       {
             case PLAYER:
             //io::printfn("groundLevel: %f", c.groundLevel);
             if (rl::isKeyDown(rl::KEY_LEFT)) {
-                           //
+      
                c.pos.x -= c.acceleration  * rl::getFrameTime();
             //playerFlip = true;
             } else if (rl::isKeyDown(rl::KEY_RIGHT)){
@@ -113,7 +110,8 @@ fn void updateConstruct(Construct *c) {
            c.isGrounded = true;
          }
 
-            break;
+         break;
+
          case ENEMY_GROUND:           
            io::printfn("ENEMY_GROUND update reached");
            c.vel.y += c.gravity * rl::getFrameTime();  
@@ -133,11 +131,6 @@ fn void updateConstruct(Construct *c) {
           io::printfn("OBS update reached");
             break;
       }
-
-   	
-
-  // }
-
 
 
 }
