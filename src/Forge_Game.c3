@@ -136,7 +136,6 @@ fn void updateConstruct(Construct *c) {
 }
 
 
-
 fn void drawConstruct(Construct c, float scale = 2.0){
 	scale = scale;
 

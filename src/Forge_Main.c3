@@ -203,9 +203,7 @@ fn void main() {
 				
 			case CREDITS:
 				io::printfn("Credits State");
-				
 
-				
    		}
    			accumulator -= TIME_STEP;
 	}
