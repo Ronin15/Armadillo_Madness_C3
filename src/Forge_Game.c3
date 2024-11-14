@@ -7,6 +7,7 @@ float game_gravity = 650.0;
 const float MOVE_VELOCITY = -600.0;
 const float SKY_LEVEL = 0.0;
 const float ACCELERATION = 400.0;
+const float FRICTION = 50.0;
 
 
 //GAME Structures ---------------------------------------------------------
@@ -23,20 +24,20 @@ const float ACCELERATION = 400.0;
     Vector2 pos;
     Vector2 vel; 
     String name;
-    float frameSpeed;
     float gravity;
     float jumpVelocity;
     float groundLevel;
     float skylevel;
     float acceleration;
-    int frameWidth; 
-    int frameHeight; 
+    float friction;
+    float frameTimer;
+    float frameLength;
     int currentFrame; 
-    int frameCounter;
     int maxFrames; 
     int lives;
     ConstructType type;
     bool isGrounded;
+    bool texflip;
 }
 
 //GAME Functions ------------------------------------------------------------
@@ -49,27 +50,29 @@ fn void toggle_fullScreen (int gsWidth, int gsHeight){
 }
 
 //creates game Entity
-fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, Vector2 pos, Vector2 vel, int frameWidth, int frameHeight, int maxFrames, 
-    float frameSpeed = 1, int lives = 1) {
+fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, Vector2 pos, Vector2 vel, int maxFrames, int lives = 1) {
     
     Construct c;
     c.type = type;
     c.vel = vel;
+    c.pos = pos;
     c.gravity = game_gravity;
     c.jumpVelocity = MOVE_VELOCITY;
     c.groundLevel = (float)rl::getScreenHeight() - 120;
     c.skylevel = SKY_LEVEL;
     c.acceleration = ACCELERATION;
+    c.friction = FRICTION;
     c.name = name;
-    c.texture = texture;                  
-    c.frameWidth = frameWidth;
-    c.frameHeight = frameHeight;
+    c.texture = texture;  
+    c.frameLength = 0.1;                
+    //c.frameWidth = frameWidth;
+    //c.frameHeight = frameHeight;
     c.currentFrame = 1;
-    c.frameCounter = 1;
-    c.frameSpeed = frameSpeed;
+    //c.frameCounter = 1;
+    //c.frameSpeed = frameSpeed;
     c.maxFrames = maxFrames;
     c.lives = lives;
-    c.pos = pos;
+    c.texflip = false;
 
     return  c;
 }
@@ -83,7 +86,7 @@ fn void updateConstruct(Construct *c) {
             //io::printfn("groundLevel: %f", c.groundLevel);
             if (rl::isKeyDown(rl::KEY_LEFT)) {
       
-               c.pos.x -= c.acceleration  * rl::getFrameTime();
+               c.pos.x -= c.acceleration * rl::getFrameTime();
             //playerFlip = true;
             } else if (rl::isKeyDown(rl::KEY_RIGHT)){
 
@@ -92,23 +95,24 @@ fn void updateConstruct(Construct *c) {
 
             } else {
                c.vel.x = 0;
-         }
+            }
 
             c.vel.y += c.gravity * rl::getFrameTime();  
 
          
-         if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { 
-            c.vel.y = c.jumpVelocity; 
-            c.isGrounded = false; 
-         }
-            c.pos.y += c.vel.y * rl::getFrameTime();
+            if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { 
+               c.vel.y = c.jumpVelocity; 
+               c.isGrounded = false; 
+            }
+               c.pos.y += c.vel.y * rl::getFrameTime();
 
-         if (c.pos.y >= c.groundLevel){
-
-           c.pos.y = c.groundLevel;
-           c.vel.y = 0; 
-           c.isGrounded = true;
-         }
+            if (c.pos.y >= c.groundLevel){
+            c.isGrounded = true;
+            c.pos.y = c.groundLevel;
+            c.vel.y = 0;
+            c.pos.x -= c.friction * rl::getFrameTime(); 
+            
+            }
 
          break;
 
@@ -136,9 +140,41 @@ fn void updateConstruct(Construct *c) {
 }
 
 
-fn void drawConstruct(Construct c, float scale = 2.0){
+fn void drawConstruct(Construct c, float rotation = 0.0, float scale = 2.0){
 	scale = scale;
 
-	rl::drawTextureEx(c.texture, {c.pos.x,c.pos.y}, 0.0, scale, rl::WHITE);
+	rl::drawTextureEx(c.texture, {c.pos.x,c.pos.y}, rotation, scale, rl::WHITE);
 
+}
+
+fn void drawAnitmatedConstruct(Construct c, float rotation = 0.0){
+//setting up animation data on contructs
+Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
+
+c.frameTimer += rl::getFrameTime();
+
+   if (c.frameTimer > c.frameLength) {
+      c.currentFrame += 1;
+      c.frameTimer = 0;
+
+      if (c.currentFrame == c.maxFrames){
+         c.currentFrame = 0;
+      }
+   }
+
+Rectangle srcRec = {
+  srcRec.x = (float)c.currentFrame * c.texture.width / c.maxFrames,
+  srcRec.y = 0.0,
+  srcRec.width = (float)c.texture.width / c.maxFrames,
+  srcRec.height = (float)c.texture.height,
+};
+
+Rectangle destRec = {
+   destRec.x = c.pos.x,
+   destRec.y = c.pos.y,
+   destRec.width = (float)c.texture.width * 2 / c.maxFrames,
+   destRec.height = (float)c.texture.height * 2, 
+   };
+
+ rl::drawTexturePro(c.texture, srcRec, destRec, origin, rotation, rl::WHITE);
 }

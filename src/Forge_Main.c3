@@ -80,7 +80,7 @@ fn void main() {
 	//game objects init
 	//Entity entities[*] = { { ENTITY_PLAYER, "Hero", 100 }, { ENTITY_ENEMY, "Goblin", 50 }, { ENTITY_NPC, "Villager", 30 } };
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
-	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", playerRunTexture, {400,500}, {0,400}, 64, 64, 2, 1, 3);
+	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", playerRunTexture, {400,500}, {0,400}, 2, 3);
 	io::printfn("Player Object created");
     
     //set intial game state --- switch to LOGO for normal OP
@@ -163,7 +163,8 @@ fn void main() {
 				rl::drawTextureEx(sunTexture, {1600, 50}, 0.0, 4.0, rl::WHITE);
 
 				//player
-				forge_game::drawConstruct(player);
+				//forge_game::drawConstruct(player);
+				forge_game::drawAnitmatedConstruct(player);
 
 
 				/*
