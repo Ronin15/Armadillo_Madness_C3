@@ -1,7 +1,7 @@
 module forge_game;
 import raylib5::rl;
 import std::io;
-import std::math::nolibc;
+import std::math;
 
 //GAME globals and consts -------------------------------------------------
 float game_gravity = 650.0;

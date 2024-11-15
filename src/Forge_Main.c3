@@ -1,7 +1,6 @@
 module armadillo_madness_c3;
 //game modules---------------------
 import forge_game;
-import forge_physics;
 //vendor modules-------------------
 import raylib5::rl;
 //C3 standard modules--------------
