@@ -5,6 +5,7 @@ import std::math;
 
 //GAME globals and consts -------------------------------------------------
 float game_gravity = 650.0;
+float groundLevel = 1080.0 - 120;
 const float MOVE_VELOCITY = -600.0;
 const float SKY_LEVEL = 0.0;
 const float ACCELERATION = 250.0;
@@ -12,11 +13,13 @@ const float FRICTION = 60.0;
 const float AMPLITUDE = 300.0;
 const float FREQUENCY = 0.05;
 const int MAX_LIVES = 6;
+const float OBS_OFFSET = 30.0;
 
 
 //GAME Structures ---------------------------------------------------------
  enum ConstructType {
    PLAYER,
+   PROJECTILE_POOP,
    ENEMY_GROUND,
    ENEMEY_FLY,
    OBS,
@@ -41,6 +44,8 @@ const int MAX_LIVES = 6;
     ConstructType type;
     bool isGrounded;
     bool texFlip;
+    bool isDead;
+    bool isProjectileActive;
 }
 
 //GAME Functions ------------------------------------------------------------
@@ -58,18 +63,20 @@ fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, 
     Construct c;
     c.type = type;
     c.pos = pos;
+    c.texture = texture;  
     c.gravity = game_gravity;
     c.jumpVelocity = MOVE_VELOCITY;
-    c.groundLevel = (float)rl::getScreenHeight() - 120;
+    c.groundLevel = groundLevel; 
     c.acceleration = ACCELERATION;
     c.friction = FRICTION;
     c.name = name;
-    c.texture = texture;  
     c.frameLength = 0.1;                
     c.currentFrame = 1;
     c.maxFrames = maxFrames;
     c.lives = lives;
     c.texFlip = false;
+    c.isDead = false;
+    c.isProjectileActive = false;
 
     return  c;
 }
@@ -124,6 +131,13 @@ fn void updateConstruct(Construct *c) {
            // if(rl::isKeyPressed(rl::KEY_ENTER)){c.lives -= 1;} // life test
 
          break;
+         
+         case PROJECTILE_POOP:           
+           io::printfn("POOP Shot :) update reached");
+           c.vel.y += c.gravity * rl::getFrameTime();  
+           c.pos.y += c.vel.y * rl::getFrameTime();
+         
+         break;
 
          case ENEMY_GROUND:           
            io::printfn("ENEMY_GROUND update reached");
@@ -142,13 +156,20 @@ fn void updateConstruct(Construct *c) {
          break;
 
          case OBS:
-          io::printfn("OBS update reached");
+          //io::printfn("OBS update reached");
+         if (c.name == "Cactus") {c.groundLevel = groundLevel - c.texture.height - 40;}
+         if (c.name == "Boulder"){c.groundLevel = groundLevel - c.texture.height + 15;}
+          c.vel.y += c.gravity * rl::getFrameTime();
+          c.pos.y += c.vel.y * rl::getFrameTime();
+            
+            
+          c.pos.x -= (c.friction + OBS_OFFSET) * rl::getFrameTime(); 
             break;
       }
 }
 
 //draw sprites without animation
-fn void drawConstruct(Construct c, float rotation = 0.0, float scale = 2.0){
+fn void drawConstruct(Construct *c, float rotation = 0.0, float scale = 2.0){
 	scale = scale;
 
 	rl::drawTextureEx(c.texture, {c.pos.x,c.pos.y}, rotation, scale, rl::WHITE);

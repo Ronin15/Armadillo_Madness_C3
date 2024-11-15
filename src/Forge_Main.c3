@@ -27,7 +27,7 @@ enum GameState {
 }
 
 
-fn void main() {	
+fn int main() {	
 	@pool(){ 
 	//init Game Systems
 	rl::initWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
@@ -71,6 +71,7 @@ fn void main() {
 	//Game play scrolling vars
 	float scrollGround = 0.0;
 	float scrollMid = 0.0;
+	float lifeSpace = (float)lifeCountTex.width + 5.0; 
 
 	//game time step vars
 	float accumulator;
@@ -82,6 +83,10 @@ fn void main() {
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
 	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", playerTex, {400,500}, 2, 6);
 	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"Bird", birdTex, {1600,800}, 2);
+	Construct bird2 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird2", birdTex, {1200,800}, 2);
+	Construct cactus = forge_game::forgeConstruct(OBS,"Cactus", cactus1Tex,{1900,1400}, 1);
+	Construct bigBoulder = forge_game::forgeConstruct(OBS,"Boulder", bigBoulderTex,{2800,1400}, 1);
+
 	io::printfn("Player Object created");
     
     //set intial game state --- switch to LOGO for normal OP
@@ -98,7 +103,7 @@ fn void main() {
 	  	//render and game states-----------------------------------------------
 		rl::beginDrawing();
 		defer rl::endDrawing();
-		rl::clearBackground(rl::RAYWHITE);
+		rl::clearBackground(rl::BLACK);
 
 
 		switch (state) {
@@ -132,7 +137,6 @@ fn void main() {
 				rl::clearBackground(rl::BLACK);
 				//rl::playMusicStream(gameMusic);
 	  			//rl::updateMusicStream(gameMusic);
-				float lifeSpace = (float)lifeCountTex.width + 5.0; 
 	  			scrollGround -= 5.8;
 				scrollMid -= 0.6;
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
@@ -153,6 +157,9 @@ fn void main() {
 
 				forge_game::updateConstruct(&player);
 				forge_game::updateConstruct(&bird);
+				forge_game::updateConstruct(&bird2);
+				forge_game::updateConstruct(&cactus);
+				forge_game::updateConstruct(&bigBoulder);
 				//update game logic-------------------------------------------------------------------------------
 				
 					
@@ -167,6 +174,7 @@ fn void main() {
 				rl::drawRectangle(5, 5, 400, 150, rl::BLACK);
 				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
 				rl::drawText("Lives ", 16, 60, 30, rl::RAYWHITE);
+				//life tracking updating
 				if (&player.lives == &player.lives){
 					for (int i = 0; i < player.lives; i++){
 						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
@@ -177,7 +185,9 @@ fn void main() {
 				//forge_game::drawConstruct(player);
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawAnitmatedConstruct(&bird);
-
+				forge_game::drawAnitmatedConstruct(&bird2);
+				forge_game::drawConstruct(&cactus,0.0,3.5);
+				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
 
 				/*
 				def MyIntList = List(<int>);
@@ -204,9 +214,27 @@ fn void main() {
 				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				rl::drawRectangle(0, 100, 1920, 200, rl::BLACK);
+				rl::drawTextureEx(sunTex, {1600, 10}, 0.0, 4.0, rl::WHITE);
+				
+				
 				forge_game::drawAnitmatedConstruct(&player);
-				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 180, 30, rl::RAYWHITE);
+				forge_game::drawAnitmatedConstruct(&bird);
+				forge_game::drawAnitmatedConstruct(&bird2);
+				forge_game::drawConstruct(&cactus,0.0,3.5);
+				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
+				//drawing pause stuff here so objects don cover it up
+				rl::drawRectangle(5, 5, 400, 150, rl::BLACK);
+				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
+				rl::drawText("Lives ", 16, 60, 30, rl::RAYWHITE);
+				if (&player.lives == &player.lives){
+					for (int i = 0; i < player.lives; i++){
+						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
+						rl::drawTextureEx(lifeCountTex,{lifePos.x, lifePos.y - lifeCountTex.height}, 0, 0.8, rl::WHITE);
+					}
+				}
+				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
+				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
+				
 			
 			case GAME_WIN:
 				io::printfn("Game_WIN State");	
@@ -222,4 +250,5 @@ fn void main() {
 	}
 
 	}; //end pool
+	return 0;
 }
