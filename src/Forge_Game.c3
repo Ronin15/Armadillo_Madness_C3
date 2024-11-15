@@ -70,9 +70,9 @@ fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, 
     return  c;
 }
 
-
+//update game contructs
 fn void updateConstruct(Construct *c) { 
-      //all construct update info-----------------------------------------------
+      //all construct update info-------------------------------------------------
       c.frameTimer += rl::getFrameTime();
 
       if (c.frameTimer > c.frameLength) {
@@ -84,6 +84,13 @@ fn void updateConstruct(Construct *c) {
          }
       }
 
+      if (c.pos.y >= c.groundLevel){
+            c.isGrounded = true;
+            c.pos.y = c.groundLevel;
+            c.vel.y = 0.0;
+            c.pos.x -= c.friction * rl::getFrameTime(); 
+
+        }
       //swtich on construct type for specific type updates.-----------------------
       switch (c.type)
       {
@@ -111,13 +118,6 @@ fn void updateConstruct(Construct *c) {
             }
                c.pos.y += c.vel.y * rl::getFrameTime();
 
-            if (c.pos.y >= c.groundLevel){
-            c.isGrounded = true;
-            c.pos.y = c.groundLevel;
-            c.vel.y = 0.0;
-            c.pos.x -= c.friction * rl::getFrameTime(); 
-            
-            }
 
          break;
 
@@ -130,7 +130,7 @@ fn void updateConstruct(Construct *c) {
          
          case ENEMEY_FLY:
           //io::printfn("ENEMEY_FLY update reached");
-         // c.vel.y += c.gravity * rl::getFrameTime();  
+          //c.vel.y += c.gravity * rl::getFrameTime();  
           c.pos.y += c.vel.y * rl::getFrameTime();
          
          break;
@@ -139,18 +139,16 @@ fn void updateConstruct(Construct *c) {
           io::printfn("OBS update reached");
             break;
       }
-
-
 }
 
-
+//draw sprites without animation
 fn void drawConstruct(Construct c, float rotation = 0.0, float scale = 2.0){
 	scale = scale;
 
 	rl::drawTextureEx(c.texture, {c.pos.x,c.pos.y}, rotation, scale, rl::WHITE);
-
 }
 
+//draw animated sprites
 fn void drawAnitmatedConstruct(Construct c, float rotation = 0.0){
 //setting up animation data on contructs
 Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
@@ -169,7 +167,7 @@ Rectangle destRec = {
    destRec.height = (float)c.texture.height * 2, 
    };
 
-   if (c.texFlip == true) {srcRec.width = -srcRec.width;}
+   if (c.texFlip) {srcRec.width = -srcRec.width;}
 
  rl::drawTexturePro(c.texture, srcRec, destRec, origin, rotation, rl::WHITE);
 }
