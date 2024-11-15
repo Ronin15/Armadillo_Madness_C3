@@ -1,13 +1,16 @@
 module forge_game;
 import raylib5::rl;
 import std::io;
+import std::math::nolibc;
 
 //GAME globals and consts -------------------------------------------------
 float game_gravity = 650.0;
 const float MOVE_VELOCITY = -600.0;
 const float SKY_LEVEL = 0.0;
-const float ACCELERATION = 400.0;
+const float ACCELERATION = 250.0;
 const float FRICTION = 50.0;
+const float AMPLITUDE = 300.0;
+const float FREQUENCY = 0.05;
 
 
 //GAME Structures ---------------------------------------------------------
@@ -130,8 +133,9 @@ fn void updateConstruct(Construct *c) {
          
          case ENEMEY_FLY:
           //io::printfn("ENEMEY_FLY update reached");
-          //c.vel.y += c.gravity * rl::getFrameTime();  
-          c.pos.y += c.vel.y * rl::getFrameTime();
+          //c.vel.y += c.acceleration * rl::getFrameTime();  
+          c.pos.x -= 15.0 * rl::getFrameTime();
+          c.pos.y += AMPLITUDE * std::math::sin(FREQUENCY * c.pos.x) * rl::getFrameTime();
          
          break;
 
