@@ -86,13 +86,12 @@ fn void updateConstruct(Construct *c) {
             c.currentFrame = 0;
          }
       }
-
+      //stationairy ground movement
       if (c.pos.y >= c.groundLevel){
             c.isGrounded = true;
             c.pos.y = c.groundLevel;
             c.vel.y = 0.0;
             c.pos.x -= c.friction * rl::getFrameTime(); 
-
         }
       //swtich on construct type for specific type updates.-----------------------
       switch (c.type)
@@ -153,7 +152,7 @@ fn void drawConstruct(Construct c, float rotation = 0.0, float scale = 2.0){
 }
 
 //draw animated sprites
-fn void drawAnitmatedConstruct(Construct c, float rotation = 0.0){
+fn void drawAnitmatedConstruct(Construct *c, float rotation = 0.0){
 //setting up animation data on contructs
 Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
 

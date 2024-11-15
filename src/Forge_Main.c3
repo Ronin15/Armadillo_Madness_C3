@@ -162,11 +162,14 @@ fn void main() {
 				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
 				rl::drawTextureEx(sunTex, {1600, 50}, 0.0, 4.0, rl::WHITE);
+				rl::drawRectangle(11, 11, 300, 125, rl::BLACK);
+				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
+				rl::drawText("Lives ", 16, 60, 30, rl::RAYWHITE);
 
 				//player
 				//forge_game::drawConstruct(player);
-				forge_game::drawAnitmatedConstruct(player);
-				forge_game::drawAnitmatedConstruct(bird);
+				forge_game::drawAnitmatedConstruct(&player);
+				forge_game::drawAnitmatedConstruct(&bird);
 
 
 				/*
@@ -195,8 +198,8 @@ fn void main() {
 				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
 				rl::drawRectangle(0, 100, 1920, 200, rl::BLACK);
-				forge_game::drawAnitmatedConstruct(player);
-				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 180, 30, rl::WHITE);
+				forge_game::drawAnitmatedConstruct(&player);
+				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 180, 30, rl::RAYWHITE);
 			
 			case GAME_WIN:
 				io::printfn("Game_WIN State");	
