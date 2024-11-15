@@ -14,6 +14,7 @@ const float AMPLITUDE = 300.0;
 const float FREQUENCY = 0.05;
 const int MAX_LIVES = 6;
 const float OBS_OFFSET = 30.0;
+const float ANT_OFFSET = 60.0;
 
 
 //GAME Structures ---------------------------------------------------------
@@ -140,9 +141,11 @@ fn void updateConstruct(Construct *c) {
          break;
 
          case ENEMY_GROUND:           
-           io::printfn("ENEMY_GROUND update reached");
-           c.vel.y += c.gravity * rl::getFrameTime();  
+          // io::printfn("ENEMY_GROUND update reached");
+          if (c.name == "Ant") {c.pos.x -= (c.friction + ANT_OFFSET) * rl::getFrameTime() ;}
+           
            c.pos.y += c.vel.y * rl::getFrameTime();
+           c.vel.y += c.gravity * rl::getFrameTime(); 
          
          break;
          

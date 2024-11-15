@@ -86,7 +86,8 @@ fn int main() {
 	Construct bird2 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird2", birdTex, {1200,800}, 2);
 	Construct cactus = forge_game::forgeConstruct(OBS,"Cactus", cactus1Tex,{1900,1400}, 1);
 	Construct bigBoulder = forge_game::forgeConstruct(OBS,"Boulder", bigBoulderTex,{2800,1400}, 1);
-
+	Construct ant = forge_game::forgeConstruct(ENEMY_GROUND,"Ant", antTex,{2200,1400}, 1);
+	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", turtleTex,{2000,1400}, 1);	
 	io::printfn("Player Object created");
     
     //set intial game state --- switch to LOGO for normal OP
@@ -160,6 +161,8 @@ fn int main() {
 				forge_game::updateConstruct(&bird2);
 				forge_game::updateConstruct(&cactus);
 				forge_game::updateConstruct(&bigBoulder);
+				forge_game::updateConstruct(&ant);
+				forge_game::updateConstruct(&turtle);
 				//update game logic-------------------------------------------------------------------------------
 				
 					
@@ -188,6 +191,8 @@ fn int main() {
 				forge_game::drawAnitmatedConstruct(&bird2);
 				forge_game::drawConstruct(&cactus,0.0,3.5);
 				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
+				forge_game::drawConstruct(&ant,0.0);
+				forge_game::drawConstruct(&turtle,0.0);
 
 				/*
 				def MyIntList = List(<int>);
@@ -222,6 +227,9 @@ fn int main() {
 				forge_game::drawAnitmatedConstruct(&bird2);
 				forge_game::drawConstruct(&cactus,0.0,3.5);
 				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
+				forge_game::drawConstruct(&ant,0.0);
+				forge_game::drawConstruct(&turtle,0.0);
+				
 				//drawing pause stuff here so objects don cover it up
 				rl::drawRectangle(5, 5, 400, 150, rl::BLACK);
 				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
