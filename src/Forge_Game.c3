@@ -36,7 +36,7 @@ const float FRICTION = 50.0;
     int lives;
     ConstructType type;
     bool isGrounded;
-    bool texflip;
+    bool texFlip;
 }
 
 //GAME Functions ------------------------------------------------------------
@@ -65,7 +65,7 @@ fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, 
     c.currentFrame = 1;
     c.maxFrames = maxFrames;
     c.lives = lives;
-    c.texflip = false;
+    c.texFlip = false;
 
     return  c;
 }
@@ -92,11 +92,11 @@ fn void updateConstruct(Construct *c) {
             if (rl::isKeyDown(rl::KEY_LEFT)) {
       
                c.pos.x -= c.acceleration * rl::getFrameTime();
-            //playerFlip = true;
+               c.texFlip = true;
             } else if (rl::isKeyDown(rl::KEY_RIGHT)){
 
                c.pos.x += c.acceleration * rl::getFrameTime();
-               //playerFlip = false;
+               c.texFlip = false;
 
             } else {
                c.vel.x = 0.0;
@@ -168,6 +168,8 @@ Rectangle destRec = {
    destRec.width = (float)c.texture.width * 2 / c.maxFrames,
    destRec.height = (float)c.texture.height * 2, 
    };
+
+   if (c.texFlip == true) {srcRec.width = -srcRec.width;}
 
  rl::drawTexturePro(c.texture, srcRec, destRec, origin, rotation, rl::WHITE);
 }

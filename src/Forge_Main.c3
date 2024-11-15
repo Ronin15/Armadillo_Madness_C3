@@ -81,7 +81,7 @@ fn void main() {
 	//Entity entities[*] = { { ENTITY_PLAYER, "Hero", 100 }, { ENTITY_ENEMY, "Goblin", 50 }, { ENTITY_NPC, "Villager", 30 } };
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
 	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", playerTex, {400,500}, 2, 3);
-	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"Bird", birdTex, {800,600}, 2, 1);
+	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"Bird", birdTex, {800,600}, 2);
 	io::printfn("Player Object created");
     
     //set intial game state --- switch to LOGO for normal OP
