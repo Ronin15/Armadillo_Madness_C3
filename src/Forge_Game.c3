@@ -8,9 +8,10 @@ float game_gravity = 650.0;
 const float MOVE_VELOCITY = -600.0;
 const float SKY_LEVEL = 0.0;
 const float ACCELERATION = 250.0;
-const float FRICTION = 50.0;
+const float FRICTION = 60.0;
 const float AMPLITUDE = 300.0;
 const float FREQUENCY = 0.05;
+const int MAX_LIVES = 6;
 
 
 //GAME Structures ---------------------------------------------------------
@@ -52,7 +53,7 @@ fn void toggle_fullScreen (int gsWidth, int gsHeight){
 }
 
 //creates game Entity
-fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, Vector2 pos, int maxFrames, int lives = 1) {
+fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, Vector2 pos, int maxFrames, int lives = 2) {
     
     Construct c;
     c.type = type;
@@ -119,7 +120,8 @@ fn void updateConstruct(Construct *c) {
                c.isGrounded = false; 
             }
                c.pos.y += c.vel.y * rl::getFrameTime();
-
+         
+           // if(rl::isKeyPressed(rl::KEY_ENTER)){c.lives -= 1;} // life test
 
          break;
 
@@ -132,7 +134,8 @@ fn void updateConstruct(Construct *c) {
          
          case ENEMEY_FLY:
           //io::printfn("ENEMEY_FLY update reached");
-          //c.vel.y += c.acceleration * rl::getFrameTime();  
+          //c.pos.y += c.acceleration * rl::getFrameTime();  
+           //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
           c.pos.x -= 15.0 * rl::getFrameTime();
           c.pos.y += AMPLITUDE * std::math::sin(FREQUENCY * c.pos.x) * rl::getFrameTime();
          

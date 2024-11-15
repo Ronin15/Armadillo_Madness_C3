@@ -43,13 +43,14 @@ fn void main() {
 	 Texture2D backGroundGround = rl::loadTexture("resources/images/ground3.png");
 	 Texture2D playerTex = rl::loadTexture("resources/images/armadillo_a2-sheet.png");
 	 Texture2D sunTex = rl::loadTexture("resources/images/Sun.png");
-	//obstacles // enimies
+	//obstacles // enemies
 	 Texture2D cactus1Tex = rl::loadTexture("resources/images/Cactus1.png");
 	 Texture2D bigBoulderTex = rl::loadTexture("resources/images/BoulderBig.png");
 	 Texture2D birdTex = rl::loadTexture("resources/images/bird-sheet.png");
 	 Texture2D antTex = rl::loadTexture("resources/images/ant.png");
 	 Texture2D turtleTex = rl::loadTexture("resources/images/turtle.png");
 	 Texture2D poopTex = rl::loadTexture("resources/images/poop.png");
+	 Texture2D lifeCountTex = rl::loadTexture("resources/images/LifeCounter.png"); 
 	//logo Page assets
 	 Texture2D raylibTex = rl::loadTexture("resources/images/raylib.png");
 	 Texture2D c3Tex = rl::loadTexture("resources/images/C3.png");
@@ -79,8 +80,8 @@ fn void main() {
 	//game objects init
 	//Entity entities[*] = { { ENTITY_PLAYER, "Hero", 100 }, { ENTITY_ENEMY, "Goblin", 50 }, { ENTITY_NPC, "Villager", 30 } };
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
-	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", playerTex, {400,500}, 2, 3);
-	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"Bird", birdTex, {800,600}, 2);
+	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", playerTex, {400,500}, 2, 6);
+	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"Bird", birdTex, {1600,800}, 2);
 	io::printfn("Player Object created");
     
     //set intial game state --- switch to LOGO for normal OP
@@ -129,9 +130,10 @@ fn void main() {
 				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
-				rl::playMusicStream(gameMusic);
-	  			rl::updateMusicStream(gameMusic);
-	  			scrollGround -= 5.5;
+				//rl::playMusicStream(gameMusic);
+	  			//rl::updateMusicStream(gameMusic);
+				float lifeSpace = (float)lifeCountTex.width + 5.0; 
+	  			scrollGround -= 5.8;
 				scrollMid -= 0.6;
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
@@ -161,11 +163,16 @@ fn void main() {
 				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				rl::drawTextureEx(sunTex, {1600, 50}, 0.0, 4.0, rl::WHITE);
-				rl::drawRectangle(11, 11, 300, 125, rl::BLACK);
+				rl::drawTextureEx(sunTex, {1600, 10}, 0.0, 4.0, rl::WHITE);
+				rl::drawRectangle(5, 5, 400, 150, rl::BLACK);
 				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
 				rl::drawText("Lives ", 16, 60, 30, rl::RAYWHITE);
-
+				if (&player.lives == &player.lives){
+					for (int i = 0; i < player.lives; i++){
+						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
+						rl::drawTextureEx(lifeCountTex,{lifePos.x, lifePos.y - lifeCountTex.height}, 0, 0.8, rl::WHITE);
+					}
+				}
 				//player
 				//forge_game::drawConstruct(player);
 				forge_game::drawAnitmatedConstruct(&player);
