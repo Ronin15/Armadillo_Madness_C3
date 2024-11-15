@@ -27,7 +27,6 @@ const float FRICTION = 50.0;
     float gravity;
     float jumpVelocity;
     float groundLevel;
-    float skylevel;
     float acceleration;
     float friction;
     float frameTimer;
@@ -50,26 +49,20 @@ fn void toggle_fullScreen (int gsWidth, int gsHeight){
 }
 
 //creates game Entity
-fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, Vector2 pos, Vector2 vel, int maxFrames, int lives = 1) {
+fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, Vector2 pos, int maxFrames, int lives = 1) {
     
     Construct c;
     c.type = type;
-    c.vel = vel;
     c.pos = pos;
     c.gravity = game_gravity;
     c.jumpVelocity = MOVE_VELOCITY;
     c.groundLevel = (float)rl::getScreenHeight() - 120;
-    c.skylevel = SKY_LEVEL;
     c.acceleration = ACCELERATION;
     c.friction = FRICTION;
     c.name = name;
     c.texture = texture;  
     c.frameLength = 0.1;                
-    //c.frameWidth = frameWidth;
-    //c.frameHeight = frameHeight;
     c.currentFrame = 1;
-    //c.frameCounter = 1;
-    //c.frameSpeed = frameSpeed;
     c.maxFrames = maxFrames;
     c.lives = lives;
     c.texflip = false;
@@ -79,7 +72,19 @@ fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, 
 
 
 fn void updateConstruct(Construct *c) { 
-   
+      //all construct update info-----------------------------------------------
+      c.frameTimer += rl::getFrameTime();
+
+      if (c.frameTimer > c.frameLength) {
+         c.currentFrame += 1;
+         c.frameTimer = 0.0;
+
+         if (c.currentFrame == c.maxFrames){
+            c.currentFrame = 0;
+         }
+      }
+
+      //swtich on construct type for specific type updates.-----------------------
       switch (c.type)
       {
             case PLAYER:
@@ -94,7 +99,7 @@ fn void updateConstruct(Construct *c) {
                //playerFlip = false;
 
             } else {
-               c.vel.x = 0;
+               c.vel.x = 0.0;
             }
 
             c.vel.y += c.gravity * rl::getFrameTime();  
@@ -109,7 +114,7 @@ fn void updateConstruct(Construct *c) {
             if (c.pos.y >= c.groundLevel){
             c.isGrounded = true;
             c.pos.y = c.groundLevel;
-            c.vel.y = 0;
+            c.vel.y = 0.0;
             c.pos.x -= c.friction * rl::getFrameTime(); 
             
             }
@@ -124,12 +129,11 @@ fn void updateConstruct(Construct *c) {
          break;
          
          case ENEMEY_FLY:
-          io::printfn("ENEMEY_FLY update reached");
-          c.vel.y += c.gravity * rl::getFrameTime();  
+          //io::printfn("ENEMEY_FLY update reached");
+         // c.vel.y += c.gravity * rl::getFrameTime();  
           c.pos.y += c.vel.y * rl::getFrameTime();
          
          break;
-
 
          case OBS:
           io::printfn("OBS update reached");
@@ -150,17 +154,6 @@ fn void drawConstruct(Construct c, float rotation = 0.0, float scale = 2.0){
 fn void drawAnitmatedConstruct(Construct c, float rotation = 0.0){
 //setting up animation data on contructs
 Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
-
-c.frameTimer += rl::getFrameTime();
-
-   if (c.frameTimer > c.frameLength) {
-      c.currentFrame += 1;
-      c.frameTimer = 0;
-
-      if (c.currentFrame == c.maxFrames){
-         c.currentFrame = 0;
-      }
-   }
 
 Rectangle srcRec = {
   srcRec.x = (float)c.currentFrame * c.texture.width / c.maxFrames,

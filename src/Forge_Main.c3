@@ -42,21 +42,21 @@ fn void main() {
 	 Texture2D backGroundSky = rl::loadTexture("resources/images/sky.png");
 	 Texture2D backGroundMid = rl::loadTexture("resources/images/mid3.png");
 	 Texture2D backGroundGround = rl::loadTexture("resources/images/ground3.png");
-	 Texture2D playerRunTexture = rl::loadTexture("resources/images/armadillo_a2-sheet.png");
-	 Texture2D sunTexture = rl::loadTexture("resources/images/Sun.png");
+	 Texture2D playerTex = rl::loadTexture("resources/images/armadillo_a2-sheet.png");
+	 Texture2D sunTex = rl::loadTexture("resources/images/Sun.png");
 	//obstacles // enimies
-	 Texture2D cactus1Texture = rl::loadTexture("resources/images/Cactus1.png");
-	 Texture2D bigBoulderTexture = rl::loadTexture("resources/images/BoulderBig.png");
-	 Texture2D bird = rl::loadTexture("resources/images/bird-sheet.png");
-	 Texture2D ant = rl::loadTexture("resources/images/ant.png");
-	 Texture2D turtle = rl::loadTexture("resources/images/turtle.png");
-	 Texture2D poop = rl::loadTexture("resources/images/poop.png");
+	 Texture2D cactus1Tex = rl::loadTexture("resources/images/Cactus1.png");
+	 Texture2D bigBoulderTex = rl::loadTexture("resources/images/BoulderBig.png");
+	 Texture2D birdTex = rl::loadTexture("resources/images/bird-sheet.png");
+	 Texture2D antTex = rl::loadTexture("resources/images/ant.png");
+	 Texture2D turtleTex = rl::loadTexture("resources/images/turtle.png");
+	 Texture2D poopTex = rl::loadTexture("resources/images/poop.png");
 	//logo Page assets
-	 Texture2D raylibTexture = rl::loadTexture("resources/images/raylib.png");
-	 Texture2D c3Texture = rl::loadTexture("resources/images/C3.png");
-	 Texture2D logoTexture = rl::loadTexture("resources/images/hammerForge.png");
+	 Texture2D raylibTex = rl::loadTexture("resources/images/raylib.png");
+	 Texture2D c3Tex = rl::loadTexture("resources/images/C3.png");
+	 Texture2D logoTex = rl::loadTexture("resources/images/hammerForge.png");
 	//Title Page assets
-	 Texture2D titlePageTexture = rl::loadTexture("resources/images/Title_Page.png");
+	 Texture2D titlePageTex = rl::loadTexture("resources/images/Title_Page.png");
 	//sounds
 	 Sound jump = rl::loadSound("resources/sounds/jump.wav");
 	 Sound moving = rl::loadSound("resources/sounds/moving.wav");
@@ -80,7 +80,8 @@ fn void main() {
 	//game objects init
 	//Entity entities[*] = { { ENTITY_PLAYER, "Hero", 100 }, { ENTITY_ENEMY, "Goblin", 50 }, { ENTITY_NPC, "Villager", 30 } };
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
-	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", playerRunTexture, {400,500}, {0,400}, 2, 3);
+	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", playerTex, {400,500}, 2, 3);
+	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"Bird", birdTex, {800,600},2 ,1);
 	io::printfn("Player Object created");
     
     //set intial game state --- switch to LOGO for normal OP
@@ -104,11 +105,11 @@ fn void main() {
 
         	case LOGO:
 				rl::clearBackground(rl::BLACK);
-				rl::drawTexture(logoTexture, 760, 440, rl::WHITE);
+				rl::drawTexture(logoTex, 760, 440, rl::WHITE);
 				rl::drawText("Hammer Forged Games", 560, 340, 60, rl::ORANGE);
 				rl::drawText("Made with", 705, 725, 20, rl::WHITE);
-				rl::drawTexture(raylibTexture, 830, 700, rl::WHITE);
-				rl::drawTexture(c3Texture, 910, 713, rl::WHITE);
+				rl::drawTexture(raylibTex, 830, 700, rl::WHITE);
+				rl::drawTexture(c3Tex, 910, 713, rl::WHITE);
 					frameCounter += 1;
 					if (frameCounter > 300) {
 							state = MAIN;
@@ -118,7 +119,7 @@ fn void main() {
 				rl::playMusicStream(titleMusic);
 				rl::updateMusicStream(titleMusic);
 				rl::clearBackground(rl::BLACK);
-                rl::drawTexture(titlePageTexture, 0, 0, rl::WHITE);
+                rl::drawTexture(titlePageTex, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, 500, 200, 105, rl::BLACK);
                 rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", 750, 440, 40, rl::BLACK);
 					if (rl::isKeyPressed(rl::KEY_ENTER)){
@@ -131,7 +132,7 @@ fn void main() {
 				rl::clearBackground(rl::BLACK);
 				rl::playMusicStream(gameMusic);
 	  			rl::updateMusicStream(gameMusic);
-	  			scrollGround -= 6.0;
+	  			scrollGround -= 5.5;
 				scrollMid -= 0.6;
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
@@ -149,7 +150,8 @@ fn void main() {
 					
 				//check Collisions
 
-				forge_game::updateConstruct(&player);	
+				forge_game::updateConstruct(&player);
+				forge_game::updateConstruct(&bird);
 				//update game logic-------------------------------------------------------------------------------
 				
 					
@@ -160,11 +162,12 @@ fn void main() {
 				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				rl::drawTextureEx(sunTexture, {1600, 50}, 0.0, 4.0, rl::WHITE);
+				rl::drawTextureEx(sunTex, {1600, 50}, 0.0, 4.0, rl::WHITE);
 
 				//player
 				//forge_game::drawConstruct(player);
 				forge_game::drawAnitmatedConstruct(player);
+				forge_game::drawAnitmatedConstruct(bird);
 
 
 				/*
