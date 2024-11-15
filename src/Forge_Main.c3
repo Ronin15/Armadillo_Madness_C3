@@ -84,15 +84,16 @@ fn int main() {
 	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", playerTex, {400,500}, 2, 6);
 	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"Bird", birdTex, {1600,800}, 2);
 	Construct bird2 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird2", birdTex, {1200,800}, 2);
+	Construct bird3 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird3", birdTex, {800,800}, 2);
 	Construct cactus = forge_game::forgeConstruct(OBS,"Cactus", cactus1Tex,{1900,1400}, 1);
 	Construct bigBoulder = forge_game::forgeConstruct(OBS,"Boulder", bigBoulderTex,{2800,1400}, 1);
 	Construct ant = forge_game::forgeConstruct(ENEMY_GROUND,"Ant", antTex,{2200,1400}, 1);
-	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", turtleTex,{2000,1400}, 1);	
+	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", turtleTex,{2000,1400},1,3);	
 	io::printfn("Player Object created");
     
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = GAME;
-	//rl::playSound(logoSound);
+	rl::playSound(logoSound);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
 	  	float currentTime = (float)rl::getTime(); 
@@ -136,8 +137,8 @@ fn int main() {
 				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
-				//rl::playMusicStream(gameMusic);
-	  			//rl::updateMusicStream(gameMusic);
+				rl::playMusicStream(gameMusic);
+	  			rl::updateMusicStream(gameMusic);
 	  			scrollGround -= 5.8;
 				scrollMid -= 0.6;
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
@@ -159,6 +160,7 @@ fn int main() {
 				forge_game::updateConstruct(&player);
 				forge_game::updateConstruct(&bird);
 				forge_game::updateConstruct(&bird2);
+				forge_game::updateConstruct(&bird3);
 				forge_game::updateConstruct(&cactus);
 				forge_game::updateConstruct(&bigBoulder);
 				forge_game::updateConstruct(&ant);
@@ -189,6 +191,7 @@ fn int main() {
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawAnitmatedConstruct(&bird);
 				forge_game::drawAnitmatedConstruct(&bird2);
+				forge_game::drawAnitmatedConstruct(&bird3);
 				forge_game::drawConstruct(&cactus,0.0,3.5);
 				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
 				forge_game::drawConstruct(&ant,0.0);
@@ -225,6 +228,7 @@ fn int main() {
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawAnitmatedConstruct(&bird);
 				forge_game::drawAnitmatedConstruct(&bird2);
+				forge_game::drawAnitmatedConstruct(&bird3);
 				forge_game::drawConstruct(&cactus,0.0,3.5);
 				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
 				forge_game::drawConstruct(&ant,0.0);

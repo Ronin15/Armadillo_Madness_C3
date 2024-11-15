@@ -4,7 +4,7 @@ import std::io;
 import std::math;
 
 //GAME globals and consts -------------------------------------------------
-float game_gravity = 650.0;
+float game_gravity = 700.0;
 float groundLevel = 1080.0 - 120;
 const float MOVE_VELOCITY = -600.0;
 const float SKY_LEVEL = 0.0;
