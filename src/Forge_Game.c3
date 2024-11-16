@@ -10,8 +10,8 @@ const float MOVE_VELOCITY = -600.0;
 const float SKY_LEVEL = 0.0;
 const float ACCELERATION = 250.0;
 const float FRICTION = 60.0;
-const float AMPLITUDE = 300.0;
-const float FREQUENCY = 0.05;
+const float AMPLITUDE = 300.0;//300
+const float FREQUENCY = 0.05;//0.05
 const int MAX_LIVES = 6;
 const float OBS_OFFSET = 30.0;
 const float ANT_OFFSET = 60.0;
@@ -92,7 +92,7 @@ fn void updateConstruct(Construct *c) {
          c.frameTimer = 0.0;
 
          if (c.currentFrame == c.maxFrames){
-            c.currentFrame = 0;
+             c.currentFrame = 0;
          }
       }
       //stationairy ground movement
@@ -122,7 +122,8 @@ fn void updateConstruct(Construct *c) {
 
             c.vel.y += c.gravity * rl::getFrameTime();  
 
-         
+            //if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
+
             if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { 
                c.vel.y = c.jumpVelocity; 
                c.isGrounded = false; 
@@ -139,8 +140,9 @@ fn void updateConstruct(Construct *c) {
           if(rl::isKeyPressed(rl::KEY_DOWN)){
                c.isProjectileActive = true;
           }
-           c.vel.y += c.gravity * rl::getFrameTime();  
-           c.pos.y += c.vel.y * rl::getFrameTime();
+           c.vel.y += c.gravity * rl::getFrameTime();
+           c.pos.x += (c.acceleration * 4) * rl::getFrameTime();  
+           //c.pos.x += c.vel.y * rl::getFrameTime();
          
          break;
 
@@ -156,9 +158,12 @@ fn void updateConstruct(Construct *c) {
          case ENEMEY_FLY:
           //io::printfn("ENEMEY_FLY update reached");
           //c.pos.y += c.acceleration * rl::getFrameTime();  
-           //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
+          //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
           c.pos.x -= 15.0 * rl::getFrameTime();
-          c.pos.y += AMPLITUDE * std::math::sin(FREQUENCY * c.pos.x) * rl::getFrameTime();
+          c.texFlip = false;//15
+          if (c.pos.x <= 0){c.pos.x += 15.0 * rl::getFrameTime();c.texFlip = true;}
+
+          c.pos.y += AMPLITUDE * std::math::sin(FREQUENCY * (c.pos.x + c.acceleration)) * rl::getFrameTime();
          
          break;
 
@@ -168,28 +173,22 @@ fn void updateConstruct(Construct *c) {
          if (c.name == "Boulder"){c.groundLevel = groundLevel - c.texture.height + 15;}
           c.vel.y += c.gravity * rl::getFrameTime();
           c.pos.y += c.vel.y * rl::getFrameTime();
-            
-            
           c.pos.x -= (c.friction + OBS_OFFSET) * rl::getFrameTime(); 
-            break;
+         
+         break;
       }
 }
 
 //draw sprites without animation
-fn void drawConstruct(Construct *c,  float rotation = 0.0, float scale = 2.0){ //Vector2 pos = {0.0,0.0} ,
+fn void drawConstruct(Construct *c,  float rotation = 0.0, float scale = 2.0){
 	scale = scale;
-   /*
-   if(pos){
-    pos = {c.pos.x,c.pos.y};
-   }else{
-      pos = pos;  
-   }
-*/
-	rl::drawTextureEx(c.texture, {c.pos.x,c.pos.y}, rotation, scale, rl::WHITE);//pos
+   rotation = rotation;
+  
+	rl::drawTextureEx(c.texture, c.pos, rotation, scale, rl::WHITE);
 }
 
 //draw animated sprites
-fn void drawAnitmatedConstruct(Construct *c, float rotation = 0.0){
+fn void drawAnitmatedConstruct(Construct *c, Construct *b = {}, float rotation = 0.0){
 //setting up animation data on contructs
 Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
 

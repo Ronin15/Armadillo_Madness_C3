@@ -199,9 +199,9 @@ fn int main() {
 				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
 				forge_game::drawConstruct(&ant);
 				forge_game::drawConstruct(&turtle);
-				//if (poopShot.isProjectileActive){
-				//	forge_game::drawConstruct(&poopShot, player.pos, 0.0);
-				//}
+				if (poopShot.isProjectileActive){
+					forge_game::drawConstruct(&poopShot, 0.0);
+				}
 
 				/*
 				def MyIntList = List(<int>);
