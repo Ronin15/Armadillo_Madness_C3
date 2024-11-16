@@ -195,13 +195,13 @@ fn int main() {
 				forge_game::drawAnitmatedConstruct(&bird);
 				forge_game::drawAnitmatedConstruct(&bird2);
 				forge_game::drawAnitmatedConstruct(&bird3);
-				forge_game::drawConstruct(&cactus,3.5);
+				forge_game::drawConstruct(&cactus,0.0,3.5);
 				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
 				forge_game::drawConstruct(&ant);
 				forge_game::drawConstruct(&turtle);
-				if (poopShot.isProjectileActive){
-					forge_game::drawConstruct(&poopShot, player.pos, 0.0);
-				}
+				//if (poopShot.isProjectileActive){
+				//	forge_game::drawConstruct(&poopShot, player.pos, 0.0);
+				//}
 
 				/*
 				def MyIntList = List(<int>);
