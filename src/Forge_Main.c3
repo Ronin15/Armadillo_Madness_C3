@@ -47,8 +47,8 @@ fn int main() {
 	 Texture2D cactus1Tex = rl::loadTexture("resources/images/Cactus1.png");
 	 Texture2D bigBoulderTex = rl::loadTexture("resources/images/BoulderBig.png");
 	 Texture2D birdTex = rl::loadTexture("resources/images/bird-sheet.png");
-	 Texture2D antTex = rl::loadTexture("resources/images/ant.png");
-	 Texture2D turtleTex = rl::loadTexture("resources/images/turtle.png");
+	 Texture2D antTex = rl::loadTexture("resources/images/ant-sheet.png");
+	 Texture2D turtleTex = rl::loadTexture("resources/images/turtle-sheet.png");
 	 Texture2D poopTex = rl::loadTexture("resources/images/poop.png");
 	 Texture2D lifeCountTex = rl::loadTexture("resources/images/LifeCounter.png"); 
 	//logo Page assets
@@ -79,7 +79,7 @@ fn int main() {
 	double lastTime = (float)rl::getTime();
    
 	//game objects init
-	//Entity entities[*] = { { ENTITY_PLAYER, "Hero", 100 }, { ENTITY_ENEMY, "Goblin", 50 }, { ENTITY_NPC, "Villager", 30 } };
+	
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
 	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", playerTex, {400,500}, 2, 6);
 	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"Bird", birdTex, {1600,800}, 2);
@@ -87,9 +87,12 @@ fn int main() {
 	Construct bird3 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird3", birdTex, {800,800}, 2);
 	Construct cactus = forge_game::forgeConstruct(OBS,"Cactus", cactus1Tex,{1900,1400}, 1);
 	Construct bigBoulder = forge_game::forgeConstruct(OBS,"Boulder", bigBoulderTex,{2800,1400},1);
-	Construct ant = forge_game::forgeConstruct(ENEMY_GROUND,"Ant", antTex,{2200,1400}, 1);
-	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", turtleTex,{2000,1400}, 1, 3);
+	Construct ant = forge_game::forgeConstruct(ENEMY_GROUND,"Ant", antTex,{2200,1400}, 2);
+	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", turtleTex,{2000,1400}, 2, 3);
 	Construct poopShot = forge_game::forgeConstruct(PROJECTILE_POOP,"Poop", poopTex,{0,0}, 1, 1);
+	//*/
+
+	//Construct contructs = array[*]  [player],[bird],[bird2],[bird3],[cactus],[bigBoulder],[ant],[turtle],[poopShot] };
 
 	io::printfn("Player Object created");
     
@@ -195,10 +198,10 @@ fn int main() {
 				forge_game::drawAnitmatedConstruct(&bird);
 				forge_game::drawAnitmatedConstruct(&bird2);
 				forge_game::drawAnitmatedConstruct(&bird3);
+				forge_game::drawAnitmatedConstruct(&ant);
+				forge_game::drawAnitmatedConstruct(&turtle);
 				forge_game::drawConstruct(&cactus,0.0,3.5);
 				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
-				forge_game::drawConstruct(&ant);
-				forge_game::drawConstruct(&turtle);
 				if (poopShot.isProjectileActive){
 					forge_game::drawConstruct(&poopShot, 0.0);
 				}
@@ -237,8 +240,8 @@ fn int main() {
 				forge_game::drawAnitmatedConstruct(&bird3);
 				forge_game::drawConstruct(&cactus,0.0,3.5);
 				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
-				forge_game::drawConstruct(&ant,0.0);
-				forge_game::drawConstruct(&turtle,0.0);
+				forge_game::drawAnitmatedConstruct(&ant);
+				forge_game::drawAnitmatedConstruct(&turtle);
 				
 				//drawing pause stuff here so objects don cover it up
 				rl::drawRectangle(5, 5, 400, 150, rl::BLACK);
