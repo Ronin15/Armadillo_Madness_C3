@@ -134,7 +134,12 @@ fn void updateConstruct(Construct *c) {
          break;
          
          case PROJECTILE_POOP:           
-           io::printfn("POOP Shot :) update reached");
+           //io::printfn("POOP Shot :) update reached");
+          // c.isProjectileActive = false;
+          if(rl::isKeyPressed(rl::KEY_DOWN)){
+               c.isProjectileActive = true;
+               c.pos.x = player.pos.x;
+          }
            c.vel.y += c.gravity * rl::getFrameTime();  
            c.pos.y += c.vel.y * rl::getFrameTime();
          
@@ -172,10 +177,15 @@ fn void updateConstruct(Construct *c) {
 }
 
 //draw sprites without animation
-fn void drawConstruct(Construct *c, float rotation = 0.0, float scale = 2.0){
+fn void drawConstruct(Construct *c, Vector2 pos = {0.0,0.0} , float rotation = 0.0, float scale = 2.0){
 	scale = scale;
+   if(pos){
+    pos = {c.pos.x,c.pos.y};
+   }else{
+      pos = pos;  
+   }
 
-	rl::drawTextureEx(c.texture, {c.pos.x,c.pos.y}, rotation, scale, rl::WHITE);
+	rl::drawTextureEx(c.texture, pos, rotation, scale, rl::WHITE);
 }
 
 //draw animated sprites
@@ -198,6 +208,6 @@ Rectangle destRec = {
    };
 
    if (c.texFlip) {srcRec.width = -srcRec.width;}
-
- rl::drawTexturePro(c.texture, srcRec, destRec, origin, rotation, rl::WHITE);
+   
+   rl::drawTexturePro(c.texture, srcRec, destRec, origin, rotation, rl::WHITE);
 }
