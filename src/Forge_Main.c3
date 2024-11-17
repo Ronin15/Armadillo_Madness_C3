@@ -49,6 +49,7 @@ fn int main() {
 	 Texture2D birdTex = rl::loadTexture("resources/images/bird-sheet.png");
 	 Texture2D antTex = rl::loadTexture("resources/images/ant-sheet.png");
 	 Texture2D turtleTex = rl::loadTexture("resources/images/turtle-sheet.png");
+	 Texture2D beatleTex = rl::loadTexture("resources/images/beatle-sheet.png");
 	 Texture2D poopTex = rl::loadTexture("resources/images/poop.png");
 	 Texture2D lifeCountTex = rl::loadTexture("resources/images/LifeCounter.png"); 
 	//logo Page assets
@@ -89,7 +90,8 @@ fn int main() {
 	Construct bigBoulder = forge_game::forgeConstruct(OBS,"Boulder", bigBoulderTex,{2800,1400},1);
 	Construct ant = forge_game::forgeConstruct(ENEMY_GROUND,"Ant", antTex,{2200,1400}, 2);
 	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", turtleTex,{2000,1400}, 2, 3);
-	Construct poopShot = forge_game::forgeConstruct(PROJECTILE_POOP,"Poop", poopTex,{0,0}, 1, 1);
+	Construct beatle = forge_game::forgeConstruct(ENEMEY_FLY,"Beatle", beatleTex, {1800,800}, 2);
+	Construct poopShot = forge_game::forgeConstruct(PROJECTILE_POOP,"Poop", poopTex,{0,0},2);
 	//*/
 
 	//Construct contructs = array[*]  [player],[bird],[bird2],[bird3],[cactus],[bigBoulder],[ant],[turtle],[poopShot] };
@@ -170,6 +172,7 @@ fn int main() {
 				forge_game::updateConstruct(&bigBoulder);
 				forge_game::updateConstruct(&ant);
 				forge_game::updateConstruct(&turtle);
+				forge_game::updateConstruct(&beatle);
 				forge_game::updateConstruct(&poopShot);
 				//update game logic-------------------------------------------------------------------------------
 				
@@ -200,10 +203,12 @@ fn int main() {
 				forge_game::drawAnitmatedConstruct(&bird3);
 				forge_game::drawAnitmatedConstruct(&ant);
 				forge_game::drawAnitmatedConstruct(&turtle);
+				forge_game::drawAnitmatedConstruct(&beatle);
 				forge_game::drawConstruct(&cactus,0.0,3.5);
 				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
 				if (poopShot.isProjectileActive){
-					forge_game::drawConstruct(&poopShot, 0.0);
+					//io::printf("Poop fired");
+					forge_game::drawPoopShot(&poopShot,&player);
 				}
 
 				/*
@@ -242,6 +247,7 @@ fn int main() {
 				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
 				forge_game::drawAnitmatedConstruct(&ant);
 				forge_game::drawAnitmatedConstruct(&turtle);
+				forge_game::drawAnitmatedConstruct(&beatle);
 				
 				//drawing pause stuff here so objects don cover it up
 				rl::drawRectangle(5, 5, 400, 150, rl::BLACK);

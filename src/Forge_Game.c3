@@ -47,6 +47,7 @@ const float ANT_OFFSET = 60.0;
     bool texFlip;
     bool isDead;
     bool isProjectileActive;
+    bool expired;
 }
 
 //GAME Functions ------------------------------------------------------------
@@ -78,6 +79,7 @@ fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, 
     c.texFlip = false;
     c.isDead = false;
     c.isProjectileActive = false;
+    c.expired = true;
 
     return  c;
 }
@@ -137,13 +139,13 @@ fn void updateConstruct(Construct *c) {
          case PROJECTILE_POOP:           
            //io::printfn("POOP Shot :) update reached");
           // c.isProjectileActive = false;
-          if(rl::isKeyPressed(rl::KEY_DOWN)){
-               c.isProjectileActive = true;
-          }
-           c.vel.y += c.gravity * rl::getFrameTime();
-           c.pos.x += (c.acceleration * 4) * rl::getFrameTime();  
+          if(rl::isKeyPressed(rl::KEY_DOWN)){c.isProjectileActive = true; c.expired = false;}
+           //c.vel.y += c.gravity * rl::getFrameTime();
+           
            //c.pos.x += c.vel.y * rl::getFrameTime();
-         
+
+           if (c.pos.x > 1900) {c.expired = true; c.isProjectileActive = false;}
+             c.pos.x += (c.acceleration * 1) * rl::getFrameTime(); 
          break;
 
          case ENEMY_GROUND:           
@@ -161,7 +163,7 @@ fn void updateConstruct(Construct *c) {
           //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
           c.pos.x -= 15.0 * rl::getFrameTime();
           c.texFlip = false;//15
-          if (c.pos.x <= 0){c.pos.x += 15.0 * rl::getFrameTime();c.texFlip = true;}
+          //if (c.pos.x <= 0){c.pos.x += 15.0 * rl::getFrameTime();c.texFlip = true;}
 
           c.pos.y += AMPLITUDE * std::math::sin(FREQUENCY * (c.pos.x + c.acceleration)) * rl::getFrameTime();
          
@@ -179,8 +181,22 @@ fn void updateConstruct(Construct *c) {
       }
 }
 
+fn void drawPoopShot(Construct *c, Construct *b, float rotation = 90.0, float scale = 1.0) {
+	scale = scale;
+   rotation = rotation;
+
+   if (c.expired == true){
+      io::printf("Poop pos assigned");
+      c.pos.x = b.pos.x;
+      c.pos.y = b.pos.y;
+   }
+      
+      rl::drawTextureEx(c.texture, {c.pos.x,c.pos.y}, rotation, scale, rl::WHITE);
+   
+}
+
 //draw sprites without animation
-fn void drawConstruct(Construct *c,  float rotation = 0.0, float scale = 2.0){
+fn void drawConstruct(Construct *c, float rotation = 0.0, float scale = 2.0){ //Construct *b = {}
 	scale = scale;
    rotation = rotation;
   
@@ -188,7 +204,7 @@ fn void drawConstruct(Construct *c,  float rotation = 0.0, float scale = 2.0){
 }
 
 //draw animated sprites
-fn void drawAnitmatedConstruct(Construct *c, Construct *b = {}, float rotation = 0.0){
+fn void drawAnitmatedConstruct(Construct *c, float rotation = 0.0){
 //setting up animation data on contructs
 Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
 
