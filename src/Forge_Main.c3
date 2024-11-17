@@ -56,6 +56,7 @@ fn int main() {
 	 Texture2D raylibTex = rl::loadTexture("resources/images/raylib.png");
 	 Texture2D c3Tex = rl::loadTexture("resources/images/C3.png");
 	 Texture2D logoTex = rl::loadTexture("resources/images/hammerForge.png");
+	 Texture2D forgeTex = rl::loadTexture("resources/images/ForgeEngine.png");
 	//Title Page assets
 	 Texture2D titlePageTex = rl::loadTexture("resources/images/Title_Page.png");
 	//sounds
@@ -119,13 +120,15 @@ fn int main() {
 
         	case LOGO:
 				rl::clearBackground(rl::BLACK);
-				rl::drawTexture(logoTex, 760, 440, rl::WHITE);
+				rl::drawTexture(logoTex, 780, 420, rl::WHITE);
 				rl::drawText("Hammer Forged Games", 560, 340, 60, rl::ORANGE);
-				rl::drawText("Made with", 705, 725, 20, rl::WHITE);
-				rl::drawTexture(raylibTex, 830, 700, rl::WHITE);
-				rl::drawTexture(c3Tex, 910, 713, rl::WHITE);
+				rl::drawText("Made with", 770, 725, 20, rl::WHITE);
+				rl::drawTexture(raylibTex, 890, 700, rl::WHITE);
+				rl::drawTexture(c3Tex, 960, 713, rl::WHITE);
+				rl::drawTextureEx(forgeTex, {860, 820}, 0.0, 0.8, rl::WHITE);
+				rl::drawText("Forge_Engine", 840, 790, 20, rl::LIGHTGRAY);
 					frameCounter += 1;
-					if (frameCounter > 300) {
+					if (frameCounter > 400) {
 							state = MAIN;
 					}
 				

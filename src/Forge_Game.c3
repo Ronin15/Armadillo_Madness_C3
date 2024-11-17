@@ -186,7 +186,7 @@ fn void drawPoopShot(Construct *c, Construct *b, float rotation = 90.0, float sc
 	scale = scale;
    rotation = rotation;
 
-   if (c.expired == true && b.isProjectileActive == false){
+   if (c.expired && b.isProjectileActive == false){
       c.pos.x = b.pos.x + b.texture.width;
       c.pos.y = b.pos.y + b.texture.height;
 
