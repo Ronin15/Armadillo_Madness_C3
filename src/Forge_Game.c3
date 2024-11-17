@@ -185,7 +185,7 @@ fn void drawPoopShot(Construct *c, Construct *b, float rotation = 90.0, float sc
 	scale = scale;
    rotation = rotation;
 
-   if (c.expired == true){
+   if (c.expired == true && b.isProjectileActive == false){
       io::printf("Poop pos assigned");
       c.pos.x = b.pos.x;
       c.pos.y = b.pos.y;
