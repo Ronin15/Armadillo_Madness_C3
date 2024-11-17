@@ -184,7 +184,7 @@ fn int main() {
 				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				rl::drawTextureEx(sunTex, {1600, 10}, 0.0, 4.0, rl::WHITE);
+				rl::drawTextureEx(sunTex, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				rl::drawRectangle(5, 5, 400, 150, rl::BLACK);
 				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
 				rl::drawText("Lives ", 16, 60, 30, rl::RAYWHITE);
@@ -195,8 +195,7 @@ fn int main() {
 						rl::drawTextureEx(lifeCountTex,{lifePos.x, lifePos.y - lifeCountTex.height}, 0, 0.8, rl::WHITE);
 					}
 				}
-				//player
-				//forge_game::drawConstruct(player);
+				
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawAnitmatedConstruct(&bird);
 				forge_game::drawAnitmatedConstruct(&bird2);
@@ -206,10 +205,8 @@ fn int main() {
 				forge_game::drawAnitmatedConstruct(&beatle);
 				forge_game::drawConstruct(&cactus,0.0,3.5);
 				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
-				if (poopShot.isProjectileActive){
-					//io::printf("Poop fired");
-					forge_game::drawPoopShot(&poopShot,&player);
-				}
+				forge_game::drawPoopShot(&poopShot,&player);
+				
 
 				/*
 				def MyIntList = List(<int>);

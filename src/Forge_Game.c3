@@ -109,6 +109,7 @@ fn void updateConstruct(Construct *c) {
       {
             case PLAYER:
             //io::printfn("groundLevel: %f", c.groundLevel);
+            //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
             if (rl::isKeyDown(rl::KEY_LEFT)) {
       
                c.pos.x -= c.acceleration * rl::getFrameTime();
@@ -132,7 +133,7 @@ fn void updateConstruct(Construct *c) {
             }
                c.pos.y += c.vel.y * rl::getFrameTime();
          
-           // if(rl::isKeyPressed(rl::KEY_ENTER)){c.lives -= 1;} // life test
+            if(rl::isKeyPressed(rl::KEY_ENTER)){c.lives -= 1;} // life test
 
          break;
          
@@ -145,7 +146,7 @@ fn void updateConstruct(Construct *c) {
            //c.pos.x += c.vel.y * rl::getFrameTime();
 
            if (c.pos.x > 1900) {c.expired = true; c.isProjectileActive = false;}
-             c.pos.x += (c.acceleration * 1) * rl::getFrameTime(); 
+             c.pos.x += (c.acceleration * 4) * rl::getFrameTime(); 
          break;
 
          case ENEMY_GROUND:           
@@ -186,13 +187,13 @@ fn void drawPoopShot(Construct *c, Construct *b, float rotation = 90.0, float sc
    rotation = rotation;
 
    if (c.expired == true && b.isProjectileActive == false){
-      io::printf("Poop pos assigned");
-      c.pos.x = b.pos.x;
-      c.pos.y = b.pos.y;
-   }
-      
+      c.pos.x = b.pos.x + b.texture.width;
+      c.pos.y = b.pos.y + b.texture.height;
+
+   }else{
       rl::drawTextureEx(c.texture, {c.pos.x,c.pos.y}, rotation, scale, rl::WHITE);
-   
+   }
+
 }
 
 //draw sprites without animation
