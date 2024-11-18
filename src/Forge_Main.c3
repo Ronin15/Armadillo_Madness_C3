@@ -9,7 +9,7 @@ import std::io;
 //import std::collections::list;
 
 //Game Consts---------------------------------
-const int FPS_CAP = 60; //FPS Cap
+const int FPS_CAP = 100; //FPS Cap
 const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
@@ -25,6 +25,7 @@ enum GameState {
     GAME_WIN,
 	GAME_OVER,
 	CREDITS,
+	DEMO,
 }
 
 
@@ -93,7 +94,7 @@ fn int main() {
 	Construct ant = forge_game::forgeConstruct(ENEMY_GROUND,"Ant", antTex,{2200,1400}, 2);
 	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", turtleTex,{2000,1400}, 2, 3);
 	Construct beatle = forge_game::forgeConstruct(ENEMEY_FLY,"Beatle", beatleTex, {1800,800}, 2);
-	Construct poopShot = forge_game::forgeConstruct(PROJECTILE_POOP,"Poop", poopTex,{0,0},2);
+	Construct poopShot = forge_game::forgeConstruct(PROJECTILE_POOP,"Poop", poopTex,{0,0},1);
 	//*/
 
 	//Construct contructs = array[*]  [player],[bird],[bird2],[bird3],[cactus],[bigBoulder],[ant],[turtle],[poopShot] };
@@ -201,15 +202,16 @@ fn int main() {
 				}
 				
 				forge_game::drawAnitmatedConstruct(&player);
+				forge_game::drawPoopShot(&poopShot,&player);
 				forge_game::drawAnitmatedConstruct(&bird);
 				forge_game::drawAnitmatedConstruct(&bird2);
 				forge_game::drawAnitmatedConstruct(&bird3);
 				forge_game::drawAnitmatedConstruct(&ant);
 				forge_game::drawAnitmatedConstruct(&turtle);
 				forge_game::drawAnitmatedConstruct(&beatle);
+				forge_game::drawPoopShot(&poopShot,&player);
 				forge_game::drawConstruct(&cactus,0.0,3.5);
 				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
-				forge_game::drawPoopShot(&poopShot,&player);
 				
 
 				/*
@@ -249,6 +251,7 @@ fn int main() {
 				forge_game::drawAnitmatedConstruct(&ant);
 				forge_game::drawAnitmatedConstruct(&turtle);
 				forge_game::drawAnitmatedConstruct(&beatle);
+				forge_game::drawPoopShot(&poopShot,&player);
 				
 				//drawing pause stuff here so objects don cover it up
 				rl::drawRectangle(5, 5, 400, 150, rl::BLACK);
@@ -270,6 +273,9 @@ fn int main() {
 			case GAME_OVER:
 				io::printfn("Game_Over State");
 				
+			case DEMO:
+				io::printfn("Demo State");
+			
 			case CREDITS:
 				io::printfn("Credits State");
 

@@ -5,7 +5,7 @@ import std::math;
 
 //GAME globals and consts -------------------------------------------------
 float game_gravity = 700.0;
-float groundLevel = 1080.0 - 120;
+float groundLevel = 1080.0 - 115;//120
 const float MOVE_VELOCITY = -600.0;
 const float SKY_LEVEL = 0.0;
 const float ACCELERATION = 250.0;
@@ -47,6 +47,7 @@ const float ANT_OFFSET = 60.0;
     bool texFlip;
     bool isDead;
     bool isProjectileActive;
+    bool collided;
     bool expired;
 }
 
@@ -141,12 +142,11 @@ fn void updateConstruct(Construct *c) {
            //io::printfn("POOP Shot :) update reached");
           // c.isProjectileActive = false;
           if(rl::isKeyPressed(rl::KEY_DOWN)){c.isProjectileActive = true; c.expired = false;}
-           //c.vel.y += c.gravity * rl::getFrameTime();
-           
-           //c.pos.x += c.vel.y * rl::getFrameTime();
+            c.groundLevel = groundLevel - c.texture.height + 90;
 
            if (c.pos.x > 1900) {c.expired = true; c.isProjectileActive = false;}
              c.pos.x += (c.acceleration * 4) * rl::getFrameTime(); 
+         
          break;
 
          case ENEMY_GROUND:           
