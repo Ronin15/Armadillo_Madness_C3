@@ -17,6 +17,7 @@ const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness";
 const int MAX_CONSTRUCTS = 100;
 
+
 enum GameState {
 	LOGO,
 	MAIN,
@@ -103,7 +104,7 @@ fn int main() {
     
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = GAME;
-	rl::playSound(logoSound);
+	//rl::playSound(logoSound);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
 	  	float currentTime = (float)rl::getTime(); 
@@ -128,7 +129,7 @@ fn int main() {
 				rl::drawTexture(raylibTex, 890, 700, rl::WHITE);
 				rl::drawTexture(c3Tex, 960, 713, rl::WHITE);
 				rl::drawTextureEx(forgeTex, {860, 820}, 0.0, 0.8, rl::WHITE);
-				rl::drawText("Forge_Engine", 840, 790, 20, rl::LIGHTGRAY);
+				rl::drawText("*{}==> Forge_Engine <=={}*", 770, 790, 20, rl::LIGHTGRAY);
 					frameCounter += 1;
 					if (frameCounter > 400) {
 							state = MAIN;
@@ -168,7 +169,8 @@ fn int main() {
 				
 					
 				//check Collisions
-				forge_physics::checkCollision(&player,&ant);
+				forge_physics::checkCollision(&poopShot,&ant);
+				forge_physics::checkCollision(&player,&bigBoulder);
 				
 				//update game logic-------------------------------------------------------------------------------
 				forge_game::updateConstruct(&player);
@@ -190,7 +192,7 @@ fn int main() {
 				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
 				rl::drawTextureEx(sunTex, {1650, 10}, 0.0, 4.0, rl::WHITE);
-				rl::drawRectangle(5, 5, 400, 150, rl::BLACK);
+				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
 				rl::drawText("Lives ", 16, 60, 30, rl::RAYWHITE);
 				//life tracking updating
@@ -239,7 +241,7 @@ fn int main() {
 				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				rl::drawTextureEx(sunTex, {1600, 10}, 0.0, 4.0, rl::WHITE);
+				rl::drawTextureEx(sunTex, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				
 				
 				forge_game::drawAnitmatedConstruct(&player);
@@ -254,7 +256,7 @@ fn int main() {
 				forge_game::drawPoopShot(&poopShot,&player);
 				
 				//drawing pause stuff here so objects don cover it up
-				rl::drawRectangle(5, 5, 400, 150, rl::BLACK);
+				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
 				rl::drawText("Lives ", 16, 60, 30, rl::RAYWHITE);
 				if (&player.lives == &player.lives){
