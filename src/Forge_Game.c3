@@ -146,7 +146,7 @@ fn void updateConstruct(Construct *c) {
            //c.pos.x += c.vel.y * rl::getFrameTime();
 
            if (c.pos.x > 1900) {c.expired = true; c.isProjectileActive = false;}
-             c.pos.x += (c.acceleration * 4) * rl::getFrameTime(); 
+             c.pos.x += (c.acceleration * 3) * rl::getFrameTime(); 
          break;
 
          case ENEMY_GROUND:           
@@ -182,7 +182,7 @@ fn void updateConstruct(Construct *c) {
       }
 }
 
-fn void drawPoopShot(Construct *c, Construct *b, float rotation = 90.0, float scale = 1.0) {
+fn void drawPoopShot(Construct* c, Construct* b, float rotation = 90.0, float scale = 1.0) {
 	scale = scale;
    rotation = rotation;
 
@@ -197,7 +197,7 @@ fn void drawPoopShot(Construct *c, Construct *b, float rotation = 90.0, float sc
 }
 
 //draw sprites without animation
-fn void drawConstruct(Construct *c, float rotation = 0.0, float scale = 2.0){ //Construct *b = {}
+fn void drawConstruct(Construct* c, float rotation = 0.0, float scale = 2.0){ //Construct *b = {}
 	scale = scale;
    rotation = rotation;
   
@@ -205,7 +205,7 @@ fn void drawConstruct(Construct *c, float rotation = 0.0, float scale = 2.0){ //
 }
 
 //draw animated sprites
-fn void drawAnitmatedConstruct(Construct *c, float rotation = 0.0){
+fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
 //setting up animation data on contructs
 Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
 

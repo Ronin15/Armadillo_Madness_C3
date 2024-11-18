@@ -1,6 +1,7 @@
 module armadillo_madness_c3;
 //game modules---------------------
 import forge_game;
+import forge_physics;
 //vendor modules-------------------
 import raylib5::rl;
 //C3 standard modules--------------
@@ -166,7 +167,9 @@ fn int main() {
 				
 					
 				//check Collisions
-
+				forge_physics::checkCollision(&player,&ant);
+				
+				//update game logic-------------------------------------------------------------------------------
 				forge_game::updateConstruct(&player);
 				forge_game::updateConstruct(&bird);
 				forge_game::updateConstruct(&bird2);
@@ -177,9 +180,7 @@ fn int main() {
 				forge_game::updateConstruct(&turtle);
 				forge_game::updateConstruct(&beatle);
 				forge_game::updateConstruct(&poopShot);
-				//update game logic-------------------------------------------------------------------------------
-				
-					
+
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
