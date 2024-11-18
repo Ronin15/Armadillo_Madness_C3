@@ -146,7 +146,7 @@ fn void updateConstruct(Construct *c) {
            //c.pos.x += c.vel.y * rl::getFrameTime();
 
            if (c.pos.x > 1900) {c.expired = true; c.isProjectileActive = false;}
-             c.pos.x += (c.acceleration * 3) * rl::getFrameTime(); 
+             c.pos.x += (c.acceleration * 4) * rl::getFrameTime(); 
          break;
 
          case ENEMY_GROUND:           
