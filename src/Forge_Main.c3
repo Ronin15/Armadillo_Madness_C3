@@ -175,6 +175,7 @@ fn int main() {
 				forge_physics::checkCollision(&player,&bigBoulder);
 				
 				//update game logic-------------------------------------------------------------------------------
+				//forge_events::demoTestMove(&player);
 				forge_game::updateConstruct(&player);
 				forge_game::updateConstruct(&bird);
 				forge_game::updateConstruct(&bird2);
