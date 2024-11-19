@@ -1,6 +1,5 @@
 module forge_physics;
 import forge_game;
-import raylib5::rl;
 import std::io;
 import std::math;
 

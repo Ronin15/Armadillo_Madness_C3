@@ -1,6 +1,8 @@
 module armadillo_madness_c3;
 //game modules---------------------
 import forge_game;
+import forge_events;
+import forge_animations;
 import forge_physics;
 //vendor modules-------------------
 import raylib5::rl;
@@ -9,7 +11,7 @@ import std::io;
 //import std::collections::list;
 
 //Game Consts---------------------------------
-const int FPS_CAP = 100; //FPS Cap
+const int FPS_CAP = 120; //FPS Cap
 const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
