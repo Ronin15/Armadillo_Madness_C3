@@ -31,7 +31,7 @@ enum GameState {
 
 
 fn int main() {	
-	@pool(){ 
+
 	//init Game Systems
 	rl::initWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
 	defer rl::closeWindow();
@@ -285,6 +285,5 @@ fn int main() {
    			accumulator -= TIME_STEP;
 	}
 
-	}; //end pool
 	return 0;
 }
