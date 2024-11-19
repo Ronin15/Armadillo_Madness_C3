@@ -4,6 +4,7 @@ import forge_game;
 import forge_events;
 import forge_animations;
 import forge_physics;
+import forge_demo;
 //vendor modules-------------------
 import raylib5::rl;
 //C3 standard modules--------------
@@ -105,7 +106,7 @@ fn int main() {
 	io::printfn("Player Object created");
     
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = GAME;
+	GameState state = DEMO;
 	//rl::playSound(logoSound);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
@@ -135,6 +136,7 @@ fn int main() {
 					frameCounter += 1;
 					if (frameCounter > 400) {
 							state = MAIN;
+							frameCounter = 0;
 					}
 				
 			case MAIN:
@@ -175,7 +177,7 @@ fn int main() {
 				forge_physics::checkCollision(&player,&bigBoulder);
 				
 				//update game logic-------------------------------------------------------------------------------
-				//forge_events::demoTestMove(&player);
+				
 				forge_game::updateConstruct(&player);
 				forge_game::updateConstruct(&bird);
 				forge_game::updateConstruct(&bird2);
@@ -279,7 +281,80 @@ fn int main() {
 				io::printfn("Game_Over State");
 				
 			case DEMO:
-				io::printfn("Demo State");
+				
+				rl::hideCursor();
+				rl::clearBackground(rl::BLACK);
+				//rl::playMusicStream(gameMusic);
+	  			//rl::updateMusicStream(gameMusic);
+	  			scrollGround -= 5.8;
+				scrollMid -= 0.6;
+				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
+				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
+				
+				if (rl::isKeyPressed(rl::KEY_ENTER)){
+					state = MAIN;
+
+					//clean all assetes needed here to fully reset
+				}
+
+				if (rl::isKeyPressed(rl::KEY_LEFT)) {}
+		  		if (rl::isKeyPressed(rl::KEY_RIGHT)) {rl::playSound(moving);}
+		  		if (rl::isKeyPressed(rl::KEY_DOWN)) {rl::playSound(poopSound);}
+		  		if (rl::isKeyPressed(rl::KEY_SPACE)) {rl::playSound(jump);}
+				
+					
+				//check Collisions
+				forge_physics::checkCollision(&poopShot,&ant);
+				forge_physics::checkCollision(&player,&bigBoulder);
+				
+				//update game logic-------------------------------------------------------------------------------
+				frameCounter += 1;
+				if(frameCounter < 1000){forge_demo::moveRight(&player);rl::playSound(moving);}
+				if(frameCounter < 2000){forge_demo::moveLeft(&player);rl::playSound(moving);}
+
+				//forge_game::updateConstruct(&player);
+				forge_game::updateConstruct(&bird);
+				forge_game::updateConstruct(&bird2);
+				forge_game::updateConstruct(&bird3);
+				forge_game::updateConstruct(&cactus);
+				forge_game::updateConstruct(&bigBoulder);
+				forge_game::updateConstruct(&ant);
+				forge_game::updateConstruct(&turtle);
+				forge_game::updateConstruct(&beatle);
+				forge_game::updateConstruct(&poopShot);
+
+
+				//draw game elements------------------------------------------------------------------------------
+				rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
+				rl::drawTextureEx(backGroundMid, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+				rl::drawTextureEx(sunTex, {1650, 10}, 0.0, 4.0, rl::WHITE);
+				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
+				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
+				rl::drawText("Lives ", 16, 60, 30, rl::RAYWHITE);
+				//life tracking updating
+				if (&player.lives == &player.lives){
+					for (int i = 0; i < player.lives; i++){
+						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
+						rl::drawTextureEx(lifeCountTex,{lifePos.x, lifePos.y - lifeCountTex.height}, 0, 0.8, rl::WHITE);
+					}
+				}
+				
+				forge_game::drawAnitmatedConstruct(&player);
+				forge_game::drawPoopShot(&poopShot,&player);
+				forge_game::drawAnitmatedConstruct(&bird);
+				forge_game::drawAnitmatedConstruct(&bird2);
+				forge_game::drawAnitmatedConstruct(&bird3);
+				forge_game::drawAnitmatedConstruct(&ant);
+				forge_game::drawAnitmatedConstruct(&turtle);
+				forge_game::drawAnitmatedConstruct(&beatle);
+				forge_game::drawPoopShot(&poopShot,&player);
+				forge_game::drawConstruct(&cactus,0.0,3.5);
+				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
+				
+				
 			
 			case CREDITS:
 				io::printfn("Credits State");
