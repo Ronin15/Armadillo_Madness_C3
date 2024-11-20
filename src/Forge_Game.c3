@@ -126,7 +126,7 @@ fn void updateConstruct(Construct *c) {
 
             c.vel.y += c.gravity * rl::getFrameTime();  
 
-            //if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
+            if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
 
             if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { 
                c.vel.y = c.jumpVelocity; 

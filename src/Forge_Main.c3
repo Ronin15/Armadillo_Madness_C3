@@ -297,20 +297,26 @@ fn int main() {
 					//clean all assetes needed here to fully reset
 				}
 
-				if (rl::isKeyPressed(rl::KEY_LEFT)) {}
-		  		if (rl::isKeyPressed(rl::KEY_RIGHT)) {rl::playSound(moving);}
-		  		if (rl::isKeyPressed(rl::KEY_DOWN)) {rl::playSound(poopSound);}
-		  		if (rl::isKeyPressed(rl::KEY_SPACE)) {rl::playSound(jump);}
 				
-					
-				//check Collisions
-				forge_physics::checkCollision(&poopShot,&ant);
-				forge_physics::checkCollision(&player,&bigBoulder);
-				
-				//update game logic-------------------------------------------------------------------------------
+				//Demo Loop------------------------------------------------------------------------------
 				frameCounter += 1;
-				if(frameCounter < 1000){forge_demo::moveRight(&player);rl::playSound(moving);}
-				if(frameCounter < 2000){forge_demo::moveLeft(&player);rl::playSound(moving);}
+				
+				if(frameCounter < 600){forge_demo::moveRight(&player);
+				
+				//forge_demo::jump(&player);
+				}
+				if(frameCounter > 600){
+					forge_demo::moveLeft(&player);
+					
+					if (frameCounter % 100 == 0){
+
+					forge_demo::jump(&player);
+					}
+				}
+				if (frameCounter > 1200){
+					frameCounter = 0;
+				}
+
 
 				//forge_game::updateConstruct(&player);
 				forge_game::updateConstruct(&bird);
