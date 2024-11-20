@@ -196,14 +196,14 @@ fn void drawPoopShot(Construct* c, Construct* b, float rotation = 90.0, float sc
 
 }
 
-//draw sprites without animation
+/*/draw sprites without animation
 fn void drawConstruct(Construct* c, float rotation = 0.0, float scale = 2.0){ //Construct *b = {}
 	scale = scale;
    rotation = rotation;
   
 	rl::drawTextureEx(c.texture, c.pos, rotation, scale, rl::WHITE);
 }
-
+*/
 //draw animated sprites
 fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
 //setting up animation data on contructs

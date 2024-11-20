@@ -90,6 +90,9 @@ fn int main() {
 	
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
 	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", playerTex, {400,500}, 2, 6);
+	Construct poopShot = forge_game::forgeConstruct(PROJECTILE_POOP,"Poop", poopTex,{0,0},1);
+
+	//-----------------------
 	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"Bird", birdTex, {1600,800}, 2);
 	Construct bird2 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird2", birdTex, {1200,800}, 2);
 	Construct bird3 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird3", birdTex, {800,800}, 2);
@@ -98,15 +101,15 @@ fn int main() {
 	Construct ant = forge_game::forgeConstruct(ENEMY_GROUND,"Ant", antTex,{2200,1400}, 2);
 	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", turtleTex,{2000,1400}, 2, 3);
 	Construct beatle = forge_game::forgeConstruct(ENEMEY_FLY,"Beatle", beatleTex, {1800,800}, 2);
-	Construct poopShot = forge_game::forgeConstruct(PROJECTILE_POOP,"Poop", poopTex,{0,0},1);
+	
 	//*/
 
-	//Construct contructs = array[*]  [player],[bird],[bird2],[bird3],[cactus],[bigBoulder],[ant],[turtle],[poopShot] };
+	Construct[*] constructs =  {bird,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle};
 
-	io::printfn("Player Object created");
+	io::printfn("Player Objects created");
     
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = DEMO;
+	GameState state = GAME;
 	//rl::playSound(logoSound);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
@@ -171,24 +174,24 @@ fn int main() {
 		  		if (rl::isKeyPressed(rl::KEY_DOWN)) {rl::playSound(poopSound);}
 		  		if (rl::isKeyPressed(rl::KEY_SPACE)) {rl::playSound(jump);}
 				
-					
-				//check Collisions
-				forge_physics::checkCollision(&poopShot,&ant);
-				forge_physics::checkCollision(&player,&bigBoulder);
+					//check Collisions
+					foreach ( &construct : constructs){
+							forge_physics::checkCollision(&player,construct);
+							forge_physics::checkCollision(&poopShot,construct);
+						}
+				
+				
+				//forge_physics::checkCollision(&player,&bigBoulder);
 				
 				//update game logic-------------------------------------------------------------------------------
-				
 				forge_game::updateConstruct(&player);
-				forge_game::updateConstruct(&bird);
-				forge_game::updateConstruct(&bird2);
-				forge_game::updateConstruct(&bird3);
-				forge_game::updateConstruct(&cactus);
-				forge_game::updateConstruct(&bigBoulder);
-				forge_game::updateConstruct(&ant);
-				forge_game::updateConstruct(&turtle);
-				forge_game::updateConstruct(&beatle);
 				forge_game::updateConstruct(&poopShot);
+					
+					foreach ( &construct : constructs){
+								forge_game::updateConstruct(construct);		
+						}	
 
+						
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
@@ -210,15 +213,10 @@ fn int main() {
 				
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
-				forge_game::drawAnitmatedConstruct(&bird);
-				forge_game::drawAnitmatedConstruct(&bird2);
-				forge_game::drawAnitmatedConstruct(&bird3);
-				forge_game::drawAnitmatedConstruct(&ant);
-				forge_game::drawAnitmatedConstruct(&turtle);
-				forge_game::drawAnitmatedConstruct(&beatle);
-				forge_game::drawPoopShot(&poopShot,&player);
-				forge_game::drawConstruct(&cactus,0.0,3.5);
-				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
+					
+					foreach ( &construct : constructs){
+								forge_game::drawAnitmatedConstruct(construct);		
+						}	
 				
 
 				/*
@@ -250,15 +248,12 @@ fn int main() {
 				
 				
 				forge_game::drawAnitmatedConstruct(&player);
-				forge_game::drawAnitmatedConstruct(&bird);
-				forge_game::drawAnitmatedConstruct(&bird2);
-				forge_game::drawAnitmatedConstruct(&bird3);
-				forge_game::drawConstruct(&cactus,0.0,3.5);
-				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
-				forge_game::drawAnitmatedConstruct(&ant);
-				forge_game::drawAnitmatedConstruct(&turtle);
-				forge_game::drawAnitmatedConstruct(&beatle);
 				forge_game::drawPoopShot(&poopShot,&player);
+					
+					foreach ( &construct : constructs){
+								forge_game::drawAnitmatedConstruct(construct);		
+						}	
+				
 				
 				//drawing pause stuff here so objects don cover it up
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});

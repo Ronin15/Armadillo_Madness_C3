@@ -23,7 +23,7 @@ fn bool checkCollision(Construct* a, Construct* b) {
         a.pos.x + a.texture.width - offset  > b.pos.x &&
         a.pos.y < b.pos.y + b.texture.height - offset  &&
         a.pos.y + a.texture.height - offset  > b.pos.y) {
-        //io::printfn("hit",);
+        io::printfn("%s hit",b.name);
         return true;
     }
     return false;
