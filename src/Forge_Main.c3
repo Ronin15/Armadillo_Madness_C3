@@ -352,8 +352,8 @@ fn int main() {
 				forge_game::drawAnitmatedConstruct(&turtle);
 				forge_game::drawAnitmatedConstruct(&beatle);
 				forge_game::drawPoopShot(&poopShot,&player);
-				forge_game::drawConstruct(&cactus,0.0,3.5);
-				forge_game::drawConstruct(&bigBoulder,0.0,3.5);
+				forge_game::drawAnitmatedConstruct(&cactus,0.0,3.5);
+				forge_game::drawAnitmatedConstruct(&bigBoulder,0.0,3.5);
 				
 				
 			
