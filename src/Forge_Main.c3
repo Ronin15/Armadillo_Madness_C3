@@ -288,19 +288,20 @@ fn int main() {
 				
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
 					state = MAIN;
+					player.pos = {400,500};
 
-					//clean all assetes needed here to fully reset
+					//clean all assetes needed here to fully reset. Use Diffrent Demo Array.
 				}
 
 				
 				//Demo Loop------------------------------------------------------------------------------
 				frameCounter += 1;
 				
-				if(frameCounter < 600){forge_demo::moveRight(&player);
+				if(frameCounter < 900){forge_demo::moveRight(&player);
 				
 				//forge_demo::jump(&player);
 				}
-				if(frameCounter > 600){
+				if(frameCounter > 900){
 					forge_demo::moveLeft(&player);
 					
 					if (frameCounter % 100 == 0){
@@ -308,21 +309,17 @@ fn int main() {
 					forge_demo::jump(&player);
 					}
 				}
-				if (frameCounter > 1200){
+				if (frameCounter > 1800){
 					frameCounter = 0;
 				}
 
 
-				//forge_game::updateConstruct(&player);
-				forge_game::updateConstruct(&bird);
-				forge_game::updateConstruct(&bird2);
-				forge_game::updateConstruct(&bird3);
-				forge_game::updateConstruct(&cactus);
-				forge_game::updateConstruct(&bigBoulder);
-				forge_game::updateConstruct(&ant);
-				forge_game::updateConstruct(&turtle);
-				forge_game::updateConstruct(&beatle);
+				//player not updated in demo because demo fucntions take over the update role.
 				forge_game::updateConstruct(&poopShot);
+					
+					foreach ( &construct : constructs){
+								forge_game::updateConstruct(construct);		
+						}	
 
 
 				//draw game elements------------------------------------------------------------------------------
@@ -345,15 +342,10 @@ fn int main() {
 				
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
-				forge_game::drawAnitmatedConstruct(&bird);
-				forge_game::drawAnitmatedConstruct(&bird2);
-				forge_game::drawAnitmatedConstruct(&bird3);
-				forge_game::drawAnitmatedConstruct(&ant);
-				forge_game::drawAnitmatedConstruct(&turtle);
-				forge_game::drawAnitmatedConstruct(&beatle);
-				forge_game::drawPoopShot(&poopShot,&player);
-				forge_game::drawAnitmatedConstruct(&cactus,0.0,3.5);
-				forge_game::drawAnitmatedConstruct(&bigBoulder,0.0,3.5);
+					
+					foreach ( &construct : constructs){
+								forge_game::drawAnitmatedConstruct(construct);		
+						}	
 				
 				
 			

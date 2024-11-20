@@ -152,6 +152,7 @@ fn void updateConstruct(Construct *c) {
          case ENEMY_GROUND:           
           // io::printfn("ENEMY_GROUND update reached");
           if (c.name == "Ant") {c.pos.x -= (c.friction + ANT_OFFSET) * rl::getFrameTime() ;}
+          if (c.name == "Turtle") {c.pos.x -= c.friction * rl::getFrameTime();c.groundLevel = groundLevel + 15;} //ground level hit box adjust
            
            c.pos.y += c.vel.y * rl::getFrameTime();
            c.vel.y += c.gravity * rl::getFrameTime(); 
@@ -172,8 +173,8 @@ fn void updateConstruct(Construct *c) {
 
          case OBS:
           //io::printfn("OBS update reached");
-         if (c.name == "Cactus") {c.groundLevel = groundLevel - c.texture.height - 40;}
-         if (c.name == "Boulder"){c.groundLevel = groundLevel - c.texture.height + 15;}
+         if (c.name == "Cactus") {c.groundLevel = groundLevel - 106;}
+         if (c.name == "Boulder"){c.groundLevel = groundLevel - 55 ;}
           c.vel.y += c.gravity * rl::getFrameTime();
           c.pos.y += c.vel.y * rl::getFrameTime();
           c.pos.x -= (c.friction + OBS_OFFSET) * rl::getFrameTime(); 
@@ -208,6 +209,9 @@ fn void drawConstruct(Construct* c, float rotation = 0.0, float scale = 2.0){ //
 fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
 //setting up animation data on contructs
 Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
+float obsSize = 3.5; //scaling up onbsticles
+float normal = 2; // normal scale size wiout camera zoon
+float scale @noinit;
 
 Rectangle srcRec = {
   srcRec.x = (float)c.currentFrame * c.texture.width / c.maxFrames,
@@ -216,11 +220,16 @@ Rectangle srcRec = {
   srcRec.height = (float)c.texture.height,
 };
 
+scale = normal;
+if (c.type == OBS){
+   scale = obsSize;
+}
+
 Rectangle destRec = {
    destRec.x = c.pos.x,
    destRec.y = c.pos.y,
-   destRec.width = (float)c.texture.width * 2 / c.maxFrames,
-   destRec.height = (float)c.texture.height * 2, 
+   destRec.width = (float)c.texture.width * scale / c.maxFrames,
+   destRec.height = (float)c.texture.height * scale, 
    };
 
    if (c.texFlip) {srcRec.width = -srcRec.width;}
