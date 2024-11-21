@@ -47,7 +47,7 @@ const float ANT_OFFSET = 60.0;
     bool texFlip;
     bool isDead;
     bool isProjectileActive;
-    bool collided;
+    bool invlunerable;
     bool expired;
 }
 
@@ -81,6 +81,7 @@ fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, 
     c.isDead = false;
     c.isProjectileActive = false;
     c.expired = true;
+    c.invlunerable = false;
 
     return  c;
 }
@@ -133,8 +134,6 @@ fn void updateConstruct(Construct *c) {
                c.isGrounded = false; 
             }
                c.pos.y += c.vel.y * rl::getFrameTime();
-         
-            if(rl::isKeyPressed(rl::KEY_ENTER)){c.lives -= 1;} // life test
 
          break;
          

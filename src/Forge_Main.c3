@@ -72,6 +72,8 @@ fn int main() {
 	 Sound unpause = rl::loadSound("resources/sounds/unpause.wav");
 	 Sound poopSound = rl::loadSound("resources/sounds/poop.wav");
 	 Sound logoSound = rl::loadSound("resources/sounds/logo.wav");
+	 Sound eatBug = rl::loadSound("resources/sounds/eat_bug.wav");
+
 	//music
 	 Music titleMusic = rl::loadMusicStream("resources/sounds/Intro_song_z.mp3");//intro_tune.wav
 	 Music gameMusic = rl::loadMusicStream("resources/sounds/game_loop.mp3"); //game loop music
@@ -85,7 +87,7 @@ fn int main() {
 	float accumulator;
 	float frameCounter;
 	double lastTime = (float)rl::getTime();
-   
+
 	//game objects init
 	
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
@@ -105,6 +107,7 @@ fn int main() {
 	//*/
 
 	Construct[*] constructs =  {bird,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle};
+	Construct[*] demoConstructs =  {bird,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle};
 
 	io::printfn("Player Objects created");
     
@@ -175,6 +178,7 @@ fn int main() {
 		  		if (rl::isKeyPressed(rl::KEY_SPACE)) {rl::playSound(jump);}
 				
 					//check Collisions
+					
 					foreach ( &construct : constructs){
 							forge_physics::checkCollision(&player,construct);
 							forge_physics::checkCollision(&poopShot,construct);
@@ -289,6 +293,7 @@ fn int main() {
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
 					state = MAIN;
 					player.pos = {400,500};
+					frameCounter = 0;
 
 					//clean all assetes needed here to fully reset. Use Diffrent Demo Array.
 				}
