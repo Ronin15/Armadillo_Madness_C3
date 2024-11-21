@@ -1,8 +1,8 @@
 module armadillo_madness_c3;
-//game modules---------------------
+//Forge modules---------------------
 import forge_game;
+import forge_load;
 import forge_events;
-import forge_animations;
 import forge_physics;
 import forge_demo;
 //vendor modules-------------------
@@ -20,7 +20,6 @@ const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness";
 const int MAX_CONSTRUCTS = 100;
-
 
 enum GameState {
 	LOGO,
@@ -44,45 +43,15 @@ fn int main() {
 	rl::setTargetFPS(FPS_CAP);
 	forge_game::toggle_fullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
 
-	//loading Game assets
-	 Texture2D backGroundSky = rl::loadTexture("resources/images/sky.png");
-	 Texture2D backGroundMid = rl::loadTexture("resources/images/mid3.png");
-	 Texture2D backGroundGround = rl::loadTexture("resources/images/ground3.png");
-	 Texture2D playerTex = rl::loadTexture("resources/images/armadillo_a2-sheet.png");
-	 Texture2D sunTex = rl::loadTexture("resources/images/Sun.png");
-	//obstacles // enemies
-	 Texture2D cactus1Tex = rl::loadTexture("resources/images/Cactus1.png");
-	 Texture2D bigBoulderTex = rl::loadTexture("resources/images/BoulderBig.png");
-	 Texture2D birdTex = rl::loadTexture("resources/images/bird-sheet.png");
-	 Texture2D antTex = rl::loadTexture("resources/images/ant-sheet.png");
-	 Texture2D turtleTex = rl::loadTexture("resources/images/turtle-sheet.png");
-	 Texture2D beatleTex = rl::loadTexture("resources/images/beatle-sheet.png");
-	 Texture2D poopTex = rl::loadTexture("resources/images/poop.png");
-	 Texture2D lifeCountTex = rl::loadTexture("resources/images/LifeCounter.png"); 
-	//logo Page assets
-	 Texture2D raylibTex = rl::loadTexture("resources/images/raylib.png");
-	 Texture2D c3Tex = rl::loadTexture("resources/images/C3.png");
-	 Texture2D logoTex = rl::loadTexture("resources/images/hammerForge.png");
-	 Texture2D forgeTex = rl::loadTexture("resources/images/ForgeEngine.png");
-	//Title Page assets
-	 Texture2D titlePageTex = rl::loadTexture("resources/images/Title_Page.png");
-	//sounds
-	 Sound jump = rl::loadSound("resources/sounds/jump.wav");
-	 Sound moving = rl::loadSound("resources/sounds/moving.wav");
-	 Sound pause = rl::loadSound("resources/sounds/pause.wav");
-	 Sound unpause = rl::loadSound("resources/sounds/unpause.wav");
-	 Sound poopSound = rl::loadSound("resources/sounds/poop.wav");
-	 Sound logoSound = rl::loadSound("resources/sounds/logo.wav");
-	 Sound eatBug = rl::loadSound("resources/sounds/eat_bug.wav");
-
-	//music
-	 Music titleMusic = rl::loadMusicStream("resources/sounds/Intro_song_z.mp3");//intro_tune.wav
-	 Music gameMusic = rl::loadMusicStream("resources/sounds/game_loop.mp3"); //game loop music
-
+	//asset loading
+	TexMap tMap = forge_load::loadTexMap();
+	SoundMap sMap = forge_load::loadSoundMap();
+	MusicMap mMap = forge_load::loadMusicMap();
+	
 	//Game play scrolling vars
 	float scrollGround = 0.0;
 	float scrollMid = 0.0;
-	float lifeSpace = (float)lifeCountTex.width + 5.0; 
+	float lifeSpace = (float)tMap.get("lifeCount")!!.width + 5.0; 
 
 	//game time step vars
 	float accumulator;
@@ -91,26 +60,22 @@ fn int main() {
 
 	//game objects init
 	
+
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
-	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", playerTex, {400,500}, 2, 6);
-	Construct poopShot = forge_game::forgeConstruct(PROJECTILE_POOP,"Poop", poopTex,{0,0},1);
+	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", tMap.get("armadillo")!!, {400,500}, 2, 6);
+	Construct poopShot = forge_game::forgeConstruct(PROJECTILE_POOP,"Poop", tMap.get("poop")!!,{0,0},1);
 
-	//-----------------------
-	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"Bird", birdTex, {1600,800}, 2);
-	Construct bird2 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird2", birdTex, {1200,800}, 2);
-	Construct bird3 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird3", birdTex, {800,800}, 2);
-	Construct cactus = forge_game::forgeConstruct(OBS,"Cactus", cactus1Tex,{1900,1400}, 1);
-	Construct bigBoulder = forge_game::forgeConstruct(OBS,"Boulder", bigBoulderTex,{2800,1400},1);
-	Construct ant = forge_game::forgeConstruct(ENEMY_GROUND,"Ant", antTex,{2200,1400}, 2);
-	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", turtleTex,{2000,1400}, 2, 3);
-	Construct beatle = forge_game::forgeConstruct(ENEMEY_FLY,"Beatle", beatleTex, {1800,800}, 2);
+	//-----------------------------------------------------------------------------
+	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"Bird", tMap.get("bird")!!, {1600,800}, 2);
+	Construct bird2 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird2", tMap.get("bird")!!, {1200,800}, 2);
+	Construct bird3 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird3", tMap.get("bird")!!, {800,800}, 2);
+	Construct cactus = forge_game::forgeConstruct(OBS,"Cactus", tMap.get("cactus")!!,{1900,1400}, 1);
+	Construct bigBoulder = forge_game::forgeConstruct(OBS,"Boulder", tMap.get("bigBoulder")!!,{2800,1400},1);
+	Construct ant = forge_game::forgeConstruct(ENEMY_GROUND,"Ant", tMap.get("ant")!!,{2200,1400}, 2);
+	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", tMap.get("turtle")!!,{2000,1400}, 2, 3);
+	Construct beatle = forge_game::forgeConstruct(ENEMEY_FLY,"Beatle", tMap.get("beatle")!!, {1800,800}, 2);
 	
-	//*/Map Test
-    HashMap(<String, Texture2D>) texMap = forge_game::createTexMap();
-	bool bcactus @noinit;
-	bcactus = texMap.has_key("Cactus");
-	if (bcactus){io::printfn("true");}
-
+	
 	Construct[*] constructs =  {bird,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle};
 	Construct[*] demoConstructs =  {bird,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle};
 
@@ -118,7 +83,7 @@ fn int main() {
     
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = MAIN;
-	//rl::playSound(logoSound);
+	//rl::playSound(sMap.get("logoSound")!!);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
 	  	float currentTime = (float)rl::getTime(); 
@@ -137,12 +102,12 @@ fn int main() {
 
         	case LOGO:
 				rl::clearBackground(rl::BLACK);
-				rl::drawTexture(logoTex, 780, 420, rl::WHITE);
+				rl::drawTexture(tMap.get("logo")!!, 780, 420, rl::WHITE);
 				rl::drawText("Hammer Forged Games", 560, 340, 60, rl::ORANGE);
 				rl::drawText("Made with", 770, 725, 20, rl::WHITE);
-				rl::drawTexture(raylibTex, 890, 700, rl::WHITE);
-				rl::drawTexture(c3Tex, 960, 713, rl::WHITE);
-				rl::drawTextureEx(forgeTex, {860, 820}, 0.0, 0.8, rl::WHITE);
+				rl::drawTexture(tMap.get("raylib")!!, 890, 700, rl::WHITE);
+				rl::drawTexture(tMap.get("c3")!!, 960, 713, rl::WHITE);
+				rl::drawTextureEx(tMap.get("forge")!!, {860, 820}, 0.0, 0.8, rl::WHITE);
 				rl::drawText("*{}==> Forge_Engine <=={}*", 770, 790, 20, rl::LIGHTGRAY);
 					frameCounter += 1;
 					if (frameCounter > 400) {
@@ -151,10 +116,10 @@ fn int main() {
 					}
 				
 			case MAIN:
-				rl::playMusicStream(titleMusic);
-				rl::updateMusicStream(titleMusic);
+				rl::playMusicStream(mMap.get("titleMusic")!!);
+				rl::updateMusicStream(mMap.get("titleMusic")!!);
 				rl::clearBackground(rl::BLACK);
-                rl::drawTexture(titlePageTex, 0, 0, rl::WHITE);
+                rl::drawTexture(tMap.get("titlePage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, 500, 200, 105, rl::BLACK);
                 rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", 750, 440, 40, rl::BLACK);
 					if (rl::isKeyPressed(rl::KEY_ENTER)){
@@ -162,7 +127,7 @@ fn int main() {
     				}
 					
 					frameCounter += 1;
-					if (frameCounter > 10000) {
+					if (frameCounter > 5000) {
 							state = DEMO;
 							frameCounter = 0;
 					}
@@ -171,8 +136,8 @@ fn int main() {
 				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
-				rl::playMusicStream(gameMusic);
-	  			rl::updateMusicStream(gameMusic);
+				rl::playMusicStream(mMap.get("gameMusic")!!);
+	  			rl::updateMusicStream(mMap.get("gameMusic")!!);
 	  			scrollGround -= 5.8;
 				scrollMid -= 0.6;
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
@@ -181,12 +146,12 @@ fn int main() {
 		  		//update input and check events -----------------------------------------------------------------------------------
 		  		if (rl::isKeyPressed(rl::KEY_P)){
 		  			state = PAUSE;
-		  			rl::playSound(pause);
+		  			rl::playSound(sMap.get("pause")!!);
 		  		}
-		  		if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(moving);}
-		  		if (rl::isKeyPressed(rl::KEY_RIGHT)) {rl::playSound(moving);}
-		  		if (rl::isKeyPressed(rl::KEY_DOWN)) {rl::playSound(poopSound);}
-		  		if (rl::isKeyPressed(rl::KEY_SPACE)) {rl::playSound(jump);}
+		  		if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(sMap.get("moving")!!);}
+		  		if (rl::isKeyPressed(rl::KEY_RIGHT)) {rl::playSound(sMap.get("moving")!!);}
+		  		if (rl::isKeyPressed(rl::KEY_DOWN)) {rl::playSound(sMap.get("poopSound")!!);}
+		  		if (rl::isKeyPressed(rl::KEY_SPACE)) {rl::playSound(sMap.get("jump")!!);}
 				
 					//check Collisions
 					
@@ -211,12 +176,12 @@ fn int main() {
 						
 
 				//draw game elements------------------------------------------------------------------------------
-				rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
-				rl::drawTextureEx(backGroundMid, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				rl::drawTextureEx(sunTex, {1650, 10}, 0.0, 4.0, rl::WHITE);
+				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
 				rl::drawText("Lives ", 16, 60, 30, rl::RAYWHITE);
@@ -224,7 +189,7 @@ fn int main() {
 				if (&player.lives == &player.lives){
 					for (int i = 0; i < player.lives; i++){
 						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
-						rl::drawTextureEx(lifeCountTex,{lifePos.x, lifePos.y - lifeCountTex.height}, 0, 0.8, rl::WHITE);
+						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
 					}
 				}
 				
@@ -235,19 +200,11 @@ fn int main() {
 								forge_game::drawAnitmatedConstruct(construct);		
 						}	
 				
-
-				/*
-				def MyIntList = List(<int>);
-
-				MyIntList list;
-				list.push(123);
-				list.free();
-				*/
 			case PAUSE:
 
 				if (rl::isKeyPressed(rl::KEY_P)){
 					state = GAME;
-					rl::playSound(unpause);	
+					rl::playSound(sMap.get("unpause")!!);	
 				}
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
 					state = MAIN;
@@ -256,12 +213,13 @@ fn int main() {
 				}
 
 				rl::clearBackground(rl::BLACK);
-				rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
-				rl::drawTextureEx(backGroundMid, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				rl::drawTextureEx(sunTex, {1650, 10}, 0.0, 4.0, rl::WHITE);
+				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
+				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 				
 				
 				forge_game::drawAnitmatedConstruct(&player);
@@ -279,7 +237,7 @@ fn int main() {
 				if (&player.lives == &player.lives){
 					for (int i = 0; i < player.lives; i++){
 						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
-						rl::drawTextureEx(lifeCountTex,{lifePos.x, lifePos.y - lifeCountTex.height}, 0, 0.8, rl::WHITE);
+						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
 					}
 				}
 				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
@@ -341,23 +299,14 @@ fn int main() {
 
 
 				//draw game elements------------------------------------------------------------------------------
-				rl::drawTexture(backGroundSky, 0, 0, rl::WHITE);
-				rl::drawTextureEx(backGroundMid, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(backGroundMid, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(backGroundGround, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(backGroundGround,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				rl::drawTextureEx(sunTex, {1650, 10}, 0.0, 4.0, rl::WHITE);
-				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
-				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
-				rl::drawText("Lives ", 16, 60, 30, rl::RAYWHITE);
-				//life tracking updating
-				if (&player.lives == &player.lives){
-					for (int i = 0; i < player.lives; i++){
-						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
-						rl::drawTextureEx(lifeCountTex,{lifePos.x, lifePos.y - lifeCountTex.height}, 0, 0.8, rl::WHITE);
-					}
-				}
+				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				
+				//draw objects
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
 					
