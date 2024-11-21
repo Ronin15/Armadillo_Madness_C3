@@ -112,7 +112,7 @@ fn int main() {
 	io::printfn("Player Objects created");
     
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = GAME;
+	GameState state = DEMO;
 	//rl::playSound(logoSound);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
@@ -324,8 +324,8 @@ fn int main() {
 				//player not updated in demo because demo fucntions take over the update role.
 				forge_game::updateConstruct(&poopShot);
 					
-					foreach ( &construct : constructs){
-								forge_game::updateConstruct(construct);		
+					foreach ( &demoConstruct : demoConstructs){
+								forge_game::updateConstruct(demoConstruct);		
 						}	
 
 
@@ -350,8 +350,8 @@ fn int main() {
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
 					
-					foreach ( &construct : constructs){
-								forge_game::drawAnitmatedConstruct(construct);		
+					foreach ( &demoConstruct : demoConstructs){
+								forge_game::drawAnitmatedConstruct(demoConstruct);		
 						}	
 				
 				
