@@ -184,8 +184,7 @@ fn int main() {
 							forge_physics::checkCollision(&poopShot,construct);
 						}
 				
-				
-				//forge_physics::checkCollision(&player,&bigBoulder);
+			
 				
 				//update game logic-------------------------------------------------------------------------------
 				forge_game::updateConstruct(&player);
