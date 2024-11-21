@@ -30,7 +30,8 @@ const float ANT_OFFSET = 60.0;
     
     Texture2D texture;
     Vector2 pos;
-    Vector2 vel; 
+    Vector2 vel;
+    Sound sound; 
     String name;
     float gravity;
     float jumpVelocity;

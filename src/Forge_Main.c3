@@ -181,7 +181,10 @@ fn int main() {
 					
 					foreach ( &construct : constructs){
 							forge_physics::checkCollision(&player,construct);
+							if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
+
 							forge_physics::checkCollision(&poopShot,construct);
+							}
 						}
 				
 			
