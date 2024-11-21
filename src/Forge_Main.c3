@@ -117,7 +117,7 @@ fn int main() {
 	io::printfn("Player Objects created");
     
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = DEMO;
+	GameState state = MAIN;
 	//rl::playSound(logoSound);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
@@ -160,6 +160,12 @@ fn int main() {
 					if (rl::isKeyPressed(rl::KEY_ENTER)){
        					 state = GAME;
     				}
+					
+					frameCounter += 1;
+					if (frameCounter > 10000) {
+							state = DEMO;
+							frameCounter = 0;
+					}
 				
 			case GAME:
 				//misc game stuff
