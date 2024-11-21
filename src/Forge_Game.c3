@@ -1,6 +1,7 @@
 module forge_game;
 import raylib5::rl;
-import std::io;
+import std::io; 
+import std::collections::map;
 import std::math;
 
 //GAME globals and consts -------------------------------------------------
@@ -59,6 +60,19 @@ fn void toggle_fullScreen (int gsWidth, int gsHeight){
 	int width = rl::getMonitorWidth(0);
 	int height = rl::getMonitorHeight(0);
 	if (width <= gsWidth && height <= gsHeight && rl::isWindowFullscreen() == false) {rl::toggleFullscreen();}
+}
+
+fn HashMap(<String, Texture2D>) createTexMap(){
+   
+   HashMap(<String, Texture2D>) texMap;
+
+    Texture2D cactus1Tex = rl::loadTexture("resources/images/Cactus1.png");
+	 Texture2D bigBoulderTex = rl::loadTexture("resources/images/BoulderBig.png");
+   
+   texMap.set("Cactus",cactus1Tex);
+   texMap.set("Boulder",bigBoulderTex);
+
+   return texMap;
 }
 
 //creates game Entity

@@ -9,6 +9,7 @@ import forge_demo;
 import raylib5::rl;
 //C3 standard modules--------------
 import std::io;
+import std::collections::map;
 //import std::collections::list;
 
 //Game Consts---------------------------------
@@ -104,7 +105,11 @@ fn int main() {
 	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", turtleTex,{2000,1400}, 2, 3);
 	Construct beatle = forge_game::forgeConstruct(ENEMEY_FLY,"Beatle", beatleTex, {1800,800}, 2);
 	
-	//*/
+	//*/Map Test
+    HashMap(<String, Texture2D>) texMap = forge_game::createTexMap();
+	bool bcactus @noinit;
+	bcactus = texMap.has_key("Cactus");
+	if (bcactus){io::printfn("true");}
 
 	Construct[*] constructs =  {bird,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle};
 	Construct[*] demoConstructs =  {bird,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle};
