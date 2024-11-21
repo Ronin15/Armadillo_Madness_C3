@@ -13,8 +13,8 @@ const float FRICTION = 60.0;
 const float AMPLITUDE = 300.0;//300
 const float FREQUENCY = 0.05;//0.05
 const int MAX_LIVES = 6;
-const float OBS_OFFSET = 30.0;
-const float ANT_OFFSET = 60.0;
+const float OBS_SOFFSET = 30.0;
+const float ANT_SOFFSET = 60.0;
 
 
 //GAME Structures ---------------------------------------------------------
@@ -151,7 +151,7 @@ fn void updateConstruct(Construct *c) {
 
          case ENEMY_GROUND:           
           // io::printfn("ENEMY_GROUND update reached");
-          if (c.name == "Ant") {c.pos.x -= (c.friction + ANT_OFFSET) * rl::getFrameTime() ;}
+          if (c.name == "Ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * rl::getFrameTime() ;}
           if (c.name == "Turtle") {c.pos.x -= c.friction * rl::getFrameTime();c.groundLevel = groundLevel + 15;} //ground level hit box adjust
            
            c.pos.y += c.vel.y * rl::getFrameTime();
@@ -177,7 +177,7 @@ fn void updateConstruct(Construct *c) {
          if (c.name == "Boulder"){c.groundLevel = groundLevel - 55 ;}
           c.vel.y += c.gravity * rl::getFrameTime();
           c.pos.y += c.vel.y * rl::getFrameTime();
-          c.pos.x -= (c.friction + OBS_OFFSET) * rl::getFrameTime(); 
+          c.pos.x -= (c.friction + OBS_SOFFSET) * rl::getFrameTime(); 
          
          break;
       }
