@@ -101,7 +101,7 @@ fn int main() {
 		switch (state) {
 
         	case LOGO:
-				rl::clearBackground({83, 86, 90, 255});
+				rl::clearBackground({31, 32, 34, 255});//Forge_Gray
 				rl::drawTexture(tMap.get("logo")!!, 800, 420, rl::WHITE);
 				rl::drawText("Hammer Forged Games", 580, 340, 60, rl::ORANGE);
 				rl::drawText("Made with", 790, 725, 20, rl::WHITE);
