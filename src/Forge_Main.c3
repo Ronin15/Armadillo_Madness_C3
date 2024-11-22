@@ -1,4 +1,4 @@
-module armadillo_madness_c3;
+module forge_main;
 //Forge modules---------------------
 import forge_game;
 import forge_load;
@@ -197,6 +197,7 @@ fn int main() {
 						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
 					}
 				}
+				forge_events::rainFall();
 				
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
@@ -204,7 +205,9 @@ fn int main() {
 					foreach ( &construct : constructs){
 								forge_game::drawAnitmatedConstruct(construct);		
 						}	
-				
+
+					
+
 			case PAUSE:
 
 				if (rl::isKeyPressed(rl::KEY_P)){

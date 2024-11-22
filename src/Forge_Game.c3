@@ -1,4 +1,5 @@
 module forge_game;
+import forge_main;
 import forge_load;
 import raylib5::rl;
 import std::io; 
