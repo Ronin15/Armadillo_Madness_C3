@@ -12,14 +12,15 @@ struct RainDrop {
     Vector2 pos; 
     Vector2 vel; 
 }
+
+RainDrop[MAX_RAIN_DROPS] rainDrops;
+
 //helper function
 fn int getRand(int min, int max) {
     return std::math::random::rand(max - min + 1) + min;
 }
 
 fn void rainFall(){
-
-    RainDrop[MAX_RAIN_DROPS] rainDrops;
 
     foreach (&rainDrop : rainDrops){
         rainDrop.pos = { getRand(0,forge_main::WINDOW_WIDTH), getRand(0,forge_main::WINDOW_HEIGHT)}; 
