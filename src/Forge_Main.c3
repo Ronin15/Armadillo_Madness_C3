@@ -82,7 +82,7 @@ fn int main() {
 	io::printfn("Player Objects created");
     
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = LOGO;
 	//rl::playSound(sMap.get("logoSound")!!);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
@@ -101,14 +101,14 @@ fn int main() {
 		switch (state) {
 
         	case LOGO:
-				rl::clearBackground(rl::BLACK);
-				rl::drawTexture(tMap.get("logo")!!, 780, 420, rl::WHITE);
-				rl::drawText("Hammer Forged Games", 560, 340, 60, rl::ORANGE);
-				rl::drawText("Made with", 770, 725, 20, rl::WHITE);
-				rl::drawTexture(tMap.get("raylib")!!, 890, 700, rl::WHITE);
-				rl::drawTexture(tMap.get("c3")!!, 960, 713, rl::WHITE);
-				rl::drawTextureEx(tMap.get("forge")!!, {860, 820}, 0.0, 0.8, rl::WHITE);
-				rl::drawText("*{}==> Forge_Engine <=={}*", 770, 790, 20, rl::LIGHTGRAY);
+				rl::clearBackground({83, 86, 90, 255});
+				rl::drawTexture(tMap.get("logo")!!, 800, 420, rl::WHITE);
+				rl::drawText("Hammer Forged Games", 580, 340, 60, rl::ORANGE);
+				rl::drawText("Made with", 790, 725, 20, rl::WHITE);
+				rl::drawTexture(tMap.get("raylib")!!, 910, 700, rl::WHITE);
+				rl::drawTexture(tMap.get("c3")!!, 980, 713, rl::WHITE);
+				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
+				rl::drawText("*{}==> Forge_Engine <=={}*", 790, 790, 20, rl::LIGHTGRAY);
 					frameCounter += 1;
 					if (frameCounter > 400) {
 							state = MAIN;
