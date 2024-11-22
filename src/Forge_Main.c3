@@ -51,6 +51,7 @@ fn int main() {
 	//Game play scrolling vars
 	float scrollGround = 0.0;
 	float scrollMid = 0.0;
+	float scrollClouds = 0.0;
 	float lifeSpace = (float)tMap.get("lifeCount")!!.width + 5.0; 
 
 	//game time step vars
@@ -82,7 +83,7 @@ fn int main() {
 	io::printfn("Player Objects created");
     
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
+	GameState state = MAIN;
 	//rl::playSound(sMap.get("logoSound")!!);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
@@ -140,8 +141,10 @@ fn int main() {
 	  			rl::updateMusicStream(mMap.get("gameMusic")!!);
 	  			scrollGround -= 5.8;
 				scrollMid -= 0.6;
-				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
-				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
+				scrollClouds -= 0.3;
+				if(scrollMid <= - WINDOW_WIDTH) {scrollMid = 0;}
+				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
+				if(scrollGround <= - WINDOW_WIDTH) {scrollGround = 0;}
 	  			
 		  		//update input and check events -----------------------------------------------------------------------------------
 		  		if (rl::isKeyPressed(rl::KEY_P)){
@@ -179,6 +182,8 @@ fn int main() {
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
 				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
@@ -216,6 +221,8 @@ fn int main() {
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
 				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
@@ -302,6 +309,8 @@ fn int main() {
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
 				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
