@@ -5,8 +5,7 @@ import raylib5::rl;
 import forge_game;
 import forge_main;
 
-
-const int MAX_RAIN_DROPS = 50;
+const int MAX_RAIN_DROPS = 100;
 
 struct RainDrop { 
     Vector2 pos; 
@@ -38,7 +37,7 @@ fn void rainFall(){
     }
 
     foreach (&rainDrop : rainDrops){ 
-    rl::drawLineEx(rainDrop.pos, Vector2 { rainDrop.pos.x, rainDrop.pos.y + 10 }, 4.0, rl::BLUE);//snow 5.5
+    rl::drawLineEx(rainDrop.pos, Vector2 { rainDrop.pos.x, rainDrop.pos.y + 10 }, 4.5, rl::BLUE);//snow 5.5
     } 
 }
 
