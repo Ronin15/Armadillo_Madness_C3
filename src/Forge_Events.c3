@@ -23,7 +23,7 @@ fn void rainFall(){
 
     foreach (&rainDrop : rainDrops){
         rainDrop.pos = { getRand(0,forge_main::WINDOW_WIDTH), getRand(0,forge_main::WINDOW_HEIGHT)}; 
-        rainDrop.vel = { 0,  getRand(1,1) }; 
+        rainDrop.vel = { 0,  getRand(2,10) }; 
     }
         // Update rain drops 
         foreach (&rainDrop : rainDrops){
@@ -37,7 +37,7 @@ fn void rainFall(){
     }
 
     foreach (&rainDrop : rainDrops){ 
-    rl::drawLineEx(rainDrop.pos, Vector2 { rainDrop.pos.x, rainDrop.pos.y + 10 }, 4.5, rl::BLUE);//snow 5.5
+    rl::drawLineEx(rainDrop.pos, { rainDrop.pos.x, rainDrop.pos.y + 10 }, 4.5, rl::BLUE);//snow 5.5
     } 
 }
 
