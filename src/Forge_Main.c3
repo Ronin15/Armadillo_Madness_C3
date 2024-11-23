@@ -197,7 +197,7 @@ fn int main() {
 						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
 					}
 				}
-				forge_events::rainFall();
+				
 				
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
@@ -205,7 +205,8 @@ fn int main() {
 					foreach ( &construct : constructs){
 								forge_game::drawAnitmatedConstruct(construct);		
 						}	
-
+					
+					forge_events::rainFall();
 					
 
 			case PAUSE:
@@ -238,7 +239,8 @@ fn int main() {
 					foreach ( &construct : constructs){
 								forge_game::drawAnitmatedConstruct(construct);		
 						}	
-				
+
+					forge_events::rainFall();
 				
 				//drawing pause stuff here so objects don cover it up
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
@@ -268,6 +270,7 @@ fn int main() {
 	  			//rl::updateMusicStream(gameMusic);
 	  			scrollGround -= 5.8;
 				scrollMid -= 0.6;
+				scrollClouds -= 0.3;
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
 				
@@ -326,7 +329,7 @@ fn int main() {
 								forge_game::drawAnitmatedConstruct(demoConstruct);		
 						}	
 				
-				
+				forge_events::rainFall();
 			
 			case CREDITS:
 				io::printfn("Credits State");
