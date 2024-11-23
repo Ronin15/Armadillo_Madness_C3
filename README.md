@@ -21,7 +21,7 @@ Key Features:
 Engaging gameplay with multiple levels * see notes at bottom
 Unique power-ups and obstacles
 High-quality graphics and sound effects
-Join the adventure and experience the madness of Armadillo Madness!
+Particle System with Rain, snow, and wind.
 
 Notes:
 
