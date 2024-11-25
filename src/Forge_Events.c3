@@ -16,7 +16,7 @@ RainDrop[MAX_RAIN_DROPS] rainDrops;
 
 //helper function
 fn int getRand(int min, int max) {
-    return std::math::random::rand(max - min + 1) + min;
+    return random::rand(max - min + 1) + min;
 }
 
 fn void rainFall(){
