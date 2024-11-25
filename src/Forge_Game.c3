@@ -20,7 +20,6 @@ const float OBS_SOFFSET = 30.0;
 const float ANT_SOFFSET = 60.0;
 
 
-
 //GAME Structures ---------------------------------------------------------
  enum ConstructType {
    PLAYER,
@@ -66,12 +65,16 @@ fn void toggle_fullScreen (int gsWidth, int gsHeight){
 }
 
 //creates game Entity
-fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, Vector2 pos, int maxFrames, int lives = 2) {
+fn Construct forgeConstruct(ConstructType type, String name, Vector2 pos, TexMap *tMap, SoundMap *sMap,int maxFrames, int lives = 2) {
     
+    tMap = tMap;
+    sMap = sMap;
     Construct c;
     c.type = type;
     c.pos = pos;
-    c.texture = texture;  
+    c.name = name;
+    c.texture = tMap.get(name)!!;
+    c.sound = sMap.get(name)!!;  
     c.gravity = game_gravity;
     c.jumpVelocity = MOVE_VELOCITY;
     c.groundLevel = groundLevel; 
@@ -93,6 +96,7 @@ fn Construct forgeConstruct(ConstructType type, String name, Texture2D texture, 
 
 //update game contructs
 fn void updateConstruct(Construct *c) { 
+      
       //all construct update info-------------------------------------------------
       c.frameTimer += rl::getFrameTime();
 
@@ -135,6 +139,7 @@ fn void updateConstruct(Construct *c) {
             if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
 
             if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { 
+              // rl::playSound(sMap.get("jump")!!);
                c.vel.y = c.jumpVelocity; 
                c.isGrounded = false; 
             }

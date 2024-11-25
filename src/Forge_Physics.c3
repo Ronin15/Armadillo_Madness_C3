@@ -4,8 +4,8 @@ import std::io;
 import std::math;
 
 const int POOP_SHOT_OFFSET = 5;
-const int ROCK_OFFSET = 5; //bigrock
-const int CACTUS_OFFSET = 15;
+const int ROCK_OFFSET = 10; //bigrock
+const int CACTUS_OFFSET = 20;
 const int PLAYER_OFFSET = 10;
 const int TURTLE_OFFSET = 10;
 

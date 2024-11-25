@@ -63,11 +63,12 @@ fn int main() {
 	
 
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
-	Construct player = forge_game::forgeConstruct(PLAYER,"Armadillo", tMap.get("armadillo")!!, {400,500}, 2, 6);
-	Construct poopShot = forge_game::forgeConstruct(PROJECTILE_POOP,"Poop", tMap.get("poop")!!,{0,0},1);
+	Construct player = forge_game::forgeConstruct(PLAYER,"armadillo",{400,500},tMap,sMap,2,6);
+	Construct poopShot = forge_game::forgeConstruct(PROJECTILE_POOP,"poop",{0,0},tMap,sMap,1);
 
 	//-----------------------------------------------------------------------------
-	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"Bird", tMap.get("bird")!!, {1600,800}, 2);
+	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"Bird",{1600,800},tMap,sMap,2);
+	/*
 	Construct bird2 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird2", tMap.get("bird")!!, {1200,800}, 2);
 	Construct bird3 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird3", tMap.get("bird")!!, {800,800}, 2);
 	Construct cactus = forge_game::forgeConstruct(OBS,"Cactus", tMap.get("cactus")!!,{1900,1400}, 1);
@@ -75,10 +76,10 @@ fn int main() {
 	Construct ant = forge_game::forgeConstruct(ENEMY_GROUND,"Ant", tMap.get("ant")!!,{2200,1400}, 2);
 	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", tMap.get("turtle")!!,{2000,1400}, 2, 3);
 	Construct beatle = forge_game::forgeConstruct(ENEMEY_FLY,"Beatle", tMap.get("beatle")!!, {1800,800}, 2);
+	*/
 	
-	
-	Construct[*] constructs =  {bird,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle};
-	Construct[*] demoConstructs =  {bird,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle};
+	Construct[*] constructs =  {bird};//bird2,bird3,cactus,bigBoulder,ant,turtle,beatle}
+	Construct[*] demoConstructs =  {bird};//,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle
 
 	io::printfn("Player Objects created");
     
@@ -154,7 +155,7 @@ fn int main() {
 		  		if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(sMap.get("moving")!!);}
 		  		if (rl::isKeyPressed(rl::KEY_RIGHT)) {rl::playSound(sMap.get("moving")!!);}
 		  		if (rl::isKeyPressed(rl::KEY_DOWN)) {rl::playSound(sMap.get("poopSound")!!);}
-		  		if (rl::isKeyPressed(rl::KEY_SPACE)) {rl::playSound(sMap.get("jump")!!);}
+		  		
 				
 					//check Collisions
 					
