@@ -19,9 +19,12 @@ const int MAX_LIVES = 6;
 const float OBS_SOFFSET = 30.0;
 const float ANT_SOFFSET = 60.0;
 
+const MAX_CONSTRUCTS = 100;
+
+
 
 //GAME Structures ---------------------------------------------------------
- enum ConstructType {
+ enum ConstructType : int {
    PLAYER,
    PROJECTILE_POOP,
    ENEMY_GROUND,
@@ -29,12 +32,14 @@ const float ANT_SOFFSET = 60.0;
    OBS,
 }
 
+ 
+ 
  struct Construct {
     
     Texture2D texture;
     Vector2 pos;
     Vector2 vel;
-    Sound sound; 
+    Sound sound;
     String name;
     float gravity;
     float jumpVelocity;
@@ -55,6 +60,8 @@ const float ANT_SOFFSET = 60.0;
     bool expired;
 }
 
+Construct[MAX_CONSTRUCTS] constructs;
+
 //GAME Functions ------------------------------------------------------------
 //checks and toggles fullscreen if screen is smaller or equal to 1920 by 1080
 fn void toggleFullScreen (int gsWidth, int gsHeight){
@@ -64,11 +71,27 @@ fn void toggleFullScreen (int gsWidth, int gsHeight){
 	if (width <= gsWidth && height <= gsHeight && rl::isWindowFullscreen() == false) {rl::toggleFullscreen();}
 }
 
+fn ConstructType getRandomType(){
+   int min = (int)ConstructType.ENEMY_GROUND;
+   int max = (int)ConstructType.OBS;
+
+   return (ConstructType)(rand(max - min + 1) + min);
+}
+
+//fn String getRandomName (){}
+
+
 //creates game Entity
-fn Construct forgeConstruct(ConstructType type, String name, Vector2 pos, TexMap *tMap, SoundMap *sMap,int maxFrames, int lives = 2) {
+fn Construct forgeConstruct(String name, Vector2 pos, TexMap *tMap, SoundMap *sMap, int maxFrames = 2, int lives = 2) {
     
     Construct c;
-    c.type = type;
+    if (name == "player"){ 
+      c.type = PLAYER;
+   }else if(name == "poop"){
+      c.type = PROJECTILE_POOP;
+   }else{
+      c.type = getRandomType();
+   }
     c.pos = pos;
     c.name = name;
     c.texture = tMap.get(name)!!;
@@ -137,7 +160,7 @@ fn void updateConstruct(Construct *c) {
             if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
 
             if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { 
-               //rl::playSound(sMap.get("jump")!!);
+              // if(rl::isKeyPressed(rl::KEY_SPACE)) {rl::playSound(c.sound2;}
                c.vel.y = c.jumpVelocity; 
                c.isGrounded = false; 
             }

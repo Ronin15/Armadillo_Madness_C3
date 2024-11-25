@@ -38,7 +38,7 @@ fn TexMap loadTexMap(){
    temp.set("mid",backGroundMid);
    temp.set("ground",backGroundGround);
    temp.set("clouds",clouds);
-   temp.set("armadillo",playerTex);
+   temp.set("player",playerTex);
    temp.set("sun",sunTex);
    temp.set("cactus",cactus1Tex);
    temp.set("bigBoulder",bigBoulderTex);
@@ -72,7 +72,7 @@ fn SoundMap loadSoundMap(){
    Sound cactus = rl::loadSound("resources/sounds/cactus_impact.wav");
    
    temp.set("jump",jump);
-   temp.set("armadillo",moving);
+   temp.set("player",moving);
    temp.set("pause",pause);
    temp.set("unpause",unpause);
    temp.set("poop",poopSound);

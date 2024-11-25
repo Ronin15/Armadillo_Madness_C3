@@ -63,11 +63,11 @@ fn int main() {
 	
 
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
-	Construct player = forge_game::forgeConstruct(PLAYER,"armadillo",{100,1025},&tMap,&sMap,2,6);
-	Construct poopShot = forge_game::forgeConstruct(PROJECTILE_POOP,"poop",{0,0},&tMap,&sMap,1);
+	Construct player = forge_game::forgeConstruct("player",{100,950},&tMap,&sMap,2,6);
+	Construct poopShot = forge_game::forgeConstruct("poop",{0,0},&tMap,&sMap,1);
 
 	//-----------------------------------------------------------------------------`
-	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"bird",{1600,800},&tMap,&sMap,2);
+	Construct bird = forge_game::forgeConstruct("bird",{1600,800},&tMap,&sMap,2);
 	/*
 	Construct bird2 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird2", tMap.get("bird")!!, {1200,800}, 2);
 	Construct bird3 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird3", tMap.get("bird")!!, {800,800}, 2);
@@ -138,8 +138,8 @@ fn int main() {
 				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
-				rl::playMusicStream(mMap.get("gameMusic")!!);
-	  			rl::updateMusicStream(mMap.get("gameMusic")!!);
+				//rl::playMusicStream(mMap.get("gameMusic")!!);
+	  			//rl::updateMusicStream(mMap.get("gameMusic")!!);
 	  			scrollGround -= 5.8;
 				scrollMid -= 0.6;
 				scrollClouds -= 0.3;
