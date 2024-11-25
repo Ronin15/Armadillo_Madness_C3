@@ -57,7 +57,7 @@ const float ANT_SOFFSET = 60.0;
 
 //GAME Functions ------------------------------------------------------------
 //checks and toggles fullscreen if screen is smaller or equal to 1920 by 1080
-fn void toggle_fullScreen (int gsWidth, int gsHeight){
+fn void toggleFullScreen (int gsWidth, int gsHeight){
 	//if screen size is 1920 X 1080 nativley then set full screen
 	int width = rl::getMonitorWidth(0);
 	int height = rl::getMonitorHeight(0);
@@ -67,8 +67,6 @@ fn void toggle_fullScreen (int gsWidth, int gsHeight){
 //creates game Entity
 fn Construct forgeConstruct(ConstructType type, String name, Vector2 pos, TexMap *tMap, SoundMap *sMap,int maxFrames, int lives = 2) {
     
-    tMap = tMap;
-    sMap = sMap;
     Construct c;
     c.type = type;
     c.pos = pos;
@@ -122,11 +120,11 @@ fn void updateConstruct(Construct *c) {
             //io::printfn("groundLevel: %f", c.groundLevel);
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
             if (rl::isKeyDown(rl::KEY_LEFT)) {
-      
+               if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(c.sound); }
                c.pos.x -= c.acceleration * rl::getFrameTime();
                c.texFlip = true;
             } else if (rl::isKeyDown(rl::KEY_RIGHT)){
-
+               if (rl::isKeyPressed(rl::KEY_RIGHT)) {rl::playSound(c.sound); }
                c.pos.x += c.acceleration * rl::getFrameTime();
                c.texFlip = false;
 
@@ -139,7 +137,7 @@ fn void updateConstruct(Construct *c) {
             if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
 
             if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { 
-              // rl::playSound(sMap.get("jump")!!);
+               //rl::playSound(sMap.get("jump")!!);
                c.vel.y = c.jumpVelocity; 
                c.isGrounded = false; 
             }
@@ -150,7 +148,7 @@ fn void updateConstruct(Construct *c) {
          case PROJECTILE_POOP:           
            //io::printfn("POOP Shot :) update reached");
           // c.isProjectileActive = false;
-          if(rl::isKeyPressed(rl::KEY_DOWN)){c.isProjectileActive = true; c.expired = false;}
+          if(rl::isKeyPressed(rl::KEY_DOWN)){c.isProjectileActive = true; c.expired = false;rl::playSound(c.sound);}
             c.groundLevel = groundLevel - c.texture.height + 90;
 
            if (c.pos.x > 1900) {c.expired = true; c.isProjectileActive = false;}
@@ -160,8 +158,8 @@ fn void updateConstruct(Construct *c) {
 
          case ENEMY_GROUND:           
           // io::printfn("ENEMY_GROUND update reached");
-          if (c.name == "Ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * rl::getFrameTime() ;}
-          if (c.name == "Turtle") {c.pos.x -= c.friction * rl::getFrameTime();c.groundLevel = groundLevel + 15;} //ground level hit box adjust
+          if (c.name == "ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * rl::getFrameTime() ;}
+          if (c.name == "turtle") {c.pos.x -= c.friction * rl::getFrameTime();c.groundLevel = groundLevel + 15;} //ground level hit box adjust
            
            c.pos.y += c.vel.y * rl::getFrameTime();
            c.vel.y += c.gravity * rl::getFrameTime(); 
@@ -176,7 +174,7 @@ fn void updateConstruct(Construct *c) {
           c.texFlip = false;//15
           //if (c.pos.x <= 0){c.pos.x += 15.0 * rl::getFrameTime();c.texFlip = true;}
 
-          c.pos.y += AMPLITUDE * std::math::sin(FREQUENCY * (c.pos.x + c.acceleration)) * rl::getFrameTime();
+          c.pos.y += AMPLITUDE * math::sin(FREQUENCY * (c.pos.x + c.acceleration)) * rl::getFrameTime();
          
          break;
 

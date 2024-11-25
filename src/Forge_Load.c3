@@ -68,14 +68,18 @@ fn SoundMap loadSoundMap(){
 	 Sound poopSound = rl::loadSound("resources/sounds/poop.wav");
 	 Sound logoSound = rl::loadSound("resources/sounds/logo.wav");
 	 Sound eatBug = rl::loadSound("resources/sounds/eat_bug.wav");
+   Sound bird = rl::loadSound("resources/sounds/bird.wav");
+   Sound cactus = rl::loadSound("resources/sounds/cactus_impact.wav");
    
    temp.set("jump",jump);
-   temp.set("moving",moving);
+   temp.set("armadillo",moving);
    temp.set("pause",pause);
    temp.set("unpause",unpause);
-   temp.set("poopSound",poopSound);
+   temp.set("poop",poopSound);
    temp.set("logoSound",logoSound);
    temp.set("eatBug",eatBug);
+   temp.set("bird",bird);
+   temp.set("cactus",cactus);
 
    return temp;
 }

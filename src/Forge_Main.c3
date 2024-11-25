@@ -41,7 +41,7 @@ fn int main() {
 	rl::initAudioDevice();
 	defer rl::closeAudioDevice();
 	rl::setTargetFPS(FPS_CAP);
-	forge_game::toggle_fullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
+	forge_game::toggleFullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
 
 	//asset loading
 	TexMap tMap = forge_load::loadTexMap();
@@ -63,11 +63,11 @@ fn int main() {
 	
 
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
-	Construct player = forge_game::forgeConstruct(PLAYER,"armadillo",{400,500},tMap,sMap,2,6);
-	Construct poopShot = forge_game::forgeConstruct(PROJECTILE_POOP,"poop",{0,0},tMap,sMap,1);
+	Construct player = forge_game::forgeConstruct(PLAYER,"armadillo",{100,1025},&tMap,&sMap,2,6);
+	Construct poopShot = forge_game::forgeConstruct(PROJECTILE_POOP,"poop",{0,0},&tMap,&sMap,1);
 
-	//-----------------------------------------------------------------------------
-	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"Bird",{1600,800},tMap,sMap,2);
+	//-----------------------------------------------------------------------------`
+	Construct bird = forge_game::forgeConstruct(ENEMEY_FLY,"bird",{1600,800},&tMap,&sMap,2);
 	/*
 	Construct bird2 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird2", tMap.get("bird")!!, {1200,800}, 2);
 	Construct bird3 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird3", tMap.get("bird")!!, {800,800}, 2);
@@ -152,9 +152,7 @@ fn int main() {
 		  			state = PAUSE;
 		  			rl::playSound(sMap.get("pause")!!);
 		  		}
-		  		if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(sMap.get("moving")!!);}
-		  		if (rl::isKeyPressed(rl::KEY_RIGHT)) {rl::playSound(sMap.get("moving")!!);}
-		  		if (rl::isKeyPressed(rl::KEY_DOWN)) {rl::playSound(sMap.get("poopSound")!!);}
+		  			if(rl::isKeyPressed(rl::KEY_SPACE)) {rl::playSound(sMap.get("jump")!!);}
 		  		
 				
 					//check Collisions
