@@ -19,9 +19,9 @@ fn bool checkCollision(Construct* a, Construct* b) {
     int boffset @noinit;
     if (a.type == PROJECTILE_POOP) {aoffset = POOP_SHOT_OFFSET;}
     if (a.type == PLAYER) {aoffset = PLAYER_OFFSET;}
-    if (b.type == OBS && b.name == "Boulder") {boffset = ROCK_OFFSET;}
-    if (b.type == OBS && b.name == "Cactus") {boffset = CACTUS_OFFSET;}
-    if (b.type == ENEMY_GROUND && b.name == "Turtle") {boffset = TURTLE_OFFSET;}
+    if (b.type == OBS && b.name == "boulder") {boffset = ROCK_OFFSET;}
+    if (b.type == OBS && b.name == "cactus") {boffset = CACTUS_OFFSET;}
+    if (b.type == ENEMY_GROUND && b.name == "turtle") {boffset = TURTLE_OFFSET;}
     
     if (a.pos.x < b.pos.x + b.texture.width - boffset  &&
         a.pos.x + a.texture.width - aoffset  > b.pos.x &&

@@ -41,7 +41,7 @@ fn TexMap loadTexMap(){
    temp.set("player",playerTex);
    temp.set("sun",sunTex);
    temp.set("cactus",cactus1Tex);
-   temp.set("bigBoulder",bigBoulderTex);
+   temp.set("boulder",bigBoulderTex);
    temp.set("bird",birdTex);
    temp.set("ant",antTex);
    temp.set("turtle",turtleTex);

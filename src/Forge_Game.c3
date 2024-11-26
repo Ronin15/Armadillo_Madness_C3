@@ -1,6 +1,7 @@
 module forge_game;
 import forge_main;
 import forge_load;
+import forge_events;
 import raylib5::rl;
 import std::io; 
 import std::collections::map;
@@ -78,22 +79,45 @@ fn ConstructType getRandomType(){
    return (ConstructType)(rand(max - min + 1) + min);
 }
 
-//fn String getRandomName (){}
+fn String getRandomConstructName (ConstructType type){
+
+   String[*] groundTypes = {"ant","turtle"};
+   String[*] flyingTypes = {"bird","beatle"};
+   String[*] obsticlesTypes = {"cactus","boulder"};
+
+   int gLength = groundTypes.len;
+   int fLength = flyingTypes.len;
+   int oLength = obsticlesTypes.len; 
+
+      if (type == ConstructType.ENEMY_GROUND){
+      int index = forge_events::getRand(0, gLength - 1);
+      return groundTypes[index];
+      }else if (type == ConstructType.ENEMEY_FLY){
+      int index = forge_events::getRand(0, fLength - 1);
+      return flyingTypes[index];
+      }else{
+      int index = forge_events::getRand(0, oLength - 1);
+      return obsticlesTypes[index];
+      }   
+   }
 
 
 //creates game Entity
-fn Construct forgeConstruct(String name, Vector2 pos, TexMap *tMap, SoundMap *sMap, int maxFrames = 2, int lives = 2) {
+fn Construct forgeConstruct( Vector2 pos, TexMap *tMap, SoundMap *sMap, String name = "default", int maxFrames = 2, int lives = 2) {
     
     Construct c;
     if (name == "player"){ 
       c.type = PLAYER;
+      c.name = name;
    }else if(name == "poop"){
       c.type = PROJECTILE_POOP;
+      c.name = name;
    }else{
       c.type = getRandomType();
+      c.name = getRandomConstructName(c.type);
    }
+   
     c.pos = pos;
-    c.name = name;
     c.texture = tMap.get(name)!!;
     c.sound = sMap.get(name)!!;  
     c.gravity = game_gravity;
@@ -111,7 +135,7 @@ fn Construct forgeConstruct(String name, Vector2 pos, TexMap *tMap, SoundMap *sM
     c.isProjectileActive = false;
     c.expired = true;
     c.invlunerable = false;
-
+io::printfn("name -> %s  type -> %s  texture -> %s!",c.name,c.type,c.texture);
     return  c;
 }
 
@@ -203,8 +227,8 @@ fn void updateConstruct(Construct *c) {
 
          case OBS:
           //io::printfn("OBS update reached");
-         if (c.name == "Cactus") {c.groundLevel = groundLevel - 106;}
-         if (c.name == "Boulder"){c.groundLevel = groundLevel - 55 ;}
+         if (c.name == "cactus") {c.groundLevel = groundLevel - 106;}
+         if (c.name == "boulder"){c.groundLevel = groundLevel - 55 ;}
           c.vel.y += c.gravity * rl::getFrameTime();
           c.pos.y += c.vel.y * rl::getFrameTime();
           c.pos.x -= (c.friction + OBS_SOFFSET) * rl::getFrameTime(); 

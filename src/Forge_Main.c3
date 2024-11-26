@@ -1,5 +1,5 @@
-module forge_main;
 //Forge modules---------------------
+module forge_main;
 import forge_game;
 import forge_load;
 import forge_events;
@@ -9,7 +9,7 @@ import forge_demo;
 import raylib5::rl;
 //C3 standard modules--------------
 import std::io;
-import std::collections::map;
+//import std::collections::map;
 //import std::collections::list;
 
 //Game Consts---------------------------------
@@ -63,11 +63,11 @@ fn int main() {
 	
 
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
-	Construct player = forge_game::forgeConstruct("player",{100,950},&tMap,&sMap,2,6);
-	Construct poopShot = forge_game::forgeConstruct("poop",{0,0},&tMap,&sMap,1);
+	Construct player = forge_game::forgeConstruct({100,950},&tMap,&sMap,"player",2,6);
+	Construct poopShot = forge_game::forgeConstruct({0,0},&tMap,&sMap,"poop",1);
 
 	//-----------------------------------------------------------------------------`
-	Construct bird = forge_game::forgeConstruct("bird",{1600,800},&tMap,&sMap,2);
+	//Construct bird = forge_game::forgeConstruct("bird",{1600,800},&tMap,&sMap,2);
 	/*
 	Construct bird2 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird2", tMap.get("bird")!!, {1200,800}, 2);
 	Construct bird3 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird3", tMap.get("bird")!!, {800,800}, 2);
@@ -78,8 +78,8 @@ fn int main() {
 	Construct beatle = forge_game::forgeConstruct(ENEMEY_FLY,"Beatle", tMap.get("beatle")!!, {1800,800}, 2);
 	*/
 	
-	Construct[*] constructs =  {bird};//bird2,bird3,cactus,bigBoulder,ant,turtle,beatle}
-	Construct[*] demoConstructs =  {bird};//,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle
+	Construct[*] constructs =  {forge_game::forgeConstruct({1600,800},&tMap,&sMap,"default",2)};//bird2,bird3,cactus,bigBoulder,ant,turtle,beatle}
+	Construct[*] demoConstructs =  {forge_game::forgeConstruct({1600,800},&tMap,&sMap,"default",2)};//,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle
 
 	io::printfn("Player Objects created");
     
