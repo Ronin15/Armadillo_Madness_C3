@@ -61,7 +61,6 @@ const MAX_CONSTRUCTS = 100;
     bool expired;
 }
 
-Construct[MAX_CONSTRUCTS] constructs;
 
 //GAME Functions ------------------------------------------------------------
 //checks and toggles fullscreen if screen is smaller or equal to 1920 by 1080
@@ -90,36 +89,50 @@ fn String getRandomConstructName (ConstructType type){
    int oLength = obsticlesTypes.len; 
 
       if (type == ConstructType.ENEMY_GROUND){
-      int index = forge_events::getRand(0, gLength - 1);
+      int index = forge_events::getRand(0, gLength);
       return groundTypes[index];
       }else if (type == ConstructType.ENEMEY_FLY){
-      int index = forge_events::getRand(0, fLength - 1);
+      int index = forge_events::getRand(0, fLength);
       return flyingTypes[index];
       }else{
-      int index = forge_events::getRand(0, oLength - 1);
+      int index = forge_events::getRand(0, oLength);
       return obsticlesTypes[index];
       }   
    }
 
 
 //creates game Entity
-fn Construct forgeConstruct( Vector2 pos, TexMap *tMap, SoundMap *sMap, String name = "default", int maxFrames = 2, int lives = 2) {
+fn Construct forgeConstruct(TexMap *tMap, SoundMap *sMap, String name) {
     
     Construct c;
     if (name == "player"){ 
       c.type = PLAYER;
       c.name = name;
-   }else if(name == "poop"){
+      c.pos = {100,950};
+      c.texture = tMap.get(name)!!;
+      c.sound = sMap.get(name)!!;
+      c.lives = 6;
+      c.maxFrames = 2; 
+    }else if(name == "poop"){
       c.type = PROJECTILE_POOP;
       c.name = name;
-   }else{
+      c.pos = {0,0};
+      c.texture = tMap.get(name)!!;
+      c.sound = sMap.get(name)!!; 
+      c.lives = 1;
+      c.maxFrames = 1;
+    }else {
       c.type = getRandomType();
       c.name = getRandomConstructName(c.type);
+      c.pos = {2000,1400};
+      c.texture = tMap.get(name)!!;
+      c.sound = sMap.get(name)!!;
+      c.lives = 2;
+      c.maxFrames = 2;
    }
    
-    c.pos = pos;
-    c.texture = tMap.get(name)!!;
-    c.sound = sMap.get(name)!!;  
+    //c.pos = pos;
+     
     c.gravity = game_gravity;
     c.jumpVelocity = MOVE_VELOCITY;
     c.groundLevel = groundLevel; 
@@ -128,14 +141,13 @@ fn Construct forgeConstruct( Vector2 pos, TexMap *tMap, SoundMap *sMap, String n
     c.name = name;
     c.frameLength = 0.1;                
     c.currentFrame = 1;
-    c.maxFrames = maxFrames;
-    c.lives = lives;
+    
     c.texFlip = false;
     c.isDead = false;
     c.isProjectileActive = false;
     c.expired = true;
     c.invlunerable = false;
-io::printfn("name -> %s  type -> %s  texture -> %s!",c.name,c.type,c.texture);
+io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
     return  c;
 }
 

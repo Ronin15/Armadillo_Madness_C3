@@ -20,6 +20,7 @@ const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness";
 const int MAX_CONSTRUCTS = 100;
+Construct[MAX_CONSTRUCTS] constructs;
 
 enum GameState {
 	LOGO,
@@ -63,8 +64,8 @@ fn int main() {
 	
 
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
-	Construct player = forge_game::forgeConstruct({100,950},&tMap,&sMap,"player",2,6);
-	Construct poopShot = forge_game::forgeConstruct({0,0},&tMap,&sMap,"poop",1);
+	Construct player = forge_game::forgeConstruct(&tMap,&sMap,"player");
+	Construct poopShot = forge_game::forgeConstruct(&tMap,&sMap,"poop");
 
 	//-----------------------------------------------------------------------------`
 	//Construct bird = forge_game::forgeConstruct("bird",{1600,800},&tMap,&sMap,2);
@@ -77,9 +78,10 @@ fn int main() {
 	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", tMap.get("turtle")!!,{2000,1400}, 2, 3);
 	Construct beatle = forge_game::forgeConstruct(ENEMEY_FLY,"Beatle", tMap.get("beatle")!!, {1800,800}, 2);
 	*/
-	
-	Construct[*] constructs =  {forge_game::forgeConstruct({1600,800},&tMap,&sMap,"default",2)};//bird2,bird3,cactus,bigBoulder,ant,turtle,beatle}
-	Construct[*] demoConstructs =  {forge_game::forgeConstruct({1600,800},&tMap,&sMap,"default",2)};//,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle
+	foreach (construct : constructs){
+	Construct = forge_game::forgeConstruct(&tMap,&sMap,"default"); //bird2,bird3,cactus,bigBoulder,ant,turtle,beatle}
+	}
+	//Construct[*] demoConstructs =  {forge_game::forgeConstruct(&tMap,&sMap,"default")};//,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle
 
 	io::printfn("Player Objects created");
     
@@ -302,13 +304,13 @@ fn int main() {
 				}
 
 
-				//player not updated in demo because demo fucntions take over the update role.
+				/*/player not updated in demo because demo fucntions take over the update role.
 				forge_game::updateConstruct(&poopShot);
 					
 					foreach ( &demoConstruct : demoConstructs){
 								forge_game::updateConstruct(demoConstruct);		
 						}	
-
+				*/
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
@@ -323,11 +325,11 @@ fn int main() {
 				//draw objects
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
-					
+				/*	
 					foreach ( &demoConstruct : demoConstructs){
 								forge_game::drawAnitmatedConstruct(demoConstruct);		
 						}	
-				
+				*/
 				forge_events::rainFall();
 			
 			case CREDITS:
