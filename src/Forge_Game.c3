@@ -20,8 +20,6 @@ const int MAX_LIVES = 6;
 const float OBS_SOFFSET = 30.0;
 const float ANT_SOFFSET = 60.0;
 
-const MAX_CONSTRUCTS = 100;
-
 
 
 //GAME Structures ---------------------------------------------------------
@@ -74,80 +72,126 @@ fn void toggleFullScreen (int gsWidth, int gsHeight){
 fn ConstructType getRandomType(){
    int min = (int)ConstructType.ENEMY_GROUND;
    int max = (int)ConstructType.OBS;
-
-   return (ConstructType)(rand(max - min + 1) + min);
+//io::printfn("max -> %s  min -> %s !",max,min);
+   return (ConstructType)rand_in_range(min,max);
 }
 
 fn String getRandomConstructName (ConstructType type){
-
+   
    String[*] groundTypes = {"ant","turtle"};
    String[*] flyingTypes = {"bird","beatle"};
    String[*] obsticlesTypes = {"cactus","boulder"};
 
-   int gLength = groundTypes.len;
-   int fLength = flyingTypes.len;
-   int oLength = obsticlesTypes.len; 
+   int gLength = groundTypes.len - 1;
+   int fLength = flyingTypes.len - 1;
+   int oLength = obsticlesTypes.len - 1; 
 
       if (type == ConstructType.ENEMY_GROUND){
       int index = forge_events::getRand(0, gLength);
+     // io::printfn("name -> %s  type -> %s  texture -> %s !",groundTypes[index],type);
       return groundTypes[index];
-      }else if (type == ConstructType.ENEMEY_FLY){
+      }
+      
+      if (type == ConstructType.ENEMEY_FLY){
       int index = forge_events::getRand(0, fLength);
+    //  io::printfn("name -> %s  type -> %s  texture -> %s !",flyingTypes[index],type);
       return flyingTypes[index];
-      }else{
+      }
+      
+      if (type == ConstructType.OBS){
       int index = forge_events::getRand(0, oLength);
+      //io::printfn("name -> %s  type -> %s  texture -> %s !",obsticlesTypes[index],type);
       return obsticlesTypes[index];
-      }   
+      }
+
+      io::printfn("No Type Found! %s",type);
+      return "No Type Found!";
    }
 
 
-//creates game Entity
-fn Construct forgeConstruct(TexMap *tMap, SoundMap *sMap, String name) {
-    
-    Construct c;
-    if (name == "player"){ 
-      c.type = PLAYER;
-      c.name = name;
-      c.pos = {100,950};
-      c.texture = tMap.get(name)!!;
-      c.sound = sMap.get(name)!!;
-      c.lives = 6;
-      c.maxFrames = 2; 
-    }else if(name == "poop"){
+fn Construct forgeCronstructProjectile(TexMap *tMap, SoundMap *sMap) {
+
+      Construct c;
+
       c.type = PROJECTILE_POOP;
-      c.name = name;
+      c.name = "poop";
       c.pos = {0,0};
-      c.texture = tMap.get(name)!!;
-      c.sound = sMap.get(name)!!; 
+      c.texture = tMap.get(c.name)!!;
+      c.sound = sMap.get(c.name)!!; 
       c.lives = 1;
       c.maxFrames = 1;
-    }else {
-      c.type = getRandomType();
-      c.name = getRandomConstructName(c.type);
-      c.pos = {2000,1400};
-      c.texture = tMap.get(name)!!;
-      c.sound = sMap.get(name)!!;
-      c.lives = 2;
+      c.gravity = game_gravity;
+      c.jumpVelocity = MOVE_VELOCITY;
+      c.groundLevel = groundLevel; 
+      c.acceleration = ACCELERATION;
+      c.friction = FRICTION;
+      c.frameLength = 0.1;                
+      c.currentFrame = 1;
+      c.texFlip = false;
+      c.isDead = false;
+      c.isProjectileActive = false;
+      c.expired = true;
+      c.invlunerable = false; 
+io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
+      return c;
+}
+
+
+fn Construct forgeCronstructPlayer(TexMap *tMap, SoundMap *sMap) {
+
+      Construct c;
+
+      c.type = PLAYER;
+      c.name = "player";
+      c.pos = {100,950};
+      c.texture = tMap.get(c.name)!!;
+      c.sound = sMap.get(c.name)!!;
+      c.lives = 6;
       c.maxFrames = 2;
-   }
+      c.gravity = game_gravity;
+      c.jumpVelocity = MOVE_VELOCITY;
+      c.groundLevel = groundLevel; 
+      c.acceleration = ACCELERATION;
+      c.friction = FRICTION;
+      c.frameLength = 0.1;                
+      c.currentFrame = 1;
+      c.texFlip = false;
+      c.isDead = false;
+      c.isProjectileActive = false;
+      c.expired = true;
+      c.invlunerable = false; 
+io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
+      return c;
+}
+
+//creates game objects
+fn Construct forgeConstructEnemy(TexMap *tMap, SoundMap *sMap) {
+    
+    Construct c;
    
-    //c.pos = pos;
-     
+    c.type = getRandomType();
+    c.name = (String)getRandomConstructName(c.type);
+    c.pos = {rand_in_range(2000,3000),rand_in_range(1000,1400)};
+    c.texture = tMap.get(c.name)!!;
+   // c.sound = sMap.get(c.name)!!;  NEED TO ADD SOUNDS FOR ALL TYPES
+    c.lives = 2;
+    if (c.type == OBS ) {
+      c.maxFrames = 1;
+    }else{ c.maxFrames = 2;
+      } 
     c.gravity = game_gravity;
     c.jumpVelocity = MOVE_VELOCITY;
     c.groundLevel = groundLevel; 
     c.acceleration = ACCELERATION;
     c.friction = FRICTION;
-    c.name = name;
     c.frameLength = 0.1;                
     c.currentFrame = 1;
-    
     c.texFlip = false;
     c.isDead = false;
     c.isProjectileActive = false;
     c.expired = true;
     c.invlunerable = false;
-io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
+//io::printfn("name -> %s  type -> %s  texture -> %s Sound -> %s!",c.name,c.type,c.texture,c.sound);
     return  c;
 }
 

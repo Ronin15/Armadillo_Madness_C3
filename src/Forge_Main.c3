@@ -20,6 +20,7 @@ const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness";
 const int MAX_CONSTRUCTS = 100;
+
 Construct[MAX_CONSTRUCTS] constructs;
 
 enum GameState {
@@ -34,7 +35,7 @@ enum GameState {
 }
 
 
-fn int main() {	
+fn void main(String[] args) {	
 
 	//init Game Systems
 	rl::initWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
@@ -64,8 +65,8 @@ fn int main() {
 	
 
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
-	Construct player = forge_game::forgeConstruct(&tMap,&sMap,"player");
-	Construct poopShot = forge_game::forgeConstruct(&tMap,&sMap,"poop");
+	Construct player = forge_game::forgeCronstructPlayer(&tMap,&sMap);
+	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap,&sMap);
 
 	//-----------------------------------------------------------------------------`
 	//Construct bird = forge_game::forgeConstruct("bird",{1600,800},&tMap,&sMap,2);
@@ -78,12 +79,12 @@ fn int main() {
 	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", tMap.get("turtle")!!,{2000,1400}, 2, 3);
 	Construct beatle = forge_game::forgeConstruct(ENEMEY_FLY,"Beatle", tMap.get("beatle")!!, {1800,800}, 2);
 	*/
-	foreach (construct : constructs){
-	Construct = forge_game::forgeConstruct(&tMap,&sMap,"default"); //bird2,bird3,cactus,bigBoulder,ant,turtle,beatle}
+	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
+	constructs[i] = forge_game::forgeConstructEnemy(&tMap,&sMap); //bird2,bird3,cactus,bigBoulder,ant,turtle,beatle}
 	}
 	//Construct[*] demoConstructs =  {forge_game::forgeConstruct(&tMap,&sMap,"default")};//,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle
 
-	io::printfn("Player Objects created");
+	io::printfn("Objects created");
     
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = MAIN;
@@ -339,5 +340,5 @@ fn int main() {
    			accumulator -= TIME_STEP;
 	}
 
-	return 0;
+	//return 0;
 }
