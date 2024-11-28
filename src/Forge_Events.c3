@@ -14,16 +14,11 @@ struct RainDrop {
 
 RainDrop[MAX_RAIN_DROPS] rainDrops;
 
-//helper function
-fn int getRand(int min, int max) {
-    return random::rand(max - min + 1) + min;
-}
-
 fn void rainFall(){
 
     foreach (&rainDrop : rainDrops){
-        rainDrop.pos = { getRand(0,forge_main::WINDOW_WIDTH), getRand(0,forge_main::WINDOW_HEIGHT)}; 
-        rainDrop.vel = { 0,  getRand(2,10) }; 
+        rainDrop.pos = { rand_in_range(0,forge_main::WINDOW_WIDTH), rand_in_range(0,forge_main::WINDOW_HEIGHT)}; 
+        rainDrop.vel = { 0,  rand_in_range(2,10) }; 
     }
         // Update rain drops 
         foreach (&rainDrop : rainDrops){
@@ -31,8 +26,8 @@ fn void rainFall(){
         
         // Reset rain drop pos if moves off screen 
         if (rainDrop.pos.y > forge_main::WINDOW_HEIGHT) {
-            rainDrop.pos.x =  getRand(0,forge_main::WINDOW_WIDTH); 
-            rainDrop.pos.y =  getRand(0,forge_main::WINDOW_HEIGHT); 
+            rainDrop.pos.x =  rand_in_range(0,forge_main::WINDOW_WIDTH); 
+            rainDrop.pos.y =  rand_in_range(0,forge_main::WINDOW_HEIGHT); 
         } 
     }
 

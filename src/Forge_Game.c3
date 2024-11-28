@@ -1,7 +1,6 @@
 module forge_game;
 import forge_main;
 import forge_load;
-import forge_events;
 import raylib5::rl;
 import std::io; 
 import std::collections::map;
@@ -31,8 +30,6 @@ const float ANT_SOFFSET = 60.0;
    OBS,
 }
 
- 
- 
  struct Construct {
     
     Texture2D texture;
@@ -87,19 +84,19 @@ fn String getRandomConstructName (ConstructType type){
    int oLength = obsticlesTypes.len - 1; 
 
       if (type == ConstructType.ENEMY_GROUND){
-      int index = forge_events::getRand(0, gLength);
+      int index = rand_in_range(0, gLength);
      // io::printfn("name -> %s  type -> %s  texture -> %s !",groundTypes[index],type);
       return groundTypes[index];
       }
       
       if (type == ConstructType.ENEMEY_FLY){
-      int index = forge_events::getRand(0, fLength);
+      int index = rand_in_range(0, fLength);
     //  io::printfn("name -> %s  type -> %s  texture -> %s !",flyingTypes[index],type);
       return flyingTypes[index];
       }
       
       if (type == ConstructType.OBS){
-      int index = forge_events::getRand(0, oLength);
+      int index = rand_in_range(0, oLength);
       //io::printfn("name -> %s  type -> %s  texture -> %s !",obsticlesTypes[index],type);
       return obsticlesTypes[index];
       }
