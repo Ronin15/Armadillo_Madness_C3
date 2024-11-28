@@ -102,7 +102,7 @@ fn String getRandomConstructName (ConstructType type){
       }
 
       io::printfn("No Type Found! %s",type);
-      return "No Type Found!";
+      return "default"; // TO DO ADD DEFAULT TEX
    }
 
 
@@ -168,7 +168,7 @@ fn Construct forgeConstructEnemy(TexMap *tMap, SoundMap *sMap) {
    
     c.type = getRandomType();
     c.name = (String)getRandomConstructName(c.type);
-    c.pos = {rand_in_range(2000,3000),rand_in_range(1000,1400)};
+    c.pos = {(float)rand_in_range(2000,20000)+ 100,(float)rand_in_range(1000,1400) + 40};
     c.texture = tMap.get(c.name)!!;
    // c.sound = sMap.get(c.name)!!;  NEED TO ADD SOUNDS FOR ALL TYPES
     c.lives = 2;

@@ -22,6 +22,7 @@ const String GAME_NAME = "Armadillo Madness";
 const int MAX_CONSTRUCTS = 100;
 
 Construct[MAX_CONSTRUCTS] constructs;
+Construct[MAX_CONSTRUCTS] demoConstructs;
 
 enum GameState {
 	LOGO,
@@ -80,7 +81,11 @@ fn void main(String[] args) {
 	Construct beatle = forge_game::forgeConstruct(ENEMEY_FLY,"Beatle", tMap.get("beatle")!!, {1800,800}, 2);
 	*/
 	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
-	constructs[i] = forge_game::forgeConstructEnemy(&tMap,&sMap); //bird2,bird3,cactus,bigBoulder,ant,turtle,beatle}
+	constructs[i] = forge_game::forgeConstructEnemy(&tMap,&sMap); 
+	}
+
+	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
+	demoConstructs[i] = forge_game::forgeConstructEnemy(&tMap,&sMap); 
 	}
 	//Construct[*] demoConstructs =  {forge_game::forgeConstruct(&tMap,&sMap,"default")};//,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle
 
@@ -132,7 +137,7 @@ fn void main(String[] args) {
     				}
 					
 					frameCounter += 1;
-					if (frameCounter > 5000) {
+					if (frameCounter > 900) {
 							state = DEMO;
 							frameCounter = 0;
 					}
@@ -288,9 +293,8 @@ fn void main(String[] args) {
 				//Demo Loop------------------------------------------------------------------------------
 				frameCounter += 1;
 				
-				if(frameCounter < 900){forge_demo::moveRight(&player);
+				if(frameCounter < 900 ){forge_demo::moveRight(&player);
 				
-				//forge_demo::jump(&player);
 				}
 				if(frameCounter > 900){
 					forge_demo::moveLeft(&player);
@@ -305,13 +309,13 @@ fn void main(String[] args) {
 				}
 
 
-				/*/player not updated in demo because demo fucntions take over the update role.
+				//player not updated in demo because demo fucntions take over the update role.
 				forge_game::updateConstruct(&poopShot);
 					
 					foreach ( &demoConstruct : demoConstructs){
 								forge_game::updateConstruct(demoConstruct);		
 						}	
-				*/
+				
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
@@ -326,11 +330,11 @@ fn void main(String[] args) {
 				//draw objects
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
-				/*	
+					
 					foreach ( &demoConstruct : demoConstructs){
 								forge_game::drawAnitmatedConstruct(demoConstruct);		
 						}	
-				*/
+				
 				forge_events::rainFall();
 			
 			case CREDITS:

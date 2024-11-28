@@ -20,10 +20,11 @@ fn void moveRight(Construct* c){
             c.isGrounded = true;
             c.pos.y = c.groundLevel;
             c.vel.y = 0.0;
-            c.pos.x -= c.friction * rl::getFrameTime(); 
+            c.pos.x -= c.friction * rl::getFrameTime();
+            c.friction = 0; 
         }
 
-	 c.pos.x += c.acceleration * rl::getFrameTime();
+	     c.pos.x += c.acceleration * rl::getFrameTime();
          c.texFlip = false;
         
          c.vel.y += c.gravity * rl::getFrameTime();
