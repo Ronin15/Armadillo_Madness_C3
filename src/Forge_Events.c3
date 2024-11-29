@@ -5,7 +5,7 @@ import raylib5::rl;
 import forge_game;
 import forge_main;
 
-const int MAX_RAIN_DROPS = 50;
+const int MAX_RAIN_DROPS = 100;
 
 struct RainDrop { 
     Vector2 pos; 
