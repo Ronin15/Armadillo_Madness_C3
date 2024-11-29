@@ -34,3 +34,24 @@ fn bool checkCollision(Construct* a, Construct* b) {
     }
     return false;
 }
+
+fn void resolveCollision(Construct* a, Construct* b) { 
+    float overlapX = (a.pos.x + a.texture.width / 2) - (b.pos.x + b.texture.width / 2); 
+    float overlapY = (a.pos.y + a.texture.height / 2) - (b.pos.y + b.texture.height / 2); 
+    
+    if (math::abs(overlapX) < math::abs(overlapY)) {
+         // Resolve X-axis collision 
+        if (overlapX > 0) {
+             a.pos.x += (b.pos.x + b.texture.width - a.pos.x); 
+            } else {
+                a.pos.x -= (a.pos.x + a.pos.texture.width - b.pod.x);
+                }
+                } 
+     else {
+        // Resolve Y-axis collision 
+        if (overlapY > 0) {
+            a.pos.y += (b.pos.y + b.texture.height - a.pos.yy); 
+                 } else {
+                     a.pos.y -= (a.pos.y + a.texture.height - b.pos.y); }
+             }
+}
