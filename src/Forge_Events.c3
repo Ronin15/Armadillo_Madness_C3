@@ -36,6 +36,12 @@ fn void rainFall(){
     } 
 }
 
+fn void drawLight(int x, int y, float radius, Color color) { 
+rl::beginBlendMode((int)rl::BlendMode.ADDITIVE);
+defer rl::endBlendMode();
+rl::drawCircleGradient(x, y, radius, color, rl::BLANK); 
+}
+
 
 fn void fireWorks(){}
 
