@@ -257,7 +257,7 @@ fn void updateConstruct(Construct *c) {
 
          case ENEMY_GROUND:           
           // io::printfn("ENEMY_GROUND update reached");
-          if (c.name == "ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * rl::getFrameTime() ;}
+          if (c.name == "ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * rl::getFrameTime();c.groundLevel = groundLevel + 5;}
           if (c.name == "turtle") {c.pos.x -= c.friction * rl::getFrameTime();c.groundLevel = groundLevel + 15;} //ground level hit box adjust
            
            c.pos.y += c.vel.y * rl::getFrameTime();
