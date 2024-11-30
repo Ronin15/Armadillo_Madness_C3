@@ -34,7 +34,7 @@ fn bool checkCollision(Construct* a, Construct* b) {
     }
     return false;
 }
-
+/*
 fn void resolveCollision(Construct* a, Construct* b) { 
     float overlapX = (a.pos.x + a.texture.width / 2) - (b.pos.x + b.texture.width / 2); 
     float overlapY = (a.pos.y + a.texture.height / 2) - (b.pos.y + b.texture.height / 2); 
@@ -55,3 +55,4 @@ fn void resolveCollision(Construct* a, Construct* b) {
                      a.pos.y -= (a.pos.y + a.texture.height - b.pos.y); }
              }
 }
+*/
