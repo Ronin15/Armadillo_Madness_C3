@@ -195,9 +195,9 @@ fn void main(String[] args) {
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
 				//rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 
-				forge_events::drawLight(1750, 150, 300, rl::fade(rl::YELLOW, 0.7)); 
-				forge_events::drawLight(1750, 150, 200, rl::fade(rl::WHITE, 0.5));
-				forge_events::drawLight(1750, 150, 100, rl::fade(rl::ORANGE, 0.3));
+				forge_events::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
+				forge_events::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
+				forge_events::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
 
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
