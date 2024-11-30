@@ -19,7 +19,7 @@ const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness";
-const int MAX_CONSTRUCTS = 50;
+const int MAX_CONSTRUCTS = 75;
 
 Construct[MAX_CONSTRUCTS] constructs;
 Construct[MAX_CONSTRUCTS] demoConstructs;
@@ -92,8 +92,8 @@ fn void main(String[] args) {
 	io::printfn("Objects created");
     
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
-	//rl::playSound(sMap.get("logoSound")!!);
+	GameState state = LOGO;
+	rl::playSound(sMap.get("logoSound")!!);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
 	  	float currentTime = (float)rl::getTime(); 
@@ -120,7 +120,7 @@ fn void main(String[] args) {
 				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
 				rl::drawText("*{}==> Forge_Engine <=={}*", 790, 790, 20, rl::LIGHTGRAY);
 					frameCounter += 1;
-					if (frameCounter > 400) {
+					if (frameCounter > 600) {
 							state = MAIN;
 							frameCounter = 0;
 					}
