@@ -19,7 +19,7 @@ const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness";
-const int MAX_CONSTRUCTS = 120;//75 good
+const int MAX_CONSTRUCTS = 100;//75 good
 
 
 Construct[MAX_CONSTRUCTS] constructs;
@@ -58,6 +58,8 @@ fn void main(String[] args) {
 	float scrollClouds = 0.0;
 	float lifeSpace = (float)tMap.get("lifeCount")!!.width + 5.0; 
 
+	float demoCounter1;
+	float demoCounter2;
 	//game time step vars
 	float accumulator;
 	float frameCounter;
@@ -80,7 +82,7 @@ fn void main(String[] args) {
 	io::printfn("Objects created");
     
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = GAME;
+	GameState state = LOGO;
 	//rl::playSound(sMap.get("logoSound")!!);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
@@ -101,7 +103,7 @@ fn void main(String[] args) {
         	case LOGO:
 				rl::clearBackground({31, 32, 34, 255});//Forge_Gray
 				rl::drawTexture(tMap.get("logo")!!, 800, 420, rl::WHITE);
-				rl::drawText("Hammer Forged Games", 580, 340, 60, rl::ORANGE);
+				rl::drawText("Hammer Forged Games", 580, 340, 60, {185,71,0,200});
 				rl::drawText("Made with", 790, 725, 20, rl::WHITE);
 				rl::drawTexture(tMap.get("raylib")!!, 910, 700, rl::WHITE);
 				rl::drawTexture(tMap.get("c3")!!, 980, 713, rl::WHITE);
@@ -275,6 +277,7 @@ fn void main(String[] args) {
 				scrollMid -= 0.6;
 				scrollClouds -= 0.3;
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
+				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
 				
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
@@ -287,23 +290,29 @@ fn void main(String[] args) {
 
 				
 				//Demo Loop------------------------------------------------------------------------------
-				frameCounter += 1;
 				
-				if(frameCounter < 900 ){forge_demo::moveRight(&player);
+				demoCounter1 += 1;
+				demoCounter2 += 1;
+				
+				if(demoCounter1 < 800 ){forge_demo::moveRight(&player);
 				
 				}
-				if(frameCounter > 900){
+				if(demoCounter1 > 800){
 					forge_demo::moveLeft(&player);
 					
-					if (frameCounter % 100 == 0){
+					if (demoCounter1 % 100 == 0){
 
 					forge_demo::jump(&player);
 					}
 				}
-				if (frameCounter > 1800){
-					frameCounter = 0;
+				if (demoCounter1 > 1600){
+					demoCounter1 = 0;
 				}
 
+				if (demoCounter2 > 12000){
+					demoCounter2 = 0;
+					state = MAIN;
+				}
 
 				//player not updated in demo because demo fucntions take over the update role.
 				forge_game::updateConstruct(&poopShot);
@@ -321,6 +330,7 @@ fn void main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+				rl::drawText("Aramadillo Madness", 680, 340, 65, {185,71,0,200});
 				forge_events::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
 				forge_events::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
 				forge_events::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));

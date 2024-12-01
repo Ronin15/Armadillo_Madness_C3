@@ -168,7 +168,7 @@ fn Construct forgeConstructEnemy(TexMap *tMap, SoundMap *sMap) {
    
     c.type = getRandomType();
     c.name = (String)getRandomConstructName(c.type);
-    c.pos = {(float)rand_in_range(2000,20850) + (float)rand_in_range(64,100),(float)rand_in_range(400,500) + (float)rand_in_range(64,100)};
+    c.pos = {(float)rand_in_range(2000,20850) + (float)rand_in_range(64,100),(float)rand_in_range(350,650) + (float)rand_in_range(64,100)};
     c.texture = tMap.get(c.name)!!;
    // c.sound = sMap.get(c.name)!!;  NEED TO ADD SOUNDS FOR ALL TYPES
     c.lives = 2;
