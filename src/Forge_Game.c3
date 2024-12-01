@@ -168,7 +168,7 @@ fn Construct forgeConstructEnemy(TexMap *tMap, SoundMap *sMap) {
    
     c.type = getRandomType();
     c.name = (String)getRandomConstructName(c.type);
-    c.pos = {(float)rand_in_range(2000,21000) + (float)rand_in_range(64,100),(float)rand_in_range(400,500) + (float)rand_in_range(64,100)};
+    c.pos = {(float)rand_in_range(2000,20850) + (float)rand_in_range(64,100),(float)rand_in_range(400,600) + (float)rand_in_range(64,100)};
     c.texture = tMap.get(c.name)!!;
    // c.sound = sMap.get(c.name)!!;  NEED TO ADD SOUNDS FOR ALL TYPES
     c.lives = 2;
@@ -272,7 +272,7 @@ fn void updateConstruct(Construct *c) {
           //io::printfn("ENEMEY_FLY update reached");
           //c.pos.y += c.acceleration * rl::getFrameTime();  
           //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
-          c.pos.x -= 200 * rl::getFrameTime();//15
+          c.pos.x -= 125 * rl::getFrameTime();//15
           c.texFlip = false;//15
           //if (c.pos.x <= 0){c.pos.x += 15.0 * rl::getFrameTime();c.texFlip = true;}
 
