@@ -79,7 +79,7 @@ fn void main(String[] args) {
 	io::printfn("Objects created");
     
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = LOGO;
 	//rl::playSound(sMap.get("logoSound")!!);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
@@ -106,6 +106,7 @@ fn void main(String[] args) {
 				rl::drawTexture(tMap.get("c3")!!, 980, 713, rl::WHITE);
 				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
 				rl::drawText("*{}==> Forge_Engine <=={}*", 790, 790, 20, rl::LIGHTGRAY);
+					forge_events::runFireWorks();
 					frameCounter += 1;
 					if (frameCounter > 600) {
 							state = MAIN;
@@ -205,7 +206,7 @@ fn void main(String[] args) {
 								forge_game::drawAnitmatedConstruct(construct);		
 						}	
 					
-					forge_events::rainFall();
+					//forge_events::rainFall();
 					forge_events::runFireWorks();
 					
 					

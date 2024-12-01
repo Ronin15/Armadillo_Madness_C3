@@ -6,12 +6,12 @@ import forge_game;
 import forge_main;
 
 const int MAX_RAINDROPS = 100;
-const int MAX_FIREWORK_P = 200;
-const int MAX_FIREWORKS = 100;
+const int MAX_FIREWORK_P = 100;
+const int MAX_FIREWORKS = 20;
 
 struct Particle { 
-    Vector2 position; 
-    Vector2 speed; 
+    Vector2 pos; 
+    Vector2 vel; 
     Color color; 
     float life; 
 } 
@@ -66,12 +66,12 @@ fn Firework forgeFireWork(){
     //init firework
     Firework f;
     f.active = true;
-    f.origin = {rand_in_range(0,forge_main::WINDOW_WIDTH),rand_in_range(0,forge_main::WINDOW_HEIGHT)};
+    f.origin = {rand_in_range(0,forge_main::WINDOW_WIDTH - 300),rand_in_range(10,300)};
     f.color = {(char)rand_in_range(0,255),(char)rand_in_range(0,255),(char)rand_in_range(0,255),255};
 
         for (int i = 0; i < MAX_FIREWORK_P; i++){
-            f.particles[i].position = f.origin;
-            f.particles[i].speed = {rand_in_range(100,200),rand_in_range(100,200)};
+            f.particles[i].pos = f.origin;
+            f.particles[i].vel = {rand_in_range(100,200),rand_in_range(100,200)};
             f.particles[i].color = f.color;
             f.particles[i].life = (float)rand_in_range(1,3);
 
@@ -86,10 +86,10 @@ fn void updateFireWorkParticles(Firework *f){
         bool particiles_expired = true;
         for (int i = 0; i < MAX_FIREWORK_P; i++){
             if(f.particles[i].life > 0){
-               f.particles[i].position.x += f.particles[i].speed.x;
-               f.particles[i].position.y += f.particles[i].speed.y;
-               f.particles[i].speed.y += 0.001;
-               f.particles[i].life -= 0.02;
+               f.particles[i].pos.x += f.particles[i].vel.x;
+               f.particles[i].pos.y += f.particles[i].vel.y;
+               f.particles[i].vel.y += 700;
+               f.particles[i].life -= 0.0002;
 
                particiles_expired = false;
         }
@@ -106,7 +106,9 @@ fn void drawFireWorkParticles(Firework *f){
 
         for (int i = 0; i < MAX_FIREWORK_P; i++){
             if (f.particles[i].life > 0){
-                rl::drawPixelV(f.particles[i].position, f.particles[i].color);
+               rl::drawPixelV(f.particles[i].pos, f.particles[i].color);
+               //rl::drawCircleV(f.particles[i].pos, 0.5, f.particles[i].color);
+               //rl::drawLineEx(f.particles[i].pos, { f.particles[i].pos.x, f.particles[i].pos.y + 10 }, 1.0, f.particles[i].color);
             }
         }
 }
