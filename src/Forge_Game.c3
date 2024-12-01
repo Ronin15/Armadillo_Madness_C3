@@ -18,6 +18,7 @@ const float FREQUENCY = 0.05;//0.05
 const int MAX_LIVES = 6;
 const float OBS_SOFFSET = 30.0;
 const float ANT_SOFFSET = 60.0;
+const float FOX_SOFFSET = 80.0;
 
 
 //GAME Structures ---------------------------------------------------------
@@ -74,9 +75,9 @@ fn ConstructType getRandomType(){
 
 fn String getRandomConstructName (ConstructType type){
    
-   String[*] groundTypes = {"ant","turtle"};
+   String[*] groundTypes = {"ant","turtle","snake","fox"};
    String[*] flyingTypes = {"bird","beatle"};
-   String[*] obsticlesTypes = {"cactus","boulder"};
+   String[*] obsticlesTypes = {"cactus","boulder","tree"};
 
    int gLength = groundTypes.len - 1;
    int fLength = flyingTypes.len - 1;
@@ -167,7 +168,7 @@ fn Construct forgeConstructEnemy(TexMap *tMap, SoundMap *sMap) {
    
     c.type = getRandomType();
     c.name = (String)getRandomConstructName(c.type);
-    c.pos = {(float)rand_in_range(2000,15000) + (float)rand_in_range(64,100),(float)rand_in_range(1000,1400) + (float)rand_in_range(64,100)};
+    c.pos = {(float)rand_in_range(2000,21000) + (float)rand_in_range(64,100),(float)rand_in_range(400,500) + (float)rand_in_range(64,100)};
     c.texture = tMap.get(c.name)!!;
    // c.sound = sMap.get(c.name)!!;  NEED TO ADD SOUNDS FOR ALL TYPES
     c.lives = 2;
@@ -187,7 +188,7 @@ fn Construct forgeConstructEnemy(TexMap *tMap, SoundMap *sMap) {
     c.isProjectileActive = false;
     c.expired = true;
     c.invlunerable = false;
-//io::printfn("name -> %s  type -> %s  texture -> %s Sound -> %s!",c.name,c.type,c.texture,c.sound);
+   io::printfn("name -> %s  type -> %s  texture -> %s Sound -> %s!",c.name,c.type,c.texture,c.sound);
     return  c;
 }
 
@@ -259,6 +260,8 @@ fn void updateConstruct(Construct *c) {
           // io::printfn("ENEMY_GROUND update reached");
           if (c.name == "ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * rl::getFrameTime();c.groundLevel = groundLevel + 5;}
           if (c.name == "turtle") {c.pos.x -= c.friction * rl::getFrameTime();c.groundLevel = groundLevel + 15;} //ground level hit box adjust
+          if (c.name == "fox") {c.pos.x -= (c.friction + FOX_SOFFSET)  * rl::getFrameTime();c.groundLevel = groundLevel + 5;} //ground level hit box adjust
+          if (c.name == "snake") {c.pos.x -= c.friction * rl::getFrameTime();c.groundLevel = groundLevel + 5;} 
            
            c.pos.y += c.vel.y * rl::getFrameTime();
            c.vel.y += c.gravity * rl::getFrameTime(); 
@@ -269,7 +272,7 @@ fn void updateConstruct(Construct *c) {
           //io::printfn("ENEMEY_FLY update reached");
           //c.pos.y += c.acceleration * rl::getFrameTime();  
           //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
-          c.pos.x -= 15.0 * rl::getFrameTime();
+          c.pos.x -= 200 * rl::getFrameTime();//15
           c.texFlip = false;//15
           //if (c.pos.x <= 0){c.pos.x += 15.0 * rl::getFrameTime();c.texFlip = true;}
 
@@ -280,6 +283,7 @@ fn void updateConstruct(Construct *c) {
          case OBS:
           //io::printfn("OBS update reached");
          if (c.name == "cactus") {c.groundLevel = groundLevel - 106;}
+         if (c.name == "tree") {c.groundLevel = groundLevel - 106;}
          if (c.name == "boulder"){c.groundLevel = groundLevel - 55 ;}
           c.vel.y += c.gravity * rl::getFrameTime();
           c.pos.y += c.vel.y * rl::getFrameTime();

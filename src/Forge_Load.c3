@@ -25,7 +25,10 @@ fn TexMap loadTexMap(){
 	 Texture2D turtleTex = rl::loadTexture("resources/images/turtle-sheet.png");
 	 Texture2D beatleTex = rl::loadTexture("resources/images/beatle-sheet.png");
 	 Texture2D poopTex = rl::loadTexture("resources/images/poop.png");
-	 Texture2D lifeCountTex = rl::loadTexture("resources/images/LifeCounter.png"); 
+	 Texture2D lifeCountTex = rl::loadTexture("resources/images/LifeCounter.png");
+   Texture2D snakeTex = rl::loadTexture("resources/images/snake-sheet.png");
+   Texture2D foxTex = rl::loadTexture("resources/images/fox-sheet.png");
+   Texture2D treeTex = rl::loadTexture("resources/images/tree.png");
 	//logo Page assets
 	 Texture2D raylibTex = rl::loadTexture("resources/images/raylib.png");
 	 Texture2D c3Tex = rl::loadTexture("resources/images/C3.png");
@@ -53,6 +56,9 @@ fn TexMap loadTexMap(){
    temp.set("logo",logoTex);
    temp.set("forge",forgeTex);
    temp.set("titlePage",titlePageTex);
+   temp.set("snake",snakeTex);
+   temp.set("fox",foxTex);
+   temp.set("tree",treeTex);
 
    return temp;
 }
