@@ -5,14 +5,32 @@ import raylib5::rl;
 import forge_game;
 import forge_main;
 
-const int MAX_RAIN_DROPS = 100;
+const int MAX_RAINDROPS = 100;
+const int MAX_FIREWORK_P = 200;
+const int MAX_FIREWORKS = 100;
+
+struct Particle { 
+    Vector2 position; 
+    Vector2 speed; 
+    Color color; 
+    float life; 
+} 
+
+ struct Firework {
+    Particle [MAX_FIREWORK_P] particles; 
+    Vector2 origin; 
+    Color color; 
+    bool active; 
+}
+
+RainDrop [MAX_RAINDROPS] rainDrops;
+Firework [MAX_FIREWORKS] fireWorks;
 
 struct RainDrop { 
     Vector2 pos; 
     Vector2 vel; 
 }
 
-RainDrop[MAX_RAIN_DROPS] rainDrops;
 
 fn void rainFall(){
 
@@ -37,13 +55,75 @@ fn void rainFall(){
 }
 
 fn void drawLight(int x, int y, float radius, Color color) { 
-rl::beginBlendMode((int)rl::BlendMode.ADDITIVE);
-defer rl::endBlendMode();
-rl::drawCircleGradient(x, y, radius, color, rl::BLANK); 
+   
+    rl::beginBlendMode((int)rl::BlendMode.ADDITIVE);
+    defer rl::endBlendMode();
+    rl::drawCircleGradient(x, y, radius, color, rl::BLANK); 
 }
 
+fn Firework forgeFireWork(){
 
-fn void fireWorks(){}
+    //init firework
+    Firework f;
+    f.active = true;
+    f.origin = {rand_in_range(0,forge_main::WINDOW_WIDTH),rand_in_range(0,forge_main::WINDOW_HEIGHT)};
+    f.color = {(char)rand_in_range(0,255),(char)rand_in_range(0,255),(char)rand_in_range(0,255),255};
+
+        for (int i = 0; i < MAX_FIREWORK_P; i++){
+            f.particles[i].position = f.origin;
+            f.particles[i].speed = {rand_in_range(100,200),rand_in_range(100,200)};
+            f.particles[i].color = f.color;
+            f.particles[i].life = (float)rand_in_range(1,3);
+
+        }
+    
+    return f;
+}
+
+fn void updateFireWorkParticles(Firework *f){
+    
+    if (!f.active) return;
+        bool particiles_expired = true;
+        for (int i = 0; i < MAX_FIREWORK_P; i++){
+            if(f.particles[i].life > 0){
+               f.particles[i].position.x += f.particles[i].speed.x;
+               f.particles[i].position.y += f.particles[i].speed.y;
+               f.particles[i].speed.y += 0.01;
+               f.particles[i].life -= 0.02;
+
+               particiles_expired = false;
+        }
+    }
+    if (particiles_expired){
+        f.active = false;
+    }
+
+}
+
+fn void drawFireWorkParticles(Firework *f){
+
+    if (!f.active) return;
+
+        for (int i = 0; i < MAX_FIREWORK_P; i++){
+            if (f.particles[i].life > 0){
+                rl::drawPixelV(f.particles[i].position, f.particles[i].color);
+            }
+        }
+}
+
+fn void runFireWorks(){
+    for( int i = 0; i < MAX_FIREWORKS; i++ ){
+        fireWorks[i] = forgeFireWork(); 
+        }
+
+        foreach (&fireWork : fireWorks){
+            updateFireWorkParticles(fireWork);
+        }
+
+         foreach (&fireWork : fireWorks){
+            drawFireWorkParticles(fireWork);
+        }
+}
 
 fn void armadilloMadness(){}
 

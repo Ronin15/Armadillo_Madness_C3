@@ -64,22 +64,10 @@ fn void main(String[] args) {
 
 	//game objects init
 	
-
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
 	Construct player = forge_game::forgeCronstructPlayer(&tMap,&sMap);
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap,&sMap);
-
-	//-----------------------------------------------------------------------------`
-	//Construct bird = forge_game::forgeConstruct("bird",{1600,800},&tMap,&sMap,2);
-	/*
-	Construct bird2 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird2", tMap.get("bird")!!, {1200,800}, 2);
-	Construct bird3 = forge_game::forgeConstruct(ENEMEY_FLY,"Bird3", tMap.get("bird")!!, {800,800}, 2);
-	Construct cactus = forge_game::forgeConstruct(OBS,"Cactus", tMap.get("cactus")!!,{1900,1400}, 1);
-	Construct bigBoulder = forge_game::forgeConstruct(OBS,"Boulder", tMap.get("bigBoulder")!!,{2800,1400},1);
-	Construct ant = forge_game::forgeConstruct(ENEMY_GROUND,"Ant", tMap.get("ant")!!,{2200,1400}, 2);
-	Construct turtle = forge_game::forgeConstruct(ENEMY_GROUND,"Turtle", tMap.get("turtle")!!,{2000,1400}, 2, 3);
-	Construct beatle = forge_game::forgeConstruct(ENEMEY_FLY,"Beatle", tMap.get("beatle")!!, {1800,800}, 2);
-	*/
+	
 	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
 	constructs[i] = forge_game::forgeConstructEnemy(&tMap,&sMap); 
 	}
@@ -87,12 +75,11 @@ fn void main(String[] args) {
 	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
 	demoConstructs[i] = forge_game::forgeConstructEnemy(&tMap,&sMap); 
 	}
-	//Construct[*] demoConstructs =  {forge_game::forgeConstruct(&tMap,&sMap,"default")};//,bird2,bird3,cactus,bigBoulder,ant,turtle,beatle
 
 	io::printfn("Objects created");
     
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = GAME;
+	GameState state = MAIN;
 	//rl::playSound(sMap.get("logoSound")!!);
 	
 	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
@@ -219,6 +206,8 @@ fn void main(String[] args) {
 						}	
 					
 					forge_events::rainFall();
+					forge_events::runFireWorks();
+					
 					
 
 			case PAUSE:
@@ -241,9 +230,9 @@ fn void main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				forge_events::drawLight(1750, 150, 300, rl::fade(rl::YELLOW, 0.7)); 
-				forge_events::drawLight(1750, 150, 200, rl::fade(rl::WHITE, 0.5));
-				forge_events::drawLight(1750, 150, 100, rl::fade(rl::ORANGE, 0.3));
+				forge_events::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
+				forge_events::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
+				forge_events::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 				
 				
@@ -332,9 +321,9 @@ fn void main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				forge_events::drawLight(1750, 150, 300, rl::fade(rl::YELLOW, 0.7)); 
-				forge_events::drawLight(1750, 150, 200, rl::fade(rl::WHITE, 0.5));
-				forge_events::drawLight(1750, 150, 100, rl::fade(rl::ORANGE, 0.3));
+				forge_events::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
+				forge_events::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
+				forge_events::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				//draw objects
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);

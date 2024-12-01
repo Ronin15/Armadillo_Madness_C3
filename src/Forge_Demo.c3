@@ -20,8 +20,7 @@ fn void moveRight(Construct* c){
             c.isGrounded = true;
             c.pos.y = c.groundLevel;
             c.vel.y = 0.0;
-            c.pos.x -= c.friction * rl::getFrameTime();
-            c.friction = 0; 
+            c.pos.x -= c.vel.x * rl::getFrameTime();
         }
 
 	     c.pos.x += c.acceleration * rl::getFrameTime();
@@ -48,7 +47,7 @@ fn void moveLeft(Construct* c){
             c.isGrounded = true;
             c.pos.y = c.groundLevel;
             c.vel.y = 0.0;
-            c.pos.x -= c.friction * rl::getFrameTime(); 
+            c.pos.x -= c.vel.x * rl::getFrameTime(); 
         }
 
         c.pos.x -= c.acceleration * rl::getFrameTime();
