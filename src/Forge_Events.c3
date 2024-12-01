@@ -88,7 +88,7 @@ fn void updateFireWorkParticles(Firework *f){
             if(f.particles[i].life > 0){
                f.particles[i].position.x += f.particles[i].speed.x;
                f.particles[i].position.y += f.particles[i].speed.y;
-               f.particles[i].speed.y += 0.01;
+               f.particles[i].speed.y += 0.001;
                f.particles[i].life -= 0.02;
 
                particiles_expired = false;
