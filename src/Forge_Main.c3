@@ -21,6 +21,7 @@ const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness";
 const int MAX_CONSTRUCTS = 75;
 
+
 Construct[MAX_CONSTRUCTS] constructs;
 Construct[MAX_CONSTRUCTS] demoConstructs;
 
@@ -106,7 +107,6 @@ fn void main(String[] args) {
 				rl::drawTexture(tMap.get("c3")!!, 980, 713, rl::WHITE);
 				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
 				rl::drawText("*{}==> Forge_Engine <=={}*", 790, 790, 20, rl::LIGHTGRAY);
-					forge_events::runFireWorks();
 					frameCounter += 1;
 					if (frameCounter > 600) {
 							state = MAIN;
@@ -206,8 +206,7 @@ fn void main(String[] args) {
 								forge_game::drawAnitmatedConstruct(construct);		
 						}	
 					
-					//forge_events::rainFall();
-					forge_events::runFireWorks();
+					forge_events::rainFall();
 					
 					
 

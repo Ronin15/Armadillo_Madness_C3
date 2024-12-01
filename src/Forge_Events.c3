@@ -6,7 +6,7 @@ import forge_game;
 import forge_main;
 
 const int MAX_RAINDROPS = 100;
-const int MAX_FIREWORK_P = 100;
+const int MAX_FIREWORK_P = 500;
 const int MAX_FIREWORKS = 20;
 
 struct Particle { 
@@ -88,7 +88,7 @@ fn void updateFireWorkParticles(Firework *f){
             if(f.particles[i].life > 0){
                f.particles[i].pos.x += f.particles[i].vel.x;
                f.particles[i].pos.y += f.particles[i].vel.y;
-               f.particles[i].vel.y += 700;
+               f.particles[i].vel.y -= 600 * rl::getFrameTime();
                f.particles[i].life -= 0.0002;
 
                particiles_expired = false;
