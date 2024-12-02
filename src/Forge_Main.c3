@@ -157,13 +157,13 @@ fn void main(String[] args) {
 					
 					foreach ( &construct : constructs){
 							if (forge_physics::checkCollision(&player,construct)){
-							forge_physics::resolveCollision(&player,construct);
+							//forge_physics::resolveCollision(&player,construct);
 							}
 							
 							if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
 								if(forge_physics::checkCollision(&poopShot,construct)){
 								
-									forge_physics::resolveCollision(&poopShot,construct);
+									//forge_physics::resolveCollision(&poopShot,construct);
 								}
 
 							}
