@@ -13,7 +13,7 @@ import std::io;
 //import std::collections::list;
 
 //Game Consts---------------------------------
-const int FPS_CAP = 60; //FPS Cap
+const int FPS_CAP = 65; //FPS Cap
 const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
