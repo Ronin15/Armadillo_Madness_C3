@@ -68,15 +68,15 @@ fn void main(String[] args) {
 	//game objects init
 	
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
-	Construct player = forge_game::forgeCronstructPlayer(&tMap,&sMap);
-	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap,&sMap);
+	Construct player = forge_game::forgeCronstructPlayer(&tMap);
+	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap);
 	
 	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
-	constructs[i] = forge_game::forgeConstructEnemy(&tMap,&sMap); 
+	constructs[i] = forge_game::forgeConstructEnemy(&tMap); 
 	}
 
 	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
-	demoConstructs[i] = forge_game::forgeConstructEnemy(&tMap,&sMap); 
+	demoConstructs[i] = forge_game::forgeConstructEnemy(&tMap); 
 	}
 
 	io::printfn("Objects created");
@@ -150,33 +150,29 @@ fn void main(String[] args) {
 		  			state = PAUSE;
 		  			rl::playSound(sMap.get("pause")!!);
 		  		}
-		  			if(rl::isKeyPressed(rl::KEY_SPACE)) {rl::playSound(sMap.get("jump")!!);}
 		  		
-				
 					//check Collisions
 					
 					foreach ( &construct : constructs){
 							if (forge_physics::checkCollision(&player,construct)){
-								forge_physics::resolveCollision(&player,construct,&sMap);
+								forge_physics::resolveCollision(&player,construct);
 							}
 							
 							if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
 								if(forge_physics::checkCollision(&poopShot,construct)){
-									rl::playSound(sMap.get("poopHit")!!);
-									poopShot.expired = true; 
-									poopShot.isProjectileActive = false;
-								}
+									forge_physics::resolveCollision(&poopShot,construct);
+							}
 						}
 					}
 				
 			
 				
 				//update game logic-------------------------------------------------------------------------------
-				forge_game::updateConstruct(&player);
-				forge_game::updateConstruct(&poopShot);
+				forge_game::updateConstruct(&player,&sMap);
+				forge_game::updateConstruct(&poopShot,&sMap);
 					
 					foreach ( &construct : constructs){
-								forge_game::updateConstruct(construct);		
+								forge_game::updateConstruct(construct,&sMap);		
 						}	
 
 						
@@ -321,10 +317,10 @@ fn void main(String[] args) {
 				}
 
 				//player not updated in demo because demo fucntions take over the update role.
-				forge_game::updateConstruct(&poopShot);
+				forge_game::updateConstruct(&poopShot,&sMap);
 					
 					foreach ( &demoConstruct : demoConstructs){
-								forge_game::updateConstruct(demoConstruct);		
+								forge_game::updateConstruct(demoConstruct,&sMap);		
 						}	
 				
 

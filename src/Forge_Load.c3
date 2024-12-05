@@ -81,7 +81,7 @@ fn SoundMap loadSoundMap(){
    Sound poopHit = rl::loadSound("resources/sounds/poop_hit.wav");
    
    temp.set("jump",jump);
-   temp.set("player",moving);
+   temp.set("moving",moving);
    temp.set("pause",pause);
    temp.set("unpause",unpause);
    temp.set("poop",poopSound);

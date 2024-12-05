@@ -1,7 +1,5 @@
 module forge_physics;
 import forge_game;
-import forge_load;
-import raylib5::rl;
 import std::io;
 import std::math;
 
@@ -39,7 +37,7 @@ fn bool checkCollision(Construct* a, Construct* b) {
 }
 
 
-fn void resolveCollision(Construct* a, Construct* b, SoundMap *sMap) { 
+fn void resolveCollision(Construct* a, Construct* b) { 
      
     
     float overlapX = (a.pos.x + (float)a.texture.width) - (b.pos.x + (float)b.texture.width); 
@@ -47,14 +45,14 @@ fn void resolveCollision(Construct* a, Construct* b, SoundMap *sMap) {
     
     if (math::abs(overlapX) > math::abs(overlapY)) {
             //horizontal collision
-         rl::playSound(sMap.get("playerHit")!!);    
-         a.vel.x *= -1; 
-        // b.vel.x *= -1; 
+         //rl::playSound(sMap.get("playerHit")!!);    
+         a.hHit = true;
          }else { 
-            // Vertical collision
-         rl::playSound(sMap.get("boing")!!); 
-         a.vel.y *= -1; 
-        // b.vel.y *= -1; 
+          // Vertical collision
+          //rl::playSound(sMap.get("boing")!!); 
+          a.vHit = true;
+          a.vel.y *= -1; 
+          b.vHit = true;
         }
 }
 //*/
