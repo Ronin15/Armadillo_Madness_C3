@@ -103,7 +103,7 @@ fn void main(String[] args) {
         	case LOGO:
 				rl::clearBackground({31, 32, 34, 255});//Forge_Gray
 				rl::drawTexture(tMap.get("logo")!!, 800, 420, rl::WHITE);
-				rl::drawText("Hammer Forged Games", 580, 340, 60, {185,71,0,200});
+				rl::drawText("Hammer Forged Games", 580, 340, 60, {185,71,0,200}); //rust orange
 				rl::drawText("Made with", 790, 725, 20, rl::WHITE);
 				rl::drawTexture(tMap.get("raylib")!!, 910, 700, rl::WHITE);
 				rl::drawTexture(tMap.get("c3")!!, 980, 713, rl::WHITE);
