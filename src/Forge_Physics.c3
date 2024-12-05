@@ -46,12 +46,15 @@ fn void resolveCollision(Construct* a, Construct* b) {
     if (math::abs(overlapX) > math::abs(overlapY)) {
             //horizontal collision
          //rl::playSound(sMap.get("playerHit")!!);    
+         
+        if(a.type == PROJECTILE_POOP){b.hHit = true;}
          a.hHit = true;
          }else { 
           // Vertical collision
           //rl::playSound(sMap.get("boing")!!); 
           a.vHit = true;
           a.vel.y *= -1; 
+          //b.vel.y *= -1;
           b.vHit = true;
         }
 }

@@ -45,6 +45,7 @@ const float FOX_SOFFSET = 80.0;
     float friction;
     float frameTimer;
     float frameLength;
+    float invulnTimer;
     int currentFrame; 
     int maxFrames; 
     int lives;
@@ -161,7 +162,8 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
       c.isDead = false;
       c.isProjectileActive = false;
       c.expired = true;
-      c.invlunerable = false; 
+      c.invlunerable = false;
+      c.invulnTimer = 0.0;
       c.hHit = false;
       c.vHit = false;
       c.bHit = false;
@@ -194,9 +196,7 @@ fn Construct forgeConstructEnemy(TexMap *tMap) {
     c.currentFrame = 1;
     c.texFlip = false;
     c.isDead = false;
-    c.isProjectileActive = false;
     c.expired = true;
-    c.invlunerable = false;
     c.hHit = false;
     c.vHit = false;
    io::printfn("name -> %s  type -> %s  texture -> %s",c.name,c.type,c.texture);
@@ -220,30 +220,34 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
       }
       
       //stationairy ground movement
-      if (c.pos.y >= c.groundLevel){
-            c.isGrounded = true;
-            c.pos.y = c.groundLevel;
-            c.vel.y = 0.0;
-            c.pos.x -= c.friction * rl::getFrameTime(); 
-        }
+      
       //swtich on construct type for specific type updates.-----------------------
       switch (c.type)
       {
          case PLAYER:
-            //io::printfn("groundLevel: %f", c.groundLevel);
+            //io::printfn("invuln Timer: %f", c.invulnTimer);
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
+            if (c.pos.y >= c.groundLevel){
+               c.isGrounded = true;
+               c.pos.y = c.groundLevel;
+               c.vel.y = 0.0;
+               c.pos.x -= c.friction * rl::getFrameTime(); 
+            }
+
+            
+            if(c.invulnTimer >= 0.0){c.invulnTimer -= 1.0;}
             if(c.vHit){c.vHit = false;rl::playSound(sMap.get("boing")!!);}
-            if(c.hHit){
+            if(c.hHit == true && c.invulnTimer <= 0){
                   c.hHit = false;
                   c.invlunerable = true;
                   rl::playSound(sMap.get("playerHit")!!);
                   c.lives -= 1;
+                  c.invulnTimer = 500.0;
                }
             if (c.bHit) {
                   c.bHit = false; 
                   rl::playSound(sMap.get("eatBug")!!);
                   c.lives += 1;
-                  c.invlunerable = true;
                }
 
             if (rl::isKeyDown(rl::KEY_LEFT)) {
@@ -279,7 +283,7 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
                rl::playSound(sMap.get("poopHit")!!);
                c.expired = true; 
                c.isProjectileActive = false;
-               }
+            }
 
             if(rl::isKeyPressed(rl::KEY_DOWN)){c.isProjectileActive = true; c.expired = false;rl::playSound(sMap.get("poop")!!);}
                c.groundLevel = groundLevel - c.texture.height + 90;
@@ -291,10 +295,21 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
 
          case ENEMY_GROUND:           
           // io::printfn("ENEMY_GROUND update reached");
-          
+
+
+
+            if(c.lives <= 0){c.isDead = true;c.groundLevel = 2000; rl::playSound(sMap.get("enemyDie")!!);}
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
-          
+
+            if (c.pos.y >= c.groundLevel){
+               c.isGrounded = true;
+               c.pos.y = c.groundLevel;
+               c.vel.y = 0.0;
+               c.pos.x -= c.friction * rl::getFrameTime(); 
+            }
+
+
             if (c.name == "ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * rl::getFrameTime();c.groundLevel = groundLevel + 5;}
             if (c.name == "turtle") {c.pos.x -= c.friction * rl::getFrameTime();c.groundLevel = groundLevel + 15;} //ground level hit box adjust
             if (c.name == "fox") {c.pos.x -= (c.friction + FOX_SOFFSET)  * rl::getFrameTime();c.groundLevel = groundLevel + 15;} //ground level hit box adjust
@@ -315,7 +330,14 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
             c.texFlip = false;//15
             //if (c.pos.x <= 0){c.pos.x += 15.0 * rl::getFrameTime();c.texFlip = true;}
             c.pos.y += AMPLITUDE * math::sin(FREQUENCY * (c.pos.x + c.acceleration)) * rl::getFrameTime();
-         
+
+         if (c.pos.y >= c.groundLevel){
+            c.isGrounded = true;
+            c.pos.y = c.groundLevel;
+            c.vel.y = 0.0;
+            c.pos.x -= c.friction * rl::getFrameTime(); 
+        }
+
          break;
 
          case OBS:
@@ -327,6 +349,13 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
           c.pos.y += c.vel.y * rl::getFrameTime();
           c.pos.x -= (c.friction + OBS_SOFFSET) * rl::getFrameTime(); 
          
+            if (c.pos.y >= c.groundLevel){
+            c.isGrounded = true;
+            c.pos.y = c.groundLevel;
+            c.vel.y = 0.0;
+            c.pos.x -= c.friction * rl::getFrameTime(); 
+        }
+
          break;
       }
 }

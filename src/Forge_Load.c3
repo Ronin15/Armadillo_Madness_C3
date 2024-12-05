@@ -79,7 +79,8 @@ fn SoundMap loadSoundMap(){
    Sound boing = rl::loadSound("resources/sounds/boing.wav");
    Sound playerHit = rl::loadSound("resources/sounds/player_hit.wav");
    Sound poopHit = rl::loadSound("resources/sounds/poop_hit.wav");
-   
+   Sound enemyDie = rl::loadSound("resources/sounds/enemy_die.wav");
+
    temp.set("jump",jump);
    temp.set("moving",moving);
    temp.set("pause",pause);
@@ -92,6 +93,7 @@ fn SoundMap loadSoundMap(){
    temp.set("boing",boing);
    temp.set("playerHit",playerHit);
    temp.set("poopHit",poopHit);
+   temp.set("enemyDie",enemyDie);
 
    return temp;
 }
