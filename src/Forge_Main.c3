@@ -138,7 +138,7 @@ fn void main(String[] args) {
 				rl::clearBackground(rl::BLACK);
 				//rl::playMusicStream(mMap.get("gameMusic")!!);
 	  			//rl::updateMusicStream(mMap.get("gameMusic")!!);
-	  			scrollGround -= 5.8;
+	  			scrollGround -= 4.0;
 				scrollMid -= 0.6;
 				scrollClouds -= 0.3;
 				if(scrollMid <= - WINDOW_WIDTH) {scrollMid = 0;}
