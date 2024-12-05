@@ -1,16 +1,19 @@
 module forge_physics;
 import forge_game;
+import forge_load;
+import raylib5::rl;
 import std::io;
 import std::math;
 
-const int POOP_SHOT_OFFSET = 5;
-const int ROCK_OFFSET = 10; //bigrock
-const int CACTUS_OFFSET = 20;
-const int PLAYER_OFFSET = 10;
-const int TURTLE_OFFSET = 10;
+const int POOP_SHOT_OFFSET = 0;
+const int ROCK_OFFSET = 20; //bigrock
+const int CACTUS_OFFSET = 0;
+const int PLAYER_OFFSET = 0;
+const int TURTLE_OFFSET = 0;
 
 
 // a will always be player or poop, b will always be other objects
+
 
 //AABB collision Detection
 fn bool checkCollision(Construct* a, Construct* b) {
@@ -28,31 +31,30 @@ fn bool checkCollision(Construct* a, Construct* b) {
         a.pos.y < b.pos.y + b.texture.height - boffset  &&
         a.pos.y + a.texture.height - aoffset  > b.pos.y) {
         
-        //io::printfn("%s -> hit -> %s !",a.name,b.name);
+        io::printfn("%s -> hit -> %s !",a.name,b.name);
         
         return true;
     }
     return false;
 }
 
-/*
-fn void resolveCollision(Construct* a, Construct* b) { 
+
+fn void resolveCollision(Construct* a, Construct* b, SoundMap *sMap) { 
+     
+    
     float overlapX = (a.pos.x + (float)a.texture.width) - (b.pos.x + (float)b.texture.width); 
     float overlapY = (a.pos.y + (float)a.texture.height) - (b.pos.y + (float)b.texture.height); 
     
-    if (math::abs(overlapX) < math::abs(overlapY)) {
-         // Resolve X-axis collision 
-        if (overlapX > 0) {
-             a.pos.x += (b.pos.x + (float)b.texture.width - a.pos.x); 
-            } else {
-                a.pos.x -= (a.pos.x + (float)a.texture.width - b.pos.x);
-                }
-         }else{        
-        // Resolve Y-axis collision 
-        if (overlapY > 0) {
-            a.pos.y += (b.pos.y + (float)b.texture.height - a.pos.y); 
-                 } else {
-                     a.pos.y -= (a.pos.y + (float)a.texture.height - b.pos.y); }
-             }
+    if (math::abs(overlapX) > math::abs(overlapY)) {
+            //horizontal collision
+         rl::playSound(sMap.get("playerHit")!!);    
+         a.vel.x *= -1; 
+        // b.vel.x *= -1; 
+         }else { 
+            // Vertical collision
+         rl::playSound(sMap.get("boing")!!); 
+         a.vel.y *= -1; 
+        // b.vel.y *= -1; 
+        }
 }
 //*/

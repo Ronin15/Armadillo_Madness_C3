@@ -157,17 +157,17 @@ fn void main(String[] args) {
 					
 					foreach ( &construct : constructs){
 							if (forge_physics::checkCollision(&player,construct)){
-							//forge_physics::resolveCollision(&player,construct);
+								forge_physics::resolveCollision(&player,construct,&sMap);
 							}
 							
 							if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
 								if(forge_physics::checkCollision(&poopShot,construct)){
-								
-									//forge_physics::resolveCollision(&poopShot,construct);
+									rl::playSound(sMap.get("poopHit")!!);
+									poopShot.expired = true; 
+									poopShot.isProjectileActive = false;
 								}
-
-							}
 						}
+					}
 				
 			
 				

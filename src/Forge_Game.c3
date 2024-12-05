@@ -32,6 +32,7 @@ const float FOX_SOFFSET = 80.0;
 
  struct Construct {
     
+    ConstructType type;
     Texture2D texture;
     Vector2 pos;
     Vector2 vel;
@@ -47,7 +48,6 @@ const float FOX_SOFFSET = 80.0;
     int currentFrame; 
     int maxFrames; 
     int lives;
-    ConstructType type;
     bool isGrounded;
     bool texFlip;
     bool isDead;
@@ -260,7 +260,7 @@ fn void updateConstruct(Construct *c) {
           // io::printfn("ENEMY_GROUND update reached");
           if (c.name == "ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * rl::getFrameTime();c.groundLevel = groundLevel + 5;}
           if (c.name == "turtle") {c.pos.x -= c.friction * rl::getFrameTime();c.groundLevel = groundLevel + 15;} //ground level hit box adjust
-          if (c.name == "fox") {c.pos.x -= (c.friction + FOX_SOFFSET)  * rl::getFrameTime();c.groundLevel = groundLevel + 5;} //ground level hit box adjust
+          if (c.name == "fox") {c.pos.x -= (c.friction + FOX_SOFFSET)  * rl::getFrameTime();c.groundLevel = groundLevel + 15;} //ground level hit box adjust
           if (c.name == "snake") {c.pos.x -= c.friction * rl::getFrameTime();c.groundLevel = groundLevel + 5;} 
            
            c.pos.y += c.vel.y * rl::getFrameTime();
