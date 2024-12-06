@@ -73,7 +73,7 @@ fn void toggleFullScreen (int gsWidth, int gsHeight){
 fn ConstructType getRandomType(){
    int min = (int)ConstructType.ENEMY_GROUND;
    int max = (int)ConstructType.OBS;
-//io::printfn("max -> %s  min -> %s !",max,min);
+   //io::printfn("max -> %s  min -> %s !",max,min);
    return (ConstructType)rand_in_range(min,max);
 }
 
