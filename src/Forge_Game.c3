@@ -220,6 +220,12 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
       }
       
       //stationairy ground movement
+      if (c.pos.y >= c.groundLevel && !c.isDead){
+               c.isGrounded = true;
+               c.pos.y = c.groundLevel;
+               c.vel.y = 0.0;
+               c.pos.x -= c.friction * rl::getFrameTime(); 
+            }
       
       //swtich on construct type for specific type updates.-----------------------
       switch (c.type)
@@ -227,13 +233,6 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
          case PLAYER:
             //io::printfn("invuln Timer: %f", c.invulnTimer);
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
-            if (c.pos.y >= c.groundLevel){
-               c.isGrounded = true;
-               c.pos.y = c.groundLevel;
-               c.vel.y = 0.0;
-               c.pos.x -= c.friction * rl::getFrameTime(); 
-            }
-
             
             if(c.invulnTimer >= 0.0){c.invulnTimer -= 1.0;}
             if(c.vHit){c.vHit = false;rl::playSound(sMap.get("boing")!!);}
@@ -295,20 +294,16 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
 
          case ENEMY_GROUND:           
           // io::printfn("ENEMY_GROUND update reached");
-
-
-
-            if(c.lives <= 0){c.isDead = true;c.groundLevel = 2000; rl::playSound(sMap.get("enemyDie")!!);}
+            
+            if((c.hHit || c.vHit) && c.lives <= 0){
+               
+                  c.isDead = true;
+                  c.groundLevel = 2000; 
+                  rl::playSound(sMap.get("enemyDie")!!);
+                  
+               }
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
-
-            if (c.pos.y >= c.groundLevel){
-               c.isGrounded = true;
-               c.pos.y = c.groundLevel;
-               c.vel.y = 0.0;
-               c.pos.x -= c.friction * rl::getFrameTime(); 
-            }
-
 
             if (c.name == "ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * rl::getFrameTime();c.groundLevel = groundLevel + 5;}
             if (c.name == "turtle") {c.pos.x -= c.friction * rl::getFrameTime();c.groundLevel = groundLevel + 15;} //ground level hit box adjust
@@ -324,20 +319,26 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
             //io::printfn("ENEMEY_FLY update reached");
             //c.pos.y += c.acceleration * rl::getFrameTime();  
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
+            if((c.hHit || c.vHit) && c.lives <= 0){
+               
+                  c.isDead = true;
+                  c.isGrounded = true;
+                  c.groundLevel = 2000;
+                   
+                  rl::playSound(sMap.get("enemyDie")!!);
+                  
+               }
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
             c.pos.x -= 125 * rl::getFrameTime();//15
             c.texFlip = false;//15
             //if (c.pos.x <= 0){c.pos.x += 15.0 * rl::getFrameTime();c.texFlip = true;}
+            if (!c.isDead){
             c.pos.y += AMPLITUDE * math::sin(FREQUENCY * (c.pos.x + c.acceleration)) * rl::getFrameTime();
-
-         if (c.pos.y >= c.groundLevel){
-            c.isGrounded = true;
-            c.pos.y = c.groundLevel;
-            c.vel.y = 0.0;
-            c.pos.x -= c.friction * rl::getFrameTime(); 
-        }
-
+            }else{
+            c.pos.y += c.vel.y * rl::getFrameTime(); 
+            c.vel.y += c.gravity * rl::getFrameTime();
+            }
          break;
 
          case OBS:
@@ -348,13 +349,6 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
           c.vel.y += c.gravity * rl::getFrameTime();
           c.pos.y += c.vel.y * rl::getFrameTime();
           c.pos.x -= (c.friction + OBS_SOFFSET) * rl::getFrameTime(); 
-         
-            if (c.pos.y >= c.groundLevel){
-            c.isGrounded = true;
-            c.pos.y = c.groundLevel;
-            c.vel.y = 0.0;
-            c.pos.x -= c.friction * rl::getFrameTime(); 
-        }
 
          break;
       }

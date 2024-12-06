@@ -154,7 +154,7 @@ fn void main(String[] args) {
 					//check Collisions
 					
 					foreach ( &construct : constructs){
-							if (forge_physics::checkCollision(&player,construct)){
+							if (forge_physics::checkCollision(&player,construct) && construct.isDead == false){
 								forge_physics::resolveCollision(&player,construct);
 							}
 							
