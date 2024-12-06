@@ -54,7 +54,7 @@ fn void resolveCollision(Construct* a, Construct* b) {
           //rl::playSound(sMap.get("boing")!!); 
           a.vHit = true;
           a.vel.y *= -1; 
-          //b.vel.y *= -1;
+          b.vel.y *= -1;
           b.vHit = true;
         }
 }
