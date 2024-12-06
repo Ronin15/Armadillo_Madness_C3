@@ -5,10 +5,13 @@ import std::math;
 
 const int POOP_SHOT_OFFSET = 0;
 const int ROCK_OFFSET = 20; //bigrock
-const int CACTUS_OFFSET = 0;
-const int PLAYER_OFFSET = 0;
-const int TURTLE_OFFSET = 0;
-
+const int CACTUS_OFFSET = 10;
+const int PLAYER_OFFSET = 10;
+const int TURTLE_OFFSET = 10;
+const int ANT_OFFSET = 10;
+const int FOX_OFFSET = 10;
+const int SNAKE_OFFSET = 10;
+const int TREE_OFFSET = 10; 
 
 // a will always be player or poop, b will always be other objects
 
@@ -22,8 +25,12 @@ fn bool checkCollision(Construct* a, Construct* b) {
     if (a.type == PLAYER) {aoffset = PLAYER_OFFSET;}
     if (b.type == OBS && b.name == "boulder") {boffset = ROCK_OFFSET;}
     if (b.type == OBS && b.name == "cactus") {boffset = CACTUS_OFFSET;}
+    if (b.type == OBS && b.name == "tree") {boffset = TREE_OFFSET;}
     if (b.type == ENEMY_GROUND && b.name == "turtle") {boffset = TURTLE_OFFSET;}
-    
+    if (b.type == ENEMY_GROUND && b.name == "ant") {boffset = ANT_OFFSET;}
+    if (b.type == ENEMY_GROUND && b.name == "fox") {boffset = FOX_OFFSET;}
+    if (b.type == ENEMY_GROUND && b.name == "snake") {boffset = SNAKE_OFFSET;}
+
     if (a.pos.x < b.pos.x + b.texture.width - boffset  &&
         a.pos.x + a.texture.width - aoffset  > b.pos.x &&
         a.pos.y < b.pos.y + b.texture.height - boffset  &&
