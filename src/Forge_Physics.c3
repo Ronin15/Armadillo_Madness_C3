@@ -4,14 +4,14 @@ import std::io;
 import std::math;
 
 const int POOP_SHOT_OFFSET = 0;
-const int ROCK_OFFSET = 20; //bigrock
-const int CACTUS_OFFSET = 10;
-const int PLAYER_OFFSET = 10;
-const int TURTLE_OFFSET = 10;
-const int ANT_OFFSET = 10;
-const int FOX_OFFSET = 10;
-const int SNAKE_OFFSET = 10;
-const int TREE_OFFSET = 10; 
+const int ROCK_OFFSET = 15; //bigrock
+const int CACTUS_OFFSET = 15;
+const int PLAYER_OFFSET = 15;
+const int TURTLE_OFFSET = 15;
+const int ANT_OFFSET = 15;
+const int FOX_OFFSET = 15;
+const int SNAKE_OFFSET = 15;
+const int TREE_OFFSET = 15; 
 
 // a will always be player or poop, b will always be other objects
 
@@ -53,8 +53,11 @@ fn void resolveCollision(Construct* a, Construct* b) {
     if (math::abs(overlapX) > math::abs(overlapY)) {
             //horizontal collision
          //rl::playSound(sMap.get("playerHit")!!);    
-         
-        if(a.type == PROJECTILE_POOP){b.hHit = true;}
+          if(a.type == PROJECTILE_POOP){b.hHit = true;}
+          
+          a.vel.y *= -1; 
+          b.vel.y *= -1;
+          if(b.name = "beatle"){a.bHit = true; b.lives = 0; a.hHit = false; a.vHit = false; return;}
          a.hHit = true;
          }else { 
           // Vertical collision

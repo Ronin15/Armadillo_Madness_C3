@@ -241,9 +241,9 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
                   c.invlunerable = true;
                   rl::playSound(sMap.get("playerHit")!!);
                   c.lives -= 1;
-                  c.invulnTimer = 500.0;
+                  c.invulnTimer = 600.0;
                }
-            if (c.bHit) {
+            if (c.bHit && c.lives < MAX_LIVES) {
                   c.bHit = false; 
                   rl::playSound(sMap.get("eatBug")!!);
                   c.lives += 1;
@@ -288,7 +288,7 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
                c.groundLevel = groundLevel - c.texture.height + 80;
 
             if (c.pos.x > 1900) {c.expired = true; c.isProjectileActive = false;}
-               c.pos.x += (c.acceleration * 3) * rl::getFrameTime(); 
+               c.pos.x += (c.acceleration * 3.5) * rl::getFrameTime(); 
             
          break;
 
