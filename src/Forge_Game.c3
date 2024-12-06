@@ -248,7 +248,7 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
                   
                   c.bHit = false; 
                   rl::playSound(sMap.get("eatBug")!!);
-                  c.lives += 1;
+                  c.lives + 1;
                }else{
                   c.bHit = false;
                }
