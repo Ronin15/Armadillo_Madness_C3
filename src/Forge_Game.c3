@@ -285,10 +285,10 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
             }
 
             if(rl::isKeyPressed(rl::KEY_DOWN)){c.isProjectileActive = true; c.expired = false;rl::playSound(sMap.get("poop")!!);}
-               c.groundLevel = groundLevel - c.texture.height + 90;
+               c.groundLevel = groundLevel - c.texture.height + 80;
 
             if (c.pos.x > 1900) {c.expired = true; c.isProjectileActive = false;}
-               c.pos.x += (c.acceleration * 4) * rl::getFrameTime(); 
+               c.pos.x += (c.acceleration * 3) * rl::getFrameTime(); 
             
          break;
 
@@ -355,8 +355,9 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
 }
 
 fn void drawPoopShot(Construct* c, Construct* b, float rotation = 90.0, float scale = 1.0) {
-	scale = scale;
+	scale = 1.5;
    rotation = rotation;
+   //b is the player for poop location.
 
    if (c.expired && b.isProjectileActive == false){
       c.pos.x = b.pos.x + b.texture.width;
