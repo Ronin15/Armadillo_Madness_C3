@@ -234,20 +234,35 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
             //io::printfn("invuln Timer: %f", c.invulnTimer);
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
             
-            if(c.invulnTimer >= 0.0){c.invulnTimer -= 1.0;}
-            if(c.vHit){c.vHit = false;rl::playSound(sMap.get("boing")!!);}
-            if(c.hHit == true && c.invulnTimer <= 0){
+            if(c.invulnTimer >= 0.0){
+               c.invulnTimer -= 1.0;
+            }else{
+               c.invlunerable = false;}
+            
+            if(c.vHit){
+                  c.vHit = false;
+                  rl::playSound(sMap.get("boing")!!);
+               }
+           
+            if (c.bHit && c.lives < MAX_LIVES){
+                  
+                  c.bHit = false; 
+                  rl::playSound(sMap.get("eatBug")!!);
+                  c.lives += 1;
+               }else{
+                  c.bHit = false;
+               }
+            
+            //if(c.vHit){c.vHit = false;rl::playSound(sMap.get("boing")!!);}
+            if(c.hHit && c.invulnTimer <= 0){
                   c.hHit = false;
                   c.invlunerable = true;
                   rl::playSound(sMap.get("playerHit")!!);
                   c.lives -= 1;
                   c.invulnTimer = 600.0;
-               }
-            if (c.bHit && c.lives < MAX_LIVES) {
-                  c.bHit = false; 
-                  rl::playSound(sMap.get("eatBug")!!);
-                  c.lives += 1;
-               }
+            }else{
+                  c.hHit = false;   
+            }
 
             if (rl::isKeyDown(rl::KEY_LEFT)) {
                if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(sMap.get("moving")!!); }

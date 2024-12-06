@@ -54,18 +54,23 @@ fn void resolveCollision(Construct* a, Construct* b) {
             //horizontal collision
          //rl::playSound(sMap.get("playerHit")!!);    
           if(a.type == PROJECTILE_POOP){b.hHit = true;}
-          
+
+          a.hHit = true;
+          if(b.name == "beatle"){a.bHit = true; b.lives = 0; a.hHit = false;}
           a.vel.y *= -1; 
           b.vel.y *= -1;
-          if(b.name = "beatle"){a.bHit = true; b.lives = 0; a.hHit = false; a.vHit = false; return;}
-         a.hHit = true;
+          
+         io::printfn("%s -> Horizotal_hit -> %s !",a.name,b.name);
          }else { 
           // Vertical collision
           //rl::playSound(sMap.get("boing")!!); 
-          a.vHit = true;
+         // a.vHit = true;
           a.vel.y *= -1; 
           b.vel.y *= -1;
+          a.vHit = true;
           b.vHit = true;
+          if(b.name == "beatle"){a.bHit = true; b.lives = 0; a.vHit = false;}
+          io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);
         }
 }
 //*/
