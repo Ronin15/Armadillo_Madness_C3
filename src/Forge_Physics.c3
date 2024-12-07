@@ -3,15 +3,16 @@ import forge_game;
 import std::io;
 import std::math;
 
+const int PLAYER_OFFSET = 15;
 const int POOP_SHOT_OFFSET = 5;
-const int ROCK_OFFSET = 10; //bigrock
-const int CACTUS_OFFSET = 5;
-const int PLAYER_OFFSET = 5;
-const int TURTLE_OFFSET = 5;
-const int ANT_OFFSET = 5;
-const int FOX_OFFSET = 5;
-const int SNAKE_OFFSET = 5;
-const int TREE_OFFSET = 5; 
+const int ROCK_OFFSET = 25; //bigrock
+const int CACTUS_OFFSET = 15;
+const int TREE_OFFSET = 25; 
+const int TURTLE_OFFSET = 15;
+const int ANT_OFFSET = 15;
+const int FOX_OFFSET = 15;
+const int SNAKE_OFFSET = 15;
+
 
 // a will always be player or poop, b will always be other objects
 
@@ -19,17 +20,17 @@ const int TREE_OFFSET = 5;
 //AABB collision Detection
 fn bool checkCollision(Construct* a, Construct* b) {
     //collision tuning offset - pixels from texture.
-    int aoffset @noinit;
-    int boffset @noinit;
+    int aoffset;
+    int boffset;
     if (a.type == PROJECTILE_POOP) {aoffset = POOP_SHOT_OFFSET;}
     if (a.type == PLAYER) {aoffset = PLAYER_OFFSET;}
-    if (b.type == OBS && b.name == "boulder") {boffset = ROCK_OFFSET;}
-    if (b.type == OBS && b.name == "cactus") {boffset = CACTUS_OFFSET;}
-    if (b.type == OBS && b.name == "tree") {boffset = TREE_OFFSET;}
-    if (b.type == ENEMY_GROUND && b.name == "turtle") {boffset = TURTLE_OFFSET;}
-    if (b.type == ENEMY_GROUND && b.name == "ant") {boffset = ANT_OFFSET;}
-    if (b.type == ENEMY_GROUND && b.name == "fox") {boffset = FOX_OFFSET;}
-    if (b.type == ENEMY_GROUND && b.name == "snake") {boffset = SNAKE_OFFSET;}
+    if (b.name == "boulder") {boffset = ROCK_OFFSET;}
+    if (b.name == "cactus") {boffset = CACTUS_OFFSET;}
+    if (b.name == "tree") {boffset = TREE_OFFSET;}
+    if (b.name == "turtle") {boffset = TURTLE_OFFSET;}
+    if (b.name == "ant") {boffset = ANT_OFFSET;}
+    if (b.name == "fox") {boffset = FOX_OFFSET;}
+    if (b.name == "snake") {boffset = SNAKE_OFFSET;}
 
     if (a.pos.x < b.pos.x + b.texture.width - boffset  &&
         a.pos.x + a.texture.width - aoffset  > b.pos.x &&
@@ -51,8 +52,7 @@ fn void resolveCollision(Construct* a, Construct* b) {
     float overlapY = (a.pos.y + (float)a.texture.height) - (b.pos.y + (float)b.texture.height); 
     
     if (math::abs(overlapX) > math::abs(overlapY)) {
-            //horizontal collision
-         //rl::playSound(sMap.get("playerHit")!!);    
+            //horizontal collision  
           if(a.type == PROJECTILE_POOP){b.hHit = true;}
 
           a.hHit = true;
@@ -66,14 +66,12 @@ fn void resolveCollision(Construct* a, Construct* b) {
          io::printfn("%s -> Horizotal_hit -> %s !",a.name,b.name);
          }else { 
           // Vertical collision
-          //rl::playSound(sMap.get("boing")!!); 
-         // a.vHit = true;
           a.vel.y *= -1; 
           b.vel.y *= -1;
           a.vHit = true;
           b.vHit = true;
           
-          if(b.name == "beatle"){a.bHit = true; b.lives = 0; a.vHit = false;}
+          if(b.name == "beatle"){a.bHit = true; b.lives = 0;}
           io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);
         }
 }
