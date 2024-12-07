@@ -7,11 +7,11 @@ const int POOP_SHOT_OFFSET = 5;
 const int ROCK_OFFSET = 20; //bigrock
 const int CACTUS_OFFSET = 0;
 const int PLAYER_OFFSET = 5;
-const int TURTLE_OFFSET = 0;
-const int ANT_OFFSET = 0;
-const int FOX_OFFSET = 0;
-const int SNAKE_OFFSET = 0;
-const int TREE_OFFSET = 0; 
+const int TURTLE_OFFSET = 5;
+const int ANT_OFFSET = 5;
+const int FOX_OFFSET = 5;
+const int SNAKE_OFFSET = 5;
+const int TREE_OFFSET = 5; 
 
 // a will always be player or poop, b will always be other objects
 
@@ -57,6 +57,9 @@ fn void resolveCollision(Construct* a, Construct* b) {
 
           a.hHit = true;
           if(b.name == "beatle"){a.bHit = true; b.lives = 0; a.hHit = false;}
+          if(b.name == "tree"){a.hHit = false;}
+          if(b.name == "boulder"){a.hHit = false;}
+
           a.vel.y *= -1; 
           b.vel.y *= -1;
           
@@ -69,6 +72,7 @@ fn void resolveCollision(Construct* a, Construct* b) {
           b.vel.y *= -1;
           a.vHit = true;
           b.vHit = true;
+          
           if(b.name == "beatle"){a.bHit = true; b.lives = 0; a.vHit = false;}
           io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);
         }
