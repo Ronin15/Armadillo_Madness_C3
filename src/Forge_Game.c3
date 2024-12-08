@@ -135,7 +135,7 @@ fn Construct forgeCronstructProjectile(TexMap *tMap) {
       c.invlunerable = false; 
       c.hHit = false;
       c.vHit = false;
-io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
+      io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
 }
 
@@ -167,7 +167,7 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
       c.hHit = false;
       c.vHit = false;
       c.bHit = false;
-io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
+      io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
 }
 
