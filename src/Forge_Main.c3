@@ -19,7 +19,8 @@ const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness";
-const int MAX_CONSTRUCTS = 100;//75 good
+const int MAX_CONSTRUCTS = 100;
+const int MAX_POWERUPS = 10;
 
 
 Construct[MAX_CONSTRUCTS] constructs;
@@ -187,10 +188,11 @@ fn void main(String[] args) {
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
 				//rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
-
+				//sun
 				forge_events::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
 				forge_events::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
 				forge_events::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
+				//end sun
 
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
@@ -214,7 +216,6 @@ fn void main(String[] args) {
 					forge_events::rainFall();
 					
 					
-
 			case PAUSE:
 
 				if (rl::isKeyPressed(rl::KEY_P)){
@@ -276,7 +277,7 @@ fn void main(String[] args) {
 				rl::clearBackground(rl::BLACK);
 				//rl::playMusicStream(gameMusic);
 	  			//rl::updateMusicStream(gameMusic);
-	  			scrollGround -= 5.8;
+	  			scrollGround -= 4.0;
 				scrollMid -= 0.6;
 				scrollClouds -= 0.3;
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}

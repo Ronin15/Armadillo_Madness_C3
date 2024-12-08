@@ -30,6 +30,13 @@ const float FOX_SOFFSET = 80.0;
    OBS,
 }
 
+enum PowerUpType : int {
+   GRAV_BOOTS, //change player gravity
+   CAN_O_WORMS, //pentrating poop
+   SUPER_ARMADILLO, //invuln, bigger, insta kill, smacks osbsticles around.
+   
+}
+
  struct Construct {
     
     ConstructType type;
