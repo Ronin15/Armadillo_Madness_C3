@@ -5,9 +5,9 @@ import std::math;
 
 const int PLAYER_OFFSET = 15;
 const int POOP_SHOT_OFFSET = 5;
-const int ROCK_OFFSET = 25; //bigrock
+const int ROCK_OFFSET = 15; //bigrock
 const int CACTUS_OFFSET = 15;
-const int TREE_OFFSET = 25; 
+const int TREE_OFFSET = 15; 
 const int TURTLE_OFFSET = 15;
 const int ANT_OFFSET = 15;
 const int FOX_OFFSET = 15;
