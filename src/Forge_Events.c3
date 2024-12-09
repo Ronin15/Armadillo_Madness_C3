@@ -135,18 +135,16 @@ fn void runFireWorks(){
         }
 }
 
-fn void armadilloMadness(){}//-----------------------------------------------------------------------------------------------------
-
-
-    //shooting star items
+    //shooting star items Move to main to pass to fuction to make it more dynamic
     Vector2 starPosition = {-120,-120}; 
-    float starRadius = 10.0;
-    float starInner = 20.0;
-    float starOuter = 50.0; 
     ShootingStar [MAX_SHOOTING_STARS] shootingStars; 
     int starIndex;
 
 fn void shootingStar(){
+    
+    float starRadius = 10.0;
+    float starInner = 20.0;
+    float starOuter = 50.0; 
     
     Vector2 starVelocity = {900,rand_in_range(400,500) };
 
