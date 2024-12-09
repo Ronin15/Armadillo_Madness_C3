@@ -61,6 +61,7 @@ fn void main(String[] args) {
 
 	float demoCounter1;
 	float demoCounter2;
+	float starCounter;
 	//game time step vars
 	float accumulator;
 	float frameCounter;
@@ -115,6 +116,7 @@ fn void main(String[] args) {
 							state = MAIN;
 							frameCounter = 0;
 					}
+					
 				
 			case MAIN:
 				rl::playMusicStream(mMap.get("titleMusic")!!);
@@ -214,6 +216,7 @@ fn void main(String[] args) {
 						}	
 					
 					forge_events::rainFall();
+					forge_events::shootingStar();
 					
 					
 			case PAUSE:
@@ -250,6 +253,7 @@ fn void main(String[] args) {
 						}	
 
 					forge_events::rainFall();
+					
 				
 				//drawing pause stuff here so objects don cover it up
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});

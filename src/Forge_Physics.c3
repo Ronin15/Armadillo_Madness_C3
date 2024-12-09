@@ -44,21 +44,20 @@ fn bool checkCollision(Construct* a, Construct* b) {
     return false;
 }
 
-
 fn void resolveCollision(Construct* a, Construct* b) { 
      
     
     float overlapX = (a.pos.x + (float)a.texture.width) - (b.pos.x + (float)b.texture.width); 
     float overlapY = (a.pos.y + (float)a.texture.height) - (b.pos.y + (float)b.texture.height); 
     
-    if (math::abs(overlapX) > math::abs(overlapY)) {
+    if (math::abs(overlapX) >= math::abs(overlapY)) {
             //horizontal collision  
           if(a.type == PROJECTILE_POOP){b.hHit = true;}
 
           a.hHit = true;
           if(b.name == "beatle"){a.bHit = true; b.lives = 0; a.hHit = false;}
-          if(b.name == "tree"){a.hHit = false;}
-          if(b.name == "boulder"){a.hHit = false;}
+         // if(b.name == "tree"){a.hHit = false;}
+         // if(b.name == "boulder"){a.hHit = false;}
 
           a.vel.y *= -1; 
           b.vel.y *= -1;
