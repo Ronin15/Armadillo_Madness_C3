@@ -1,15 +1,18 @@
-module forge_events;
+module forge_fx;
 import std::io;
 import std::math;
 import raylib5::rl;
 import forge_game;
 import forge_main;
 
+//_P const name ending short for particles
 const int MAX_RAINDROPS = 100;
-const int MAX_FIREWORK_P = 500;
-const int MAX_FIREWORKS = 20;
+const int MAX_FIREWORK_P = 50;
+const int MAX_FIREWORKS = 10;
 const int MAX_SHOOTING_STARS = 50;
 const float STAR_DURATION = 10.0;
+const int MAX_EXPLOSION_P = 10;
+const float MAX_EXPLOSION_P_DURATION = 2.0;
 
 struct ShootingStar{
     Vector2 pos; 
@@ -74,14 +77,14 @@ fn Firework forgeFireWork(){
     //init firework
     Firework f;
     f.active = true;
-    f.origin = {rand_in_range(0,forge_main::WINDOW_WIDTH - 300),rand_in_range(10,300)};
+    f.origin = {rand_in_range(0,forge_main::WINDOW_WIDTH),rand_in_range(0,forge_main::WINDOW_HEIGHT)};
     f.color = {(char)rand_in_range(0,255),(char)rand_in_range(0,255),(char)rand_in_range(0,255),255};
 
         for (int i = 0; i < MAX_FIREWORK_P; i++){
             f.particles[i].pos = f.origin;
-            f.particles[i].vel = {rand_in_range(100,200),rand_in_range(100,200)};
+            f.particles[i].vel = {rand_in_range(-50,-50),rand_in_range(-50,50)};
             f.particles[i].color = f.color;
-            f.particles[i].time = (float)rand_in_range(1,3);
+            f.particles[i].time = (float)rand_in_range(1,10);
 
         }
     
@@ -96,8 +99,8 @@ fn void updateFireWorkParticles(Firework *f){
             if(f.particles[i].time > 0){
                f.particles[i].pos.x += f.particles[i].vel.x;
                f.particles[i].pos.y += f.particles[i].vel.y;
-               f.particles[i].vel.y -= 600 * rl::getFrameTime();
-               f.particles[i].time -= 0.0002;
+               f.particles[i].vel.y -= 10 * rl::getFrameTime();
+               f.particles[i].time -= 0.1 * rl::getFrameTime();
 
                particiles_expired = false;
         }
@@ -114,7 +117,9 @@ fn void drawFireWorkParticles(Firework *f){
 
         for (int i = 0; i < MAX_FIREWORK_P; i++){
             if (f.particles[i].time > 0){
-               rl::drawPixelV(f.particles[i].pos, f.particles[i].color);
+               
+               rl::drawCircleV(f.particles[i].pos, 2.5, f.particles[i].color);
+               drawLight((int)f.particles[i].pos.x, (int)f.particles[i].pos.y, 10.0, f.particles[i].color);
                //rl::drawCircleV(f.particles[i].pos, 0.5, f.particles[i].color);
                //rl::drawLineEx(f.particles[i].pos, { f.particles[i].pos.x, f.particles[i].pos.y + 10 }, 1.0, f.particles[i].color);
             }
@@ -166,3 +171,46 @@ fn void shootingStar(){
     //rl::drawCircleV(starPosition, starRadius, rl::MAROON);
 }
 
+
+Particle [MAX_EXPLOSION_P] explosion;
+float explosionRadius = 100.0; 
+
+fn void initParticlesExplosion(Vector2 explosionCenter){
+    for (int i = 0; i < MAX_EXPLOSION_P; i++){
+        explosion[i].pos = explosionCenter;
+        explosion[i].vel = {rand_in_range(-50,-50),rand_in_range(-50,50)};
+        explosion[i].color = {(char)rand_in_range(200,255),(char)rand_in_range(100,150),(char)rand_in_range(0,50),255};
+        explosion[i].time = MAX_EXPLOSION_P_DURATION;
+    }
+}
+
+fn void updateExplosion(){
+    for (int i = 0; i < MAX_EXPLOSION_P; i++){
+        if(explosion[i].time > 0){
+              explosion[i].pos.x += explosion[i].vel.x * rl::getFrameTime();
+              explosion[i].pos.y += explosion[i].vel.y * rl::getFrameTime();;
+              explosion[i].time -= 0.1 * rl::getFrameTime();
+              explosion[i].color.a = (char)(255 * (explosion[i].time / MAX_EXPLOSION_P_DURATION));
+        }
+    }
+}
+
+fn void drawExplosion(){
+    for (int i = 0; i < MAX_EXPLOSION_P; i++) {
+            if(explosion[i].time > 0){
+            rl::drawCircleV(explosion[i].pos, explosionRadius, explosion[i].color);
+            drawLight((int)explosion[i].pos.x, (int)explosion[i].pos.y, explosionRadius, explosion[i].color); 
+        } 
+    }
+}
+
+fn void runExplosion(int count){
+    
+    while (count > 0 ){
+     Vector2 pos = {rand_in_range(0,forge_main::WINDOW_WIDTH),rand_in_range(900,forge_main::WINDOW_HEIGHT)};
+        initParticlesExplosion(pos);
+        updateExplosion();
+        drawExplosion();
+        count--;
+    }
+}

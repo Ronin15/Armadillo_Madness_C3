@@ -3,15 +3,15 @@ import forge_game;
 import std::io;
 import std::math;
 
-const int PLAYER_OFFSET = 15;
+const int PLAYER_OFFSET = 10;
 const int POOP_SHOT_OFFSET = 5;
-const int ROCK_OFFSET = 15; //bigrock
-const int CACTUS_OFFSET = 15;
-const int TREE_OFFSET = 15; 
-const int TURTLE_OFFSET = 15;
-const int ANT_OFFSET = 15;
-const int FOX_OFFSET = 15;
-const int SNAKE_OFFSET = 15;
+const int ROCK_OFFSET = 10; //bigrock
+const int CACTUS_OFFSET = 10;
+const int TREE_OFFSET = 10; 
+const int TURTLE_OFFSET = 10;
+const int ANT_OFFSET = 10;
+const int FOX_OFFSET = 10;
+const int SNAKE_OFFSET = 10;
 
 
 // a will always be player or poop, b will always be other objects
@@ -59,8 +59,8 @@ fn void resolveCollision(Construct* a, Construct* b) {
          // if(b.name == "tree"){a.hHit = false;}
          // if(b.name == "boulder"){a.hHit = false;}
 
-          a.vel.y *= -1; 
-          b.vel.y *= -1;
+          //a.vel.y *= -1; 
+         //b.vel.y *= -1;
           
          io::printfn("%s -> Horizotal_hit -> %s !",a.name,b.name);
          }else { 

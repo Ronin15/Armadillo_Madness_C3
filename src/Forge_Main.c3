@@ -2,7 +2,7 @@
 module forge_main;
 import forge_game;
 import forge_load;
-import forge_events;
+import forge_fx;
 import forge_physics;
 import forge_demo;
 //vendor modules-------------------
@@ -38,7 +38,7 @@ enum GameState {
 }
 
 
-fn void main(String[] args) {	
+fn int main(String[] args) {	
 
 	//init Game Systems
 	rl::initWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
@@ -65,12 +65,13 @@ fn void main(String[] args) {
 	//game time step vars
 	float accumulator;
 	float frameCounter;
-	double lastTime = (float)rl::getTime();
+	float lastTime = rl::getFrameTime();
 
 	//game objects init
 	
 	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
+	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap);
 	
 	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
@@ -84,12 +85,12 @@ fn void main(String[] args) {
 	io::printfn("Objects created");
     
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = GAME;
+	GameState state = LOGO;
 	//rl::playSound(sMap.get("logoSound")!!);
 	
-	while (!rl::windowShouldClose()) {  //(accumulator >= TIME_STEP)
-	  	float currentTime = (float)rl::getTime(); 
-	  	float deltaTime = currentTime - (float)lastTime; 
+	while (!rl::windowShouldClose() || (accumulator >= TIME_STEP)){
+	  	float currentTime = rl::getFrameTime(); 
+	  	float deltaTime = currentTime - lastTime; 
 	  	lastTime = currentTime; 
 	  	accumulator += deltaTime;
 
@@ -98,7 +99,7 @@ fn void main(String[] args) {
 		rl::beginDrawing();
 		defer rl::endDrawing();
 		rl::clearBackground(rl::BLACK);
-
+		
 
 		switch (state) {
 
@@ -116,6 +117,9 @@ fn void main(String[] args) {
 							state = MAIN;
 							frameCounter = 0;
 					}
+					forge_fx::shootingStar();
+					forge_fx::runFireWorks();
+					forge_fx::runExplosion(20);					
 					
 				
 			case MAIN:
@@ -189,11 +193,12 @@ fn void main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+				rl::drawFPS(15,160);
 				//rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				//sun
-				forge_events::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
-				forge_events::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
-				forge_events::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
+				forge_fx::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
+				forge_fx::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
+				forge_fx::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				//end sun
 
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
@@ -215,8 +220,10 @@ fn void main(String[] args) {
 								forge_game::drawAnitmatedConstruct(construct);		
 						}	
 					
-					forge_events::rainFall();
-					forge_events::shootingStar();
+					forge_fx::rainFall();
+					//forge_fx::shootingStar();
+					//forge_fx::runFireWorks();
+					//forge_fx::runExplosion(20);
 					
 					
 			case PAUSE:
@@ -239,9 +246,9 @@ fn void main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				forge_events::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
-				forge_events::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
-				forge_events::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
+				forge_fx::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
+				forge_fx::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
+				forge_fx::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 				
 				
@@ -252,7 +259,7 @@ fn void main(String[] args) {
 								forge_game::drawAnitmatedConstruct(construct);		
 						}	
 
-					forge_events::rainFall();
+					forge_fx::rainFall();
 					
 				
 				//drawing pause stuff here so objects don cover it up
@@ -302,28 +309,38 @@ fn void main(String[] args) {
 				demoCounter1 += 1;
 				demoCounter2 += 1;
 				
-				if(demoCounter1 < 800 ){forge_demo::moveRight(&player);
+				if(demoCounter1 < 800 ){forge_demo::moveRight(&demoPlayer);
 				
 				}
 				if(demoCounter1 > 800){
-					forge_demo::moveLeft(&player);
+					forge_demo::moveLeft(&demoPlayer);
 					
 					if (demoCounter1 % 100 == 0){
 
-					forge_demo::jump(&player);
+					forge_demo::jump(&demoPlayer);
 					}
 				}
 				if (demoCounter1 > 1600){
 					demoCounter1 = 0;
 				}
 
-				if (demoCounter2 > 12000){
+				if (demoCounter2 > 20000){
 					demoCounter2 = 0;
 					state = MAIN;
 				}
 
+				
+				foreach ( &demoConstruct : demoConstructs){
+
+							if (forge_physics::checkCollision(&demoPlayer,demoConstruct) && demoConstruct.isDead == false){
+								forge_physics::resolveCollision(&demoPlayer,demoConstruct);
+								}
+							
+							}
+						
+
 				//player not updated in demo because demo fucntions take over the update role.
-				forge_game::updateConstruct(&poopShot,&sMap);
+				//forge_game::updateConstruct(&poopShot,&sMap);
 					
 					foreach ( &demoConstruct : demoConstructs){
 								forge_game::updateConstruct(demoConstruct,&sMap);		
@@ -338,19 +355,19 @@ fn void main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				rl::drawText("Aramadillo Madness", 680, 340, 65, {185,71,0,200});
-				forge_events::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
-				forge_events::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
-				forge_events::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
+				rl::drawText("Aramadillo Madness", (WINDOW_WIDTH / 2) - 350, 340, 65, {185,71,0,200});
+				forge_fx::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
+				forge_fx::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
+				forge_fx::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				//draw objects
-				forge_game::drawAnitmatedConstruct(&player);
-				forge_game::drawPoopShot(&poopShot,&player);
+				forge_game::drawAnitmatedConstruct(&demoPlayer);
+				//forge_game::drawPoopShot(&poopShot,&demoPlayer);
 					
 					foreach ( &demoConstruct : demoConstructs){
 								forge_game::drawAnitmatedConstruct(demoConstruct);		
 						}	
 				
-				forge_events::rainFall();
+				forge_fx::rainFall();
 			
 			case CREDITS:
 				io::printfn("Credits State");
@@ -359,5 +376,5 @@ fn void main(String[] args) {
    			accumulator -= TIME_STEP;
 	}
 
-	//return 0;
+	return 0;
 }
