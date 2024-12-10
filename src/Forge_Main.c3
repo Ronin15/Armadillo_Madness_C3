@@ -117,9 +117,9 @@ fn int main(String[] args) {
 							state = MAIN;
 							frameCounter = 0;
 					}
-					forge_fx::shootingStar();
-					forge_fx::runFireWorks();
-					forge_fx::runExplosion(20);					
+					//forge_fx::shootingStar();
+					//forge_fx::runFireWorks();
+					//forge_fx::runExplosion(20);					
 					
 				
 			case MAIN:
