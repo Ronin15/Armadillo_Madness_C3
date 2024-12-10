@@ -1,7 +1,6 @@
 module forge_demo;
 import raylib5::rl;
 import forge_game;
-import std::io;
 
 fn void moveRight(Construct* c){
         

@@ -1,6 +1,5 @@
 module forge_load;
 import raylib5::rl;
-import std::io;
 import std::collections::map;
 
 def TexMap = HashMap(<String,Texture2D>);

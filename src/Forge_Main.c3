@@ -1,9 +1,9 @@
 //Forge modules---------------------
 module forge_main;
-import forge_game;
 import forge_load;
-import forge_fx;
+import forge_game;
 import forge_physics;
+import forge_fx;
 import forge_demo;
 //vendor modules-------------------
 import raylib5::rl;

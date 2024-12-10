@@ -1,9 +1,10 @@
 module forge_fx;
-import std::io;
+import forge_main;
+import forge_game;
 import std::math;
 import raylib5::rl;
-import forge_game;
-import forge_main;
+
+
 
 //_P const name ending short for particles
 const int MAX_RAINDROPS = 100;
