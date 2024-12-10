@@ -48,6 +48,7 @@ fn int main(String[] args) {
 	rl::setTargetFPS(FPS_CAP);
 	forge_game::toggleFullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
 
+	//rl::setConfigFlags(rl::FLAG_VSYNC_HINT,rl::FLAG_WINDOW_RESIZABLE);
 	//asset loading
 	TexMap tMap = forge_load::loadTexMap();
 	SoundMap sMap = forge_load::loadSoundMap();
@@ -63,9 +64,9 @@ fn int main(String[] args) {
 	float demoCounter2;
 	float starCounter;
 	//game time step vars
-	float accumulator;
+	double accumulator;
 	float frameCounter;
-	float lastTime = rl::getFrameTime();
+	double lastTime = rl::getTime();
 
 	//game objects init
 	
@@ -88,9 +89,9 @@ fn int main(String[] args) {
 	GameState state = LOGO;
 	//rl::playSound(sMap.get("logoSound")!!);
 	
-	while (!rl::windowShouldClose() || (accumulator >= TIME_STEP)){
-	  	float currentTime = rl::getFrameTime(); 
-	  	float deltaTime = currentTime - lastTime; 
+	while (!rl::windowShouldClose() || accumulator >= TIME_STEP){
+	  	double currentTime = rl::getTime(); 
+	  	double deltaTime = currentTime - lastTime; 
 	  	lastTime = currentTime; 
 	  	accumulator += deltaTime;
 
