@@ -41,6 +41,7 @@ enum GameState {
 fn int main(String[] args) {	
 
 	//init Game Systems
+	rl::setConfigFlags(rl::FLAG_VSYNC_HINT);
 	rl::initWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
 	defer rl::closeWindow();
 	rl::initAudioDevice();
@@ -48,7 +49,7 @@ fn int main(String[] args) {
 	rl::setTargetFPS(FPS_CAP);
 	forge_game::toggleFullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
 
-	//rl::setConfigFlags(rl::FLAG_VSYNC_HINT,rl::FLAG_WINDOW_RESIZABLE);
+	
 	//asset loading
 	TexMap tMap = forge_load::loadTexMap();
 	SoundMap sMap = forge_load::loadSoundMap();
