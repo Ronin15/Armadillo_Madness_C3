@@ -8,12 +8,12 @@ import raylib5::rl;
 
 //_P const name ending short for particles
 const int MAX_RAINDROPS = 100;
-const int MAX_FIREWORK_P = 50;
+const int MAX_FIREWORK_P = 20;
 const int MAX_FIREWORKS = 10;
 const int MAX_SHOOTING_STARS = 50;
 const float STAR_DURATION = 10.0;
-const int MAX_EXPLOSION_P = 10;
-const float MAX_EXPLOSION_P_DURATION = 2.0;
+const int MAX_EXPLOSION_P = 5;
+const float MAX_EXPLOSION_P_DURATION = 1.0;
 
 struct ShootingStar{
     Vector2 pos; 

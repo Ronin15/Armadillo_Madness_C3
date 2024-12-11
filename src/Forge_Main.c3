@@ -120,7 +120,7 @@ fn int main(String[] args) {
 					}
 					//forge_fx::shootingStar();
 					//forge_fx::runFireWorks();
-					//forge_fx::runExplosion(20);					
+					//forge_fx::runExplosion(1);					
 					
 				
 			case MAIN:
