@@ -206,7 +206,7 @@ fn Construct forgeConstructEnemy(TexMap *tMap) {
     c.expired = true;
     c.hHit = false;
     c.vHit = false;
-   io::printfn("name -> %s  type -> %s  texture -> %s",c.name,c.type,c.texture);
+    io::printfn("name -> %s  type -> %s  texture -> %s",c.name,c.type,c.texture);
     return  c;
 }
 
@@ -403,7 +403,7 @@ fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
 //setting up animation data on contructs
 Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
 float obsSize = 3.5; //scaling up onbsticles
-float normal = 2; // normal scale size wiout camera zoon
+float normal = 2.0; // normal scale size without camera zoon
 float scale @noinit;
 
 Rectangle srcRec = {

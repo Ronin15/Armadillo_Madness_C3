@@ -9,8 +9,6 @@ import forge_demo;
 import raylib5::rl;
 //C3 standard modules--------------
 import std::io;
-//import std::collections::map;
-//import std::collections::list;
 
 //Game Consts---------------------------------
 const int FPS_CAP = 120; //FPS Cap
@@ -120,8 +118,8 @@ fn int main(String[] args) {
 							frameCounter = 0;
 					}
 					//forge_fx::shootingStar();
-					//forge_fx::runFireWorks();
 					//forge_fx::runExplosion(1);					
+					//forge_fx::runFireWorks(); //need tweaking for MAC :P locks game up and unresponsvie
 					
 				
 			case MAIN:
