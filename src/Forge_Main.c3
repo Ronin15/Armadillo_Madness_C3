@@ -112,14 +112,14 @@ fn int main(String[] args) {
 				rl::drawTexture(tMap.get("c3")!!, 980, 713, rl::WHITE);
 				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
 				rl::drawText("*{}==> Forge_Engine <=={}*", 790, 790, 20, rl::LIGHTGRAY);
-					frameCounter += 1;
+					//frameCounter += 1;
 					if (frameCounter > 600) {
 							state = MAIN;
 							frameCounter = 0;
 					}
-					forge_fx::shootingStar();
+					//forge_fx::shootingStar();
 					//forge_fx::runExplosion(1);					
-					//forge_fx::runFireWorks(); //need tweaking for MAC :P locks game up and unresponsvie
+					forge_fx::runFireWorks(); //need tweaking for MAC :P locks game up and unresponsvie
 					
 				
 			case MAIN:

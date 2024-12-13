@@ -8,7 +8,7 @@ import raylib5::rl;
 
 //_P const name ending short for particles
 const int MAX_RAINDROPS = 100;
-const int MAX_FIREWORK_P = 10;
+const int MAX_FIREWORK_P = 100;
 const float MAX_FIREWORK_P_LIFE = 2.0;
 const int MAX_FIREWORKS = 10;
 const float FIREWORK_LIFETIME = 1.0;
@@ -79,7 +79,7 @@ fn void drawLight(int x, int y, float radius, Color color) {
 fn void initFireWorks(){
 
     for(int i = 0; i < MAX_FIREWORKS; i++){
-        fireWorks[i].pos = {rand_in_range(100,700),forge_main::WINDOW_HEIGHT};
+        fireWorks[i].pos = {rand_in_range(500,1000),rand_in_range(100,forge_main::WINDOW_HEIGHT)};
         fireWorks[i].life = FIREWORK_LIFETIME;
         fireWorks[i].exploded = false;
         for(int j = 0; j < MAX_FIREWORK_P; j++){
@@ -107,7 +107,7 @@ fn void updateFireWorks(){
                         fireWorks[i].particles[j].pos.x += fireWorks[i].particles[j].vel.x * rl::getFrameTime();
                         fireWorks[i].particles[j].pos.y += fireWorks[i].particles[j].vel.y * rl::getFrameTime();
                         fireWorks[i].particles[j].life -= rl::getFrameTime();
-                        fireWorks[i].particles[j].color.a = (int)(255 * (fireWorks[i].particles[j].life / MAX_FIREWORK_P_LIFE));
+                        fireWorks[i].particles[j].color.a = (char)(255 * (fireWorks[i].particles[j].life / MAX_FIREWORK_P_LIFE));
                     } else {
                         // Reset
                         fireWorks[i].particles[j].pos = fireWorks[i].pos;
@@ -125,11 +125,11 @@ fn void drawFireWorks(){
 
     for (int i = 0; i < MAX_FIREWORKS; i++) {
         if (!fireWorks[i].exploded) {
-            DrawCircleV(fireWorks[i].pos, 5, WHITE);
+            rl::drawCircleV(fireWorks[i].pos, 30, rl::WHITE);
         } else {
-            for (int j = 0; j < MAX_PARTICLES; j++) {
+            for (int j = 0; j < MAX_FIREWORK_P; j++) {
                 if (fireWorks[i].particles[j].life > 0) {
-                    DrawCircleV(fireWorks[i].particles[j].pos, 2, fireWorks[i].particles[j].color);
+                    rl::drawCircleV(fireWorks[i].particles[j].pos, 5, fireWorks[i].particles[j].color);
                 }
             }
         }
@@ -183,24 +183,24 @@ fn void initParticlesExplosion(Vector2 explosionCenter){
         explosion[i].pos = explosionCenter;
         explosion[i].vel = {rand_in_range(-50,-50),rand_in_range(-50,50)};
         explosion[i].color = {(char)rand_in_range(200,255),(char)rand_in_range(100,150),(char)rand_in_range(0,50),255};
-        explosion[i].time = MAX_EXPLOSION_P_DURATION;
+        explosion[i].life = MAX_EXPLOSION_P_DURATION;
     }
 }
 
 fn void updateExplosion(){
     for (int i = 0; i < MAX_EXPLOSION_P; i++){
-        if(explosion[i].time > 0){
+        if(explosion[i].life > 0){
               explosion[i].pos.x += explosion[i].vel.x * rl::getFrameTime();
               explosion[i].pos.y += explosion[i].vel.y * rl::getFrameTime();;
-              explosion[i].time -= 0.1 * rl::getFrameTime();
-              explosion[i].color.a = (char)(255 * (explosion[i].time / MAX_EXPLOSION_P_DURATION));
+              explosion[i].life -= 0.1 * rl::getFrameTime();
+              explosion[i].color.a = (char)(255 * (explosion[i].life / MAX_EXPLOSION_P_DURATION));
         }
     }
 }
 
 fn void drawExplosion(){
     for (int i = 0; i < MAX_EXPLOSION_P; i++) {
-            if(explosion[i].time > 0){
+            if(explosion[i].life > 0){
             rl::drawCircleV(explosion[i].pos, explosionRadius, explosion[i].color);
             drawLight((int)explosion[i].pos.x, (int)explosion[i].pos.y, explosionRadius, explosion[i].color); 
         } 
