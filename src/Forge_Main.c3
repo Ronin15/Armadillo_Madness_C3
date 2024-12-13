@@ -86,7 +86,7 @@ fn int main(String[] args) {
     
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = LOGO;
-	//rl::playSound(sMap.get("logoSound")!!);
+	rl::playSound(sMap.get("logoSound")!!);
 	
 	while (!rl::windowShouldClose() || accumulator >= TIME_STEP){
 	  	double currentTime = rl::getTime(); 
@@ -117,7 +117,7 @@ fn int main(String[] args) {
 							state = MAIN;
 							frameCounter = 0;
 					}
-					//forge_fx::shootingStar();
+					forge_fx::shootingStar();
 					//forge_fx::runExplosion(1);					
 					//forge_fx::runFireWorks(); //need tweaking for MAC :P locks game up and unresponsvie
 					
@@ -143,8 +143,8 @@ fn int main(String[] args) {
 				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
-				//rl::playMusicStream(mMap.get("gameMusic")!!);
-	  			//rl::updateMusicStream(mMap.get("gameMusic")!!);
+				rl::playMusicStream(mMap.get("gameMusic")!!);
+	  			rl::updateMusicStream(mMap.get("gameMusic")!!);
 	  			scrollGround -= 4.0;
 				scrollMid -= 0.6;
 				scrollClouds -= 0.3;
