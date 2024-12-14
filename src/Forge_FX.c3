@@ -48,6 +48,9 @@ struct RainDrop {
 }
 
 
+
+
+
 fn void rainFall(){
 
     foreach (&rainDrop : rainDrops){
@@ -96,7 +99,7 @@ fn void updateFireWorks(){
     
         for (int i = 0; i < MAX_FIREWORKS; i++) {
             if (!fireWorks[i].exploded) {
-                fireWorks[i].pos.y -= 05.0 * rl::getFrameTime();
+                fireWorks[i].pos.y -= 100.0 * rl::getFrameTime();
                 fireWorks[i].life -= rl::getFrameTime();
                 io::printfn("firework life -> %f",rl::getFrameTime());
                 if (fireWorks[i].life <= 0) {
