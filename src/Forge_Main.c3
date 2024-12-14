@@ -67,9 +67,10 @@ fn int main(String[] args) {
 	float frameCounter;
 	float lastTime = (float)rl::getFrameTime();
 
-	//game objects init
-	
-	//create game contructs order: Name, texture, vec2 pos, vec2 velocity, frame width, frame height, max frames, f anim speed, lives, fscale 
+	//window Icon
+	Image windowIcon = rl::loadImage("resources/images/ForgeEngine.png");
+	rl::setWindowIcon(windowIcon);
+	//game objects init 
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
 	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap);
@@ -106,25 +107,23 @@ fn int main(String[] args) {
         	case LOGO:
 				rl::clearBackground({31, 32, 34, 255});//Forge_Gray
 				rl::drawTexture(tMap.get("logo")!!, 800, 420, rl::WHITE);
-				rl::drawText("Hammer Forged Games", 580, 340, 60, {185,71,0,200}); //rust orange
+				rl::drawText("Hammer Forged Games", 580, 340, 60, rl::ORANGE);
 				rl::drawText("Made with", 790, 725, 20, rl::WHITE);
 				rl::drawTexture(tMap.get("raylib")!!, 910, 700, rl::WHITE);
 				rl::drawTexture(tMap.get("c3")!!, 980, 713, rl::WHITE);
 				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
 				rl::drawText("*{}==> Forge_Engine <=={}*", 790, 790, 20, rl::LIGHTGRAY);
-					//frameCounter += 1;
+					frameCounter += 1;
 					if (frameCounter > 600) {
 							state = MAIN;
 							frameCounter = 0;
 					}
-					//forge_fx::shootingStar();
-					//forge_fx::runExplosion(1);					
-					forge_fx::runFireWorks(); //need tweaking for MAC :P locks game up and unresponsvie
 					
 				
 			case MAIN:
-				rl::playMusicStream(mMap.get("titleMusic")!!);
-				rl::updateMusicStream(mMap.get("titleMusic")!!);
+				
+				//rl::playMusicStream(mMap.get("titleMusic")!!);
+				//rl::updateMusicStream(mMap.get("titleMusic")!!);
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("titlePage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, 500, 200, 105, rl::BLACK);
@@ -143,8 +142,8 @@ fn int main(String[] args) {
 				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
-				//rl::playMusicStream(mMap.get("gameMusic")!!);
-	  			//rl::updateMusicStream(mMap.get("gameMusic")!!);
+				rl::playMusicStream(mMap.get("gameMusic")!!);
+	  			rl::updateMusicStream(mMap.get("gameMusic")!!);
 	  			scrollGround -= 4.0;
 				scrollMid -= 0.6;
 				scrollClouds -= 0.3;
@@ -220,12 +219,8 @@ fn int main(String[] args) {
 								forge_game::drawAnitmatedConstruct(construct);		
 						}	
 					
-					forge_fx::rainFall();
-					//forge_fx::shootingStar();
-					//forge_fx::runFireWorks();
-					//forge_fx::runExplosion(20);
-					
-					
+					forge_fx::forgeFXManager(&mMap,"rain");
+		
 			case PAUSE:
 
 				if (rl::isKeyPressed(rl::KEY_P)){
@@ -259,7 +254,7 @@ fn int main(String[] args) {
 								forge_game::drawAnitmatedConstruct(construct);		
 						}	
 
-					forge_fx::rainFall();
+					forge_fx::forgeFXManager(&mMap,"rain");
 					
 				
 				//drawing pause stuff here so objects don cover it up
@@ -286,8 +281,6 @@ fn int main(String[] args) {
 				
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
-				//rl::playMusicStream(gameMusic);
-	  			//rl::updateMusicStream(gameMusic);
 	  			scrollGround -= 4.0;
 				scrollMid -= 0.6;
 				scrollClouds -= 0.3;
@@ -355,7 +348,7 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				rl::drawText("Aramadillo Madness", (WINDOW_WIDTH / 2) - 350, 340, 65, {185,71,0,200});
+				rl::drawText("Aramadillo Madness", (WINDOW_WIDTH / 2) - 350, 340, 65, {185,71,0,200}); //rust orange
 				forge_fx::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
 				forge_fx::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
 				forge_fx::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
@@ -374,6 +367,7 @@ fn int main(String[] args) {
 
    		}
    			accumulator -= TIME_STEP;
+			rl::waitTime(accumulator);
 	}
 
 	return 0;

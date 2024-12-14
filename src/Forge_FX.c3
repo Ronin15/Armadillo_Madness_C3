@@ -1,4 +1,5 @@
 module forge_fx;
+import forge_load;
 import forge_main;
 import forge_game;
 import std::math;
@@ -17,6 +18,23 @@ const int MAX_SHOOTING_STARS = 50;
 const float STAR_DURATION = 10.0;
 const int MAX_EXPLOSION_P = 5;
 const float MAX_EXPLOSION_P_DURATION = 2.0;
+
+//for Fx manager default is no FX
+Fx event = DEFAULT;
+bool rain = false;
+bool snow = false;
+bool explode = false;
+bool shootStar = false;
+bool fireworks = false;
+
+enum Fx {
+    EXPLODE,
+    RAIN,
+    SNOW,
+    SHOOTING_STAR,
+    FIREWORKS,
+    DEFAULT,
+}
 
 struct ShootingStar{
     Vector2 pos; 
@@ -47,8 +65,68 @@ struct RainDrop {
     Vector2 vel; 
 }
 
+fn void forgeFXManager(MusicMap *mMap,String type ){
+        String effect = type;
 
+            if(effect == "rain"){ event = RAIN; rain = true;}
+            if(effect == "snow"){ event = SNOW; snow = true;}
+            if(effect == "explode"){event = EXPLODE; explode = true;}
+            if(effect == "shootingStar"){event = SHOOTING_STAR; shootStar = true;}
+            if(effect == "fireworks"){event = FIREWORKS; fireworks = true;}
 
+              
+            switch (event){
+
+                case RAIN:
+
+                    if(rain){
+                        
+                        rl::playMusicStream(mMap.get("rain")!!);
+				        rl::updateMusicStream(mMap.get("rain")!!);
+                        
+                        rainFall();
+
+                    }
+
+                    //break;
+
+                case SNOW:
+
+                    if(snow){
+                        snowFall();
+                    }
+
+                   // break;
+
+                case EXPLODE:
+
+                    if (explode){
+                         runExplosion();
+                    }
+
+                   // break;
+
+                case SHOOTING_STAR:
+
+                    if (shootStar){
+                         shootingStar();
+                    }
+
+                    //break;
+
+                case FIREWORKS:
+
+                    if (fireworks){
+                         runFireWorks();
+                    }
+
+                    //break;
+
+                case DEFAULT:
+                
+                   // break;
+            }
+}
 
 
 fn void rainFall(){
@@ -70,6 +148,28 @@ fn void rainFall(){
 
     foreach (&rainDrop : rainDrops){ 
     rl::drawLineEx(rainDrop.pos, { rainDrop.pos.x, rainDrop.pos.y + 10 }, 4.0, rl::BLUE);//snow 6.5
+    } 
+}
+
+fn void snowFall(){
+
+    foreach (&rainDrop : rainDrops){
+        rainDrop.pos = { rand_in_range(0,forge_main::WINDOW_WIDTH), rand_in_range(0,forge_main::WINDOW_HEIGHT)}; 
+        rainDrop.vel = { 0,  rand_in_range(-2,10) }; 
+    }
+        // Update rain drops 
+        foreach (&rainDrop : rainDrops){
+            rainDrop.pos.y += rainDrop.vel.y;
+        
+        // Reset rain drop pos if moves off screen 
+        if (rainDrop.pos.y > forge_main::WINDOW_HEIGHT) {
+            rainDrop.pos.x =  rand_in_range(0,forge_main::WINDOW_WIDTH); 
+            rainDrop.pos.y =  rand_in_range(0,forge_main::WINDOW_HEIGHT); 
+        } 
+    }
+
+    foreach (&rainDrop : rainDrops){ 
+    rl::drawLineEx(rainDrop.pos, { rainDrop.pos.x, rainDrop.pos.y + 15 }, 6.5, rl::RAYWHITE);//snow 6.5
     } 
 }
 
@@ -211,13 +311,13 @@ fn void drawExplosion(){
     }
 }
 
-fn void runExplosion(int count){
+fn void runExplosion(){
     
-    while (count > 0 ){
-     Vector2 pos = {rand_in_range(0,forge_main::WINDOW_WIDTH),rand_in_range(900,forge_main::WINDOW_HEIGHT)};
+  //  while (count > 0 ){
+        Vector2 pos = {rand_in_range(0,forge_main::WINDOW_WIDTH),rand_in_range(900,forge_main::WINDOW_HEIGHT)};
         initParticlesExplosion(pos);
         updateExplosion();
         drawExplosion();
-        count--;
-    }
+   //     count--;
+    //}
 }
