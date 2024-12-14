@@ -63,9 +63,9 @@ fn int main(String[] args) {
 	float demoCounter2;
 	float starCounter;
 	//game time step vars
-	double accumulator;
+	float accumulator;
 	float frameCounter;
-	double lastTime = rl::getTime();
+	float lastTime = (float)rl::getFrameTime();
 
 	//game objects init
 	
@@ -86,14 +86,14 @@ fn int main(String[] args) {
     
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = LOGO;
-	rl::playSound(sMap.get("logoSound")!!);
+	//rl::playSound(sMap.get("logoSound")!!);
 	
 	while (!rl::windowShouldClose() || accumulator >= TIME_STEP){
-	  	double currentTime = rl::getTime(); 
-	  	double deltaTime = currentTime - lastTime; 
+	  	float currentTime = rl::getFrameTime(); 
+	  	float deltaTime = currentTime - lastTime; 
 	  	lastTime = currentTime; 
 	  	accumulator += deltaTime;
-
+		
 		
 	  	//render and game states-----------------------------------------------
 		rl::beginDrawing();
@@ -143,8 +143,8 @@ fn int main(String[] args) {
 				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
-				rl::playMusicStream(mMap.get("gameMusic")!!);
-	  			rl::updateMusicStream(mMap.get("gameMusic")!!);
+				//rl::playMusicStream(mMap.get("gameMusic")!!);
+	  			//rl::updateMusicStream(mMap.get("gameMusic")!!);
 	  			scrollGround -= 4.0;
 				scrollMid -= 0.6;
 				scrollClouds -= 0.3;

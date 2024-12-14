@@ -2,6 +2,7 @@ module forge_fx;
 import forge_main;
 import forge_game;
 import std::math;
+import std::io;
 import raylib5::rl;
 
 
@@ -9,9 +10,9 @@ import raylib5::rl;
 //_P const name ending short for particles
 const int MAX_RAINDROPS = 100;
 const int MAX_FIREWORK_P = 100;
-const float MAX_FIREWORK_P_LIFE = 2.0;
+const float MAX_FIREWORK_P_LIFE = 5.0;
 const int MAX_FIREWORKS = 10;
-const float FIREWORK_LIFETIME = 1.0;
+const float FIREWORK_LIFETIME = 10.0;
 const int MAX_SHOOTING_STARS = 50;
 const float STAR_DURATION = 10.0;
 const int MAX_EXPLOSION_P = 5;
@@ -79,7 +80,7 @@ fn void drawLight(int x, int y, float radius, Color color) {
 fn void initFireWorks(){
 
     for(int i = 0; i < MAX_FIREWORKS; i++){
-        fireWorks[i].pos = {rand_in_range(500,1000),rand_in_range(100,forge_main::WINDOW_HEIGHT)};
+        fireWorks[i].pos = {rand_in_range(100,700),rand_in_range(0,forge_main::WINDOW_HEIGHT)};
         fireWorks[i].life = FIREWORK_LIFETIME;
         fireWorks[i].exploded = false;
         for(int j = 0; j < MAX_FIREWORK_P; j++){
@@ -95,9 +96,9 @@ fn void updateFireWorks(){
     
         for (int i = 0; i < MAX_FIREWORKS; i++) {
             if (!fireWorks[i].exploded) {
-                fireWorks[i].pos.y -= 200.0 * rl::getFrameTime();
+                fireWorks[i].pos.y -= 05.0 * rl::getFrameTime();
                 fireWorks[i].life -= rl::getFrameTime();
-
+                io::printfn("firework life -> %f",rl::getFrameTime());
                 if (fireWorks[i].life <= 0) {
                     fireWorks[i].exploded = true;
                 }
@@ -125,11 +126,11 @@ fn void drawFireWorks(){
 
     for (int i = 0; i < MAX_FIREWORKS; i++) {
         if (!fireWorks[i].exploded) {
-            rl::drawCircleV(fireWorks[i].pos, 30, rl::WHITE);
+            rl::drawCircleV(fireWorks[i].pos, 100, rl::WHITE);
         } else {
             for (int j = 0; j < MAX_FIREWORK_P; j++) {
                 if (fireWorks[i].particles[j].life > 0) {
-                    rl::drawCircleV(fireWorks[i].particles[j].pos, 5, fireWorks[i].particles[j].color);
+                    rl::drawCircleV(fireWorks[i].particles[j].pos, 15, fireWorks[i].particles[j].color);
                 }
             }
         }
