@@ -70,6 +70,7 @@ fn int main(String[] args) {
 	//window Icon
 	Image windowIcon = rl::loadImage("resources/images/ForgeEngine.png");
 	rl::setWindowIcon(windowIcon);
+	
 	//game objects init 
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
 	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
