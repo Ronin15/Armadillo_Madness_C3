@@ -113,7 +113,7 @@ fn int main(String[] args) {
 				rl::drawTexture(tMap.get("raylib")!!, 910, 700, rl::WHITE);
 				rl::drawTexture(tMap.get("c3")!!, 980, 713, rl::WHITE);
 				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
-				rl::drawText("*{}==> Forge_Engine <=={}*", 790, 790, 20, rl::LIGHTGRAY);
+				rl::drawText("*{}==[> Forge_Engine <]=={}*", 790, 790, 20, rl::LIGHTGRAY);
 					frameCounter += 1;
 					if (frameCounter > 600) {
 							state = MAIN;
