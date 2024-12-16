@@ -16,7 +16,7 @@ fn TexMap loadTexMap(){
    Texture2D clouds = rl::loadTexture("resources/images/close_clouds.png");
 	 Texture2D playerTex = rl::loadTexture("resources/images/armadillo_a2-sheet.png");
 	 Texture2D sunTex = rl::loadTexture("resources/images/Sun.png");
-	//obstacles // enemies
+	//obstacles // enemies // powerups
 	 Texture2D cactus1Tex = rl::loadTexture("resources/images/Cactus1.png");
 	 Texture2D bigBoulderTex = rl::loadTexture("resources/images/BoulderBig.png");
 	 Texture2D birdTex = rl::loadTexture("resources/images/bird-sheet.png");
@@ -28,6 +28,7 @@ fn TexMap loadTexMap(){
    Texture2D snakeTex = rl::loadTexture("resources/images/snake-sheet.png");
    Texture2D foxTex = rl::loadTexture("resources/images/fox-sheet.png");
    Texture2D treeTex = rl::loadTexture("resources/images/tree.png");
+   Texture2D gravBootsTex = rl::loadTexture("resources/images/grav_boots.png");
 	//logo Page assets
 	 Texture2D raylibTex = rl::loadTexture("resources/images/raylib.png");
 	 Texture2D c3Tex = rl::loadTexture("resources/images/C3.png");
@@ -58,6 +59,9 @@ fn TexMap loadTexMap(){
    temp.set("snake",snakeTex);
    temp.set("fox",foxTex);
    temp.set("tree",treeTex);
+   temp.set("grav",gravBootsTex);
+   temp.set("worms",gravBootsTex);
+   temp.set("super",gravBootsTex);
 
    return temp;
 }

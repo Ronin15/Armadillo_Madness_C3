@@ -3,7 +3,6 @@ import forge_main;
 import forge_load;
 import raylib5::rl;
 import std::io; 
-//import std::collections::map;
 import std::math;
 
 //GAME globals and consts -------------------------------------------------
@@ -19,6 +18,7 @@ const int MAX_LIVES = 6;
 const float OBS_SOFFSET = 30.0;
 const float ANT_SOFFSET = 60.0;
 const float FOX_SOFFSET = 80.0;
+const float POWERUP_SOFFSET = 35.0;
 
 
 //GAME Structures ---------------------------------------------------------
@@ -27,9 +27,11 @@ const float FOX_SOFFSET = 80.0;
    PROJECTILE_POOP,
    ENEMY_GROUND,
    ENEMEY_FLY,
+   POWER_UP,
    OBS,
 }
 
+/*
 enum PowerUpType : int {
    GRAV_BOOTS, //change player gravity
    CAN_O_WORMS, //pentrating poop
@@ -37,13 +39,40 @@ enum PowerUpType : int {
 
 }
 
+struct PowerUp{
+    
+    PowerUpType type;
+    Texture2D texture;
+    Vector2 pos;
+    Vector2 vel;
+    Sound sound;
+    String name;
+    float gravity;
+    float size;
+    float frameTimer;
+    float frameLength;
+    int currentFrame; 
+    int maxFrames;
+    bool expired;
+    bool hHit;
+    bool vHit; 
+
+}
+fn PowerUpType getRandomPowerUpType(){
+   int min = (int)PowerUpType.GRAV_BOOTS;
+   int max = (int)ConstructType.SUPER_ARMADILLO;
+   //io::printfn("max -> %s  min -> %s !",max,min);
+   return (PowerUpType)rand_in_range(min,max);
+}
+
+*/
  struct Construct {
     
     ConstructType type;
     Texture2D texture;
     Vector2 pos;
     Vector2 vel;
-   // Sound sound;
+    Sound sound;
     String name;
     float gravity;
     float jumpVelocity;
@@ -53,6 +82,7 @@ enum PowerUpType : int {
     float frameTimer;
     float frameLength;
     float invulnTimer;
+    int size;
     int currentFrame; 
     int maxFrames; 
     int lives;
@@ -84,15 +114,19 @@ fn ConstructType getRandomType(){
    return (ConstructType)rand_in_range(min,max);
 }
 
+
 fn String getRandomConstructName (ConstructType type){
-   
+   static int powerUpCount;
+
    String[*] groundTypes = {"ant","turtle","snake","fox"};
    String[*] flyingTypes = {"bird","beatle"};
    String[*] obsticlesTypes = {"cactus","boulder","tree"};
+   String[*] powerUps = {"grav","worms","super"};
 
    int gLength = groundTypes.len - 1;
    int fLength = flyingTypes.len - 1;
-   int oLength = obsticlesTypes.len - 1; 
+   int oLength = obsticlesTypes.len - 1;
+   int pLength = powerUps.len -1; 
 
       if (type == ConstructType.ENEMY_GROUND){
       int index = rand_in_range(0, gLength);
@@ -112,6 +146,13 @@ fn String getRandomConstructName (ConstructType type){
       return obsticlesTypes[index];
       }
 
+      if (type == ConstructType.POWER_UP && powerUpCount < forge_main::MAX_POWERUPS){
+      int index = rand_in_range(0, pLength);
+      powerUpCount += 1;
+      //io::printfn("name -> %s  type -> %s  texture -> %s !",obsticlesTypes[index],type);
+      return powerUps[index];
+      }
+
       io::printfn("No Type Found! %s",type);
       return "default"; // TO DO ADD DEFAULT TEX
    }
@@ -125,7 +166,7 @@ fn Construct forgeCronstructProjectile(TexMap *tMap) {
       c.name = "poop";
       c.pos = {0,0};
       c.texture = tMap.get(c.name)!!;
-     // c.sound = sMap.get(c.name)!!; 
+      //c.sound = sMap.get(c.name)!!; 
       c.lives = 1;
       c.maxFrames = 1;
       c.gravity = game_gravity;
@@ -145,7 +186,6 @@ fn Construct forgeCronstructProjectile(TexMap *tMap) {
       io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
 }
-
 
 fn Construct forgeCronstructPlayer(TexMap *tMap) {
 
@@ -179,12 +219,14 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
 }
 
 //creates game objects
-fn Construct forgeConstructEnemy(TexMap *tMap) {
+fn Construct forgeConstructEntities(TexMap *tMap) {
     
-    Construct c;
-   
-    c.type = getRandomType();
-    c.name = (String)getRandomConstructName(c.type);
+   Construct c;
+   c.name = "default"; // this is for generating objects limits bases on random name and type counts
+   while (c.name == "default"){
+      c.type = getRandomType();
+      c.name = (String)getRandomConstructName(c.type);
+   }
     c.pos = {(float)rand_in_range(2000,21000) + (float)rand_in_range(64,200),(float)rand_in_range(450,650) + (float)rand_in_range(64,100)};
     c.texture = tMap.get(c.name)!!;
    // c.sound = sMap.get(c.name)!!;  NEED TO ADD SOUNDS FOR ALL TYPES
@@ -370,6 +412,17 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
           c.vel.y += c.gravity * rl::getFrameTime();
           c.pos.y += c.vel.y * rl::getFrameTime();
           c.pos.x -= (c.friction + OBS_SOFFSET) * rl::getFrameTime(); 
+
+         break;
+
+         case POWER_UP:
+          //io::printfn("Power ups update reached");
+         if (c.name == "grav") {}
+         if (c.name == "worms") {}
+         if (c.name == "super"){}
+          c.vel.y += c.gravity * rl::getFrameTime();
+          c.pos.y += c.vel.y * rl::getFrameTime();
+          c.pos.x -= (c.friction + POWERUP_SOFFSET) * rl::getFrameTime(); 
 
          break;
       }

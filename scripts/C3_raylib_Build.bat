@@ -1,1 +1,1 @@
-c3c run --wincrt=none -l raylib -l opengl32 -l gdi32 -l winmm -O0
+c3c run --wincrt=none -l raylib -l opengl32 -l gdi32 -l winmm -O2

@@ -18,11 +18,12 @@ const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.4.1";
 const int MAX_CONSTRUCTS = 100;
-const int MAX_POWERUPS = 10;
+const int MAX_POWERUPS = 15;
 
 
 Construct[MAX_CONSTRUCTS] constructs;
 Construct[MAX_CONSTRUCTS] demoConstructs;
+
 
 enum GameState {
 	LOGO,
@@ -65,7 +66,7 @@ fn int main(String[] args) {
 	//game time step vars
 	float accumulator;
 	float frameCounter;
-	float lastTime = (float)rl::getFrameTime();
+	float lastTime = (float)rl::getTime();
 
 	//window Icon
 	Image windowIcon = rl::loadImage("resources/images/ForgeEngine.png");
@@ -80,21 +81,21 @@ fn int main(String[] args) {
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap);
 	
 	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
-	constructs[i] = forge_game::forgeConstructEnemy(&tMap); 
+	constructs[i] = forge_game::forgeConstructEntities(&tMap); 
 	}
 
 	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
-	demoConstructs[i] = forge_game::forgeConstructEnemy(&tMap); 
+	demoConstructs[i] = forge_game::forgeConstructEntities(&tMap); 
 	}
 
 	io::printfn("Objects created");
     
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
+	GameState state = GAME;
 	//rl::playSound(sMap.get("logoSound")!!);
 	
 	while (!rl::windowShouldClose() || accumulator >= TIME_STEP){
-	  	float currentTime = rl::getFrameTime(); 
+	  	float currentTime = (float)rl::getTime(); 
 	  	float deltaTime = currentTime - lastTime; 
 	  	lastTime = currentTime; 
 	  	accumulator += deltaTime;
