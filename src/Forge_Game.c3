@@ -457,6 +457,7 @@ fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
 Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
 float obsSize = 3.5; //scaling up onbsticles
 float normal = 2.0; // normal scale size without camera zoon
+float powerUpSize = 1.0;
 float scale @noinit;
 
 Rectangle srcRec = {
@@ -469,6 +470,9 @@ Rectangle srcRec = {
 scale = normal;
 if (c.type == OBS){
    scale = obsSize;
+}
+if (c.type == POWER_UP){
+   scale = powerUpSize;
 }
 
 Rectangle destRec = {
