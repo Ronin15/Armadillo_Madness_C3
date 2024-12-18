@@ -222,7 +222,7 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
 fn Construct forgeConstructEntities(TexMap *tMap) {
     
    Construct c;
-   c.name = "default"; // this is for generating objects limits bases on random name and type counts
+   c.name = "default"; // this is for generating object spawn limits based on random name and type counts. For powerups only at the moment.
    while (c.name == "default"){
       c.type = getRandomType();
       c.name = (String)getRandomConstructName(c.type);
