@@ -229,7 +229,7 @@ fn void drawFireWorks(){
 
     for (int i = 0; i < MAX_FIREWORKS; i++) {
         if (!fireWorks[i].exploded) {
-            rl::drawCircleV(fireWorks[i].pos, 100, rl::WHITE);
+            rl::drawCircleV(fireWorks[i].pos, 3, rl::WHITE);
         } else {
             for (int j = 0; j < MAX_FIREWORK_P; j++) {
                 if (fireWorks[i].particles[j].life > 0) {
