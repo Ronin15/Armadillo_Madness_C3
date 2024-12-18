@@ -13,7 +13,7 @@ const int MAX_RAINDROPS = 100;
 const int MAX_FIREWORK_P = 100;
 const float MAX_FIREWORK_P_LIFE = 5.0;
 const int MAX_FIREWORKS = 10;
-const float FIREWORK_LIFETIME = 10.0;
+const float FIREWORK_LIFETIME = 4.0;
 const int MAX_SHOOTING_STARS = 50;
 const float STAR_DURATION = 10.0;
 const int MAX_EXPLOSION_P = 5;
@@ -65,7 +65,7 @@ struct RainDrop {
     Vector2 vel; 
 }
 
-fn void forgeFXManager(MusicMap *mMap,String type ){
+fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
         String effect = type;
 
             if(effect == "rain"){ event = RAIN; rain = true;}
@@ -88,7 +88,7 @@ fn void forgeFXManager(MusicMap *mMap,String type ){
 
                     }
 
-                    //break;
+                    break;
 
                 case SNOW:
 
@@ -96,35 +96,35 @@ fn void forgeFXManager(MusicMap *mMap,String type ){
                         snowFall();
                     }
 
-                   // break;
+                   break;
 
                 case EXPLODE:
 
                     if (explode){
-                         runExplosion();
+                         runExplosion(deltaTime);
                     }
 
-                   // break;
+                   break;
 
                 case SHOOTING_STAR:
 
                     if (shootStar){
-                         shootingStar();
+                         shootingStar(deltaTime);
                     }
 
-                    //break;
+                    break;
 
                 case FIREWORKS:
 
                     if (fireworks){
-                         runFireWorks();
+                         runFireWorks(deltaTime);
                     }
 
-                    //break;
+                    break;
 
                 case DEFAULT:
                 
-                   // break;
+                    break;
             }
 }
 
@@ -183,7 +183,7 @@ fn void drawLight(int x, int y, float radius, Color color) {
 fn void initFireWorks(){
 
     for(int i = 0; i < MAX_FIREWORKS; i++){
-        fireWorks[i].pos = {rand_in_range(100,700),rand_in_range(0,forge_main::WINDOW_HEIGHT)};
+        fireWorks[i].pos = {rand_in_range(0,forge_main::WINDOW_WIDTH),rand_in_range(0,forge_main::WINDOW_HEIGHT)};
         fireWorks[i].life = FIREWORK_LIFETIME;
         fireWorks[i].exploded = false;
         for(int j = 0; j < MAX_FIREWORK_P; j++){
@@ -195,22 +195,22 @@ fn void initFireWorks(){
     }
 }
 
-fn void updateFireWorks(){
+fn void updateFireWorks(float deltaTime){
     
         for (int i = 0; i < MAX_FIREWORKS; i++) {
             if (!fireWorks[i].exploded) {
-                fireWorks[i].pos.y -= 100.0 * rl::getFrameTime();
-                fireWorks[i].life -= rl::getFrameTime();
-                io::printfn("firework life -> %f",rl::getFrameTime());
+                fireWorks[i].pos.y -= 10.0 * deltaTime;
+                fireWorks[i].life -= deltaTime;
+                io::printfn("firework life -> %f",deltaTime);
                 if (fireWorks[i].life <= 0) {
                     fireWorks[i].exploded = true;
                 }
             } else {
                 for (int j = 0; j < MAX_FIREWORK_P; j++) {
                     if (fireWorks[i].particles[j].life > 0) {
-                        fireWorks[i].particles[j].pos.x += fireWorks[i].particles[j].vel.x * rl::getFrameTime();
-                        fireWorks[i].particles[j].pos.y += fireWorks[i].particles[j].vel.y * rl::getFrameTime();
-                        fireWorks[i].particles[j].life -= rl::getFrameTime();
+                        fireWorks[i].particles[j].pos.x += fireWorks[i].particles[j].vel.x * deltaTime;
+                        fireWorks[i].particles[j].pos.y += fireWorks[i].particles[j].vel.y * deltaTime;
+                        fireWorks[i].particles[j].life -= deltaTime;
                         fireWorks[i].particles[j].color.a = (char)(255 * (fireWorks[i].particles[j].life / MAX_FIREWORK_P_LIFE));
                     } else {
                         // Reset
@@ -229,7 +229,7 @@ fn void drawFireWorks(){
 
     for (int i = 0; i < MAX_FIREWORKS; i++) {
         if (!fireWorks[i].exploded) {
-            rl::drawCircleV(fireWorks[i].pos, 100, rl::WHITE);
+            rl::drawCircleV(fireWorks[i].pos, 3, rl::WHITE);
         } else {
             for (int j = 0; j < MAX_FIREWORK_P; j++) {
                 if (fireWorks[i].particles[j].life > 0) {
@@ -240,9 +240,9 @@ fn void drawFireWorks(){
     }
 }
 
-fn void runFireWorks(){
+fn void runFireWorks(float deltaTime){
     initFireWorks();
-    updateFireWorks();
+    updateFireWorks(deltaTime);
     drawFireWorks();
     
 }
@@ -252,7 +252,7 @@ fn void runFireWorks(){
     ShootingStar [MAX_SHOOTING_STARS] shootingStars; 
     int starIndex;
 
-fn void shootingStar(){
+fn void shootingStar(float deltaTime){
     
     float starRadius = 5.0;
     float starInner = 10.0;
@@ -260,8 +260,8 @@ fn void shootingStar(){
     
     Vector2 starVelocity = {900,rand_in_range(400,500) };
 
-    starPosition.x += starVelocity.x * rl::getFrameTime(); 
-    starPosition.y += starVelocity.y * rl::getFrameTime(); 
+    starPosition.x += starVelocity.x * deltaTime; 
+    starPosition.y += starVelocity.y * deltaTime; 
    
     shootingStars[starIndex].pos = starPosition; 
     shootingStars[starIndex].color = { 255, 255, 255, 255 - (char)(starIndex * 1) };
@@ -285,18 +285,18 @@ float explosionRadius = 100.0;
 fn void initParticlesExplosion(Vector2 explosionCenter){
     for (int i = 0; i < MAX_EXPLOSION_P; i++){
         explosion[i].pos = explosionCenter;
-        explosion[i].vel = {rand_in_range(-50,-50),rand_in_range(-50,50)};
+        explosion[i].vel = {(float)(rand_in_range(-50,-50) / 10.0),(float)(rand_in_range(-50,50) / 10.0)};
         explosion[i].color = {(char)rand_in_range(200,255),(char)rand_in_range(100,150),(char)rand_in_range(0,50),255};
         explosion[i].life = MAX_EXPLOSION_P_DURATION;
     }
 }
 
-fn void updateExplosion(){
+fn void updateExplosion(float deltaTime){
     for (int i = 0; i < MAX_EXPLOSION_P; i++){
         if(explosion[i].life > 0){
-              explosion[i].pos.x += explosion[i].vel.x * rl::getFrameTime();
-              explosion[i].pos.y += explosion[i].vel.y * rl::getFrameTime();;
-              explosion[i].life -= 0.1 * rl::getFrameTime();
+              explosion[i].pos.x += explosion[i].vel.x * deltaTime;
+              explosion[i].pos.y += explosion[i].vel.y * deltaTime;;
+              explosion[i].life -= 0.1 * deltaTime;
               explosion[i].color.a = (char)(255 * (explosion[i].life / MAX_EXPLOSION_P_DURATION));
         }
     }
@@ -311,12 +311,12 @@ fn void drawExplosion(){
     }
 }
 
-fn void runExplosion(){
+fn void runExplosion(float deltaTime){
     
   //  while (count > 0 ){
         Vector2 pos = {rand_in_range(0,forge_main::WINDOW_WIDTH),rand_in_range(900,forge_main::WINDOW_HEIGHT)};
         initParticlesExplosion(pos);
-        updateExplosion();
+        updateExplosion(deltaTime);
         drawExplosion();
    //     count--;
     //}
