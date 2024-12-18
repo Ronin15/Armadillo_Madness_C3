@@ -253,11 +253,11 @@ fn Construct forgeConstructEntities(TexMap *tMap) {
 }
 
 //update game contructs
-fn void updateConstruct(Construct *c, SoundMap *sMap) { 
+fn void updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) { 
       
       //all construct update info-------------------------------------------------
       //Frame updates
-      c.frameTimer += rl::getFrameTime();
+      c.frameTimer += deltaTime;
 
       if (c.frameTimer > c.frameLength) {
          c.currentFrame += 1;
@@ -273,7 +273,7 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
                c.isGrounded = true;
                c.pos.y = c.groundLevel;
                c.vel.y = 0.0;
-               c.pos.x -= c.friction * rl::getFrameTime(); 
+               c.pos.x -= c.friction * deltaTime; 
             }
       
       //swtich on construct type for specific type updates.-----------------------
@@ -314,18 +314,18 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
 
             if (rl::isKeyDown(rl::KEY_LEFT)) {
                if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(sMap.get("moving")!!); }
-               c.pos.x -= c.acceleration * rl::getFrameTime();
+               c.pos.x -= c.acceleration * deltaTime;
                c.texFlip = true;
             } else if (rl::isKeyDown(rl::KEY_RIGHT)){
                if (rl::isKeyPressed(rl::KEY_RIGHT)) {rl::playSound(sMap.get("moving")!!); }
-               c.pos.x += c.acceleration * rl::getFrameTime();
+               c.pos.x += c.acceleration * deltaTime;
                c.texFlip = false;
 
             } else {
                c.vel.x = 0.0;
             }
 
-            c.vel.y += c.gravity * rl::getFrameTime();  
+            c.vel.y += c.gravity * deltaTime;  
 
             if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
 
@@ -334,7 +334,7 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
                c.vel.y = c.jumpVelocity; 
                c.isGrounded = false; 
             }
-               c.pos.y += c.vel.y * rl::getFrameTime();
+               c.pos.y += c.vel.y * deltaTime;
 
          break;
          
@@ -351,7 +351,7 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
                c.groundLevel = groundLevel - c.texture.height + 80;
 
             if (c.pos.x > 1900) {c.expired = true; c.isProjectileActive = false;}
-               c.pos.x += (c.acceleration * 3.5) * rl::getFrameTime(); 
+               c.pos.x += (c.acceleration * 3.5) * deltaTime; 
             
          break;
 
@@ -368,19 +368,19 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
 
-            if (c.name == "ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * rl::getFrameTime();c.groundLevel = groundLevel + 5;}
-            if (c.name == "turtle") {c.pos.x -= c.friction * rl::getFrameTime();c.groundLevel = groundLevel + 15;} //ground level hit box adjust
-            if (c.name == "fox") {c.pos.x -= (c.friction + FOX_SOFFSET)  * rl::getFrameTime();c.groundLevel = groundLevel + 15;} //ground level hit box adjust
-            if (c.name == "snake") {c.pos.x -= c.friction * rl::getFrameTime();c.groundLevel = groundLevel + 5;} 
+            if (c.name == "ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * deltaTime;c.groundLevel = groundLevel + 5;}
+            if (c.name == "turtle") {c.pos.x -= c.friction * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
+            if (c.name == "fox") {c.pos.x -= (c.friction + FOX_SOFFSET)  * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
+            if (c.name == "snake") {c.pos.x -= c.friction * deltaTime;c.groundLevel = groundLevel + 5;} 
             
-            c.pos.y += c.vel.y * rl::getFrameTime();
-            c.vel.y += c.gravity * rl::getFrameTime(); 
+            c.pos.y += c.vel.y * deltaTime;
+            c.vel.y += c.gravity * deltaTime; 
          
          break;
          
          case ENEMEY_FLY:
             //io::printfn("ENEMEY_FLY update reached");
-            //c.pos.y += c.acceleration * rl::getFrameTime();  
+            //c.pos.y += c.acceleration * deltaTime;  
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
             if((c.hHit || c.vHit) && c.lives <= 0){
                
@@ -393,14 +393,14 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
                }
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
-            c.pos.x -= 125 * rl::getFrameTime();//15
+            c.pos.x -= 125 * deltaTime;//15
             c.texFlip = false;//15
-            //if (c.pos.x <= 0){c.pos.x += 15.0 * rl::getFrameTime();c.texFlip = true;}
+            //if (c.pos.x <= 0){c.pos.x += 15.0 * deltaTime;c.texFlip = true;}
             if (!c.isDead){
-            c.pos.y += AMPLITUDE * math::sin(FREQUENCY * (c.pos.x + c.acceleration)) * rl::getFrameTime();
+            c.pos.y += AMPLITUDE * math::sin(FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
             }else{
-            c.pos.y += c.vel.y * rl::getFrameTime(); 
-            c.vel.y += c.gravity * rl::getFrameTime();
+            c.pos.y += c.vel.y * deltaTime; 
+            c.vel.y += c.gravity * deltaTime;
             }
          break;
 
@@ -409,9 +409,9 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
          if (c.name == "cactus") {c.groundLevel = groundLevel - 106;}
          if (c.name == "tree") {c.groundLevel = groundLevel - 106;}
          if (c.name == "boulder"){c.groundLevel = groundLevel - 55 ;}
-          c.vel.y += c.gravity * rl::getFrameTime();
-          c.pos.y += c.vel.y * rl::getFrameTime();
-          c.pos.x -= (c.friction + OBS_SOFFSET) * rl::getFrameTime(); 
+          c.vel.y += c.gravity * deltaTime;
+          c.pos.y += c.vel.y * deltaTime;
+          c.pos.x -= (c.friction + OBS_SOFFSET) * deltaTime; 
 
          break;
 
@@ -420,9 +420,9 @@ fn void updateConstruct(Construct *c, SoundMap *sMap) {
          if (c.name == "grav") {}
          if (c.name == "worms") {}
          if (c.name == "super"){}
-          c.vel.y += c.gravity * rl::getFrameTime();
-          c.pos.y += c.vel.y * rl::getFrameTime();
-          c.pos.x -= (c.friction + POWERUP_SOFFSET) * rl::getFrameTime(); 
+          c.vel.y += c.gravity * deltaTime;
+          c.pos.y += c.vel.y * deltaTime;
+          c.pos.x -= (c.friction + POWERUP_SOFFSET) * deltaTime; 
 
          break;
       }

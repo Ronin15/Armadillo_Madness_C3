@@ -91,14 +91,15 @@ fn int main(String[] args) {
 	io::printfn("Objects created");
     
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = GAME;
+	GameState state = LOGO;
 	//rl::playSound(sMap.get("logoSound")!!);
 	
 	while (!rl::windowShouldClose() || accumulator >= TIME_STEP){
-	  	float currentTime = (float)rl::getTime(); 
-	  	float deltaTime = currentTime - lastTime; 
+	  	float deltaTime = rl::getFrameTime();
+		float currentTime = (float)rl::getTime(); 
+	  	float updateTime = currentTime - lastTime; 
 	  	lastTime = currentTime; 
-	  	accumulator += deltaTime;
+	  	accumulator += updateTime;
 		
 		
 	  	//render and game states-----------------------------------------------
@@ -118,11 +119,13 @@ fn int main(String[] args) {
 				rl::drawTexture(tMap.get("c3")!!, 980, 713, rl::WHITE);
 				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
 				rl::drawText("*{}==[> Forge_Engine <]=={}*", 790, 790, 20, rl::LIGHTGRAY);
-					frameCounter += 1;
+					//frameCounter += 1;
 					if (frameCounter > 600) {
 							state = MAIN;
 							frameCounter = 0;
 					}
+
+					forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
 					
 				
 			case MAIN:
@@ -180,11 +183,11 @@ fn int main(String[] args) {
 			
 				
 				//update game logic-------------------------------------------------------------------------------
-				forge_game::updateConstruct(&player,&sMap);
-				forge_game::updateConstruct(&poopShot,&sMap);
+				forge_game::updateConstruct(&player,&sMap, deltaTime);
+				forge_game::updateConstruct(&poopShot,&sMap, deltaTime);
 					
 					foreach ( &construct : constructs){
-								forge_game::updateConstruct(construct,&sMap);		
+								forge_game::updateConstruct(construct,&sMap, deltaTime);		
 						}	
 
 						
@@ -224,7 +227,7 @@ fn int main(String[] args) {
 								forge_game::drawAnitmatedConstruct(construct);		
 						}	
 					
-					forge_fx::forgeFXManager(&mMap,"rain");
+					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
 		
 			case PAUSE:
 
@@ -259,7 +262,7 @@ fn int main(String[] args) {
 								forge_game::drawAnitmatedConstruct(construct);		
 						}	
 
-					forge_fx::forgeFXManager(&mMap,"rain");
+					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
 					
 				
 				//drawing pause stuff here so objects don cover it up
@@ -341,7 +344,7 @@ fn int main(String[] args) {
 				//forge_game::updateConstruct(&poopShot,&sMap);
 					
 					foreach ( &demoConstruct : demoConstructs){
-								forge_game::updateConstruct(demoConstruct,&sMap);		
+								forge_game::updateConstruct(demoConstruct,&sMap, deltaTime);		
 						}	
 				
 
