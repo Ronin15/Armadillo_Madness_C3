@@ -11,7 +11,7 @@ import raylib5::rl;
 import std::io;
 
 //Game Consts---------------------------------
-const int FPS_CAP = 120; //FPS Cap
+const int FPS_CAP = 100; //FPS Cap
 const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
@@ -125,7 +125,7 @@ fn int main(String[] args) {
 							frameCounter = 0;
 					}
 
-					forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
+					forge_fx::forgeFXManager(&mMap,"explode",deltaTime);
 					
 				
 			case MAIN:

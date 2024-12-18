@@ -285,7 +285,7 @@ float explosionRadius = 100.0;
 fn void initParticlesExplosion(Vector2 explosionCenter){
     for (int i = 0; i < MAX_EXPLOSION_P; i++){
         explosion[i].pos = explosionCenter;
-        explosion[i].vel = {rand_in_range(-50,-50),rand_in_range(-50,50)};
+        explosion[i].vel = {(float)(rand_in_range(-50,-50) / 10.0),(float)(rand_in_range(-50,50) / 10.0)};
         explosion[i].color = {(char)rand_in_range(200,255),(char)rand_in_range(100,150),(char)rand_in_range(0,50),255};
         explosion[i].life = MAX_EXPLOSION_P_DURATION;
     }
