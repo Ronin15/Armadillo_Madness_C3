@@ -29,6 +29,9 @@ fn TexMap loadTexMap(){
    Texture2D foxTex = rl::loadTexture("resources/images/fox-sheet.png");
    Texture2D treeTex = rl::loadTexture("resources/images/tree.png");
    Texture2D gravBootsTex = rl::loadTexture("resources/images/grav_boots.png");
+   Texture2D superTex = rl::loadTexture("resources/images/super_mushroom_sheet.png");
+   Texture2D foodTex = rl::loadTexture("resources/images/food_sheet.png");
+   
 	//logo Page assets
 	 Texture2D raylibTex = rl::loadTexture("resources/images/raylib.png");
 	 Texture2D c3Tex = rl::loadTexture("resources/images/C3.png");
@@ -60,8 +63,8 @@ fn TexMap loadTexMap(){
    temp.set("fox",foxTex);
    temp.set("tree",treeTex);
    temp.set("grav",gravBootsTex);
-   temp.set("worms",gravBootsTex);
-   temp.set("super",gravBootsTex);
+   temp.set("food",foodTex);
+   temp.set("super",superTex);
 
    return temp;
 }

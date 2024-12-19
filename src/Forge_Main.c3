@@ -18,7 +18,7 @@ const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.4.1";
 const int MAX_CONSTRUCTS = 100;
-const int MAX_POWERUPS = 15;
+const int MAX_POWERUPS = 6;
 
 
 Construct[MAX_CONSTRUCTS] constructs;
@@ -91,7 +91,7 @@ fn int main(String[] args) {
 	io::printfn("Objects created");
     
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
+	GameState state = GAME;
 	//rl::playSound(sMap.get("logoSound")!!);
 	
 	while (!rl::windowShouldClose() || accumulator >= TIME_STEP){

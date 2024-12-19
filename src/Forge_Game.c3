@@ -121,7 +121,7 @@ fn String getRandomConstructName (ConstructType type){
    String[*] groundTypes = {"ant","turtle","snake","fox"};
    String[*] flyingTypes = {"bird","beatle"};
    String[*] obsticlesTypes = {"cactus","boulder","tree"};
-   String[*] powerUps = {"grav","worms","super"};
+   String[*] powerUps = {"grav","food","super"};
 
    int gLength = groundTypes.len - 1;
    int fLength = flyingTypes.len - 1;
