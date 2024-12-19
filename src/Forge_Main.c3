@@ -16,7 +16,7 @@ const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const String GAME_NAME = "Armadillo Madness 0.4.1";
+const String GAME_NAME = "Armadillo Madness 0.4.5";
 const int MAX_CONSTRUCTS = 100;
 const int MAX_POWERUPS = 6;
 
