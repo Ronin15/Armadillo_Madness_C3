@@ -2,9 +2,9 @@ module forge_demo;
 import raylib5::rl;
 import forge_game;
 
-fn void moveRight(Construct* c){
+fn void moveRight(Construct* c, float deltaTime){
         
-        c.frameTimer += rl::getFrameTime();
+        c.frameTimer += deltaTime;
 
       if (c.frameTimer > c.frameLength) {
          c.currentFrame += 1;
@@ -19,19 +19,19 @@ fn void moveRight(Construct* c){
             c.isGrounded = true;
             c.pos.y = c.groundLevel;
             c.vel.y = 0.0;
-            c.pos.x -= c.vel.x * rl::getFrameTime();
+            c.pos.x -= c.vel.x * deltaTime;
         }
 
-	     c.pos.x += c.acceleration * rl::getFrameTime();
+	     c.pos.x += c.acceleration * deltaTime;
          c.texFlip = false;
         
-         c.vel.y += c.gravity * rl::getFrameTime();
-         c.pos.y += c.vel.y * rl::getFrameTime();
+         c.vel.y += c.gravity * deltaTime;
+         c.pos.y += c.vel.y * deltaTime;
 	}
 
-fn void moveLeft(Construct* c){
+fn void moveLeft(Construct* c, float deltaTime){
 
-        c.frameTimer += rl::getFrameTime();
+        c.frameTimer += deltaTime;
 
       if (c.frameTimer > c.frameLength) {
          c.currentFrame += 1;
@@ -46,23 +46,23 @@ fn void moveLeft(Construct* c){
             c.isGrounded = true;
             c.pos.y = c.groundLevel;
             c.vel.y = 0.0;
-            c.pos.x -= c.vel.x * rl::getFrameTime(); 
+            c.pos.x -= c.vel.x * deltaTime; 
         }
 
-        c.pos.x -= c.acceleration * rl::getFrameTime();
+        c.pos.x -= c.acceleration * deltaTime;
         c.texFlip = true;
-        c.vel.y += c.gravity * rl::getFrameTime();
-        c.pos.y += c.vel.y * rl::getFrameTime(); 
+        c.vel.y += c.gravity * deltaTime;
+        c.pos.y += c.vel.y * deltaTime; 
 }
 
 
-fn void jump(Construct* c){
+fn void jump(Construct* c, float deltaTime){
         
         if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
         if (c.isGrounded) { 
                c.vel.y = c.jumpVelocity; 
                c.isGrounded = false; 
             }
-            c.vel.y += c.gravity * rl::getFrameTime();
-            c.pos.y += c.vel.y * rl::getFrameTime();
+            c.vel.y += c.gravity * deltaTime;
+            c.pos.y += c.vel.y * deltaTime;
 }

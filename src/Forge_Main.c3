@@ -114,12 +114,12 @@ fn int main(String[] args) {
 				rl::clearBackground({31, 32, 34, 255});//Forge_Gray
 				rl::drawTexture(tMap.get("logo")!!, 800, 420, rl::WHITE);
 				rl::drawText("Hammer Forged Games", 580, 340, 60, rl::ORANGE);
-				rl::drawText("Made with", 790, 725, 20, rl::WHITE);
-				rl::drawTexture(tMap.get("raylib")!!, 910, 700, rl::WHITE);
-				rl::drawTexture(tMap.get("c3")!!, 980, 713, rl::WHITE);
+				rl::drawText("Made with", 800, 725, 20, rl::WHITE);
+				rl::drawTexture(tMap.get("raylib")!!, 920, 700, rl::WHITE);
+				rl::drawTexture(tMap.get("c3")!!, 990, 713, rl::WHITE);
 				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
 				rl::drawText("*{}==[> Forge_Engine <]=={}*", 790, 790, 20, rl::LIGHTGRAY);
-					//frameCounter += 1;
+					frameCounter += 1;
 					if (frameCounter > 600) {
 							state = MAIN;
 							frameCounter = 0;
@@ -310,15 +310,15 @@ fn int main(String[] args) {
 				demoCounter1 += 1;
 				demoCounter2 += 1;
 				
-				if(demoCounter1 < 800 ){forge_demo::moveRight(&demoPlayer);
+				if(demoCounter1 < 800 ){forge_demo::moveRight(&demoPlayer, deltaTime);
 				
 				}
 				if(demoCounter1 > 800){
-					forge_demo::moveLeft(&demoPlayer);
+					forge_demo::moveLeft(&demoPlayer, deltaTime);
 					
 					if (demoCounter1 % 100 == 0){
 
-					forge_demo::jump(&demoPlayer);
+					forge_demo::jump(&demoPlayer, deltaTime);
 					}
 				}
 				if (demoCounter1 > 1600){
@@ -375,7 +375,6 @@ fn int main(String[] args) {
 
    		}
    			accumulator -= TIME_STEP;
-			rl::waitTime(accumulator);
 	}
 
 	return 0;

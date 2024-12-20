@@ -8,7 +8,7 @@
   "sources":  [ "src/**" ],
   "output": "build",
   "targets": {
-    "Forge_EngineC3": {
+    "Forge_Engine": {
       "type": "executable"
     }
   },
