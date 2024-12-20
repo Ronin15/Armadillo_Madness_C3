@@ -10,14 +10,14 @@ import raylib5::rl;
 
 //_P const name ending short for particles
 const int MAX_RAINDROPS = 100;
-const int MAX_FIREWORK_P = 100;
-const float MAX_FIREWORK_P_LIFE = 5.0;
-const int MAX_FIREWORKS = 10;
-const float FIREWORK_LIFETIME = 4.0;
+const int MAX_FIREWORK_P = 200;
+const int MAX_FIREWORKS = 15;
+const int  TRAIL_LENGTH = 40;
 const int MAX_SHOOTING_STARS = 50;
 const float STAR_DURATION = 10.0;
 const int MAX_EXPLOSION_P = 5;
 const float MAX_EXPLOSION_P_DURATION = 2.0;
+const float GRAVITY = 4.0;
 
 //for Fx manager default is no FX
 Fx event = DEFAULT;
@@ -44,7 +44,9 @@ struct ShootingStar{
 
 struct Particle { 
     Vector2 pos; 
-    Vector2 vel; 
+    Vector2 vel;
+    Vector2 [TRAIL_LENGTH] trail;
+    int trailIndex; 
     Color color; 
     float life; 
 } 
@@ -52,13 +54,15 @@ struct Particle {
  struct Firework {
     Particle [MAX_FIREWORK_P] particles; 
     Vector2 pos; 
-    Color color; 
+    Vector2 vel;
+    Vector2 [TRAIL_LENGTH] trail;
+    int trailIndex; 
     float life;
-    bool exploded; 
+    bool exploded;
+    bool active; 
 }
 
 RainDrop [MAX_RAINDROPS] rainDrops;
-Firework [MAX_FIREWORKS] fireWorks;
 
 struct RainDrop { 
     Vector2 pos; 
@@ -117,7 +121,11 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
                 case FIREWORKS:
 
                     if (fireworks){
-                         runFireWorks(deltaTime);
+
+                        rl::playMusicStream(mMap.get("fireworks")!!);
+				        rl::updateMusicStream(mMap.get("fireworks")!!);
+                        
+                        runFireWorks(deltaTime);
                     }
 
                     break;
@@ -180,71 +188,119 @@ fn void drawLight(int x, int y, float radius, Color color) {
     rl::drawCircleGradient(x, y, radius, color, rl::BLANK); 
 }
 
-fn void initFireWorks(){
+Firework [MAX_FIREWORKS] fireWorks;
+int currentFirework = 0;
 
-    for(int i = 0; i < MAX_FIREWORKS; i++){
-        fireWorks[i].pos = {rand_in_range(0,forge_main::WINDOW_WIDTH),rand_in_range(0,forge_main::WINDOW_HEIGHT)};
-        fireWorks[i].life = FIREWORK_LIFETIME;
-        fireWorks[i].exploded = false;
-        for(int j = 0; j < MAX_FIREWORK_P; j++){
-            fireWorks[i].particles[j].pos = fireWorks[i].pos;
-            fireWorks[i].particles[j].vel = {(float)(rand_in_range(-50,-50)) / 10.0,(float)(rand_in_range(-200,0)) / 10.0};
-            fireWorks[i].particles[j].color = {(char)rand_in_range(200,255),(char)rand_in_range(200,255),(char)rand_in_range(200,255),255};
-            fireWorks[i].particles[j].life = MAX_FIREWORK_P_LIFE;
+fn void initFireWork(Firework *firework){
+
+    firework.active = true;
+    firework.exploded = false;
+    firework.pos = {(float)rand_in_range(0,forge_main::WINDOW_WIDTH - 1), forge_main::WINDOW_HEIGHT};
+    firework.vel = {0,(float)(-(rand_in_range(0,1800) + 1800)) / 10.0};
+    firework.life = (float)(rand_in_range(0,2000) + 1000) / 1000.0;
+
+        for (int j = 0; j < TRAIL_LENGTH; j++){
+            firework.trail[j]= firework.pos;
+        }
+            firework.trailIndex = 0;
+
+        for (int i = 0; i < MAX_FIREWORK_P; i++){
+            firework.particles[i].vel ={(float)(rand_in_range(0,300) - 200) / 10.0, (float)(rand_in_range(0,300) - 200) / 10.0};
+            firework.particles[i].color = {(char)rand_in_range(0,255),(char)rand_in_range(0,255),(char)rand_in_range(0,255),255};
+            firework.particles[i].life = (float)(rand_in_range(0,100))/ 10.0 + 1.0;
+            
+            for (int j = 0; j < TRAIL_LENGTH; j++) {
+            firework.particles[i].trail[j] = firework.particles[i].pos;
+        }
+        
+            firework.particles[i].trailIndex = 0;
+    }
+
+}
+
+
+fn void updateFireWork(Firework *firework,float deltaTime){
+    
+    if (!firework.active) {return;}
+
+    if (!firework.exploded) {
+        firework.trail[firework.trailIndex] = firework.pos;
+        firework.trailIndex = (firework.trailIndex + 1) % TRAIL_LENGTH;
+
+        firework.pos.x += firework.vel.x * deltaTime;
+        firework.pos.y += firework.vel.y * deltaTime;
+        firework.life -= deltaTime;
+
+        if (firework.life <= 0) {
+            firework.exploded = true;
+            for (int i = 0; i < MAX_FIREWORK_P; i++) {
+                firework.particles[i].pos = firework.pos;
+            }
+        }
+    } else {
+        bool allDead = true;
+        for (int i = 0; i < MAX_FIREWORK_P; i++) {
+            if (firework.particles[i].life > 0) {
+                firework.particles[i].trail[firework.particles[i].trailIndex] = firework.particles[i].pos;
+                firework.particles[i].trailIndex = (firework.particles[i].trailIndex + 1) % TRAIL_LENGTH;
+
+                firework.particles[i].pos.x += firework.particles[i].vel.x * deltaTime;
+                firework.particles[i].pos.y += firework.particles[i].vel.y * deltaTime;
+                firework.particles[i].vel.y += GRAVITY * deltaTime;
+                firework.particles[i].life -= deltaTime;
+                allDead = false;
+            }
+        }
+
+        if (allDead) {
+            firework.active = false;
         }
     }
 }
 
-fn void updateFireWorks(float deltaTime){
-    
-        for (int i = 0; i < MAX_FIREWORKS; i++) {
-            if (!fireWorks[i].exploded) {
-                fireWorks[i].pos.y -= 10.0 * deltaTime;
-                fireWorks[i].life -= deltaTime;
-                io::printfn("firework life -> %f",deltaTime);
-                if (fireWorks[i].life <= 0) {
-                    fireWorks[i].exploded = true;
-                }
-            } else {
-                for (int j = 0; j < MAX_FIREWORK_P; j++) {
-                    if (fireWorks[i].particles[j].life > 0) {
-                        fireWorks[i].particles[j].pos.x += fireWorks[i].particles[j].vel.x * deltaTime;
-                        fireWorks[i].particles[j].pos.y += fireWorks[i].particles[j].vel.y * deltaTime;
-                        fireWorks[i].particles[j].life -= deltaTime;
-                        fireWorks[i].particles[j].color.a = (char)(255 * (fireWorks[i].particles[j].life / MAX_FIREWORK_P_LIFE));
-                    } else {
-                        // Reset
-                        fireWorks[i].particles[j].pos = fireWorks[i].pos;
-                        fireWorks[i].particles[j].vel = {(float)(rand_in_range(-50,-50)) / 10.0,(float)(rand_in_range(-200,0)) / 10.0};
-                        fireWorks[i].particles[j].color = {(char)rand_in_range(200,255),(char)rand_in_range(200,255),(char)rand_in_range(200,255),255};
-                        fireWorks[i].particles[j].life = MAX_FIREWORK_P_LIFE;
-        
-                    }
-                }
-            }
+fn void drawFireWork(Firework *firework){
+
+if (!firework.active) {return;}
+
+    if (!firework.exploded) {
+        for (int j = 0; j < TRAIL_LENGTH; j++) {
+            int index = (firework.trailIndex + j) % TRAIL_LENGTH;
+            float alpha = (float)j / TRAIL_LENGTH;
+            Color color = rl::WHITE;
+            color.a = (char)(255 * alpha);
+            rl::drawPixelV(firework.trail[index], color);
         }
-    }
-
-fn void drawFireWorks(){
-
-    for (int i = 0; i < MAX_FIREWORKS; i++) {
-        if (!fireWorks[i].exploded) {
-            rl::drawCircleV(fireWorks[i].pos, 3, rl::WHITE);
-        } else {
-            for (int j = 0; j < MAX_FIREWORK_P; j++) {
-                if (fireWorks[i].particles[j].life > 0) {
-                    rl::drawCircleV(fireWorks[i].particles[j].pos, 15, fireWorks[i].particles[j].color);
+        rl::drawCircleV(firework.pos, 2, rl::WHITE);
+    } else {
+        for (int i = 0; i < MAX_FIREWORK_P; i++) {
+            if (firework.particles[i].life > 0) {
+                for (int j = 0; j < TRAIL_LENGTH; j++) {
+                    int index = (firework.particles[i].trailIndex + j) % TRAIL_LENGTH;
+                    float alpha = (float)j / TRAIL_LENGTH;
+                    Color color = firework.particles[i].color;
+                    color.a = (char)(255 * alpha);
+                    rl::drawPixelV(firework.particles[i].trail[index], color);
                 }
+                rl::drawPixelV(firework.particles[i].pos, firework.particles[i].color);
             }
         }
     }
 }
 
 fn void runFireWorks(float deltaTime){
-    initFireWorks();
-    updateFireWorks(deltaTime);
-    drawFireWorks();
+  
+    if(rand_in_range(0,100) < 2){
+        initFireWork(&fireWorks[currentFirework]);
+        currentFirework = (currentFirework + 1) % MAX_FIREWORKS;
+    }
     
+    for (int i = 0; i < MAX_FIREWORKS; i++) {
+        updateFireWork(&fireWorks[i],deltaTime);
+    }
+    
+    for (int i = 0; i < MAX_FIREWORKS; i++) {
+        drawFireWork(&fireWorks[i]);
+    }
 }
 
     //shooting star items Move to main to pass to fuction to make it more dynamic

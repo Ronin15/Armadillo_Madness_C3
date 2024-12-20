@@ -125,7 +125,7 @@ fn int main(String[] args) {
 							frameCounter = 0;
 					}
 
-					forge_fx::forgeFXManager(&mMap,"explode",deltaTime);
+				//	forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
 					
 				
 			case MAIN:
