@@ -9,7 +9,7 @@ import raylib5::rl;
 
 
 //_P const name ending short for particles
-const int MAX_RAINDROPS = 300;
+const int MAX_RAINDROPS = 400;
 const int MAX_FIREWORK_P = 200;
 const int MAX_STAR_P = 150;
 const int MAX_FIREWORKS = 15;
