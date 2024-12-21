@@ -11,10 +11,9 @@ import raylib5::rl;
 //_P const name ending short for particles
 const int MAX_RAINDROPS = 300;
 const int MAX_FIREWORK_P = 200;
+const int MAX_STAR_P = 150;
 const int MAX_FIREWORKS = 15;
-const int  TRAIL_LENGTH = 40;
-const int MAX_SHOOTING_STARS = 50;
-const float STAR_DURATION = 10.0;
+const int TRAIL_LENGTH = 80;
 const int MAX_EXPLOSION_P = 5;
 const float MAX_EXPLOSION_P_DURATION = 2.0;
 const float GRAVITY = 4.0;
@@ -37,9 +36,20 @@ enum Fx {
 }
 
 struct ShootingStar{
-    Vector2 pos; 
-    Vector2 vel; 
+	Vector2 pos;
+    Vector2 vel;
+    Vector2 [TRAIL_LENGTH] trail;
+    Color color; 
+    int trailIndex;
+    bool exploded;
+}
+
+struct Star_Particle{
+	Vector2 pos;
+    Vector2 vel;
     Color color;
+    float alpha;
+    bool active;
 }
 
 struct Particle { 
@@ -74,7 +84,7 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
             if(effect == "rain"){ event = RAIN; rain = true;}
             if(effect == "snow"){ event = SNOW; snow = true;}
             if(effect == "explode"){event = EXPLODE; explode = true;}
-            if(effect == "shootingStar"){event = SHOOTING_STAR; shootStar = true;}
+            if(effect == "shootingStars"){event = SHOOTING_STAR; shootStar = true;}
             if(effect == "fireworks"){event = FIREWORKS; fireworks = true;}
 
               
@@ -112,7 +122,7 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
                 case SHOOTING_STAR:
 
                     if (shootStar){
-                         shootingStar(deltaTime);
+                         shootingStars();
                     }
 
                     break;
@@ -135,7 +145,7 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
             }
 }
 
-//begin rain 
+//begin rain fall----------------------------------------
 
 Raindrop [MAX_RAINDROPS] rainDrops;
 
@@ -163,7 +173,6 @@ fn void drawRainDrops(Raindrop []rainDrops, int count) {
     }
 }
 
-
 fn void rainFall(float deltaTime){
 	static bool initRain @noinit;
 	if (!initRain) {
@@ -181,6 +190,7 @@ fn void drawLight(int x, int y, float radius, Color color) {
     rl::drawCircleGradient(x, y, radius, color, rl::BLANK); 
 }
 
+//begin Fireworks----------------------------------------
 Firework [MAX_FIREWORKS] fireWorks;
 int currentFirework = 0;
 
@@ -295,39 +305,102 @@ fn void runFireWorks(float deltaTime){
         drawFireWork(&fireWorks[i]);
     }
 }
+//begin shooting stars----------------------------------------
+fn Color getRandomColor() {
+    return {(char)rand_in_range(200, 255), (char)rand_in_range(200, 255), (char)rand_in_range(200, 255), 255 };
+}
 
-    //shooting star items Move to main to pass to fuction to make it more dynamic
-    Vector2 starPosition = {-120,-120}; 
-    ShootingStar [MAX_SHOOTING_STARS] shootingStars; 
-    int starIndex;
+fn void resetShootingStar(ShootingStar *star) {
+    star.pos = {rand_in_range(0, rl::getScreenWidth()), 0 };
+    star.vel = {(float)rand_in_range(-20, 20), rand_in_range(20, 40)};
+    star.color = getRandomColor();
+    star.trailIndex = 0;
+    star.exploded = false;
+}
 
-fn void shootingStar(float deltaTime){
-    
-    float starRadius = 5.0;
-    float starInner = 10.0;
-    float starOuter = 15.0; 
-    
-    Vector2 starVelocity = {900,rand_in_range(400,500) };
+fn void updateShootingStar(ShootingStar *star, Star_Particle []starParticles) {
+    if (!star.exploded) {
+        star.trail[star.trailIndex] = star.pos;
+        star.trailIndex = (star.trailIndex + 1) % TRAIL_LENGTH;
 
-    starPosition.x += starVelocity.x * deltaTime; 
-    starPosition.y += starVelocity.y * deltaTime; 
-   
-    shootingStars[starIndex].pos = starPosition; 
-    shootingStars[starIndex].color = { 255, 255, 255, 255 - (char)(starIndex * 1) };
-    starIndex = (starIndex + 1) % MAX_SHOOTING_STARS; //fading affect
+        star.pos.x += star.vel.x;
+        star.pos.y += star.vel.y;
 
-    for (int i = 0; i < MAX_SHOOTING_STARS; i++) { 
-        rl::drawCircleV(shootingStars[i].pos, starRadius, shootingStars[i].color); 
-        } 
-    // Draw star
-    drawLight((int)starPosition.x, (int)starPosition.y, starRadius, rl::ORANGE);
-    drawLight((int)starPosition.x, (int)starPosition.y, starInner, rl::YELLOW);
-    drawLight((int)starPosition.x, (int)starPosition.y, starOuter, rl::WHITE);
-    //rl::drawCircleGradient((int)starPosition.x, (int)starPosition.y, starRadius, rl::ORANGE, rl::YELLOW);
-    //rl::drawCircleV(starPosition, starRadius, rl::MAROON);
+        if (star.pos.x > rl::getScreenWidth() || star.pos.y > rl::getScreenHeight()) {
+            star.exploded = true;
+            for (int i = 0; i < MAX_STAR_P; i++) {
+                starParticles[i].pos = star.pos;
+                starParticles[i].vel = { rand_in_range(-10, 10), rand_in_range(-10, 10) };
+                starParticles[i].color = star.color;
+                starParticles[i].alpha = 1.0;
+                starParticles[i].active = true;
+            }
+        }
+    } else {
+        bool allParticlesInactive = true;
+        for (int i = 0; i < MAX_STAR_P; i++) {
+            if (starParticles[i].active) {
+                allParticlesInactive = false;
+                break;
+            }
+        }
+        if (allParticlesInactive) {
+            resetShootingStar(star);
+        }
+    }
+}
+
+fn void updateStarParticles(Star_Particle []starParticles) {
+    for (int i = 0; i < MAX_STAR_P; i++) {
+        if (starParticles[i].active) {
+            starParticles[i].pos.x += starParticles[i].vel.x;
+			starParticles[i].pos.y += starParticles[i].vel.y;
+            starParticles[i].alpha -= 0.02;
+            if (starParticles[i].alpha <= 0.0) {
+                starParticles[i].active = false;
+            }
+        }
+    }
+}
+
+fn void drawShootingStar(ShootingStar *star) {
+    if (!star.exploded) {
+        for (int i = 0; i < TRAIL_LENGTH; i++) {
+            int index = (star.trailIndex + i) % TRAIL_LENGTH;
+            float alpha = (float)i / TRAIL_LENGTH;
+            rl::drawPixelV(star.trail[index], rl::fade(star.color, alpha));
+        }
+		 rl::drawCircleV(star.pos, 4, star.color);
+		 drawLight((int)star.pos.x, (int)star.pos.y, 15, rl::YELLOW);
+    }
+}
+
+fn void drawStarParticles(Star_Particle []starParticles) {
+    for (int i = 0; i < MAX_STAR_P; i++) {
+        if (starParticles[i].active) {
+            rl::drawCircleV(starParticles[i].pos, 1, rl::fade(starParticles[i].color, starParticles[i].alpha));
+        }
+    }
+}
+
+ShootingStar star;
+Star_Particle [MAX_STAR_P]starParticles;
+
+fn void shootingStars() {
+	static bool resetStar @noinit;
+		if (!resetStar) {
+			resetShootingStar(&star);
+			resetStar = true;
+		}	
+
+    updateShootingStar(&star, &starParticles);
+    updateStarParticles(&starParticles);
+	drawShootingStar(&star);
+    drawStarParticles(&starParticles);
 }
 
 
+//begin explosion ----------------------------------------
 Particle [MAX_EXPLOSION_P] explosion;
 float explosionRadius = 100.0; 
 
