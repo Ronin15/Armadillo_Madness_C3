@@ -9,7 +9,7 @@ import raylib5::rl;
 
 
 //_P const name ending short for particles
-const int MAX_RAINDROPS = 200;
+const int MAX_RAINDROPS = 300;
 const int MAX_FIREWORK_P = 200;
 const int MAX_FIREWORKS = 15;
 const int  TRAIL_LENGTH = 40;
@@ -60,11 +60,6 @@ struct Particle {
     float life;
     bool exploded;
     bool active; 
-}
-
-struct Snowflake { 
-    Vector2 pos; 
-    Vector2 vel; 
 }
 
 struct Raindrop {
@@ -148,7 +143,7 @@ fn void initRainDrops(Raindrop []rainDrops, int count) {
     
 	for (int i = 0; i < count; i++) {
         rainDrops[i].pos = { rand_in_range(0, forge_main::WINDOW_WIDTH), rand_in_range(-forge_main::WINDOW_HEIGHT, 0) };
-        rainDrops[i].vel = (float)rand_in_range(1000, 1200) / 10.0 * 20;
+        rainDrops[i].vel = (float)rand_in_range(1000, 1200) / 10.0 * 30;
     }
 }
 
@@ -164,7 +159,7 @@ fn void updateRainDrops(Raindrop []rainDrops, int count, float deltaTime) {
 
 fn void drawRainDrops(Raindrop []rainDrops, int count) {
     for (int i = 0; i < count; i++) {
-        rl::drawLineEx(rainDrops[i].pos,{ rainDrops[i].pos.x, rainDrops[i].pos.y + 10 }, 3.0, rl::BLUE);
+        rl::drawLineEx(rainDrops[i].pos,{ rainDrops[i].pos.x, rainDrops[i].pos.y + 10 }, 3.5, rl::BLUE);
     }
 }
 
@@ -339,7 +334,7 @@ float explosionRadius = 100.0;
 fn void initParticlesExplosion(Vector2 explosionCenter){
     for (int i = 0; i < MAX_EXPLOSION_P; i++){
         explosion[i].pos = explosionCenter;
-        explosion[i].vel = {(float)(rand_in_range(-50,-50) / 10.0),(float)(rand_in_range(-50,50) / 10.0)};
+        explosion[i].vel = {(float)(rand_in_range(0,50) / 10.0),(float)(rand_in_range(0,50) / 10.0)};
         explosion[i].color = {(char)rand_in_range(200,255),(char)rand_in_range(100,150),(char)rand_in_range(0,50),255};
         explosion[i].life = MAX_EXPLOSION_P_DURATION;
     }
