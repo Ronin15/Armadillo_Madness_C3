@@ -144,6 +144,13 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
                     break;
             }
 }
+//Draw Light --------------------------------------------
+fn void drawLight(int x, int y, float radius, Color color) { 
+   
+    rl::beginBlendMode((int)rl::BlendMode.ADDITIVE);
+    defer rl::endBlendMode();
+    rl::drawCircleGradient(x, y, radius, color, rl::BLANK); 
+}
 
 //begin rain fall----------------------------------------
 
@@ -169,7 +176,7 @@ fn void updateRainDrops(Raindrop []rainDrops, int count, float deltaTime) {
 
 fn void drawRainDrops(Raindrop []rainDrops, int count) {
     for (int i = 0; i < count; i++) {
-        rl::drawLineEx(rainDrops[i].pos,{ rainDrops[i].pos.x, rainDrops[i].pos.y + 10 }, 3.5, rl::BLUE);
+        rl::drawLineEx(rainDrops[i].pos,{ rainDrops[i].pos.x, rainDrops[i].pos.y + 10 }, 2.5, rl::BLUE);
     }
 }
 
@@ -181,13 +188,6 @@ fn void rainFall(float deltaTime){
 	}	
 	updateRainDrops(&rainDrops, MAX_RAINDROPS, deltaTime);
 	drawRainDrops(&rainDrops, MAX_RAINDROPS);
-}
-
-fn void drawLight(int x, int y, float radius, Color color) { 
-   
-    rl::beginBlendMode((int)rl::BlendMode.ADDITIVE);
-    defer rl::endBlendMode();
-    rl::drawCircleGradient(x, y, radius, color, rl::BLANK); 
 }
 
 //begin Fireworks----------------------------------------
