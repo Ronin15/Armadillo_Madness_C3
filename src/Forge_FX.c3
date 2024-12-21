@@ -9,7 +9,7 @@ import raylib5::rl;
 
 
 //_P const name ending short for particles
-const int MAX_RAINDROPS = 100;
+const int MAX_RAINDROPS = 200;
 const int MAX_FIREWORK_P = 200;
 const int MAX_FIREWORKS = 15;
 const int  TRAIL_LENGTH = 40;
@@ -62,12 +62,16 @@ struct Particle {
     bool active; 
 }
 
-RainDrop [MAX_RAINDROPS] rainDrops;
-
-struct RainDrop { 
+struct Snowflake { 
     Vector2 pos; 
     Vector2 vel; 
 }
+
+struct Raindrop {
+    Vector2 pos;
+    float vel;
+}
+
 
 fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
         String effect = type;
@@ -88,7 +92,7 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
                         rl::playMusicStream(mMap.get("rain")!!);
 				        rl::updateMusicStream(mMap.get("rain")!!);
                         
-                        rainFall();
+                        rainFall(deltaTime);
 
                     }
 
@@ -97,7 +101,7 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
                 case SNOW:
 
                     if(snow){
-                        snowFall();
+                       //snowFall();
                     }
 
                    break;
@@ -136,49 +140,43 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
             }
 }
 
+//begin rain 
 
-fn void rainFall(){
+Raindrop [MAX_RAINDROPS] rainDrops;
 
-    foreach (&rainDrop : rainDrops){
-        rainDrop.pos = { rand_in_range(0,forge_main::WINDOW_WIDTH), rand_in_range(0,forge_main::WINDOW_HEIGHT)}; 
-        rainDrop.vel = { 0,  rand_in_range(-2,10) }; 
+fn void initRainDrops(Raindrop []rainDrops, int count) {
+    
+	for (int i = 0; i < count; i++) {
+        rainDrops[i].pos = { rand_in_range(0, forge_main::WINDOW_WIDTH), rand_in_range(-forge_main::WINDOW_HEIGHT, 0) };
+        rainDrops[i].vel = (float)rand_in_range(1000, 1200) / 10.0 * 20;
     }
-        // Update rain drops 
-        foreach (&rainDrop : rainDrops){
-            rainDrop.pos.y += rainDrop.vel.y;
-        
-        // Reset rain drop pos if moves off screen 
-        if (rainDrop.pos.y > forge_main::WINDOW_HEIGHT) {
-            rainDrop.pos.x =  rand_in_range(0,forge_main::WINDOW_WIDTH); 
-            rainDrop.pos.y =  rand_in_range(0,forge_main::WINDOW_HEIGHT); 
-        } 
-    }
-
-    foreach (&rainDrop : rainDrops){ 
-    rl::drawLineEx(rainDrop.pos, { rainDrop.pos.x, rainDrop.pos.y + 10 }, 4.0, rl::BLUE);//snow 6.5
-    } 
 }
 
-fn void snowFall(){
-
-    foreach (&rainDrop : rainDrops){
-        rainDrop.pos = { rand_in_range(0,forge_main::WINDOW_WIDTH), rand_in_range(0,forge_main::WINDOW_HEIGHT)}; 
-        rainDrop.vel = { 0,  rand_in_range(-2,10) }; 
+fn void updateRainDrops(Raindrop []rainDrops, int count, float deltaTime) {
+    
+	for (int i = 0; i < count; i++) {
+        rainDrops[i].pos.y += rainDrops[i].vel * deltaTime;
+        if (rainDrops[i].pos.y > forge_main::WINDOW_HEIGHT) {
+            rainDrops[i].pos = { rand_in_range(0, forge_main::WINDOW_WIDTH), rand_in_range(-forge_main::WINDOW_HEIGHT, 0) };
+        }
     }
-        // Update rain drops 
-        foreach (&rainDrop : rainDrops){
-            rainDrop.pos.y += rainDrop.vel.y;
-        
-        // Reset rain drop pos if moves off screen 
-        if (rainDrop.pos.y > forge_main::WINDOW_HEIGHT) {
-            rainDrop.pos.x =  rand_in_range(0,forge_main::WINDOW_WIDTH); 
-            rainDrop.pos.y =  rand_in_range(0,forge_main::WINDOW_HEIGHT); 
-        } 
-    }
+}
 
-    foreach (&rainDrop : rainDrops){ 
-    rl::drawLineEx(rainDrop.pos, { rainDrop.pos.x, rainDrop.pos.y + 15 }, 6.5, rl::RAYWHITE);//snow 6.5
-    } 
+fn void drawRainDrops(Raindrop []rainDrops, int count) {
+    for (int i = 0; i < count; i++) {
+        rl::drawLineEx(rainDrops[i].pos,{ rainDrops[i].pos.x, rainDrops[i].pos.y + 10 }, 3.0, rl::BLUE);
+    }
+}
+
+
+fn void rainFall(float deltaTime){
+	static bool initRain @noinit;
+	if (!initRain) {
+		initRainDrops(&rainDrops, MAX_RAINDROPS);
+		initRain = true;
+	}	
+	updateRainDrops(&rainDrops, MAX_RAINDROPS, deltaTime);
+	drawRainDrops(&rainDrops, MAX_RAINDROPS);
 }
 
 fn void drawLight(int x, int y, float radius, Color color) { 

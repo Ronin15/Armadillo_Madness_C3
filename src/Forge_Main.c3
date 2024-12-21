@@ -368,7 +368,7 @@ fn int main(String[] args) {
 								forge_game::drawAnitmatedConstruct(demoConstruct);		
 						}	
 				
-				forge_fx::rainFall();
+				forge_fx::rainFall(deltaTime);
 			
 			case CREDITS:
 				io::printfn("Credits State");
