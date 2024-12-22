@@ -37,7 +37,7 @@ enum GameState {
 }
 
 
-fn int main(String[] args) {	
+fn int main(String[] args) {
 
 	//init Game Systems
 	rl::setConfigFlags(rl::FLAG_VSYNC_HINT);
@@ -48,17 +48,17 @@ fn int main(String[] args) {
 	rl::setTargetFPS(FPS_CAP);
 	forge_game::toggleFullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
 
-	
+
 	//asset loading
 	TexMap tMap = forge_load::loadTexMap();
 	SoundMap sMap = forge_load::loadSoundMap();
 	MusicMap mMap = forge_load::loadMusicMap();
-	
+
 	//Game play scrolling vars
 	float scrollGround = 0.0;
 	float scrollMid = 0.0;
 	float scrollClouds = 0.0;
-	float lifeSpace = (float)tMap.get("lifeCount")!!.width + 5.0; 
+	float lifeSpace = (float)tMap.get("lifeCount")!!.width + 5.0;
 
 	float demoCounter1;
 	float demoCounter2;
@@ -74,39 +74,39 @@ fn int main(String[] args) {
 
 	//volume manager
 	rl::setMasterVolume(0.5);
-	
-	//game objects init 
+
+	//game objects init
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
 	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap);
-	
+
 	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
-	constructs[i] = forge_game::forgeConstructEntities(&tMap); 
+	constructs[i] = forge_game::forgeConstructEntities(&tMap);
 	}
 
 	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
-	demoConstructs[i] = forge_game::forgeConstructEntities(&tMap); 
+	demoConstructs[i] = forge_game::forgeConstructEntities(&tMap);
 	}
 
 	io::printfn("Objects created");
-    
+
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = LOGO;
 	//rl::playSound(sMap.get("logoSound")!!);
-	
+
 	while (!rl::windowShouldClose() || accumulator >= TIME_STEP){
 	  	float deltaTime = rl::getFrameTime();
-		float currentTime = (float)rl::getTime(); 
-	  	float updateTime = currentTime - lastTime; 
-	  	lastTime = currentTime; 
+		float currentTime = (float)rl::getTime();
+	  	float updateTime = currentTime - lastTime;
+	  	lastTime = currentTime;
 	  	accumulator += updateTime;
-		
-		
+
+
 	  	//render and game states-----------------------------------------------
 		rl::beginDrawing();
 		defer rl::endDrawing();
 		rl::clearBackground(rl::BLACK);
-		
+
 
 		switch (state) {
 
@@ -126,10 +126,10 @@ fn int main(String[] args) {
 					}
 
 					forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
-					
-				
+
+
 			case MAIN:
-				
+
 				//rl::playMusicStream(mMap.get("titleMusic")!!);
 				//rl::updateMusicStream(mMap.get("titleMusic")!!);
 				rl::clearBackground(rl::BLACK);
@@ -139,13 +139,13 @@ fn int main(String[] args) {
 					if (rl::isKeyPressed(rl::KEY_ENTER)){
        					 state = GAME;
     				}
-					
+
 					frameCounter += 1;
 					if (frameCounter > 900) {
 							state = DEMO;
 							frameCounter = 0;
 					}
-				
+
 			case GAME:
 				//misc game stuff
 				rl::hideCursor();
@@ -158,39 +158,39 @@ fn int main(String[] args) {
 				if(scrollMid <= - WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
 				if(scrollGround <= - WINDOW_WIDTH) {scrollGround = 0;}
-	  			
+
 		  		//update input and check events -----------------------------------------------------------------------------------
 		  		if (rl::isKeyPressed(rl::KEY_P)){
 		  			state = PAUSE;
 		  			rl::playSound(sMap.get("pause")!!);
 		  		}
-		  		
+
 					//check Collisions
-					
+
 					foreach ( &construct : constructs){
 
 							if (forge_physics::checkCollision(&player,construct) && construct.isDead == false){
 								forge_physics::resolveCollision(&player,construct);
 							}
-							
+
 							if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
 								if(forge_physics::checkCollision(&poopShot,construct)){
 									forge_physics::resolveCollision(&poopShot,construct);
 							}
 						}
 					}
-				
-			
-				
+
+
+
 				//update game logic-------------------------------------------------------------------------------
 				forge_game::updateConstruct(&player,&sMap, deltaTime);
 				forge_game::updateConstruct(&poopShot,&sMap, deltaTime);
-					
-					foreach ( &construct : constructs){
-								forge_game::updateConstruct(construct,&sMap, deltaTime);		
-						}	
 
-						
+					foreach ( &construct : constructs){
+								forge_game::updateConstruct(construct,&sMap, deltaTime);
+						}
+
+
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
@@ -203,7 +203,7 @@ fn int main(String[] args) {
 				rl::drawFPS(15,160);
 				//rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				//sun
-				forge_fx::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
+				forge_fx::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7));
 				forge_fx::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
 				forge_fx::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				//end sun
@@ -218,22 +218,22 @@ fn int main(String[] args) {
 						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
 					}
 				}
-				
-				
+
+
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
-					
+
 					foreach ( &construct : constructs){
-								forge_game::drawAnitmatedConstruct(construct);		
-						}	
-					
+								forge_game::drawAnitmatedConstruct(construct);
+						}
+
 					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
-		
+
 			case PAUSE:
 
 				if (rl::isKeyPressed(rl::KEY_P)){
 					state = GAME;
-					rl::playSound(sMap.get("unpause")!!);	
+					rl::playSound(sMap.get("unpause")!!);
 				}
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
 					state = MAIN;
@@ -249,22 +249,22 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				forge_fx::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
+				forge_fx::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7));
 				forge_fx::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
 				forge_fx::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
-				
-				
+
+
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
-					
+
 					foreach ( &construct : constructs){
-								forge_game::drawAnitmatedConstruct(construct);		
-						}	
+								forge_game::drawAnitmatedConstruct(construct);
+						}
 
 					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
-					
-				
+
+
 				//drawing pause stuff here so objects don cover it up
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
@@ -277,16 +277,16 @@ fn int main(String[] args) {
 				}
 				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
 				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
-				
-			
+
+
 			case GAME_WIN:
-				io::printfn("Game_WIN State");	
+				io::printfn("Game_WIN State");
 
 			case GAME_OVER:
 				io::printfn("Game_Over State");
-				
+
 			case DEMO:
-				
+
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
 	  			scrollGround -= 4.0;
@@ -295,7 +295,7 @@ fn int main(String[] args) {
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
-				
+
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
 					state = MAIN;
 					player.pos = {400,500};
@@ -304,18 +304,18 @@ fn int main(String[] args) {
 					//clean all assetes needed here to fully reset. Use Diffrent Demo Array.
 				}
 
-				
+
 				//Demo Loop------------------------------------------------------------------------------
-				
+
 				demoCounter1 += 1;
 				demoCounter2 += 1;
-				
+
 				if(demoCounter1 < 800 ){forge_demo::moveRight(&demoPlayer, deltaTime);
-				
+
 				}
 				if(demoCounter1 > 800){
 					forge_demo::moveLeft(&demoPlayer, deltaTime);
-					
+
 					if (demoCounter1 % 100 == 0){
 
 					forge_demo::jump(&demoPlayer, deltaTime);
@@ -330,23 +330,23 @@ fn int main(String[] args) {
 					state = MAIN;
 				}
 
-				
+
 				foreach ( &demoConstruct : demoConstructs){
 
 							if (forge_physics::checkCollision(&demoPlayer,demoConstruct) && demoConstruct.isDead == false){
 								forge_physics::resolveCollision(&demoPlayer,demoConstruct);
 								}
-							
+
 							}
-						
+
 
 				//player not updated in demo because demo fucntions take over the update role.
 				//forge_game::updateConstruct(&poopShot,&sMap);
-					
+
 					foreach ( &demoConstruct : demoConstructs){
-								forge_game::updateConstruct(demoConstruct,&sMap, deltaTime);		
-						}	
-				
+								forge_game::updateConstruct(demoConstruct,&sMap, deltaTime);
+						}
+
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
@@ -357,19 +357,19 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
 				rl::drawText("Aramadillo Madness", (WINDOW_WIDTH / 2) - 350, 340, 65, {185,71,0,200}); //rust orange
-				forge_fx::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7)); 
+				forge_fx::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7));
 				forge_fx::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
 				forge_fx::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				//draw objects
 				forge_game::drawAnitmatedConstruct(&demoPlayer);
 				//forge_game::drawPoopShot(&poopShot,&demoPlayer);
-					
+
 					foreach ( &demoConstruct : demoConstructs){
-								forge_game::drawAnitmatedConstruct(demoConstruct);		
-						}	
-				
+								forge_game::drawAnitmatedConstruct(demoConstruct);
+						}
+
 				forge_fx::rainFall(deltaTime);
-			
+
 			case CREDITS:
 				io::printfn("Credits State");
 
