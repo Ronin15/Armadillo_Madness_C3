@@ -134,7 +134,7 @@ fn int main(String[] args) {
 				//rl::updateMusicStream(mMap.get("titleMusic")!!);
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("titlePage")!!, 0, 0, rl::WHITE);
-                rl::drawText(GAME_NAME, 500, 200, 105, rl::BLACK);
+                rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
                 rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", 750, 440, 40, rl::BLACK);
 					if (rl::isKeyPressed(rl::KEY_ENTER)){
        					 state = GAME;
