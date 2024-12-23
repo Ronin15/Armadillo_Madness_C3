@@ -120,7 +120,7 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
 				rl::drawText("*{}==[> Forge_Engine <]=={}*", 790, 790, 20, rl::LIGHTGRAY);
 					frameCounter += 1;
-					if (frameCounter > 600) {
+					if (frameCounter > 800) {
 							state = MAIN;
 							frameCounter = 0;
 					}
@@ -151,7 +151,7 @@ fn int main(String[] args) {
 							state = DEMO;
 							frameCounter = 0;
 					}
-					forge_fx::forgeFXManager(&mMap,"rain",deltaTime);
+					//forge_fx::forgeFXManager(&mMap,"rain",deltaTime);
 
 			case GAME:
 				//misc game stuff
