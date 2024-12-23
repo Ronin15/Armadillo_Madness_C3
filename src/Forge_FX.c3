@@ -12,6 +12,8 @@ import raylib5::rl;
 const int MAX_RAINDROPS = 400;
 const int MAX_FIREWORK_P = 200;
 const int MAX_STAR_P = 150;
+const int MAX_FIRE_P = 20;
+const float FIRE_PARTICLE_LIFETIME = 2.0;
 const int MAX_FIREWORKS = 15;
 const int TRAIL_LENGTH = 80;
 const int MAX_EXPLOSION_P = 5;
@@ -51,6 +53,15 @@ struct Star_Particle{
     float alpha;
     bool active;
 }
+
+struct Fire_Particle{
+	Vector2 pos;
+	Vector2 vel;
+	Color color;
+	float life;
+	float size;
+}
+
 
 struct Particle { 
     Vector2 pos; 
@@ -399,8 +410,63 @@ fn void shootingStars() {
     drawStarParticles(&starParticles);
 }
 
+//begin fire effect----------------------------------------
 
-//begin explosion ----------------------------------------
+Fire_Particle [MAX_FIRE_P] fire_particles;
+Vector2 origin = { 1055, 895 };
+
+fn void initFireParticles() {
+    for (int i = 0; i < MAX_FIRE_P; i++) {
+        fire_particles[i].pos = origin;
+        fire_particles[i].vel = {(float)((rand_in_range(-80, 80)) / 10.0), (float)((rand_in_range(-300, -100)) / 10.0)};
+        fire_particles[i].color = {(char)rand_in_range(200, 255), (char)rand_in_range(50, 150), 0, 255 };
+        fire_particles[i].life = FIRE_PARTICLE_LIFETIME + (float)rand_in_range(-30, 30) / 10.0;
+        fire_particles[i].size = (float)rand_in_range(1, 3);
+    }
+}
+
+fn void updateFireParticles(float deltaTime) {
+    for (int i = 0; i < MAX_FIRE_P; i++) {
+        if (fire_particles[i].life > 0) {
+            fire_particles[i].pos.x += fire_particles[i].vel.x * deltaTime;
+            fire_particles[i].pos.y += fire_particles[i].vel.y * deltaTime;
+            fire_particles[i].life -= deltaTime;
+
+            // Fade the particle out over its lifetime
+            fire_particles[i].color.a = (char)(255 * (fire_particles[i].life / FIRE_PARTICLE_LIFETIME));
+        } else {
+            // Respawn particle at origin
+            fire_particles[i].pos = origin;
+            fire_particles[i].vel = {(float)((rand_in_range(-80, 80)) / 10.0), (float)((rand_in_range(-300, -100)) / 10.0)};
+            fire_particles[i].color = {(char)rand_in_range(200, 255), (char)rand_in_range(50, 150), 0, 255 };
+            fire_particles[i].life = FIRE_PARTICLE_LIFETIME + (float)rand_in_range(-30, 30) / 10.0;
+            fire_particles[i].size = (float)rand_in_range(1, 3);
+        }
+    }
+}
+
+fn void drawFireParticles() {
+    for (int i = 0; i < MAX_FIRE_P; i++) {
+        if (fire_particles[i].life > 0) {
+            rl::drawCircleV(fire_particles[i].pos, fire_particles[i].size, fire_particles[i].color);
+			drawLight((int)fire_particles[i].pos.x, (int)fire_particles[i].pos.y, fire_particles[i].size * 10.0, fire_particles[i].color);
+        }
+    }
+}
+
+fn void fireEffect(float deltaTime) {
+	static bool initFireP @noinit;
+	if (!initFireP) {
+		initFireParticles();
+		initFireP = true;
+	}
+	updateFireParticles(deltaTime);
+	drawFireParticles();
+
+}
+
+
+//begin explosion -----------------------------------------
 Particle [MAX_EXPLOSION_P] explosion;
 float explosionRadius = 100.0; 
 
