@@ -91,7 +91,7 @@ fn int main(String[] args) {
 	io::printfn("Objects created");
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
+	GameState state = MAIN;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose() || accumulator >= TIME_STEP){
@@ -136,15 +136,22 @@ fn int main(String[] args) {
                 rl::drawTexture(tMap.get("titlePage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
                 rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", 750, 440, 40, rl::BLACK);
+				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);
+				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
+				forge_fx::drawLight(1050, 875, 500, rl::fade(rl::ORANGE, 0.2));
+				forge_fx::drawLight(1050, 875, 200, rl::fade(rl::YELLOW, 0.2));
+				forge_fx::drawLight(1050, 875, 100, rl::fade(rl::WHITE, 0.2));
+			
 					if (rl::isKeyPressed(rl::KEY_ENTER)){
        					 state = GAME;
     				}
 
 					frameCounter += 1;
-					if (frameCounter > 900) {
+					if (frameCounter > 2000) { //900 for testing
 							state = DEMO;
 							frameCounter = 0;
 					}
+					forge_fx::forgeFXManager(&mMap,"rain",deltaTime);
 
 			case GAME:
 				//misc game stuff
@@ -367,8 +374,6 @@ fn int main(String[] args) {
 					foreach ( &demoConstruct : demoConstructs){
 								forge_game::drawAnitmatedConstruct(demoConstruct);
 						}
-
-				forge_fx::rainFall(deltaTime);
 
 			case CREDITS:
 				io::printfn("Credits State");

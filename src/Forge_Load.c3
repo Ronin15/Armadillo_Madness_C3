@@ -39,6 +39,9 @@ fn TexMap loadTexMap(){
 	 Texture2D forgeTex = rl::loadTexture("resources/images/ForgeEngine.png");
 	//Title Page assets
 	 Texture2D titlePageTex = rl::loadTexture("resources/images/Title_Page.png");
+   Texture2D firePitTex = rl::loadTexture("resources/images/fire_pit.png");
+   Texture2D armadilloStill = rl::loadTexture("resources/images/Armadillo_still.png");
+
    
    temp.set("sky",backGroundSky);
    temp.set("mid",backGroundMid);
@@ -65,6 +68,9 @@ fn TexMap loadTexMap(){
    temp.set("grav",gravBootsTex);
    temp.set("food",foodTex);
    temp.set("super",superTex);
+   temp.set("firepit",firePitTex);
+   temp.set("armadillo",armadilloStill);
+
 
    return temp;
 }
