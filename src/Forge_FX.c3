@@ -12,7 +12,7 @@ import raylib5::rl;
 const int MAX_RAINDROPS = 400;
 const int MAX_FIREWORK_P = 200;
 const int MAX_STAR_P = 150;
-const int MAX_FIRE_P = 20;
+const int MAX_FIRE_P = 25;
 const float FIRE_PARTICLE_LIFETIME = 2.0;
 const int MAX_FIREWORKS = 15;
 const int TRAIL_LENGTH = 80;

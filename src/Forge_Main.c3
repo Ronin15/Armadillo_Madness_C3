@@ -137,9 +137,7 @@ fn int main(String[] args) {
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
                 rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", 750, 440, 40, rl::BLACK);	
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
-				forge_fx::drawLight(1050, 875, 600, rl::fade(rl::ORANGE, 0.2));
 				forge_fx::drawLight(1050, 875, 300, rl::fade(rl::YELLOW, 0.2));
-				forge_fx::drawLight(1050, 875, 200, rl::fade(rl::WHITE, 0.2));
 				forge_fx::fireEffect(deltaTime);
 				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);
 
