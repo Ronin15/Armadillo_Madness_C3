@@ -20,7 +20,6 @@ const float ANT_SOFFSET = 60.0;
 const float FOX_SOFFSET = 80.0;
 const float POWERUP_SOFFSET = 35.0;
 
-
 //GAME Structures ---------------------------------------------------------
  enum ConstructType : int {
    PLAYER,
@@ -51,7 +50,6 @@ const float POWERUP_SOFFSET = 35.0;
     int currentFrame; 
     int maxFrames; 
     int lives;
-    int points;
     bool isGrounded;
     bool texFlip;
     bool isDead;
@@ -217,13 +215,14 @@ fn Construct forgeConstructEntities(TexMap *tMap) {
     c.expired = true;
     c.hHit = false;
     c.vHit = false;
+
     io::printfn("name -> %s  type -> %s  texture -> %s",c.name,c.type,c.texture);
     return  c;
 }
 
 //update game contructs
-fn void updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) { 
-      
+fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) { 
+       int score = 0;
       //all construct update info-------------------------------------------------
       //Frame updates
       c.frameTimer += deltaTime;
@@ -328,7 +327,13 @@ fn void updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
           // io::printfn("ENEMY_GROUND update reached");
             
             if((c.hHit || c.vHit) && c.lives <= 0){
-               
+
+                  if(c.hHit){
+                     score += 50;
+                  }else{
+                     score += 100;
+                  }
+
                   c.isDead = true;
                   c.groundLevel = 2000; 
                   rl::playSound(sMap.get("enemyDie")!!);
@@ -352,7 +357,13 @@ fn void updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
             //c.pos.y += c.acceleration * deltaTime;  
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
             if((c.hHit || c.vHit) && c.lives <= 0){
-               
+                  
+                  if(c.hHit){
+                     score += 200;
+                  }else{
+                     score += 75;
+                  }
+
                   c.isDead = true;
                   c.isGrounded = true;
                   c.groundLevel = 2000;
@@ -395,6 +406,8 @@ fn void updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
 
          break;
       }
+
+      return score;
 }
 
 fn void drawPoopShot(Construct* c, Construct* b, float rotation = 90.0, float scale = 1.0) {

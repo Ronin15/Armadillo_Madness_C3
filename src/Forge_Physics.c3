@@ -62,7 +62,7 @@ fn void resolveCollision(Construct* a, Construct* b) {
           if(a.type == PLAYER && b.type == POWER_UP){a.hHit = false; b.isDead = true;}
           io::printfn("%s -> Horizotal_hit -> %s !",a.name,b.name);
          
-         }else { 
+         }else{ 
           // Vertical collision
           a.vel.y *= -1; 
           b.vel.y *= -1;

@@ -16,7 +16,7 @@ const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const String GAME_NAME = "Armadillo Madness 0.4.7";
+const String GAME_NAME = "Armadillo Madness 0.4.8";
 const int MAX_CONSTRUCTS = 100;
 const int MAX_POWERUPS = 6;
 
@@ -59,6 +59,8 @@ fn int main(String[] args) {
 	float scrollMid = 0.0;
 	float scrollClouds = 0.0;
 	float lifeSpace = (float)tMap.get("lifeCount")!!.width + 5.0;
+	//score 
+	int score;
 
 	float demoCounter1;
 	float demoCounter2;
@@ -190,7 +192,7 @@ fn int main(String[] args) {
 				forge_game::updateConstruct(&poopShot,&sMap, deltaTime);
 
 					foreach ( &construct : constructs){
-								forge_game::updateConstruct(construct,&sMap, deltaTime);
+								score += forge_game::updateConstruct(construct,&sMap, deltaTime);
 						}
 
 				//draw game elements------------------------------------------------------------------------------
@@ -210,8 +212,8 @@ fn int main(String[] args) {
 				//end sun
 
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
-				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
-				rl::drawText("Lives ", 16, 60, 30, rl::RAYWHITE);
+				rl::drawText(rl::textFormat("Score: %07i", score), 16, 25, 40, rl::RAYWHITE);
+				rl::drawText("Lives", 16, 60, 35, rl::RAYWHITE);
 				//life tracking updating
 				if (&player.lives == &player.lives){
 					for (int i = 0; i < player.lives; i++){
@@ -266,8 +268,8 @@ fn int main(String[] args) {
 
 				//drawing pause stuff here so objects don cover it up
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
-				rl::drawText("Score : ", 16, 25, 30, rl::RAYWHITE);
-				rl::drawText("Lives ", 16, 60, 30, rl::RAYWHITE);
+				rl::drawText(rl::textFormat("Score: %07i", score), 16, 25, 40, rl::RAYWHITE);
+				rl::drawText("Lives", 16, 60, 35, rl::RAYWHITE);
 				if (&player.lives == &player.lives){
 					for (int i = 0; i < player.lives; i++){
 						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
