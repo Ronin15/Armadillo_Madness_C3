@@ -16,7 +16,7 @@ const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const String GAME_NAME = "Armadillo Madness 0.4.5";
+const String GAME_NAME = "Armadillo Madness 0.4.7";
 const int MAX_CONSTRUCTS = 100;
 const int MAX_POWERUPS = 6;
 
@@ -73,7 +73,7 @@ fn int main(String[] args) {
 	rl::setWindowIcon(windowIcon);
 
 	//volume manager
-	rl::setMasterVolume(0.5);
+	rl::setMasterVolume(0.7);
 
 	//game objects init
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
@@ -125,7 +125,7 @@ fn int main(String[] args) {
 							frameCounter = 0;
 					}
 
-					forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
+					//forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
 
 
 			case MAIN:
@@ -137,7 +137,7 @@ fn int main(String[] args) {
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
                 rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", 750, 440, 40, rl::BLACK);	
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
-				forge_fx::drawLight(1050, 875, 300, rl::fade(rl::YELLOW, 0.2));
+				//forge_fx::drawLight(1050, 875, 300, rl::fade(rl::YELLOW, 0.2));
 				forge_fx::fireEffect(deltaTime);
 				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);
 
@@ -146,12 +146,11 @@ fn int main(String[] args) {
     				}
 
 					frameCounter += 1;
-					if (frameCounter > 2000) { //900 for testing
+					if (frameCounter > 20000) { //900 for testing
 							state = DEMO;
 							frameCounter = 0;
 					}
-					//forge_fx::forgeFXManager(&mMap,"rain",deltaTime);
-
+	
 			case GAME:
 				//misc game stuff
 				rl::hideCursor();

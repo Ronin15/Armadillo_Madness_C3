@@ -52,17 +52,16 @@ fn void resolveCollision(Construct* a, Construct* b) {
     
     if (math::abs(overlapX) >= math::abs(overlapY)) {
             //horizontal collision  
+           a.hHit = true;
+           b.vel.y *= -1;
+
           if(a.type == PROJECTILE_POOP){b.hHit = true;}
-
-          a.hHit = true;
+           
           if(b.name == "beatle"){a.bHit = true; b.lives = 0; a.hHit = false;}
-         // if(b.name == "tree"){a.hHit = false;}
-         // if(b.name == "boulder"){a.hHit = false;}
-
-          //a.vel.y *= -1; 
-         //b.vel.y *= -1;
-          
-         io::printfn("%s -> Horizotal_hit -> %s !",a.name,b.name);
+          if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.hHit = false; b.hHit = false; b.isDead = false;}
+          if(a.type == PLAYER && b.type == POWER_UP){a.hHit = false; b.isDead = true;}
+          io::printfn("%s -> Horizotal_hit -> %s !",a.name,b.name);
+         
          }else { 
           // Vertical collision
           a.vel.y *= -1; 
@@ -71,6 +70,7 @@ fn void resolveCollision(Construct* a, Construct* b) {
           b.vHit = true;
           
           if(b.name == "beatle"){a.bHit = true; b.lives = 0;}
+          if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.vHit = false; b.vHit = false;}
           io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);
         }
 }

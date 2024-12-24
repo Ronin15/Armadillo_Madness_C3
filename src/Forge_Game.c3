@@ -86,6 +86,7 @@ fn PowerUpType getRandomPowerUpType(){
     int currentFrame; 
     int maxFrames; 
     int lives;
+    int points;
     bool isGrounded;
     bool texFlip;
     bool isDead;
@@ -95,6 +96,7 @@ fn PowerUpType getRandomPowerUpType(){
     bool hHit;
     bool vHit;
     bool bHit;
+    bool pHit;
 }
 
 
@@ -214,6 +216,7 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
       c.hHit = false;
       c.vHit = false;
       c.bHit = false;
+      c.pHit = false;
       io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
 }
@@ -232,9 +235,10 @@ fn Construct forgeConstructEntities(TexMap *tMap) {
    // c.sound = sMap.get(c.name)!!;  NEED TO ADD SOUNDS FOR ALL TYPES
     c.lives = 2;
     if (c.type == OBS ) {
-      c.maxFrames = 1;
-    }else{ c.maxFrames = 2;
-      } 
+        c.maxFrames = 1;
+    }else{ 
+        c.maxFrames = 2;
+    } 
     c.gravity = game_gravity;
     c.jumpVelocity = MOVE_VELOCITY;
     c.vel.y = game_gravity;

@@ -12,7 +12,7 @@ import raylib5::rl;
 const int MAX_RAINDROPS = 400;
 const int MAX_FIREWORK_P = 200;
 const int MAX_STAR_P = 150;
-const int MAX_FIRE_P = 25;
+const int MAX_FIRE_P = 30;
 const float FIRE_PARTICLE_LIFETIME = 2.0;
 const int MAX_FIREWORKS = 15;
 const int TRAIL_LENGTH = 80;
@@ -413,7 +413,7 @@ fn void shootingStars() {
 //begin fire effect----------------------------------------
 
 Fire_Particle [MAX_FIRE_P] fire_particles;
-Vector2 origin = { 1055, 895 };
+Vector2 origin = { 1055, 890 };
 
 fn void initFireParticles() {
     for (int i = 0; i < MAX_FIRE_P; i++) {
@@ -421,7 +421,7 @@ fn void initFireParticles() {
         fire_particles[i].vel = {(float)((rand_in_range(-80, 80)) / 10.0), (float)((rand_in_range(-300, -100)) / 10.0)};
         fire_particles[i].color = {(char)rand_in_range(200, 255), (char)rand_in_range(50, 150), 0, 255 };
         fire_particles[i].life = FIRE_PARTICLE_LIFETIME + (float)rand_in_range(-30, 30) / 10.0;
-        fire_particles[i].size = (float)rand_in_range(1, 3);
+        fire_particles[i].size = (float)rand_in_range(2, 4);
     }
 }
 
