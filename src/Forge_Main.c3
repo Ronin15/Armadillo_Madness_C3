@@ -94,7 +94,7 @@ fn int main(String[] args) {
 	GameState state = MAIN;
 	//rl::playSound(sMap.get("logoSound")!!);
 
-	while (!rl::windowShouldClose() || accumulator >= TIME_STEP){
+	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
 	  	float deltaTime = rl::getFrameTime();
 		float currentTime = (float)rl::getTime();
 	  	float updateTime = currentTime - lastTime;
@@ -135,7 +135,7 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("titlePage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
-                rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", 750, 440, 40, rl::BLACK);	
+                rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", ((WINDOW_WIDTH / 2) - 250), 340, 40, rl::BLACK);	
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				//forge_fx::drawLight(1050, 875, 300, rl::fade(rl::YELLOW, 0.2));
 				forge_fx::fireEffect(deltaTime);
@@ -185,8 +185,6 @@ fn int main(String[] args) {
 						}
 					}
 
-
-
 				//update game logic-------------------------------------------------------------------------------
 				forge_game::updateConstruct(&player,&sMap, deltaTime);
 				forge_game::updateConstruct(&poopShot,&sMap, deltaTime);
@@ -194,8 +192,6 @@ fn int main(String[] args) {
 					foreach ( &construct : constructs){
 								forge_game::updateConstruct(construct,&sMap, deltaTime);
 						}
-
-
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
@@ -223,7 +219,6 @@ fn int main(String[] args) {
 						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
 					}
 				}
-
 
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
@@ -268,7 +263,6 @@ fn int main(String[] args) {
 						}
 
 					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
-
 
 				//drawing pause stuff here so objects don cover it up
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
@@ -341,15 +335,13 @@ fn int main(String[] args) {
 							if (forge_physics::checkCollision(&demoPlayer,demoConstruct) && demoConstruct.isDead == false){
 								forge_physics::resolveCollision(&demoPlayer,demoConstruct);
 								}
-
-							}
-
+						}
 
 				//player not updated in demo because demo fucntions take over the update role.
 				//forge_game::updateConstruct(&poopShot,&sMap);
 
-					foreach ( &demoConstruct : demoConstructs){
-								forge_game::updateConstruct(demoConstruct,&sMap, deltaTime);
+				foreach ( &demoConstruct : demoConstructs){
+							forge_game::updateConstruct(demoConstruct,&sMap, deltaTime);
 						}
 
 
@@ -375,10 +367,8 @@ fn int main(String[] args) {
 
 			case CREDITS:
 				io::printfn("Credits State");
-
    		}
    			accumulator -= TIME_STEP;
 	}
-
 	return 0;
 }
