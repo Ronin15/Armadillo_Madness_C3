@@ -96,7 +96,6 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
             if(effect == "shootingStars"){event = SHOOTING_STAR; shootStar = true;}
             if(effect == "fireworks"){event = FIREWORKS; fireworks = true;}
 
-              
             switch (event){
 
                 case RAIN:
