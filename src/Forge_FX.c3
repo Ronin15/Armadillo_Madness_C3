@@ -12,7 +12,7 @@ import raylib5::rl;
 const int MAX_RAINDROPS = 400;
 const int MAX_FIREWORK_P = 200;
 const int MAX_STAR_P = 150;
-const int MAX_FIRE_P = 30;
+const int MAX_FIRE_P = 35;
 const float FIRE_PARTICLE_LIFETIME = 2.0;
 const int MAX_FIREWORKS = 15;
 const int TRAIL_LENGTH = 80;
@@ -418,10 +418,10 @@ Vector2 origin = { 1055, 890 };
 fn void initFireParticles() {
     for (int i = 0; i < MAX_FIRE_P; i++) {
         fire_particles[i].pos = origin;
-        fire_particles[i].vel = {(float)((rand_in_range(-80, 80)) / 10.0), (float)((rand_in_range(-300, -100)) / 10.0)};
+        fire_particles[i].vel = {(float)((rand_in_range(-70, 70)) / 10.0), (float)((rand_in_range(-300, -100)) / 10.0)};
         fire_particles[i].color = {(char)rand_in_range(200, 255), (char)rand_in_range(50, 150), 0, 255 };
         fire_particles[i].life = FIRE_PARTICLE_LIFETIME + (float)rand_in_range(-30, 30) / 10.0;
-        fire_particles[i].size = (float)rand_in_range(2, 4);
+        fire_particles[i].size = (float)rand_in_range(1, 4);
     }
 }
 
@@ -437,10 +437,10 @@ fn void updateFireParticles(float deltaTime) {
         } else {
             // Respawn particle at origin
             fire_particles[i].pos = origin;
-            fire_particles[i].vel = {(float)((rand_in_range(-80, 80)) / 10.0), (float)((rand_in_range(-300, -100)) / 10.0)};
+            fire_particles[i].vel = {(float)((rand_in_range(-70, 70)) / 10.0), (float)((rand_in_range(-300, -100)) / 10.0)};
             fire_particles[i].color = {(char)rand_in_range(200, 255), (char)rand_in_range(50, 150), 0, 255 };
             fire_particles[i].life = FIRE_PARTICLE_LIFETIME + (float)rand_in_range(-30, 30) / 10.0;
-            fire_particles[i].size = (float)rand_in_range(1, 3);
+            fire_particles[i].size = (float)rand_in_range(1, 4);
         }
     }
 }
@@ -448,7 +448,7 @@ fn void updateFireParticles(float deltaTime) {
 fn void drawFireParticles() {
     for (int i = 0; i < MAX_FIRE_P; i++) {
         if (fire_particles[i].life > 0) {
-            rl::drawCircleV(fire_particles[i].pos, fire_particles[i].size, fire_particles[i].color);
+            rl::drawPixelV(fire_particles[i].pos, fire_particles[i].color);//fire_particles[i].size,
 			drawLight((int)fire_particles[i].pos.x, (int)fire_particles[i].pos.y, fire_particles[i].size * 10.0, fire_particles[i].color);
         }
     }
