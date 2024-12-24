@@ -6,7 +6,7 @@ import std::io;
 import std::math;
 
 //GAME globals and consts -------------------------------------------------
-float game_gravity = 700.0;
+float game_gravity = 700.0;//200 for grav boots
 float groundLevel = 1080.0 - 115;//120
 const float MOVE_VELOCITY = -600.0;
 const float SKY_LEVEL = 0.0;
@@ -31,41 +31,6 @@ const float POWERUP_SOFFSET = 35.0;
    OBS,
 }
 
-/*
-enum PowerUpType : int {
-   GRAV_BOOTS, //change player gravity
-   CAN_O_WORMS, //pentrating poop
-   SUPER_ARMADILLO, //invuln, bigger, insta kill, smacks osbsticles around.
-
-}
-
-struct PowerUp{
-    
-    PowerUpType type;
-    Texture2D texture;
-    Vector2 pos;
-    Vector2 vel;
-    Sound sound;
-    String name;
-    float gravity;
-    float size;
-    float frameTimer;
-    float frameLength;
-    int currentFrame; 
-    int maxFrames;
-    bool expired;
-    bool hHit;
-    bool vHit; 
-
-}
-fn PowerUpType getRandomPowerUpType(){
-   int min = (int)PowerUpType.GRAV_BOOTS;
-   int max = (int)ConstructType.SUPER_ARMADILLO;
-   //io::printfn("max -> %s  min -> %s !",max,min);
-   return (PowerUpType)rand_in_range(min,max);
-}
-
-*/
  struct Construct {
     
     ConstructType type;
@@ -118,7 +83,7 @@ fn ConstructType getRandomType(){
 
 
 fn String getRandomConstructName (ConstructType type){
-   static int powerUpCount;
+   static int powerUpCount;// to track and restrict power up items to global const value
 
    String[*] groundTypes = {"ant","turtle","snake","fox"};
    String[*] flyingTypes = {"bird","beatle"};
@@ -487,7 +452,7 @@ Rectangle destRec = {
    };
 
    if(c.isDead) {c.texFlip = true; rotation = 180.0;}
-   if (c.texFlip) {srcRec.width = -srcRec.width;}
+   if (c.texFlip) {srcRec.width =- srcRec.width;}
    
    
    rl::drawTexturePro(c.texture, srcRec, destRec, origin, rotation, rl::WHITE);
