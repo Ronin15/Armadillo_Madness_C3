@@ -92,6 +92,11 @@ fn SoundMap loadSoundMap(){
    Sound playerHit = rl::loadSound("resources/sounds/player_hit.wav");
    Sound poopHit = rl::loadSound("resources/sounds/poop_hit.wav");
    Sound enemyDie = rl::loadSound("resources/sounds/enemy_die.wav");
+   Sound rockImpact = rl::loadSound("resources/sounds/rock_impact.wav");
+   Sound gravBoots = rl::loadSound("resources/sounds/grav_boots.wav");
+   Sound super = rl::loadSound("resources/sounds/1up.wav");
+   Sound cactusImpact = rl::loadSound("resources/sounds/cactus_impact.wav");
+
 
    temp.set("jump",jump);
    temp.set("moving",moving);
@@ -106,6 +111,10 @@ fn SoundMap loadSoundMap(){
    temp.set("playerHit",playerHit);
    temp.set("poopHit",poopHit);
    temp.set("enemyDie",enemyDie);
+   temp.set("rockImpact",rockImpact);
+   temp.set("gravBoots",gravBoots);
+   temp.set("super",super);
+   temp.set("cactusImpact",cactusImpact);
 
    return temp;
 }

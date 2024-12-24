@@ -335,18 +335,19 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
                   }
 
                   c.isDead = true;
-                  c.groundLevel = 2000; 
                   rl::playSound(sMap.get("enemyDie")!!);
                   
                }
-            if(c.vHit){c.vHit = false;c.lives -= 1;}
-            if(c.hHit){c.hHit = false;c.lives -= 1;}
+           
 
             if (c.name == "ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * deltaTime;c.groundLevel = groundLevel + 5;}
             if (c.name == "turtle") {c.pos.x -= c.friction * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
             if (c.name == "fox") {c.pos.x -= (c.friction + FOX_SOFFSET)  * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
             if (c.name == "snake") {c.pos.x -= c.friction * deltaTime;c.groundLevel = groundLevel + 5;} 
             
+            if(c.vHit){c.vHit = false;c.lives -= 1;}
+            if(c.hHit){c.hHit = false;c.lives -= 1;}
+
             c.pos.y += c.vel.y * deltaTime;
             c.vel.y += c.gravity * deltaTime; 
          
@@ -366,21 +367,19 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
 
                   c.isDead = true;
                   c.isGrounded = true;
-                  c.groundLevel = 2000;
-                   
                   rl::playSound(sMap.get("enemyDie")!!);
                   
                }
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
-            c.pos.x -= 125 * deltaTime;//15
-            c.texFlip = false;//15
+               c.pos.x -= 125 * deltaTime;//15
+               c.texFlip = false;//15
             //if (c.pos.x <= 0){c.pos.x += 15.0 * deltaTime;c.texFlip = true;}
             if (!c.isDead){
             c.pos.y += AMPLITUDE * math::sin(FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
             }else{
-            c.pos.y += c.vel.y * deltaTime; 
-            c.vel.y += c.gravity * deltaTime;
+               c.pos.y += c.vel.y * deltaTime; 
+               c.vel.y += c.gravity * deltaTime;
             }
          break;
 
@@ -389,6 +388,35 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
          if (c.name == "cactus") {c.groundLevel = groundLevel - 106;}
          if (c.name == "tree") {c.groundLevel = groundLevel - 106;}
          if (c.name == "boulder"){c.groundLevel = groundLevel - 55 ;}
+          
+          
+         if((c.hHit)){
+                
+                 switch (c.name){
+                     
+                     case "cactus":
+                        
+                        rl::playSound(sMap.get("cactusImpact")!!);
+
+                     break;
+
+                     case "tree":
+
+                        rl::playSound(sMap.get("cactusImpact")!!);
+                     
+                     break;
+
+                     case "boulder":
+
+                        rl::playSound(sMap.get("rockImpact")!!);
+
+                     break;
+                 }
+         }
+
+          if(c.vHit){c.vHit = false;}
+          if(c.hHit){c.hHit = false;}
+
           c.vel.y += c.gravity * deltaTime;
           c.pos.y += c.vel.y * deltaTime;
           c.pos.x -= (c.friction + OBS_SOFFSET) * deltaTime; 
@@ -397,9 +425,35 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
 
          case POWER_UP:
           //io::printfn("Power ups update reached");
-         if (c.name == "grav") {}
-         if (c.name == "worms") {}
-         if (c.name == "super"){}
+         if((c.hHit || c.vHit)){
+
+               score += 100;
+               c.isDead = true;
+                
+                 switch (c.name){
+                     
+                     case "grav":
+                        
+                        rl::playSound(sMap.get("gravBoots")!!);
+
+                     break;
+
+                     case "food":
+
+                        rl::playSound(sMap.get("eatBug")!!);
+                     
+                     break;
+
+                     case "super":
+
+                        rl::playSound(sMap.get("super")!!);
+
+                     break;
+                 }
+         }
+
+          if(c.vHit){c.vHit = false;}
+          if(c.hHit){c.hHit = false;}
           c.vel.y += c.gravity * deltaTime;
           c.pos.y += c.vel.y * deltaTime;
           c.pos.x -= (c.friction + POWERUP_SOFFSET) * deltaTime; 
