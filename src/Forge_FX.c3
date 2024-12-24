@@ -92,7 +92,6 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
         String effect = type;
 
             if(effect == "rain"){ event = RAIN; rain = true;}
-            if(effect == "snow"){ event = SNOW; snow = true;}
             if(effect == "explode"){event = EXPLODE; explode = true;}
             if(effect == "shootingStars"){event = SHOOTING_STAR; shootStar = true;}
             if(effect == "fireworks"){event = FIREWORKS; fireworks = true;}
@@ -491,11 +490,8 @@ fn void drawExplosion(){
 
 fn void runExplosion(float deltaTime){
     
-  //  while (count > 0 ){
         Vector2 pos = {rand_in_range(0,forge_main::WINDOW_WIDTH),rand_in_range(900,forge_main::WINDOW_HEIGHT)};
         initParticlesExplosion(pos);
         updateExplosion(deltaTime);
         drawExplosion();
-   //     count--;
-    //}
 }
