@@ -212,7 +212,7 @@ fn int main(String[] args) {
 				//end sun
 
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
-				rl::drawText(rl::textFormat("Score: %07i", score), 16, 25, 40, rl::RAYWHITE);
+				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);
 				rl::drawText("Lives", 16, 60, 35, rl::RAYWHITE);
 				//life tracking updating
 				if (&player.lives == &player.lives){
@@ -268,7 +268,7 @@ fn int main(String[] args) {
 
 				//drawing pause stuff here so objects don cover it up
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
-				rl::drawText(rl::textFormat("Score: %07i", score), 16, 25, 40, rl::RAYWHITE);
+				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);
 				rl::drawText("Lives", 16, 60, 35, rl::RAYWHITE);
 				if (&player.lives == &player.lives){
 					for (int i = 0; i < player.lives; i++){
