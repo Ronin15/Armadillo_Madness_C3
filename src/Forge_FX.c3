@@ -19,11 +19,12 @@ const int TRAIL_LENGTH = 80;
 const int MAX_EXPLOSION_P = 5;
 const float MAX_EXPLOSION_P_DURATION = 2.0;
 const float GRAVITY = 4.0;
+const int MAX_STARS = 300;
 
 //for Fx manager default is no FX
 Fx event = DEFAULT;
 bool rain = false;
-bool snow = false;
+bool starSky = false;
 bool explode = false;
 bool shootStar = false;
 bool fireworks = false;
@@ -33,7 +34,14 @@ enum Fx {
     RAIN,
     SHOOTING_STAR,
     FIREWORKS,
+    STAR_SKY,
     DEFAULT,
+}
+
+struct Star {
+    Vector2 pos;
+    float opacity;
+    float vel;
 }
 
 struct ShootingStar{
@@ -94,6 +102,7 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
             if(effect == "rain"){ event = RAIN; rain = true;}
             if(effect == "explode"){event = EXPLODE; explode = true;}
             if(effect == "shootingStars"){event = SHOOTING_STAR; shootStar = true;}
+            if(effect == "starrySky"){event = STAR_SKY; starSky = true;}
             if(effect == "fireworks"){event = FIREWORKS; fireworks = true;}
 
             switch (event){
@@ -122,6 +131,14 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
 
                     if (shootStar){
                          shootingStars();
+                    }
+
+                    break;
+
+                case STAR_SKY:
+
+                    if (starSky){
+                         starrySky();
                     }
 
                     break;
@@ -454,7 +471,45 @@ fn void fireEffect(float deltaTime) {
 }
 
 //starry sky 
+ Star [MAX_STARS] stars;
 
+fn void createStars(Star []stars, int count) {
+    for (int i = 0; i < count; i++) {
+        stars[i].pos ={ rand_in_range(0, rl::getScreenWidth()), rand_in_range(0, rl::getScreenHeight()) };
+        stars[i].opacity = (float)rand_in_range(50, 100) / 100.0;
+        stars[i].vel = (float)rand_in_range(1, 3) / 10.0;
+    }
+}
+
+fn void updateStars(Star []stars, int count) {
+    for (int i = 0; i < count; i++) {
+        stars[i].opacity += stars[i].vel;
+        if (stars[i].opacity > 1.0 || stars[i].opacity < 0.5) {
+            stars[i].vel =- stars[i].vel;
+        }
+    }
+}
+
+fn void drawStars(Star []stars, int count) {
+    for (int i = 0; i < count; i++) {
+        Color starColor = { 255, 255, 255, (char)(stars[i].opacity * 255) };
+        rl::drawCircleV(stars[i].pos, 2.5, starColor);
+        drawLight((int)stars[i].pos.x, (int)stars[i].pos.y, 10, starColor);
+    }
+}
+
+fn void starrySky(){
+    static bool initStars @noinit;
+	if (!initStars) {
+
+		createStars(&stars, MAX_STARS);
+		initStars = true;
+	}
+
+    updateStars(&stars, MAX_STARS);
+    drawStars(&stars, MAX_STARS);
+
+}
 
 //begin explosion -----------------------------------------
 Particle [MAX_EXPLOSION_P] explosion;
