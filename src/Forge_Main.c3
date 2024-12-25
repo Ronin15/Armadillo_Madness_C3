@@ -64,7 +64,7 @@ fn int main(String[] args) {
 
 	float demoCounter1;
 	float demoCounter2;
-	float starCounter;
+	
 	//game time step vars
 	float accumulator;
 	float frameCounter;
