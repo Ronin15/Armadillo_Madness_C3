@@ -64,7 +64,7 @@ fn int main(String[] args) {
 
 	float demoCounter1;
 	float demoCounter2;
-	
+
 	//game time step vars
 	float accumulator;
 	float frameCounter;
@@ -139,6 +139,7 @@ fn int main(String[] args) {
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
                 rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", ((WINDOW_WIDTH / 2) - 250), 340, 40, rl::BLACK);	
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 				//forge_fx::drawLight(1050, 875, 300, rl::fade(rl::YELLOW, 0.2));
 				forge_fx::fireEffect(deltaTime);
 				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);

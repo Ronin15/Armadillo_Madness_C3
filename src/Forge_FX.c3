@@ -453,6 +453,8 @@ fn void fireEffect(float deltaTime) {
 
 }
 
+//starry sky 
+
 
 //begin explosion -----------------------------------------
 Particle [MAX_EXPLOSION_P] explosion;
