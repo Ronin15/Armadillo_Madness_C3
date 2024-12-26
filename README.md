@@ -40,7 +40,7 @@ Notes:
     The Title page song with the Harmonica is her playing her Harmonica.
     The Art is either from my 6-year-old or my wife's concept art.
     Any support is extremely appreciated.
-    Generative AI used for game summary, some visual FX code, itch.io backdrop, Game Studio, and Engine Logos. Game Title page from Ansimuz all other assets created in Aseprite.
+    Generative AI used for game summary, itch.io backdrop, Game Studio, and Engine Logos. Game Title page, back drop picture only, from Ansimuz, all other assets created in Aseprite by Hammer Forged Games.
     
     Music from Chosic.com. Credit for artists is in game on credits screen.
 
