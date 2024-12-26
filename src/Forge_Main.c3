@@ -93,7 +93,7 @@ fn int main(String[] args) {
 	io::printfn("Objects created");
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
+	GameState state = MAIN;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -207,9 +207,9 @@ fn int main(String[] args) {
 				rl::drawFPS(15,160);
 				//rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				//sun
-				forge_fx::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7));
-				forge_fx::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
-				forge_fx::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
+				forge_fx::drawLight(1815, 105, 300, rl::fade(rl::YELLOW, 0.7));
+				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
+				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				//end sun
 
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
