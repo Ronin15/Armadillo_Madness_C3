@@ -11,7 +11,7 @@ fn TexMap loadTexMap(){
   TexMap temp;
 //loading Game assets
 	 Texture2D backGroundSky = rl::loadTexture("resources/images/sky.png");
-	 Texture2D backGroundMid = rl::loadTexture("resources/images/mid3.png");
+	 Texture2D backGroundMid = rl::loadTexture("resources/images/mid3_u.png");
 	 Texture2D backGroundGround = rl::loadTexture("resources/images/ground3.png");
    Texture2D clouds = rl::loadTexture("resources/images/close_clouds.png");
 	 Texture2D playerTex = rl::loadTexture("resources/images/armadillo_a2-sheet.png");
