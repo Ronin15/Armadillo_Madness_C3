@@ -20,7 +20,7 @@ const float ANT_SOFFSET = 60.0;
 const float FOX_SOFFSET = 80.0;
 const float POWERUP_SOFFSET = 35.0;
 
-//GAME Structures ---------------------------------------------------------
+//GAME Structures Types ---------------------------------------------------------
  enum ConstructType : int {
    PLAYER,
    PROJECTILE_POOP,
@@ -111,7 +111,7 @@ fn String getRandomConstructName (ConstructType type){
       return obsticlesTypes[index];
       }
 
-      if (type == ConstructType.POWER_UP && powerUpCount < forge_main::MAX_POWERUPS){
+      if (type == ConstructType.POWER_UP && powerUpCount <= forge_main::MAX_POWERUPS){
       int index = rand_in_range(0, pLength);
       powerUpCount += 1;
       //io::printfn("name -> %s  type -> %s  texture -> %s !",obsticlesTypes[index],type);
@@ -221,7 +221,7 @@ fn Construct forgeConstructEntities(TexMap *tMap) {
 }
 
 //update game contructs
-fn int updateEntity(Construct *c, SoundMap *sMap, float deltaTime) { 
+fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) { 
        int score = 0;
       //all construct update info-------------------------------------------------
       //Frame updates
@@ -261,7 +261,7 @@ fn int updateEntity(Construct *c, SoundMap *sMap, float deltaTime) {
                   rl::playSound(sMap.get("boing")!!);
                }
            
-            if (c.bHit && c.lives < MAX_LIVES){
+            if (c.bHit && c.lives < MAX_LIVES){ // beatle hit
                   
                   c.bHit = false; 
                   rl::playSound(sMap.get("eatBug")!!);
@@ -488,7 +488,7 @@ fn void drawConstruct(Construct* c, float rotation = 0.0, float scale = 2.0){ //
 }
 
 //draw animated sprites
-fn void drawAnitmatedEntity(Construct* c, float rotation = 0.0){
+fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
 //setting up animation data on contructs
 Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
 float obsSize = 3.5; //scaling up onbsticles
