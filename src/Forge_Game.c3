@@ -302,7 +302,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
 
             //powerup
             if (c.fHit){c.powerUpTimer += 400; poopPenatrate = true; c.fHit = false;} 
-            if (c.gHit){c.powerUpTimer += 400; c.gravity = 200.0; c.gHit = false;}
+            if (c.gHit){c.powerUpTimer += 400; c.gravity = 400.0; c.gHit = false;}
 
             if (rl::isKeyDown(rl::KEY_LEFT)) {
                if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(sMap.get("moving")!!); }
