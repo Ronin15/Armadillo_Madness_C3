@@ -34,8 +34,7 @@ Join the adventure and experience the madness of Armadillo Madness!
 
 Notes:
 
-    need to implement more levels only two planned so far. If successful will add more. 
-
+    Need to implement more levels only two planned so far. If successful will add more. 
     This is a game that my 6-year-old at the time helped design and provided inspiration for the art.
     The Title page song with the Harmonica is her playing her Harmonica.
     The Art is either from my 6-year-old or my wife's concept art.
