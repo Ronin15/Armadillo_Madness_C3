@@ -75,7 +75,7 @@ fn int main(String[] args) {
 	rl::setWindowIcon(windowIcon);
 
 	//volume manager
-	rl::setMasterVolume(0.7);
+	rl::setMasterVolume(0.6);
 
 	//game objects init
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);

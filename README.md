@@ -40,9 +40,13 @@ Notes:
     The Title page song with the Harmonica is her playing her Harmonica.
     The Art is either from my 6-year-old or my wife's concept art.
     Any support is extremely appreciated.
-    Generative AI used for game summary,  game Title Page,  itch .io, backdrop, Game Studio, and Engine Logo. All other art was created in Aseprite.
+    Generative AI used for game summary, some visual FX code, itch.io backdrop, Game Studio, and Engine Logos. Game Title page from Ansimuz all other assets created in Aseprite.
+    
     Music from Chosic.com. Credit for artists is in game on credits screen.
 
 GAME RELEASE DATE :  Q1 2025 or maybe earlier.
 
 Music promoted by https://www.chosic.com/free-music/all/
+
+Title Page
+https://ansimuz.itch.io/
