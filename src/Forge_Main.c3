@@ -11,7 +11,7 @@ import raylib5::rl;
 import std::io;
 
 //Game Consts---------------------------------
-const int FPS_CAP = 100; //FPS Cap
+const int FPS_CAP = 60; //FPS Cap
 const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
@@ -160,7 +160,7 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
 				rl::playMusicStream(mMap.get("gameMusic")!!);
 	  			rl::updateMusicStream(mMap.get("gameMusic")!!);
-	  			scrollGround -= 4.0;
+	  			scrollGround -= 5.0;
 				scrollMid -= 0.6;
 				scrollClouds -= 0.3;
 				if(scrollMid <= - WINDOW_WIDTH) {scrollMid = 0;}
@@ -291,11 +291,11 @@ fn int main(String[] args) {
 
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
-	  			scrollGround -= 4.0;
+	  			scrollGround -= 5.0;
 				scrollMid -= 0.6;
 				scrollClouds -= 0.3;
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
-				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
+				if(scrollClouds <= -WINDOW_WIDTH) {scrollClouds = 0;}
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
 
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
