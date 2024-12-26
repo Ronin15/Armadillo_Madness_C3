@@ -189,11 +189,11 @@ fn int main(String[] args) {
 					}
 
 				//update game logic-------------------------------------------------------------------------------
-				forge_game::updateConstruct(&player,&sMap, deltaTime);
-				forge_game::updateConstruct(&poopShot,&sMap, deltaTime);
+				forge_game::updateEntity(&player,&sMap, deltaTime);
+				forge_game::updateEntity(&poopShot,&sMap, deltaTime);
 
 					foreach ( &construct : constructs){
-								score += forge_game::updateConstruct(construct,&sMap, deltaTime);
+								score += forge_game::updateEntity(construct,&sMap, deltaTime);
 						}
 
 				//draw game elements------------------------------------------------------------------------------
@@ -223,11 +223,11 @@ fn int main(String[] args) {
 					}
 				}
 
-				forge_game::drawAnitmatedConstruct(&player);
+				forge_game::drawAnitmatedEntity(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
 
 					foreach ( &construct : constructs){
-								forge_game::drawAnitmatedConstruct(construct);
+								forge_game::drawAnitmatedEntity(construct);
 						}
 
 					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
@@ -258,11 +258,11 @@ fn int main(String[] args) {
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 
 
-				forge_game::drawAnitmatedConstruct(&player);
+				forge_game::drawAnitmatedEntity(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
 
 					foreach ( &construct : constructs){
-								forge_game::drawAnitmatedConstruct(construct);
+								forge_game::drawAnitmatedEntity(construct);
 						}
 
 					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
@@ -341,10 +341,10 @@ fn int main(String[] args) {
 						}
 
 				//player not updated in demo because demo fucntions take over the update role.
-				//forge_game::updateConstruct(&poopShot,&sMap);
+				//forge_game::updateEntity(&poopShot,&sMap);
 
 				foreach ( &demoConstruct : demoConstructs){
-							forge_game::updateConstruct(demoConstruct,&sMap, deltaTime);
+							forge_game::updateEntity(demoConstruct,&sMap, deltaTime);
 						}
 
 
@@ -361,11 +361,11 @@ fn int main(String[] args) {
 				forge_fx::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
 				forge_fx::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				//draw objects
-				forge_game::drawAnitmatedConstruct(&demoPlayer);
+				forge_game::drawAnitmatedEntity(&demoPlayer);
 				//forge_game::drawPoopShot(&poopShot,&demoPlayer);
 
 					foreach ( &demoConstruct : demoConstructs){
-								forge_game::drawAnitmatedConstruct(demoConstruct);
+								forge_game::drawAnitmatedEntity(demoConstruct);
 						}
 
 			case CREDITS:

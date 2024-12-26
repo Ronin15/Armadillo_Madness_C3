@@ -221,7 +221,7 @@ fn Construct forgeConstructEntities(TexMap *tMap) {
 }
 
 //update game contructs
-fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) { 
+fn int updateEntity(Construct *c, SoundMap *sMap, float deltaTime) { 
        int score = 0;
       //all construct update info-------------------------------------------------
       //Frame updates
@@ -488,7 +488,7 @@ fn void drawConstruct(Construct* c, float rotation = 0.0, float scale = 2.0){ //
 }
 
 //draw animated sprites
-fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
+fn void drawAnitmatedEntity(Construct* c, float rotation = 0.0){
 //setting up animation data on contructs
 Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
 float obsSize = 3.5; //scaling up onbsticles
