@@ -17,8 +17,8 @@ const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.4.8";
-const int MAX_CONSTRUCTS = 100;
-const int MAX_POWERUPS = 6;
+const int MAX_CONSTRUCTS = 150;//100
+const int MAX_POWERUPS = 15;//6
 
 
 Construct[MAX_CONSTRUCTS] constructs;
@@ -83,11 +83,11 @@ fn int main(String[] args) {
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap);
 
 	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
-	constructs[i] = forge_game::forgeConstructEntities(&tMap);
+	constructs[i] = forge_game::forgeConstruct(&tMap);
 	}
 
 	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
-	demoConstructs[i] = forge_game::forgeConstructEntities(&tMap);
+	demoConstructs[i] = forge_game::forgeConstruct(&tMap);
 	}
 
 	io::printfn("Objects created");

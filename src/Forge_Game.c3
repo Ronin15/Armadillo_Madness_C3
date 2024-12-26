@@ -8,6 +8,7 @@ import std::math;
 //GAME globals and consts -------------------------------------------------
 float game_gravity = 700.0;//200 for grav boots
 float groundLevel = 1080.0 - 115;//120
+bool poopPenatrate = false;
 const float MOVE_VELOCITY = -600.0;
 const float SKY_LEVEL = 0.0;
 const float ACCELERATION = 250.0;
@@ -46,7 +47,7 @@ const float POWERUP_SOFFSET = 35.0;
     float frameTimer;
     float frameLength;
     float invulnTimer;
-    int size;
+    float powerUpTimer;
     int currentFrame; 
     int maxFrames; 
     int lives;
@@ -56,10 +57,12 @@ const float POWERUP_SOFFSET = 35.0;
     bool isProjectileActive;
     bool invlunerable;
     bool expired;
-    bool hHit;
-    bool vHit;
-    bool bHit;
-    bool pHit;
+    bool hHit; //horizontal hit
+    bool vHit; //vertical hit
+    bool bHit; //beatle hit
+    bool sHit; //super power up hit
+    bool fHit; //food hit
+    bool gHit; //grav boot hit
 }
 
 
@@ -111,7 +114,7 @@ fn String getRandomConstructName (ConstructType type){
       return obsticlesTypes[index];
       }
 
-      if (type == ConstructType.POWER_UP && powerUpCount <= forge_main::MAX_POWERUPS){
+      if (type == ConstructType.POWER_UP && powerUpCount < forge_main::MAX_POWERUPS){
       int index = rand_in_range(0, pLength);
       powerUpCount += 1;
       //io::printfn("name -> %s  type -> %s  texture -> %s !",obsticlesTypes[index],type);
@@ -176,16 +179,20 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
       c.expired = true;
       c.invlunerable = false;
       c.invulnTimer = 0.0;
+      c.powerUpTimer = 0.0;
       c.hHit = false;
       c.vHit = false;
       c.bHit = false;
-      c.pHit = false;
+      c.sHit = false;
+      c.fHit = false;
+      c.gHit = false;
+
       io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
 }
 
 //creates game objects
-fn Construct forgeConstructEntities(TexMap *tMap) {
+fn Construct forgeConstruct(TexMap *tMap) {
     
    Construct c;
    c.name = "default"; // this is for generating object spawn limits based on random name and type counts. For powerups only at the moment.
@@ -193,7 +200,7 @@ fn Construct forgeConstructEntities(TexMap *tMap) {
       c.type = getRandomType();
       c.name = (String)getRandomConstructName(c.type);
    }
-    c.pos = {(float)rand_in_range(2000,21000) + (float)rand_in_range(100,200),(float)rand_in_range(450,650) + (float)rand_in_range(64,100)};
+    c.pos = {(float)rand_in_range(2000,22000) + (float)rand_in_range(100,200),(float)rand_in_range(450,650) + (float)rand_in_range(64,100)};//21000
     c.texture = tMap.get(c.name)!!;
    // c.sound = sMap.get(c.name)!!;  NEED TO ADD SOUNDS FOR ALL TYPES
     c.lives = 2;
@@ -249,12 +256,22 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
       {
          case PLAYER:
             //io::printfn("invuln Timer: %f", c.invulnTimer);
+            //io::printfn("power Up Timer: %f", c.powerUpTimer);
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
             
             if(c.invulnTimer >= 0.0){
                c.invulnTimer -= 1.0;
             }else{
                c.invlunerable = false;}
+
+            if(c.powerUpTimer >= 0.0){
+               c.powerUpTimer -= 1.0;
+            }else{
+            
+              if (c.gravity = 200.0) {c.gravity = 700.0;}
+              if (c.invulnTimer <= 0.0) c.invlunerable = false;
+              if (poopPenatrate){poopPenatrate = false;}
+            }
             
             if(c.vHit){
                   c.vHit = false;
@@ -270,6 +287,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
                   c.bHit = false;
                }
             
+            //powerup
+            if (c.sHit){c.powerUpTimer += 400; c.invlunerable = true; c.sHit = false;}
+
             if(c.hHit && c.invulnTimer <= 0){
                   c.hHit = false;
                   c.invlunerable = true;
@@ -279,6 +299,10 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
             }else{
                   c.hHit = false;   
             }
+
+            //powerup
+            if (c.fHit){c.powerUpTimer += 400; poopPenatrate = true; c.fHit = false;} 
+            if (c.gHit){c.powerUpTimer += 400; c.gravity = 200.0; c.gHit = false;}
 
             if (rl::isKeyDown(rl::KEY_LEFT)) {
                if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(sMap.get("moving")!!); }
@@ -309,11 +333,18 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
          case PROJECTILE_POOP:           
             //io::printfn("POOP Shot :) update reached");
             // c.isProjectileActive = false;
-            if(c.hHit){c.hHit = false;
+            if(c.hHit && !poopPenatrate){
+               c.hHit = false;
                rl::playSound(sMap.get("poopHit")!!);
                c.expired = true; 
                c.isProjectileActive = false;
             }
+             if (c.hHit && poopPenatrate){  
+               rl::playSound(sMap.get("poopHit")!!);
+               c.expired = false;
+               c.isProjectileActive = true;
+               c.hHit = false; 
+             }
 
             if(rl::isKeyPressed(rl::KEY_DOWN)){c.isProjectileActive = true; c.expired = false;rl::playSound(sMap.get("poop")!!);}
                c.groundLevel = groundLevel - c.texture.height + 80;
@@ -339,7 +370,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
                   
                }
            
-
+            //optimize later to switch
             if (c.name == "ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * deltaTime;c.groundLevel = groundLevel + 5;}
             if (c.name == "turtle") {c.pos.x -= c.friction * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
             if (c.name == "fox") {c.pos.x -= (c.friction + FOX_SOFFSET)  * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
@@ -385,6 +416,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
 
          case OBS:
           //io::printfn("OBS update reached");
+          //optimize to switch later
          if (c.name == "cactus") {c.groundLevel = groundLevel - 106;}
          if (c.name == "tree") {c.groundLevel = groundLevel - 106;}
          if (c.name == "boulder"){c.groundLevel = groundLevel - 55 ;}

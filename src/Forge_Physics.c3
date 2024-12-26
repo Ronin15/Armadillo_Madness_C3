@@ -60,7 +60,24 @@ fn void resolveCollision(Construct* a, Construct* b) {
            
           if(b.name == "beatle"){a.bHit = true; b.lives = 0; a.hHit = false;}
           if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.hHit = false; b.hHit = false; b.isDead = false;}
-          if(a.type == PLAYER && b.type == POWER_UP){a.hHit = false; b.hHit = true;}
+          if(a.type == PLAYER && b.type == POWER_UP){
+                a.hHit = false;
+                
+                switch (b.name){
+                     
+                     case "grav":
+                            a.gHit = true;
+                     break;
+
+                     case "food":
+                            a.fHit = true;
+                     break;
+
+                     case "super":
+                            a.sHit = true;
+                     break;
+                 }
+          }
           io::printfn("%s -> Horizotal_hit -> %s !",a.name,b.name);
          
          }else{ 
@@ -71,8 +88,26 @@ fn void resolveCollision(Construct* a, Construct* b) {
           b.vHit = true;
           
           if(b.name == "beatle"){a.bHit = true; b.lives = 0;}
-          if(a.type == PLAYER && b.type == POWER_UP){a.hHit = false; b.hHit = true;}
           if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.vHit = false; b.vHit = false;}
+          if(a.type == PLAYER && b.type == POWER_UP){
+            
+                a.vHit = false;
+
+                switch (b.name){
+                            
+                            case "grav":
+                                    a.gHit = true;
+                            break;
+
+                            case "food":
+                                    a.fHit = true;
+                            break;
+
+                            case "super":
+                                    a.sHit = true;
+                            break;
+                        }
+          }
           io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);
         }
 }
