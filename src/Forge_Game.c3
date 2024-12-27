@@ -83,7 +83,7 @@ fn ConstructType getRandomType(){
 }
 
 
-fn String getRandomConstructName (ConstructType type, String name){
+fn String getRandomConstructName (ConstructType type){
    static int powerUpCount;// to track and restrict power up items to global const value
    static int powerUpCountDemo;
 
@@ -115,22 +115,10 @@ fn String getRandomConstructName (ConstructType type, String name){
       return obsticlesTypes[index];
       }
 
-      if (type == ConstructType.POWER_UP && (powerUpCount < forge_main::MAX_POWERUPS || powerUpCountDemo < forge_main::MAX_POWERUPS)){
-      int index = rand_in_range(0, pLength);
-      
-            switch (name){
-               case "default":
-
-               powerUpCount += 1;
+      if (type == ConstructType.POWER_UP && powerUpCount < forge_main::MAX_POWERUPS) {
+         int index = rand_in_range(0, pLength);
+         powerUpCount += 1;
                
-               break;
-
-               case "demo":
-
-               powerUpCountDemo += 1; //to let powerups be in the demo
-            
-            }
-         
          //io::printfn("name -> %s  type -> %s  texture -> %s !",obsticlesTypes[index],type);
          return powerUps[index];
       }
@@ -206,13 +194,13 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
 }
 
 //creates game objects
-fn Construct forgeConstruct(TexMap *tMap, String name = "default") {
+fn Construct forgeConstruct(TexMap *tMap) {
     
    Construct c;
    c.name = "default"; // this is for generating object spawn limits based on random name and type counts. For powerups only at the moment.
    while (c.name == "default"){
       c.type = getRandomType();
-      c.name = (String)getRandomConstructName(c.type, name);
+      c.name = (String)getRandomConstructName(c.type);
    }
     c.pos = {(float)rand_in_range(2000,22000) + (float)rand_in_range(100,200),(float)rand_in_range(450,650) + (float)rand_in_range(64,100)};//21000
     c.texture = tMap.get(c.name)!!;

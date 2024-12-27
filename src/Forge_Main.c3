@@ -87,7 +87,7 @@ fn int main(String[] args) {
 	}
 
 	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
-	demoConstructs[i] = forge_game::forgeConstruct(&tMap,"Demo");
+	demoConstructs[i] = forge_game::forgeConstruct(&tMap);
 	}
 
 	io::printfn("Objects created");
