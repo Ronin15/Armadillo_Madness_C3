@@ -16,7 +16,7 @@ const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const String GAME_NAME = "Armadillo Madness 0.4.8";
+const String GAME_NAME = "Armadillo Madness 0.4.9";
 const int MAX_CONSTRUCTS = 150;//100
 const int MAX_POWERUPS = 15;//6
 
@@ -87,7 +87,7 @@ fn int main(String[] args) {
 	}
 
 	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
-	demoConstructs[i] = forge_game::forgeConstruct(&tMap);
+	demoConstructs[i] = forge_game::forgeConstruct(&tMap,"Demo");
 	}
 
 	io::printfn("Objects created");
@@ -149,7 +149,7 @@ fn int main(String[] args) {
     				}
 
 					frameCounter += 1;
-					if (frameCounter > 20000) { //900 for testing
+					if (frameCounter > 800) { //900 for testing
 							state = DEMO;
 							frameCounter = 0;
 					}
@@ -252,9 +252,9 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				forge_fx::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7));
-				forge_fx::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
-				forge_fx::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
+				forge_fx::drawLight(1815, 105, 300, rl::fade(rl::YELLOW, 0.7));
+				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
+				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 
 
@@ -312,10 +312,10 @@ fn int main(String[] args) {
 				demoCounter1 += 1;
 				demoCounter2 += 1;
 
-				if(demoCounter1 < 800 ){forge_demo::moveRight(&demoPlayer, deltaTime);
+				if(demoCounter1 < 500 ){forge_demo::moveRight(&demoPlayer, deltaTime);
 
 				}
-				if(demoCounter1 > 800){
+				if(demoCounter1 > 500){
 					forge_demo::moveLeft(&demoPlayer, deltaTime);
 
 					if (demoCounter1 % 100 == 0){
@@ -323,11 +323,11 @@ fn int main(String[] args) {
 					forge_demo::jump(&demoPlayer, deltaTime);
 					}
 				}
-				if (demoCounter1 > 1600){
+				if (demoCounter1 > 1000){
 					demoCounter1 = 0;
 				}
 
-				if (demoCounter2 > 20000){
+				if (demoCounter2 > 10000){
 					demoCounter2 = 0;
 					state = MAIN;
 				}
@@ -357,9 +357,9 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
 				rl::drawText("Aramadillo Madness", (WINDOW_WIDTH / 2) - 350, 340, 65, {185,71,0,200}); //rust orange
-				forge_fx::drawLight(1750, 105, 300, rl::fade(rl::YELLOW, 0.7));
-				forge_fx::drawLight(1750, 105, 200, rl::fade(rl::WHITE, 0.5));
-				forge_fx::drawLight(1750, 105, 100, rl::fade(rl::ORANGE, 0.3));
+				forge_fx::drawLight(1815, 105, 300, rl::fade(rl::YELLOW, 0.7));
+				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
+				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				//draw objects
 				forge_game::drawAnitmatedConstruct(&demoPlayer);
 				//forge_game::drawPoopShot(&poopShot,&demoPlayer);
