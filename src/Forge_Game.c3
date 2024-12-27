@@ -268,7 +268,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
                c.powerUpTimer -= 1.0;
             }else{
             
-              if (c.gravity = 200.0) {c.gravity = 700.0;}
+              if (c.gravity = 400.0) {c.gravity = 700.0;}
               if (c.invulnTimer <= 0.0) c.invlunerable = false;
               if (poopPenatrate){poopPenatrate = false;}
             }
