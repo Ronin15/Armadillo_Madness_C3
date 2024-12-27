@@ -6,7 +6,7 @@ import std::io;
 import std::math;
 
 //GAME globals and consts -------------------------------------------------
-float game_gravity = 700.0;//200 for grav boots
+const float GRAVITY = 700.0;//200 for grav boots
 float groundLevel = 1080.0 - 115;//120
 bool poopPenatrate = false;
 const float MOVE_VELOCITY = -600.0;
@@ -105,7 +105,7 @@ fn String getRandomConstructName (ConstructType type){
       
       if (type == ConstructType.ENEMEY_FLY){
       int index = rand_in_range(0, fLength);
-    //  io::printfn("name -> %s  type -> %s  texture -> %s !",flyingTypes[index],type);
+      //io::printfn("name -> %s  type -> %s  texture -> %s !",flyingTypes[index],type);
       return flyingTypes[index];
       }
       
@@ -139,7 +139,7 @@ fn Construct forgeCronstructProjectile(TexMap *tMap) {
       //c.sound = sMap.get(c.name)!!; 
       c.lives = 1;
       c.maxFrames = 1;
-      c.gravity = game_gravity;
+      c.gravity = GRAVITY;
       c.jumpVelocity = MOVE_VELOCITY;
       c.groundLevel = groundLevel; 
       c.acceleration = ACCELERATION;
@@ -168,7 +168,7 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
      // c.sound = sMap.get(c.name)!!;
       c.lives = 6;
       c.maxFrames = 2;
-      c.gravity = game_gravity;
+      c.gravity = GRAVITY;
       c.jumpVelocity = MOVE_VELOCITY;
       c.groundLevel = groundLevel; 
       c.acceleration = ACCELERATION;
@@ -211,9 +211,8 @@ fn Construct forgeConstruct(TexMap *tMap) {
     }else{ 
         c.maxFrames = 2;
     } 
-    c.gravity = game_gravity;
+    c.gravity = GRAVITY;
     c.jumpVelocity = MOVE_VELOCITY;
-    c.vel.y = game_gravity;
     c.groundLevel = groundLevel; 
     c.acceleration = ACCELERATION;
     c.friction = FRICTION;
@@ -270,8 +269,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
                c.powerUpTimer -= 1.0;
             }else{
             
-              if (c.gravity = 400.0) {c.gravity = 700.0;}
+              if (c.gravity == 400.0) {c.gravity = GRAVITY;}
               if (c.invulnTimer <= 0.0) c.invlunerable = false;
+              if (c.acceleration == 500){c.acceleration = ACCELERATION;}
               if (poopPenatrate){poopPenatrate = false;}
             }
             
@@ -290,7 +290,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
                }
             
             //powerup
-            if (c.sHit){c.powerUpTimer += 400; c.invlunerable = true; c.sHit = false;}
+            if (c.sHit){c.powerUpTimer += 400; c.invlunerable = true; c.acceleration = 500; c.sHit = false;}
 
             if(c.hHit && c.invulnTimer <= 0){
                   c.hHit = false;
