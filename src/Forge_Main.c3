@@ -93,7 +93,7 @@ fn int main(String[] args) {
 	io::printfn("Objects created");
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = LOGO;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -127,8 +127,7 @@ fn int main(String[] args) {
 							frameCounter = 0;
 					}
 
-					//forge_fx::forgeFXManager(&mMap,"starrySky",deltaTime);
-
+					forge_fx::forgeFXManager(&mMap,"starrySky",deltaTime);
 
 			case MAIN:
 

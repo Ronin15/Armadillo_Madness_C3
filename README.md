@@ -1,4 +1,4 @@
-Aramadillo Madness
+Armadillo Madness
 
 SPECS:
 

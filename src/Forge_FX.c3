@@ -494,7 +494,7 @@ fn void drawStars(Star []stars, int count) {
     for (int i = 0; i < count; i++) {
         Color starColor = { 255, 255, 255, (char)(stars[i].opacity * 255) };
         rl::drawCircleV(stars[i].pos, 2.5, starColor);
-        drawLight((int)stars[i].pos.x, (int)stars[i].pos.y, 10, starColor);
+        //drawLight((int)stars[i].pos.x, (int)stars[i].pos.y, 5, starColor);
     }
 }
 
@@ -550,4 +550,28 @@ fn void runExplosion(float deltaTime){
         initParticlesExplosion(pos);
         updateExplosion(deltaTime);
         drawExplosion();
+}
+//begin Rainbow------------------------------------------------------------------------------
+
+ // Define colors for the rainbow
+    Color [7]rainbowColors = {
+        rl::RED,
+        rl::ORANGE,
+        rl::YELLOW,
+        rl::GREEN,
+        rl::BLUE,
+        { 75, 0, 130, 255 },  // Indigo
+        { 143, 0, 255, 255 }  // Violet
+    };
+
+fn void drawRainbow(){
+
+    // Draw the rainbow
+    for (int i = 0; i < 7; i++) {
+        rl::drawCircleSector ({forge_main::WINDOW_WIDTH / 2, forge_main::WINDOW_HEIGHT },
+                      (float)800 - (float)i * 20, 180.0, 360.0, 0, rainbowColors[i]);
+        }
+
+        // Draw a white circle at the center to cover the inner part of the rainbow
+        rl::drawCircle(forge_main::WINDOW_WIDTH / 2, forge_main::WINDOW_HEIGHT, 800 - 7 * 20, rl::RAYWHITE);
 }
