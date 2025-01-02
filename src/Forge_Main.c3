@@ -17,8 +17,8 @@ const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.4.9";
-const int MAX_CONSTRUCTS = 150;//100
-const int MAX_POWERUPS = 15;//6
+const int MAX_CONSTRUCTS = 200;//100
+const int MAX_POWERUPS = 12;//6
 
 
 Construct[MAX_CONSTRUCTS] constructs;
