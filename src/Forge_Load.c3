@@ -35,7 +35,7 @@ fn TexMap loadTexMap(){
 	//logo Page assets
 	 Texture2D raylibTex = rl::loadTexture("resources/images/raylib.png");
 	 Texture2D c3Tex = rl::loadTexture("resources/images/C3.png");
-	 Texture2D logoTex = rl::loadTexture("resources/images/hammerForge.png");
+	 Texture2D logoTex = rl::loadTexture("resources/images/HammerForge.png");
 	 Texture2D forgeTex = rl::loadTexture("resources/images/ForgeEngine.png");
 	//Title Page assets
 	 Texture2D titlePageTex = rl::loadTexture("resources/images/Title_Page.png");
