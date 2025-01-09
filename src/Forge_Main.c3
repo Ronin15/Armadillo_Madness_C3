@@ -127,19 +127,19 @@ fn int main(String[] args) {
 							frameCounter = 0;
 					}
 					
-					forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
+					//forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
 
 			case MAIN:
 
-				//rl::playMusicStream(mMap.get("titleMusic")!!);
-				//rl::updateMusicStream(mMap.get("titleMusic")!!);
+				rl::playMusicStream(mMap.get("titleMusic")!!);
+				rl::updateMusicStream(mMap.get("titleMusic")!!);
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("titlePage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
                 rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", ((WINDOW_WIDTH / 2) - 250), 340, 40, rl::BLACK);	
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
-				//forge_fx::drawLight(1050, 875, 300, rl::fade(rl::YELLOW, 0.2));
+				forge_fx::drawLight(1050, 875, 300, rl::fade(rl::YELLOW, 0.2));
 				forge_fx::fireEffect(deltaTime);
 				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);
 
