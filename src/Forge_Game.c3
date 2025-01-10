@@ -82,6 +82,16 @@ fn ConstructType getRandomType(){
    return (ConstructType)rand_in_range(min,max);
 }
 
+fn bool setDayOrNight(String check){
+   
+   if(check == "Day"){
+      return true;
+   }else if(check == "Night"){
+      return true;
+   }
+   
+   return false;
+}
 
 fn String getRandomConstructName (ConstructType type){
    static int powerUpCount;// to track and restrict power up items to global const value

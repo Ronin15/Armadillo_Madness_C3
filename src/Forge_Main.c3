@@ -61,6 +61,9 @@ fn int main(String[] args) {
 	float lifeSpace = (float)tMap.get("lifeCount")!!.width + 5.0;
 	//score 
 	int score;
+	//weather 
+	bool day = true;
+	float weatherTimer;
 
 	float demoCounter1;
 	float demoCounter2;
@@ -165,6 +168,7 @@ fn int main(String[] args) {
 				if(scrollMid <= - WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
 				if(scrollGround <= - WINDOW_WIDTH) {scrollGround = 0;}
+				day = forge_game::setDayOrNight("Day");
 
 		  		//update input and check events -----------------------------------------------------------------------------------
 		  		if (rl::isKeyPressed(rl::KEY_P)){
