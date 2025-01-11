@@ -63,7 +63,7 @@ fn int main(String[] args) {
 	int score;
 	//weather 
 	bool day = true;
-	bool shouldRain;
+	bool shouldRain = false;
 	float weatherTimer;
 
 	float demoCounter1;
@@ -97,7 +97,7 @@ fn int main(String[] args) {
 	io::printfn("Objects created");
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
+	GameState state = GAME;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -236,19 +236,28 @@ fn int main(String[] args) {
 								forge_game::drawAnitmatedConstruct(construct);
 						}
 
-			if (!shouldRain){shouldRain = forge_game::randChanceCheck();}
+			if (!shouldRain && weatherTimer <= 0.0){
+				shouldRain = forge_game::randChanceCheck();
 				
-				if (shouldRain && weatherTimer <= 0.0){
-					weatherTimer = 8000;
-				}
+			}
 
-				if (day && shouldRain && weatherTimer >= 0.0){
-					
-					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
-					weatherTimer -= 1;
-				}else{
-					shouldRain = false;
-				}
+			if (shouldRain && weatherTimer <= 0.0){
+				weatherTimer = 1000;	
+			}else{
+				
+				forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
+				weatherTimer -=1;
+				io::printfn("shoud Rain? -> %s Timer -> %s !",shouldRain,weatherTimer);
+			}
+
+			if(weatherTimer <= 0.0){
+				shouldRain = false;
+			}
+
+
+
+			
+			
 					
 
 			case PAUSE:
