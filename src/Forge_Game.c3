@@ -82,8 +82,20 @@ fn ConstructType getRandomType(){
    return (ConstructType)rand_in_range(min,max);
 }
 
+fn bool randChanceCheck(){
+   int chance;
+   chance = rand_in_range(0,100);
+
+   if (chance < 30){
+      return true;
+   }else{
+      return false;
+   }
+
+}
+
 fn bool setDayOrNight(String check){
-   
+   //refactor not now pointless
    if(check == "Day"){
       return true;
    }else if(check == "Night"){

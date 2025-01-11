@@ -63,6 +63,7 @@ fn int main(String[] args) {
 	int score;
 	//weather 
 	bool day = true;
+	bool shouldRain;
 	float weatherTimer;
 
 	float demoCounter1;
@@ -169,6 +170,8 @@ fn int main(String[] args) {
 				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
 				if(scrollGround <= - WINDOW_WIDTH) {scrollGround = 0;}
 				day = forge_game::setDayOrNight("Day");
+				
+				
 
 		  		//update input and check events -----------------------------------------------------------------------------------
 		  		if (rl::isKeyPressed(rl::KEY_P)){
@@ -233,7 +236,20 @@ fn int main(String[] args) {
 								forge_game::drawAnitmatedConstruct(construct);
 						}
 
+			if (!shouldRain){shouldRain = forge_game::randChanceCheck();}
+				
+				if (shouldRain && weatherTimer <= 0.0){
+					weatherTimer = 8000;
+				}
+
+				if (day && shouldRain && weatherTimer >= 0.0){
+					
 					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
+					weatherTimer -= 1;
+				}else{
+					shouldRain = false;
+				}
+					
 
 			case PAUSE:
 
