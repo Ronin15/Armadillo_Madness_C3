@@ -235,30 +235,24 @@ fn int main(String[] args) {
 					foreach ( &construct : constructs){
 								forge_game::drawAnitmatedConstruct(construct);
 						}
-
+			//weather
 			if (!shouldRain && weatherTimer <= 0.0){
 				shouldRain = forge_game::randChanceCheck();
-				
 			}
 
 			if (shouldRain && weatherTimer <= 0.0){
-				weatherTimer = 1000;	
-			}else{
+				weatherTimer = 4000;	
+			}	
+			if (shouldRain){	
 				
 				forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
 				weatherTimer -=1;
-				io::printfn("shoud Rain? -> %s Timer -> %s !",shouldRain,weatherTimer);
+				//io::printfn("shoud Rain? -> %s Timer -> %s !",shouldRain,weatherTimer);
 			}
-
 			if(weatherTimer <= 0.0){
 				shouldRain = false;
 			}
 
-
-
-			
-			
-					
 
 			case PAUSE:
 
@@ -292,9 +286,11 @@ fn int main(String[] args) {
 					foreach ( &construct : constructs){
 								forge_game::drawAnitmatedConstruct(construct);
 						}
-
+				//if raining it should be raining when paused.
+				if (shouldRain){	
 					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
-
+				}
+				
 				//drawing pause stuff here so objects don cover it up
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);

@@ -84,9 +84,9 @@ fn ConstructType getRandomType(){
 
 fn bool randChanceCheck(){
    int chance;
-   chance = rand_in_range(0,100);
+   chance = rand_in_range(0,1500);
 
-   if (chance = 50){
+   if (chance == 50){
       return true;
    }else{
       return false;
