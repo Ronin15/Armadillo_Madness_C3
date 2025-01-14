@@ -130,7 +130,7 @@ fn int main(String[] args) {
 							state = MAIN;
 							frameCounter = 0;
 					}
-					
+					//forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
 					//forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
 
 			case MAIN:
