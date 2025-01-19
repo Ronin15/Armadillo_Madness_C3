@@ -29,6 +29,7 @@ enum GameState {
 	LOGO,
 	MAIN,
 	GAME,
+	NIGHTLVL,
     PAUSE,
     GAME_WIN,
 	GAME_OVER,
@@ -63,6 +64,7 @@ fn int main(String[] args) {
 	int score;
 	//weather 
 	bool day = true;
+	bool night = false;
 	bool shouldRain = false;
 	float weatherTimer;
 
@@ -97,7 +99,7 @@ fn int main(String[] args) {
 	io::printfn("Objects created");
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
+	GameState state = NIGHTLVL;
 	rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -253,6 +255,100 @@ fn int main(String[] args) {
 				shouldRain = false;
 			}
 
+			case NIGHTLVL:
+				//misc game stuff
+				rl::hideCursor();
+				rl::clearBackground(rl::BLACK);
+				rl::playMusicStream(mMap.get("gameMusic")!!);
+	  			rl::updateMusicStream(mMap.get("gameMusic")!!);
+	  			scrollGround -= 5.0;
+				scrollMid -= 0.6;
+				scrollClouds -= 0.3;
+				if(scrollMid <= - WINDOW_WIDTH) {scrollMid = 0;}
+				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
+				if(scrollGround <= - WINDOW_WIDTH) {scrollGround = 0;}
+				night = forge_game::setDayOrNight("night");
+
+		  		//update input and check events -----------------------------------------------------------------------------------
+		  		if (rl::isKeyPressed(rl::KEY_P)){
+		  			state = PAUSE;
+		  			rl::playSound(sMap.get("pause")!!);
+		  		}
+
+					//check Collisions
+
+					foreach ( &construct : constructs){
+
+							if (forge_physics::checkCollision(&player,construct) && construct.isDead == false){
+								forge_physics::resolveCollision(&player,construct);
+							}
+
+							if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
+								if(forge_physics::checkCollision(&poopShot,construct)){
+									forge_physics::resolveCollision(&poopShot,construct);
+							}
+						}
+					}
+
+				//update game logic-------------------------------------------------------------------------------
+				forge_game::updateConstruct(&player,&sMap, deltaTime);
+				forge_game::updateConstruct(&poopShot,&sMap, deltaTime);
+
+					foreach ( &construct : constructs){
+								score += forge_game::updateConstruct(construct,&sMap, deltaTime);
+						}
+
+				//draw game elements------------------------------------------------------------------------------
+				rl::drawTexture(tMap.get("nightsky")!!, 0, 0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("nightmid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				forge_fx::forgeFXManager(&mMap,"starrySky", deltaTime);
+				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("nightground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("nightground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+				rl::drawFPS(15,160);
+				//moon
+				forge_fx::drawLight(1815, 105, 150, rl::fade(rl::YELLOW, 0.8));
+				forge_fx::drawLight(1815, 105, 350, rl::fade(rl::WHITE, 0.8));
+				//end moon
+
+				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
+				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);
+				rl::drawText("Lives", 16, 60, 35, rl::RAYWHITE);
+				//life tracking updating
+				if (&player.lives == &player.lives){
+					for (int i = 0; i < player.lives; i++){
+						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
+						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
+					}
+				}
+
+				forge_game::drawAnitmatedConstruct(&player);
+				forge_game::drawPoopShot(&poopShot,&player);
+
+					foreach ( &construct : constructs){
+								forge_game::drawAnitmatedConstruct(construct);
+						}
+			
+			forge_fx::forgeFXManager(&mMap,"shootingStars", deltaTime);
+			//weather
+			if (!shouldRain && weatherTimer <= 0.0){
+				shouldRain = forge_game::randChanceCheck();
+			}
+
+			if (shouldRain && weatherTimer <= 0.0){
+				weatherTimer = 3000;	
+			}	
+			if (shouldRain){	
+				
+				forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
+				weatherTimer -=1;
+				//io::printfn("shoud Rain? -> %s Timer -> %s !",shouldRain,weatherTimer);
+			}
+			if(weatherTimer <= 0.0){
+				shouldRain = false;
+			}
 
 			case PAUSE:
 

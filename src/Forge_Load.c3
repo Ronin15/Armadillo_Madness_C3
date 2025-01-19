@@ -42,6 +42,10 @@ fn TexMap loadTexMap(){
    Texture2D firePitTex = rl::loadTexture("resources/images/fire_pit.png");
    Texture2D armadilloStill = rl::loadTexture("resources/images/Armadillo_still.png");
    Texture2D catStillleft = rl::loadTexture("resources/images/cat_still_left.png");
+  //Night Level assets
+  Texture2D nightSky = rl::loadTexture("resources/images/night_sky.png");
+  Texture2D nightMid = rl::loadTexture("resources/images/night_mid.png");
+  Texture2D nightGround = rl::loadTexture("resources/images/night_ground.png");
    
    temp.set("sky",backGroundSky);
    temp.set("mid",backGroundMid);
@@ -70,7 +74,10 @@ fn TexMap loadTexMap(){
    temp.set("super",superTex);
    temp.set("firepit",firePitTex);
    temp.set("armadillo",armadilloStill);
-   temp.set("catLeft", catStillleft);
+   temp.set("catLeft",catStillleft);
+   temp.set("nightsky",nightSky);
+   temp.set("nightmid",nightMid);
+   temp.set("nightground",nightGround);
 
    return temp;
 }

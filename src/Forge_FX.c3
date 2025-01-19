@@ -475,7 +475,7 @@ fn void fireEffect(float deltaTime) {
 
 fn void createStars(Star []stars, int count) {
     for (int i = 0; i < count; i++) {
-        stars[i].pos ={ rand_in_range(0, rl::getScreenWidth()), rand_in_range(0, rl::getScreenHeight()) };
+        stars[i].pos ={ rand_in_range(0, rl::getScreenWidth()), rand_in_range(0, rl::getScreenHeight() - 345 ) };//345 offset for the stars and the mountains
         stars[i].opacity = (float)rand_in_range(50, 100) / 100.0;
         stars[i].vel = (float)rand_in_range(1, 3) / 10.0;
     }
