@@ -16,7 +16,7 @@ fn TexMap loadTexMap(){
    Texture2D clouds = rl::loadTexture("resources/images/close_clouds.png");
 	 Texture2D playerTex = rl::loadTexture("resources/images/armadillo_a2-sheet.png");
 	 Texture2D sunTex = rl::loadTexture("resources/images/Sun.png");
-	//obstacles // enemies // powerups
+	//obstacles // enemies
 	 Texture2D cactus1Tex = rl::loadTexture("resources/images/Cactus1.png");
 	 Texture2D bigBoulderTex = rl::loadTexture("resources/images/BoulderBig.png");
 	 Texture2D birdTex = rl::loadTexture("resources/images/bird-sheet.png");
@@ -28,10 +28,10 @@ fn TexMap loadTexMap(){
    Texture2D snakeTex = rl::loadTexture("resources/images/snake-sheet.png");
    Texture2D foxTex = rl::loadTexture("resources/images/fox-sheet.png");
    Texture2D treeTex = rl::loadTexture("resources/images/tree.png");
+  //powerups
    Texture2D gravBootsTex = rl::loadTexture("resources/images/grav_boots.png");
    Texture2D superTex = rl::loadTexture("resources/images/super_mushroom_sheet.png");
    Texture2D foodTex = rl::loadTexture("resources/images/food_sheet.png");
-   
 	//logo Page assets
 	 Texture2D raylibTex = rl::loadTexture("resources/images/raylib.png");
 	 Texture2D c3Tex = rl::loadTexture("resources/images/C3.png");
@@ -42,11 +42,13 @@ fn TexMap loadTexMap(){
    Texture2D firePitTex = rl::loadTexture("resources/images/fire_pit.png");
    Texture2D armadilloStill = rl::loadTexture("resources/images/Armadillo_still.png");
    Texture2D catStillleft = rl::loadTexture("resources/images/cat_still_left.png");
-  //Night Level assets
-  Texture2D nightSky = rl::loadTexture("resources/images/night_sky.png");
-  Texture2D nightMid = rl::loadTexture("resources/images/night_mid.png");
-  Texture2D nightGround = rl::loadTexture("resources/images/night_ground.png");
-   
+  //Night Level assets // enimies
+   Texture2D nightSky = rl::loadTexture("resources/images/night_sky.png");
+   Texture2D nightMid = rl::loadTexture("resources/images/night_mid.png");
+   Texture2D nightGround = rl::loadTexture("resources/images/night_ground.png");
+   Texture2D scorpionTex = rl::loadTexture("resources/images/scorpion-sheet.png");
+   Texture2D owlTex = rl::loadTexture("resources/images/owl-sheet.png");
+
    temp.set("sky",backGroundSky);
    temp.set("mid",backGroundMid);
    temp.set("ground",backGroundGround);
@@ -78,6 +80,8 @@ fn TexMap loadTexMap(){
    temp.set("nightsky",nightSky);
    temp.set("nightmid",nightMid);
    temp.set("nightground",nightGround);
+   temp.set("scorpion",scorpionTex);
+   temp.set("owl",owlTex);
 
    return temp;
 }

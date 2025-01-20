@@ -19,6 +19,7 @@ const int MAX_LIVES = 6;
 const float OBS_SOFFSET = 30.0;
 const float ANT_SOFFSET = 60.0;
 const float FOX_SOFFSET = 80.0;
+const float SCORPION_SOFFSET = 40.0;
 const float POWERUP_SOFFSET = 35.0;
 
 //GAME Structures Types ---------------------------------------------------------
@@ -109,8 +110,8 @@ fn String getRandomConstructName (ConstructType type){
    static int powerUpCount;// to track and restrict power up items to global const value
    static int powerUpCountDemo;
 
-   String[*] groundTypes = {"ant","turtle","snake","fox"};
-   String[*] flyingTypes = {"bird","beatle"};
+   String[*] groundTypes = {"ant","turtle","snake","fox","scorpion"};
+   String[*] flyingTypes = {"bird","beatle","owl"};
    String[*] obsticlesTypes = {"cactus","boulder","tree"};
    String[*] powerUps = {"grav","food","super"};
 
@@ -327,7 +328,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
             //powerup
             if (c.fHit){c.powerUpTimer += 400; poopPenatrate = true; c.fHit = false;} 
             if (c.gHit){c.powerUpTimer += 400; c.gravity = 400.0; c.gHit = false;}
-
+            //movement
             if (rl::isKeyDown(rl::KEY_LEFT)) {
                if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(sMap.get("moving")!!); }
                c.pos.x -= c.acceleration * deltaTime;
@@ -399,7 +400,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
             if (c.name == "turtle") {c.pos.x -= c.friction * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
             if (c.name == "fox") {c.pos.x -= (c.friction + FOX_SOFFSET)  * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
             if (c.name == "snake") {c.pos.x -= c.friction * deltaTime;c.groundLevel = groundLevel + 5;} 
-            
+            if (c.name == "scorpion") {c.pos.x -= (c.friction + SCORPION_SOFFSET)  * deltaTime;}
+
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
 
