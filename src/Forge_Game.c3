@@ -2,7 +2,7 @@ module forge_game;
 import forge_main;
 import forge_load;
 import raylib5::rl;
-import std::io; 
+import std::io;
 import std::math;
 
 //GAME globals and consts -------------------------------------------------
@@ -33,7 +33,7 @@ const float POWERUP_SOFFSET = 35.0;
 }
 
  struct Construct {
-    
+
     ConstructType type;
     Texture2D texture;
     Vector2 pos;
@@ -49,8 +49,8 @@ const float POWERUP_SOFFSET = 35.0;
     float frameLength;
     float invulnTimer;
     float powerUpTimer;
-    int currentFrame; 
-    int maxFrames; 
+    int currentFrame;
+    int maxFrames;
     int lives;
     bool isGrounded;
     bool texFlip;
@@ -102,13 +102,13 @@ fn bool setDayOrNight(String check){
    }else if(check == "Night"){
       return true;
    }
-   
+
    return false;
 }
 
 fn String getRandomConstructName (ConstructType type){
    static int powerUpCount;// to track and restrict power up items to global const value
-   static int powerUpCountDemo;
+   //static int powerUpCountDemo;
 
    String[*] groundTypes = {"ant","turtle","snake","fox","scorpion"};
    String[*] flyingTypes = {"bird","beatle","owl"};
@@ -118,20 +118,20 @@ fn String getRandomConstructName (ConstructType type){
    int gLength = groundTypes.len - 1;
    int fLength = flyingTypes.len - 1;
    int oLength = obsticlesTypes.len - 1;
-   int pLength = powerUps.len -1; 
+   int pLength = powerUps.len -1;
 
       if (type == ConstructType.ENEMY_GROUND){
       int index = rand_in_range(0, gLength);
      // io::printfn("name -> %s  type -> %s  texture -> %s !",groundTypes[index],type);
       return groundTypes[index];
       }
-      
+
       if (type == ConstructType.ENEMEY_FLY){
       int index = rand_in_range(0, fLength);
       //io::printfn("name -> %s  type -> %s  texture -> %s !",flyingTypes[index],type);
       return flyingTypes[index];
       }
-      
+
       if (type == ConstructType.OBS){
       int index = rand_in_range(0, oLength);
       //io::printfn("name -> %s  type -> %s  texture -> %s !",obsticlesTypes[index],type);
@@ -141,7 +141,7 @@ fn String getRandomConstructName (ConstructType type){
       if (type == ConstructType.POWER_UP && powerUpCount < forge_main::MAX_POWERUPS) {
          int index = rand_in_range(0, pLength);
          powerUpCount += 1;
-               
+
          //io::printfn("name -> %s  type -> %s  texture -> %s !",obsticlesTypes[index],type);
          return powerUps[index];
       }
@@ -159,21 +159,21 @@ fn Construct forgeCronstructProjectile(TexMap *tMap) {
       c.name = "poop";
       c.pos = {0,0};
       c.texture = tMap.get(c.name)!!;
-      //c.sound = sMap.get(c.name)!!; 
+      //c.sound = sMap.get(c.name)!!;
       c.lives = 1;
       c.maxFrames = 1;
       c.gravity = GRAVITY;
       c.jumpVelocity = MOVE_VELOCITY;
-      c.groundLevel = groundLevel; 
+      c.groundLevel = groundLevel;
       c.acceleration = ACCELERATION;
       c.friction = FRICTION;
-      c.frameLength = 0.1;                
+      c.frameLength = 0.1;
       c.currentFrame = 1;
       c.texFlip = false;
       c.isDead = false;
       c.isProjectileActive = false;
       c.expired = true;
-      c.invlunerable = false; 
+      c.invlunerable = false;
       c.hHit = false;
       c.vHit = false;
       io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
@@ -193,10 +193,10 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
       c.maxFrames = 2;
       c.gravity = GRAVITY;
       c.jumpVelocity = MOVE_VELOCITY;
-      c.groundLevel = groundLevel; 
+      c.groundLevel = groundLevel;
       c.acceleration = ACCELERATION;
       c.friction = FRICTION;
-      c.frameLength = 0.1;                
+      c.frameLength = 0.1;
       c.currentFrame = 1;
       c.texFlip = false;
       c.isDead = false;
@@ -218,7 +218,7 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
 
 //creates game objects
 fn Construct forgeConstruct(TexMap *tMap) {
-    
+
    Construct c;
    c.name = "default"; // this is for generating object spawn limits based on random name and type counts. For powerups only at the moment.
    while (c.name == "default"){
@@ -231,15 +231,15 @@ fn Construct forgeConstruct(TexMap *tMap) {
     c.lives = 2;
     if (c.type == OBS ) {
         c.maxFrames = 1;
-    }else{ 
+    }else{
         c.maxFrames = 2;
-    } 
+    }
     c.gravity = GRAVITY;
     c.jumpVelocity = MOVE_VELOCITY;
-    c.groundLevel = groundLevel; 
+    c.groundLevel = groundLevel;
     c.acceleration = ACCELERATION;
     c.friction = FRICTION;
-    c.frameLength = 0.1;                
+    c.frameLength = 0.1;
     c.currentFrame = 1;
     c.texFlip = false;
     c.isDead = false;
@@ -252,7 +252,7 @@ fn Construct forgeConstruct(TexMap *tMap) {
 }
 
 //update game contructs
-fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) { 
+fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
        int score = 0;
       //all construct update info-------------------------------------------------
       //Frame updates
@@ -266,15 +266,15 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
              c.currentFrame = 0;
          }
       }
-      
+
       //stationairy ground movement
       if (c.pos.y >= c.groundLevel && !c.isDead){
                c.isGrounded = true;
                c.pos.y = c.groundLevel;
                c.vel.y = 0.0;
-               c.pos.x -= c.friction * deltaTime; 
+               c.pos.x -= c.friction * deltaTime;
             }
-      
+
       //swtich on construct type for specific type updates.-----------------------
       switch (c.type)
       {
@@ -282,7 +282,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
             //io::printfn("invuln Timer: %f", c.invulnTimer);
             //io::printfn("power Up Timer: %f", c.powerUpTimer);
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
-            
+
             if(c.invulnTimer >= 0.0){
                c.invulnTimer -= 1.0;
             }else{
@@ -291,27 +291,27 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
             if(c.powerUpTimer >= 0.0){
                c.powerUpTimer -= 1.0;
             }else{
-            
+
               if (c.gravity == 400.0) {c.gravity = GRAVITY;}
               if (c.invulnTimer <= 0.0) c.invlunerable = false;
               if (c.acceleration == 500){c.acceleration = ACCELERATION;}
               if (poopPenatrate){poopPenatrate = false;}
             }
-            
+
             if(c.vHit){
                   c.vHit = false;
                   rl::playSound(sMap.get("boing")!!);
                }
-           
+
             if (c.bHit && c.lives < MAX_LIVES){ // beatle hit
-                  
-                  c.bHit = false; 
+
+                  c.bHit = false;
                   rl::playSound(sMap.get("eatBug")!!);
                   c.lives += 1;
                }else{
                   c.bHit = false;
                }
-            
+
             //powerup
             if (c.sHit){c.powerUpTimer += 400; c.invlunerable = true; c.acceleration = 500; c.sHit = false;}
 
@@ -322,11 +322,11 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
                   c.lives -= 1;
                   c.invulnTimer = 600.0;
             }else{
-                  c.hHit = false;   
+                  c.hHit = false;
             }
 
             //powerup
-            if (c.fHit){c.powerUpTimer += 400; poopPenatrate = true; c.fHit = false;} 
+            if (c.fHit){c.powerUpTimer += 400; poopPenatrate = true; c.fHit = false;}
             if (c.gHit){c.powerUpTimer += 400; c.gravity = 400.0; c.gHit = false;}
             //movement
             if (rl::isKeyDown(rl::KEY_LEFT)) {
@@ -342,46 +342,46 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
                c.vel.x = 0.0;
             }
 
-            c.vel.y += c.gravity * deltaTime;  
+            c.vel.y += c.gravity * deltaTime;
 
             if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
 
-            if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) { 
+            if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) {
                if(rl::isKeyPressed(rl::KEY_SPACE)) {rl::playSound(sMap.get("jump")!!);}
-               c.vel.y = c.jumpVelocity; 
-               c.isGrounded = false; 
+               c.vel.y = c.jumpVelocity;
+               c.isGrounded = false;
             }
                c.pos.y += c.vel.y * deltaTime;
 
          break;
-         
-         case PROJECTILE_POOP:           
+
+         case PROJECTILE_POOP:
             //io::printfn("POOP Shot :) update reached");
             // c.isProjectileActive = false;
             if(c.hHit && !poopPenatrate){
                c.hHit = false;
                rl::playSound(sMap.get("poopHit")!!);
-               c.expired = true; 
+               c.expired = true;
                c.isProjectileActive = false;
             }
-             if (c.hHit && poopPenatrate){  
+             if (c.hHit && poopPenatrate){
                rl::playSound(sMap.get("poopHit")!!);
                c.expired = false;
                c.isProjectileActive = true;
-               c.hHit = false; 
+               c.hHit = false;
              }
 
             if(rl::isKeyPressed(rl::KEY_DOWN)){c.isProjectileActive = true; c.expired = false;rl::playSound(sMap.get("poop")!!);}
                c.groundLevel = groundLevel - c.texture.height + 80;
 
             if (c.pos.x > 1900) {c.expired = true; c.isProjectileActive = false;}
-               c.pos.x += (c.acceleration * 3.5) * deltaTime; 
-            
+               c.pos.x += (c.acceleration * 3.5) * deltaTime;
+
          break;
 
-         case ENEMY_GROUND:           
+         case ENEMY_GROUND:
           // io::printfn("ENEMY_GROUND update reached");
-            
+
             if((c.hHit || c.vHit) && c.lives <= 0){
 
                   if(c.hHit){
@@ -392,30 +392,30 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
 
                   c.isDead = true;
                   rl::playSound(sMap.get("enemyDie")!!);
-                  
+
                }
-           
+
             //optimize later to switch
             if (c.name == "ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * deltaTime;c.groundLevel = groundLevel + 5;}
             if (c.name == "turtle") {c.pos.x -= c.friction * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
             if (c.name == "fox") {c.pos.x -= (c.friction + FOX_SOFFSET)  * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
-            if (c.name == "snake") {c.pos.x -= c.friction * deltaTime;c.groundLevel = groundLevel + 5;} 
+            if (c.name == "snake") {c.pos.x -= c.friction * deltaTime;c.groundLevel = groundLevel + 5;}
             if (c.name == "scorpion") {c.pos.x -= (c.friction + SCORPION_SOFFSET)  * deltaTime;}
 
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
 
             c.pos.y += c.vel.y * deltaTime;
-            c.vel.y += c.gravity * deltaTime; 
-         
+            c.vel.y += c.gravity * deltaTime;
+
          break;
-         
+
          case ENEMEY_FLY:
             //io::printfn("ENEMEY_FLY update reached");
-            //c.pos.y += c.acceleration * deltaTime;  
+            //c.pos.y += c.acceleration * deltaTime;
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
             if((c.hHit || c.vHit) && c.lives <= 0){
-                  
+
                   if(c.hHit){
                      score += 200;
                   }else{
@@ -425,8 +425,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
                   c.isDead = true;
                   c.isGrounded = true;
                   rl::playSound(sMap.get("enemyDie")!!);
-                  
-                  
+
+
                }
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
@@ -436,7 +436,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
             if (!c.isDead){
             c.pos.y += AMPLITUDE * math::sin(FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
             }else{
-               c.pos.y += c.vel.y * deltaTime; 
+               c.pos.y += c.vel.y * deltaTime;
                c.vel.y += c.gravity * deltaTime;
             }
          break;
@@ -447,14 +447,14 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
          if (c.name == "cactus") {c.groundLevel = groundLevel - 106;}
          if (c.name == "tree") {c.groundLevel = groundLevel - 106;}
          if (c.name == "boulder"){c.groundLevel = groundLevel - 55 ;}
-          
-          
+
+
          if((c.hHit)){
-                
+
                  switch (c.name){
-                     
+
                      case "cactus":
-                        
+
                         rl::playSound(sMap.get("cactusImpact")!!);
 
                      break;
@@ -462,7 +462,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
                      case "tree":
 
                         rl::playSound(sMap.get("cactusImpact")!!);
-                     
+
                      break;
 
                      case "boulder":
@@ -478,7 +478,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
 
           c.vel.y += c.gravity * deltaTime;
           c.pos.y += c.vel.y * deltaTime;
-          c.pos.x -= (c.friction + OBS_SOFFSET) * deltaTime; 
+          c.pos.x -= (c.friction + OBS_SOFFSET) * deltaTime;
 
          break;
 
@@ -488,11 +488,11 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
 
                score += 100;
                c.isDead = true;
-                
+
                  switch (c.name){
-                     
+
                      case "grav":
-                        
+
                         rl::playSound(sMap.get("gravBoots")!!);
 
                      break;
@@ -500,7 +500,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
                      case "food":
 
                         rl::playSound(sMap.get("eatBug")!!);
-                     
+
                      break;
 
                      case "super":
@@ -515,7 +515,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
           if(c.hHit){c.hHit = false;}
           c.vel.y += c.gravity * deltaTime;
           c.pos.y += c.vel.y * deltaTime;
-          c.pos.x -= (c.friction + POWERUP_SOFFSET) * deltaTime; 
+          c.pos.x -= (c.friction + POWERUP_SOFFSET) * deltaTime;
 
          break;
       }
@@ -542,7 +542,7 @@ fn void drawPoopShot(Construct* c, Construct* b, float rotation = 90.0, float sc
 fn void drawConstruct(Construct* c, float rotation = 0.0, float scale = 2.0){ //Construct *b = {}
 	scale = scale;
    rotation = rotation;
-  
+
 	rl::drawTextureEx(c.texture, c.pos, rotation, scale, rl::WHITE);
 }
 
@@ -574,12 +574,12 @@ Rectangle destRec = {
    destRec.x = c.pos.x,
    destRec.y = c.pos.y,
    destRec.width = (float)c.texture.width * scale / c.maxFrames,
-   destRec.height = (float)c.texture.height * scale, 
+   destRec.height = (float)c.texture.height * scale,
    };
 
    if(c.isDead) {c.texFlip = true; rotation = 180.0;}
    if (c.texFlip) {srcRec.width =- srcRec.width;}
-   
-   
+
+
    rl::drawTexturePro(c.texture, srcRec, destRec, origin, rotation, rl::WHITE);
 }
