@@ -95,17 +95,6 @@ fn bool randChanceCheck(){
 
 }
 
-fn bool setDayOrNight(String check){
-   //refactor not now pointless
-   if(check == "Day"){
-      return true;
-   }else if(check == "Night"){
-      return true;
-   }
-
-   return false;
-}
-
 fn String getRandomConstructName (ConstructType type){
    static int powerUpCount;// to track and restrict power up items to global const value
    //static int powerUpCountDemo;

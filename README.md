@@ -8,6 +8,8 @@ OS: Windows 10/11
 
     Linux
 
+    Ubuntu 20.04 LTS
+
 GRAPHICS: any video device supports Open GL 3.0
 
     CPU:1GHz Dual core or better
@@ -37,7 +39,7 @@ Notes:
     The Title page song with the Harmonica is her playing her Harmonica.
     The Art is either from my 6-year-old or my wife's concept art.
     Any support is extremely appreciated.
-    Generative AI used for game summary, itch.io backdrop, Game Studio, and Engine Logos. Game Title page, back drop picture only, from Ansimuz, all other assets created in Aseprite by Hammer Forged Games.
+    Generative AI used for game summary, itch.io backdrop/game credits, Game Studio, Engine Logos and game cover art. Game title page, back drop picture only, from icth.io Ansimuz. All other assets created in Aseprite by Hammer Forged Games.
     Music from Chosic.com. Credit for artists is in game on credits screen.
 
 GAME RELEASE DATE : Q1 2025 or maybe earlier.

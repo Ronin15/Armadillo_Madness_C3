@@ -16,7 +16,7 @@ const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const String GAME_NAME = "Armadillo Madness 0.4.9";
+const String GAME_NAME = "Armadillo Madness 0.5.0";
 const int MAX_CONSTRUCTS = 200;//100
 const int MAX_POWERUPS = 12;//6
 
@@ -28,6 +28,7 @@ Construct[MAX_CONSTRUCTS] demoConstructs;
 enum GameState {
 	LOGO,
 	MAIN,
+	OPTIONS,
 	GAME,
 	NIGHTLVL,
     PAUSE,
@@ -60,9 +61,9 @@ fn int main(String[] args) {
 	float scrollMid = 0.0;
 	float scrollClouds = 0.0;
 	float lifeSpace = (float)tMap.get("lifeCount")!!.width + 5.0;
-	//score 
+	//score
 	int score;
-	//weather 
+	//weather
 	bool day = true;
 	bool night = false;
 	bool shouldRain = false;
@@ -76,11 +77,11 @@ fn int main(String[] args) {
 	float frameCounter;
 	float lastTime = (float)rl::getTime();
 
-	//window Icon
+	//windows window Icon
 	Image windowIcon = rl::loadImage("resources/images/ForgeEngine.png");
 	rl::setWindowIcon(windowIcon);
 
-	//volume manager
+	//volume manager - need to addtional volume control in optuions menu.
 	rl::setMasterVolume(0.6);
 
 	//game objects init
@@ -99,7 +100,7 @@ fn int main(String[] args) {
 	io::printfn("Objects created");
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
+	GameState state = NIGHTLVL;
 	rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -119,6 +120,7 @@ fn int main(String[] args) {
 		switch (state) {
 
         	case LOGO:
+                rl::hideCursor();
 				rl::clearBackground({31, 32, 34, 255});//Forge_Gray
 				rl::drawTexture(tMap.get("logo")!!, 800, 420, rl::WHITE);
 				rl::drawText("Hammer Forged Games", 580, 340, 60, rl::ORANGE);
@@ -128,12 +130,11 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
 				rl::drawText("*{}==[> Forge_Engine <]=={}*", 790, 790, 20, rl::LIGHTGRAY);
 					frameCounter += 1;
-					if (frameCounter > 600) {
+					if (frameCounter > 500) {
 							state = MAIN;
 							frameCounter = 0;
 					}
-					//forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
-					//forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
+				//	forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
 
 			case MAIN:
 
@@ -142,10 +143,9 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("titlePage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
-                rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", ((WINDOW_WIDTH / 2) - 250), 340, 40, rl::BLACK);	
+                rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", ((WINDOW_WIDTH / 2) - 250), 340, 40, rl::BLACK);
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
-				//forge_fx::drawLight(1050, 875, 300, rl::fade(rl::YELLOW, 0.2));
 				forge_fx::fireEffect(deltaTime);
 				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);
 
@@ -154,12 +154,14 @@ fn int main(String[] args) {
     				}
 
 					frameCounter += 1;
-					if (frameCounter > 800) { //900 for testing
+					if (frameCounter > 800) { //800 for testing
 							state = DEMO;
 							frameCounter = 0;
 					}
-	
+
 			case GAME:
+			     night = false;
+			     day = true;
 				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
@@ -171,9 +173,6 @@ fn int main(String[] args) {
 				if(scrollMid <= - WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
 				if(scrollGround <= - WINDOW_WIDTH) {scrollGround = 0;}
-				day = forge_game::setDayOrNight("Day");
-				
-				
 
 		  		//update input and check events -----------------------------------------------------------------------------------
 		  		if (rl::isKeyPressed(rl::KEY_P)){
@@ -243,10 +242,10 @@ fn int main(String[] args) {
 			}
 
 			if (shouldRain && weatherTimer <= 0.0){
-				weatherTimer = 3000;	
-			}	
-			if (shouldRain){	
-				
+				weatherTimer = 3000;
+			}
+			if (shouldRain){
+
 				forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
 				weatherTimer -=1;
 				//io::printfn("shoud Rain? -> %s Timer -> %s !",shouldRain,weatherTimer);
@@ -256,6 +255,8 @@ fn int main(String[] args) {
 			}
 
 			case NIGHTLVL:
+			     night = true;
+				 day = false;
 				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
@@ -267,7 +268,6 @@ fn int main(String[] args) {
 				if(scrollMid <= - WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
 				if(scrollGround <= - WINDOW_WIDTH) {scrollGround = 0;}
-				night = forge_game::setDayOrNight("night");
 
 		  		//update input and check events -----------------------------------------------------------------------------------
 		  		if (rl::isKeyPressed(rl::KEY_P)){
@@ -330,7 +330,7 @@ fn int main(String[] args) {
 					foreach ( &construct : constructs){
 								forge_game::drawAnitmatedConstruct(construct);
 						}
-			
+
 			forge_fx::forgeFXManager(&mMap,"shootingStars", deltaTime);
 			//weather
 			if (!shouldRain && weatherTimer <= 0.0){
@@ -338,10 +338,10 @@ fn int main(String[] args) {
 			}
 
 			if (shouldRain && weatherTimer <= 0.0){
-				weatherTimer = 3000;	
-			}	
-			if (shouldRain){	
-				
+				weatherTimer = 3000;
+			}
+			if (shouldRain){
+
 				forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
 				weatherTimer -=1;
 				//io::printfn("shoud Rain? -> %s Timer -> %s !",shouldRain,weatherTimer);
@@ -353,59 +353,102 @@ fn int main(String[] args) {
 			case PAUSE:
 
 				if (rl::isKeyPressed(rl::KEY_P)){
-					state = GAME;
+					if (day){state = GAME;}
+					if (night){state = NIGHTLVL;}
 					rl::playSound(sMap.get("unpause")!!);
 				}
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
-					state = MAIN;
-
+				    state = MAIN;
 					//clean all assetes needed here to fully reset
 				}
+				if (day){
+				        rl::hideCursor();
+        				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+        				forge_fx::drawLight(1815, 105, 300, rl::fade(rl::YELLOW, 0.7));
+        				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
+        				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
+        				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 
-				rl::clearBackground(rl::BLACK);
-				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				forge_fx::drawLight(1815, 105, 300, rl::fade(rl::YELLOW, 0.7));
-				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
-				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
-				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 
+        				forge_game::drawAnitmatedConstruct(&player);
+        				forge_game::drawPoopShot(&poopShot,&player);
 
-				forge_game::drawAnitmatedConstruct(&player);
-				forge_game::drawPoopShot(&poopShot,&player);
+       					foreach ( &construct : constructs){
+        								forge_game::drawAnitmatedConstruct(construct);
+      						}
+        				//if raining it should be raining when paused.
+        				if (shouldRain){
+       					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
+        				}
 
-					foreach ( &construct : constructs){
-								forge_game::drawAnitmatedConstruct(construct);
-						}
-				//if raining it should be raining when paused.
-				if (shouldRain){	
-					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
-				}
-				
-				//drawing pause stuff here so objects don cover it up
-				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
-				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);
-				rl::drawText("Lives", 16, 60, 35, rl::RAYWHITE);
-				if (&player.lives == &player.lives){
-					for (int i = 0; i < player.lives; i++){
-						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
-						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
-					}
-				}
-				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
-				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
+        				//drawing pause stuff here so objects dont cover it up
+        				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
+        				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);
+        				rl::drawText("Lives", 16, 60, 35, rl::RAYWHITE);
+        				if (&player.lives == &player.lives){
+       					for (int i = 0; i < player.lives; i++){
+      						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
+      						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
+       					    }
+        				}
+        				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
+        				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
+                    }
+                if (night){
+                        rl::hideCursor();
+        				//draw game elements------------------------------------------------------------------------------
+        				rl::drawTexture(tMap.get("nightsky")!!, 0, 0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("nightmid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+        				forge_fx::forgeFXManager(&mMap,"starrySky", deltaTime);
+        				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("nightground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("nightground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+        				//moon
+        				forge_fx::drawLight(1815, 105, 150, rl::fade(rl::YELLOW, 0.8));
+        				forge_fx::drawLight(1815, 105, 350, rl::fade(rl::WHITE, 0.8));
+        				//end moon
 
+         			    forge_game::drawAnitmatedConstruct(&player);
+        				forge_game::drawPoopShot(&poopShot,&player);
+
+       					foreach ( &construct : constructs){
+        								forge_game::drawAnitmatedConstruct(construct);
+      						}
+        				//if raining it should be raining when paused.
+        				if (shouldRain){
+       					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
+        				}
+
+        				//drawing pause stuff here so objects dont cover it up
+        				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
+        				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);
+        				rl::drawText("Lives", 16, 60, 35, rl::RAYWHITE);
+        				if (&player.lives == &player.lives){
+       					for (int i = 0; i < player.lives; i++){
+      						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
+      						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
+       					    }
+        				}
+        				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
+        				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
+                }
 
 			case GAME_WIN:
 				io::printfn("Game_WIN State");
 
 			case GAME_OVER:
 				io::printfn("Game_Over State");
+
+			case OPTIONS:
+                io::printfn("Options State");
 
 			case DEMO:
 
