@@ -12,7 +12,7 @@ bool poopPenatrate = false;
 const float MOVE_VELOCITY = -600.0;
 const float SKY_LEVEL = 0.0;
 const float ACCELERATION = 250.0;
-const float FRICTION = 60.0;
+const float FRICTION = 40.0;
 const float AMPLITUDE = 300.0;//300
 const float FREQUENCY = 0.05;//0.05
 const int MAX_LIVES = 6;
@@ -85,7 +85,7 @@ fn ConstructType getRandomType(){
 
 fn bool randChanceCheck(){
    int chance;
-   chance = rand_in_range(0,500);
+   chance = rand_in_range(0,5000);
 
    if (chance == 500){
       return true;
@@ -271,7 +271,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
             //io::printfn("invuln Timer: %f", c.invulnTimer);
             //io::printfn("power Up Timer: %f", c.powerUpTimer);
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
-
+            if (raining){c.acceleration = 125;}
+            if (!raining){c.acceleration = ACCELERATION;}
+            
             if(c.invulnTimer >= 0.0){
                c.invulnTimer -= 1.0;
             }else{
@@ -320,14 +322,12 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
             //movement
             if (rl::isKeyDown(rl::KEY_LEFT)) {
                if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(sMap.get("moving")!!); }
-               if(raining){  c.acceleration *= 0.99;}else{c.acceleration = ACCELERATION;}
-               c.pos.x -= c.acceleration * deltaTime;
-               c.texFlip = true;
+                c.pos.x -= c.acceleration * deltaTime;
+                c.texFlip = true;
             } else if (rl::isKeyDown(rl::KEY_RIGHT)){
                if (rl::isKeyPressed(rl::KEY_RIGHT)) {rl::playSound(sMap.get("moving")!!); }
-                if(raining){ c.acceleration *= 0.99;}else{c.acceleration = ACCELERATION;}
-               c.pos.x += c.acceleration * deltaTime;
-               c.texFlip = false;
+                c.pos.x += c.acceleration * deltaTime;
+                c.texFlip = false;
 
             } else {
                c.vel.x = 0.0;
