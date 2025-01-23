@@ -85,7 +85,7 @@ fn ConstructType getRandomType(){
 
 fn bool randChanceCheck(){
    int chance;
-   chance = rand_in_range(0,3000);
+   chance = rand_in_range(0,500);
 
    if (chance == 500){
       return true;
@@ -241,7 +241,7 @@ fn Construct forgeConstruct(TexMap *tMap) {
 }
 
 //update game contructs
-fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
+fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTime) {
        int score = 0;
       //all construct update info-------------------------------------------------
       //Frame updates
@@ -320,15 +320,18 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, float deltaTime) {
             //movement
             if (rl::isKeyDown(rl::KEY_LEFT)) {
                if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(sMap.get("moving")!!); }
+               if(raining){  c.acceleration *= 0.99;}else{c.acceleration = ACCELERATION;}
                c.pos.x -= c.acceleration * deltaTime;
                c.texFlip = true;
             } else if (rl::isKeyDown(rl::KEY_RIGHT)){
                if (rl::isKeyPressed(rl::KEY_RIGHT)) {rl::playSound(sMap.get("moving")!!); }
+                if(raining){ c.acceleration *= 0.99;}else{c.acceleration = ACCELERATION;}
                c.pos.x += c.acceleration * deltaTime;
                c.texFlip = false;
 
             } else {
                c.vel.x = 0.0;
+
             }
 
             c.vel.y += c.gravity * deltaTime;

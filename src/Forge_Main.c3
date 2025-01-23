@@ -66,7 +66,7 @@ fn int main(String[] args) {
 	//weather
 	bool day = true;
 	bool night = false;
-	bool shouldRain = false;
+	bool raining = false;
 	float weatherTimer;
 
 	float demoCounter1;
@@ -196,11 +196,11 @@ fn int main(String[] args) {
 					}
 
 				//update game logic-------------------------------------------------------------------------------
-				forge_game::updateConstruct(&player,&sMap, deltaTime);
-				forge_game::updateConstruct(&poopShot,&sMap, deltaTime);
+				forge_game::updateConstruct(&player,&sMap, raining, deltaTime);
+				forge_game::updateConstruct(&poopShot,&sMap, raining, deltaTime);
 
 					foreach ( &construct : constructs){
-								score += forge_game::updateConstruct(construct,&sMap, deltaTime);
+								score += forge_game::updateConstruct(construct,&sMap, raining, deltaTime);
 						}
 
 				//draw game elements------------------------------------------------------------------------------
@@ -237,21 +237,21 @@ fn int main(String[] args) {
 								forge_game::drawAnitmatedConstruct(construct);
 						}
 			//weather
-			if (!shouldRain && weatherTimer <= 0.0){
-				shouldRain = forge_game::randChanceCheck();
+			if (!raining && weatherTimer <= 0.0){
+				raining = forge_game::randChanceCheck();
 			}
 
-			if (shouldRain && weatherTimer <= 0.0){
+			if (raining && weatherTimer <= 0.0){
 				weatherTimer = 3000;
 			}
-			if (shouldRain){
+			if (raining){
 
 				forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
 				weatherTimer -=1;
-				//io::printfn("shoud Rain? -> %s Timer -> %s !",shouldRain,weatherTimer);
+				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer);
 			}
 			if(weatherTimer <= 0.0){
-				shouldRain = false;
+				raining = false;
 			}
 
 			case NIGHTLVL:
@@ -291,11 +291,11 @@ fn int main(String[] args) {
 					}
 
 				//update game logic-------------------------------------------------------------------------------
-				forge_game::updateConstruct(&player,&sMap, deltaTime);
-				forge_game::updateConstruct(&poopShot,&sMap, deltaTime);
+				forge_game::updateConstruct(&player,&sMap, raining, deltaTime);
+				forge_game::updateConstruct(&poopShot,&sMap, raining, deltaTime);
 
 					foreach ( &construct : constructs){
-								score += forge_game::updateConstruct(construct,&sMap, deltaTime);
+								score += forge_game::updateConstruct(construct,&sMap, raining, deltaTime);
 						}
 
 				//draw game elements------------------------------------------------------------------------------
@@ -333,21 +333,21 @@ fn int main(String[] args) {
 
 			forge_fx::forgeFXManager(&mMap,"shootingStars", deltaTime);
 			//weather
-			if (!shouldRain && weatherTimer <= 0.0){
-				shouldRain = forge_game::randChanceCheck();
+			if (!raining && weatherTimer <= 0.0){
+				raining = forge_game::randChanceCheck();
 			}
 
-			if (shouldRain && weatherTimer <= 0.0){
+			if (raining && weatherTimer <= 0.0){
 				weatherTimer = 3000;
 			}
-			if (shouldRain){
+			if (raining){
 
 				forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
 				weatherTimer -=1;
-				//io::printfn("shoud Rain? -> %s Timer -> %s !",shouldRain,weatherTimer);
+				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer);
 			}
 			if(weatherTimer <= 0.0){
-				shouldRain = false;
+				raining = false;
 			}
 
 			case PAUSE:
@@ -383,7 +383,7 @@ fn int main(String[] args) {
         								forge_game::drawAnitmatedConstruct(construct);
       						}
         				//if raining it should be raining when paused.
-        				if (shouldRain){
+        				if (raining){
        					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
         				}
 
@@ -423,7 +423,7 @@ fn int main(String[] args) {
         								forge_game::drawAnitmatedConstruct(construct);
       						}
         				//if raining it should be raining when paused.
-        				if (shouldRain){
+        				if (raining){
        					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
         				}
 
@@ -507,7 +507,7 @@ fn int main(String[] args) {
 				//forge_game::updateConstruct(&poopShot,&sMap);
 
 				foreach ( &demoConstruct : demoConstructs){
-							forge_game::updateConstruct(demoConstruct,&sMap, deltaTime);
+							forge_game::updateConstruct(demoConstruct,&sMap, raining, deltaTime);
 						}
 
 
