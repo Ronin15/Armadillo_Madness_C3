@@ -163,7 +163,7 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
 //Draw Light --------------------------------------------
 fn void drawLight(int x, int y, float radius, Color color) { 
    
-    rl::beginBlendMode((int)rl::BlendMode.ADDITIVE);
+    rl::beginBlendMode(rl::BlendMode.ADDITIVE.ordinal);
     defer rl::endBlendMode();
     rl::drawCircleGradient(x, y, radius, color, rl::BLANK); 
 }

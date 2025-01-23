@@ -77,10 +77,10 @@ fn void toggleFullScreen (int gsWidth, int gsHeight){
 }
 
 fn ConstructType getRandomType(){
-   int min = (int)ConstructType.ENEMY_GROUND;
-   int max = (int)ConstructType.OBS;
+   int min = ConstructType.ENEMY_GROUND.ordinal;
+   int max = ConstructType.OBS.ordinal;
    //io::printfn("max -> %s  min -> %s !",max,min);
-   return (ConstructType)rand_in_range(min,max);
+   return ConstructType.from_ordinal(rand_in_range(min,max));
 }
 
 fn bool randChanceCheck(){
@@ -272,7 +272,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
             //io::printfn("power Up Timer: %f", c.powerUpTimer);
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
             if (raining){c.acceleration = 125;}
-            if (!raining){c.acceleration = ACCELERATION;}
+            if (!raining && c.acceleration == 125){c.acceleration = ACCELERATION;}
             
             if(c.invulnTimer >= 0.0){
                c.invulnTimer -= 1.0;
@@ -281,6 +281,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 
             if(c.powerUpTimer >= 0.0){
                c.powerUpTimer -= 1.0;
+               
             }else{
 
               if (c.gravity == 400.0) {c.gravity = GRAVITY;}
