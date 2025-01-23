@@ -87,7 +87,7 @@ fn bool randChanceCheck(){
    int chance;
    chance = rand_in_range(0,5000);
 
-   if (chance == 500){
+   if (chance == 50){
       return true;
    }else{
       return false;

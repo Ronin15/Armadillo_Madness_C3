@@ -35,14 +35,14 @@ const Color MAGENTA     = { 255, 0, 255, 255 };     // Magenta
 const Color RAYWHITE    = { 245, 245, 245, 255 };   // My own White (raylib logo)
 
 // Vector2, 2 components
-struct Vector2
+struct Vector2 @compact
 {
     float x;                // Vector x component
     float y;                // Vector y component
 }
 
 // Vector3, 3 components
-struct Vector3
+struct Vector3 @compact
 {
     float x;                // Vector x component
     float y;                // Vector y component
@@ -50,7 +50,7 @@ struct Vector3
 }
 
 // Vector4, 4 components
-struct Vector4
+struct Vector4 @compact
 {
     float x;                // Vector x component
     float y;                // Vector y component
@@ -62,7 +62,7 @@ struct Vector4
 def Quaternion = Vector4;
 
 // Matrix, 4x4 components, column major, OpenGL style, right handed
-struct Matrix
+struct Matrix @compact
 {
     float m0, m4, m8, m12;  // Matrix first row (4 components)
     float m1, m5, m9, m13;  // Matrix second row (4 components)
@@ -71,7 +71,7 @@ struct Matrix
 }
 
 // Color, 4 components, R8G8B8A8 (32bit)
-struct Color
+struct Color @compact
 {
     char r;        // Color red value
     char g;        // Color green value
@@ -80,7 +80,7 @@ struct Color
 }
 
 // Rectangle, 4 components
-struct Rectangle
+struct Rectangle @compact
 {
     float x;                // Rectangle top-left corner position x
     float y;                // Rectangle top-left corner position y
@@ -285,7 +285,7 @@ struct RayCollision
 }
 
 // BoundingBox
-struct BoundingBox
+struct BoundingBox @compact
 {
     Vector3 min;            // Minimum vertex box-corner
     Vector3 max;            // Maximum vertex box-corner
@@ -427,7 +427,7 @@ enum MouseCursor : int
     NOT_ALLOWED    // The operation-not-allowed shape
 }
 
-$assert((int)MouseCursor.DEFAULT == 0);
+$assert(MouseCursor.DEFAULT.ordinal == 0);
 
 // Gamepad buttons
 enum GamepadButton : int
@@ -452,7 +452,7 @@ enum GamepadButton : int
     RIGHT_THUMB          // Gamepad joystick pressed button right
 }
 
-$assert((int)GamepadButton.UNKNOWN == 0);
+$assert(GamepadButton.UNKNOWN.ordinal == 0);
 
 enum GamepadAxis : int
 {
@@ -464,7 +464,7 @@ enum GamepadAxis : int
     RIGHT_TRIGGER     // Gamepad back trigger right, pressure level: [1..-1]
 }
 
-$assert((int)GamepadAxis.LEFT_X == 0);
+$assert(GamepadAxis.LEFT_X.ordinal == 0);
 
 // Material map index
 enum MaterialMapIndex : int
@@ -482,7 +482,7 @@ enum MaterialMapIndex : int
     BRDF               // Brdf material
 }
 
-$assert((int)MaterialMapIndex.ALBEDO == 0);
+$assert(MaterialMapIndex.ALBEDO.ordinal == 0);
 
 // #define MATERIAL_MAP_DIFFUSE      MATERIAL_MAP_ALBEDO
 // #define MATERIAL_MAP_SPECULAR     MATERIAL_MAP_METALNESS
@@ -518,7 +518,7 @@ enum ShaderLocationIndex : int
     MAP_BRDF             // Shader location: sampler2d texture: brdf
 }
 
-$assert((int)ShaderLocationIndex.VERTEX_POSITION == 0);
+$assert(ShaderLocationIndex.VERTEX_POSITION.ordinal == 0);
 
 //#define SHADER_LOC_MAP_DIFFUSE      SHADER_LOC_MAP_ALBEDO
 //#define SHADER_LOC_MAP_SPECULAR     SHADER_LOC_MAP_METALNESS
@@ -537,7 +537,7 @@ enum ShaderUniformDataType
     SAMPLER2D        // Shader uniform type: sampler2d
 }
 
-$assert((int)ShaderUniformDataType.FLOAT == 0);
+$assert(ShaderUniformDataType.FLOAT.ordinal == 0);
 
 // Shader attribute data types
 enum ShaderAttributeDataType
@@ -548,7 +548,7 @@ enum ShaderAttributeDataType
     VEC4              // Shader attribute type: vec4 (4 float)
 }
 
-$assert((int)ShaderAttributeDataType.FLOAT == 0);
+$assert(ShaderAttributeDataType.FLOAT.ordinal == 0);
 
 // Pixel formats
 // NOTE: Support depends on OpenGL version and platform
@@ -578,7 +578,7 @@ enum PixelFormat : int
     COMPRESSED_ASTC_8X8_RGBA    // 2 bpp
 }
 
-$assert((int)PixelFormat.UNCOMPRESSED_GRAYSCALE == 1);
+$assert(PixelFormat.UNCOMPRESSED_GRAYSCALE.ordinal == 1);
 
 // Texture parameters: filter mode
 // NOTE 1: Filtering considers mipmaps if available in the texture
@@ -593,7 +593,7 @@ enum TextureFilter : int
     ANISOTROPIC_16X,         // Anisotropic filtering 16x
 }
 
-$assert((int)TextureFilter.POINT == 0);
+$assert(TextureFilter.POINT.ordinal == 0);
 
 // Texture parameters: wrap mode
 enum TextureWrap
@@ -604,7 +604,7 @@ enum TextureWrap
     MIRROR_CLAMP               // Mirrors and clamps to border the texture in tiled mode
 }
 
-$assert((int)TextureWrap.REPEAT == 0);
+$assert(TextureWrap.REPEAT.ordinal == 0);
 
 // Cubemap layouts
 enum CubemapLayout
@@ -617,7 +617,7 @@ enum CubemapLayout
     PANORAMA                 // Layout is defined by a panorama image (equirectangular map)
 }
 
-$assert((int)CubemapLayout.AUTO_DETECT == 0);
+$assert(CubemapLayout.AUTO_DETECT.ordinal == 0);
 
 // Font type, defines generation method
 enum FontType
@@ -627,7 +627,7 @@ enum FontType
     SDF                        // SDF font generation, requires external shader
 }
 
-$assert((int)FontType.DEFAULT == 0);
+$assert(FontType.DEFAULT.ordinal == 0);
 
 // Color blending modes (pre-defined)
 enum BlendMode : int
@@ -641,7 +641,7 @@ enum BlendMode : int
     CUSTOM                    // Blend textures using custom src/dst factors (use rlSetBlendMode())
 }
 
-$assert((int)BlendMode.ALPHA == 0);
+$assert(BlendMode.ALPHA.ordinal == 0);
 
 
 // Camera system modes
@@ -654,7 +654,7 @@ enum CameraMode
     THIRD_PERSON             // Third person camera
 }
 
-$assert((int)CameraMode.CUSTOM == 0);
+$assert(CameraMode.CUSTOM.ordinal == 0);
 
 // Camera projection
 enum CameraProjection
@@ -663,7 +663,7 @@ enum CameraProjection
     ORTHOGRAPHIC             // Orthographic projection
 }
 
-$assert((int)CameraProjection.PERSPECTIVE == 0);
+$assert(CameraProjection.PERSPECTIVE.ordinal == 0);
 
 // N-patch layout
 enum NPatchLayout
@@ -673,7 +673,7 @@ enum NPatchLayout
     THREE_PATCH_HORIZONTAL   // Npatch layout: 3x1 tiles
 }
 
-$assert((int)NPatchLayout.NINE_PATCH == 0);
+$assert(NPatchLayout.NINE_PATCH.ordinal == 0);
 
 // Callbacks to hook some internal functions
 // WARNING: This callbacks are intended for advance users
@@ -1827,10 +1827,10 @@ fn void detachAudioMixedProcessor(AudioCallback processor) @extern("DetachAudioM
 // Additional Raylib.c3 Mode helper macros
 //----------------------------------------------------------------------------------
 
-/**
- * Setup canvas (framebuffer) to start drawing, then calls [block].
- * Drawing will end after [block] has finished.
- */
+<*
+ Setup canvas (framebuffer) to start drawing, then calls [block].
+ Drawing will end after [block] has finished.
+*>
 macro void @drawing(;@body)
 {
   beginDrawing();
@@ -1838,10 +1838,10 @@ macro void @drawing(;@body)
   @body();
 }
 
-/**
- * Setup 2D mode with custom camera to start 2D Mode, then calls [block].
- * Mode2D will end after [block] has finished.
- */
+<*
+ Setup 2D mode with custom camera to start 2D Mode, then calls [block].
+ Mode2D will end after [block] has finished.
+*>
 macro void @mode2D(Camera2D camera ;@body)
 {
   beginMode2D(camera);
@@ -1849,10 +1849,10 @@ macro void @mode2D(Camera2D camera ;@body)
   @body();
 }
 
-/**
- * Setup 3D mode with custom camera to start 2D Mode, then calls [block].
- * Mode2D will end after [block] has finished.
- */
+<*
+ Setup 3D mode with custom camera to start 2D Mode, then calls [block].
+ Mode2D will end after [block] has finished.
+*>
 macro void @mode3D(Camera3D camera ;@body)
 {
   beginMode3D(camera);
@@ -1860,10 +1860,10 @@ macro void @mode3D(Camera3D camera ;@body)
   @body();
 }
 
-/**
- * Setup texture mode to draw to render texture, then calls [block].
- * texture mode will end after [block] has finished.
- */
+<*
+ Setup texture mode to draw to render texture, then calls [block].
+ texture mode will end after [block] has finished.
+*>
 macro void @textureMode(RenderTexture2D texture ;@body)
 {
   beginTextureMode(texture);
@@ -1872,10 +1872,10 @@ macro void @textureMode(RenderTexture2D texture ;@body)
 }
 
 
-/**
- * Setup custom shqder mode then calls [block].
- * shader mode will end after [block] has finished.
- */
+<*
+ Setup custom shqder mode then calls [block].
+ shader mode will end after [block] has finished.
+*>
 macro void @shaderMode(Shader shader ;@body)
 {
   beginShaderMode(shader);
@@ -1883,10 +1883,10 @@ macro void @shaderMode(Shader shader ;@body)
   @body();
 }
 
-/**
- * Setup blending mode, then calls [block].
- * blend mode will end after [block] has finished.
- */
+<*
+ Setup blending mode, then calls [block].
+ blend mode will end after [block] has finished.
+*>
 macro void @blendMode(BlendMode mode ;@body)
 {
   beginShaderMode(mode);
@@ -1894,10 +1894,10 @@ macro void @blendMode(BlendMode mode ;@body)
   @body();
 }
 
-/**
- * Setup scissor mode then calls [block].
- * scissor mode will end after [block] has finished.
- */
+<*
+ Setup scissor mode then calls [block].
+ scissor mode will end after [block] has finished.
+*>
 macro void @scissorMode(int x, int y, int width, int height ;@body)
 {
   beginScissorMode(x, y, width, height);
@@ -1905,10 +1905,10 @@ macro void @scissorMode(int x, int y, int width, int height ;@body)
   @body();
 }
 
-/**
- * Setup stereo rendering mode, then calls [block].
- * stereo rendering mode will end after [block] has finished.
- */
+<*
+ Setup stereo rendering mode, then calls [block].
+ stereo rendering mode will end after [block] has finished.
+*>
 macro void @vrMode(VrStereoConfig config ;@body)
 {
   beginVrStereoMode(config);
