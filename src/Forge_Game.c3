@@ -20,6 +20,8 @@ const float OBS_SOFFSET = 30.0;
 const float ANT_SOFFSET = 60.0;
 const float FOX_SOFFSET = 80.0;
 const float SCORPION_SOFFSET = 40.0;
+const float TURTLE_SOFFSET = 35.0;
+const float SNAKE_SOFFSET = 35.0;
 const float POWERUP_SOFFSET = 35.0;
 
 //GAME Structures Types ---------------------------------------------------------
@@ -273,7 +275,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
             if (raining){c.acceleration = 125;}
             if (!raining && c.acceleration == 125){c.acceleration = ACCELERATION;}
-            
+
             if(c.invulnTimer >= 0.0){
                c.invulnTimer -= 1.0;
             }else{
@@ -281,7 +283,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 
             if(c.powerUpTimer >= 0.0){
                c.powerUpTimer -= 1.0;
-               
+
             }else{
 
               if (c.gravity == 400.0) {c.gravity = GRAVITY;}
@@ -390,9 +392,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 
             //optimize later to switch
             if (c.name == "ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * deltaTime;c.groundLevel = groundLevel + 5;}
-            if (c.name == "turtle") {c.pos.x -= c.friction * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
+            if (c.name == "turtle") {c.pos.x -= (c.friction + TURTLE_SOFFSET) * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
             if (c.name == "fox") {c.pos.x -= (c.friction + FOX_SOFFSET)  * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
-            if (c.name == "snake") {c.pos.x -= c.friction * deltaTime;c.groundLevel = groundLevel + 5;}
+            if (c.name == "snake") {c.pos.x -= (c.friction + SNAKE_SOFFSET) * deltaTime;c.groundLevel = groundLevel + 5;}
             if (c.name == "scorpion") {c.pos.x -= (c.friction + SCORPION_SOFFSET)  * deltaTime;}
 
             if(c.vHit){c.vHit = false;c.lives -= 1;}
