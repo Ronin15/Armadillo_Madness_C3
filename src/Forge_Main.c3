@@ -338,7 +338,7 @@ fn int main(String[] args) {
 			}
 
 			if (raining && weatherTimer <= 0.0){
-				weatherTimer = 3000;
+				weatherTimer = 2000;
 			}
 			if (raining){
 

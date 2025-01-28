@@ -7,8 +7,6 @@ import std::math;
 
 //GAME globals and consts -------------------------------------------------
 const float GRAVITY = 700.0;//200 for grav boots
-float groundLevel = 1080.0 - 115;//120
-bool poopPenatrate = false;
 const float MOVE_VELOCITY = -600.0;
 const float SKY_LEVEL = 0.0;
 const float ACCELERATION = 250.0;
@@ -24,6 +22,9 @@ const float TURTLE_SOFFSET = 35.0;
 const float SNAKE_SOFFSET = 35.0;
 const float POWERUP_SOFFSET = 35.0;
 
+float groundLevel = 1080.0 - 115;//120
+bool poopPenatrate = false;
+
 //GAME Structures Types ---------------------------------------------------------
  enum ConstructType : int {
    PLAYER,
@@ -36,7 +37,6 @@ const float POWERUP_SOFFSET = 35.0;
 
  struct Construct {
 
-    ConstructType type;
     Texture2D texture;
     Vector2 pos;
     Vector2 vel;
@@ -51,6 +51,7 @@ const float POWERUP_SOFFSET = 35.0;
     float frameLength;
     float invulnTimer;
     float powerUpTimer;
+    ConstructType type;
     int currentFrame;
     int maxFrames;
     int lives;
@@ -67,7 +68,6 @@ const float POWERUP_SOFFSET = 35.0;
     bool fHit; //food hit
     bool gHit; //grav boot hit
 }
-
 
 //GAME Functions ------------------------------------------------------------
 //checks and toggles fullscreen if screen is smaller or equal to 1920 by 1080
@@ -89,12 +89,11 @@ fn bool randChanceCheck(){
    int chance;
    chance = rand_in_range(0,5000);
 
-   if (chance == 50){
+   if (chance == 500){
       return true;
    }else{
       return false;
    }
-
 }
 
 fn String getRandomConstructName (ConstructType type){
