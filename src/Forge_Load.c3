@@ -8,7 +8,7 @@ def MusicMap = HashMap(<String,Music>);
 
 fn TexMap loadTexMap(){
 
-  TexMap temp;
+  TexMap map;
   //loading Game assets
 	 Texture2D backGroundSky = rl::loadTexture("resources/images/sky_u.png");
 	 Texture2D backGroundMid = rl::loadTexture("resources/images/mid3_u.png");
@@ -50,48 +50,61 @@ fn TexMap loadTexMap(){
      Texture2D owlTex = rl::loadTexture("resources/images/owl-sheet.png");
     //Credits Page assets
      Texture2D creditsPageTex = rl::loadTexture("resources/images/credits_page.png");
+     //buttons
+     Texture2D creditsButtonTex = rl::loadTexture("resources/images/creditsButton-sheet.png");
+     Texture2D menubuttonTex = rl::loadTexture("resources/images/menuButton-sheet.png");
+     Texture2D optionsButtonTex = rl::loadTexture("resources/images/optionsButton-sheet.png");
+     Texture2D quitButtonTex = rl::loadTexture("resources/images/quitButton-sheet.png");
+     Texture2D restartButtonTex = rl::loadTexture("resources/images/restarButton-sheet.png");
+     Texture2D playButtonTex = rl::loadTexture("resources/images/playButton-sheet.png");
 
-   temp.set("sky",backGroundSky);
-   temp.set("mid",backGroundMid);
-   temp.set("ground",backGroundGround);
-   temp.set("clouds",clouds);
-   temp.set("player",playerTex);
-   temp.set("sun",sunTex);
-   temp.set("cactus",cactus1Tex);
-   temp.set("boulder",bigBoulderTex);
-   temp.set("bird",birdTex);
-   temp.set("ant",antTex);
-   temp.set("turtle",turtleTex);
-   temp.set("beatle",beatleTex);
-   temp.set("poop",poopTex);
-   temp.set("lifeCount",lifeCountTex);
-   temp.set("raylib",raylibTex);
-   temp.set("c3",c3Tex);
-   temp.set("logo",logoTex);
-   temp.set("forge",forgeTex);
-   temp.set("titlePage",titlePageTex);
-   temp.set("snake",snakeTex);
-   temp.set("fox",foxTex);
-   temp.set("tree",treeTex);
-   temp.set("grav",gravBootsTex);
-   temp.set("food",foodTex);
-   temp.set("super",superTex);
-   temp.set("firepit",firePitTex);
-   temp.set("armadillo",armadilloStill);
-   temp.set("catLeft",catStillleft);
-   temp.set("nightsky",nightSky);
-   temp.set("nightmid",nightMid);
-   temp.set("nightground",nightGround);
-   temp.set("scorpion",scorpionTex);
-   temp.set("owl",owlTex);
-   temp.set("creditsPage",creditsPageTex);
+   map.set("sky",backGroundSky);
+   map.set("mid",backGroundMid);
+   map.set("ground",backGroundGround);
+   map.set("clouds",clouds);
+   map.set("player",playerTex);
+   map.set("sun",sunTex);
+   map.set("cactus",cactus1Tex);
+   map.set("boulder",bigBoulderTex);
+   map.set("bird",birdTex);
+   map.set("ant",antTex);
+   map.set("turtle",turtleTex);
+   map.set("beatle",beatleTex);
+   map.set("poop",poopTex);
+   map.set("lifeCount",lifeCountTex);
+   map.set("raylib",raylibTex);
+   map.set("c3",c3Tex);
+   map.set("logo",logoTex);
+   map.set("forge",forgeTex);
+   map.set("titlePage",titlePageTex);
+   map.set("snake",snakeTex);
+   map.set("fox",foxTex);
+   map.set("tree",treeTex);
+   map.set("grav",gravBootsTex);
+   map.set("food",foodTex);
+   map.set("super",superTex);
+   map.set("firepit",firePitTex);
+   map.set("armadillo",armadilloStill);
+   map.set("catLeft",catStillleft);
+   map.set("nightsky",nightSky);
+   map.set("nightmid",nightMid);
+   map.set("nightground",nightGround);
+   map.set("scorpion",scorpionTex);
+   map.set("owl",owlTex);
+   map.set("creditsPage",creditsPageTex);
+   map.set("creditsButton",creditsButtonTex);
+   map.set("menuButton",menubuttonTex);
+   map.set("optionsButton",optionsButtonTex);
+   map.set("quitButton",quitButtonTex);
+   map.set("restartButton",restartButtonTex);
+   map.set("playButton",playButtonTex);
 
-   return temp;
+   return map;
 }
 
 fn SoundMap loadSoundMap(){
 
-  SoundMap temp;
+  SoundMap map;
    //sounds
 	 Sound jump = rl::loadSound("resources/sounds/jump.wav");
 	 Sound moving = rl::loadSound("resources/sounds/moving.wav");
@@ -112,40 +125,40 @@ fn SoundMap loadSoundMap(){
      Sound cactusImpact = rl::loadSound("resources/sounds/cactus_impact.wav");
 
 
-   temp.set("jump",jump);
-   temp.set("moving",moving);
-   temp.set("pause",pause);
-   temp.set("unpause",unpause);
-   temp.set("poop",poopSound);
-   temp.set("logoSound",logoSound);
-   temp.set("eatBug",eatBug);
-   temp.set("bird",bird);
-   temp.set("cactus",cactus);
-   temp.set("boing",boing);
-   temp.set("playerHit",playerHit);
-   temp.set("poopHit",poopHit);
-   temp.set("enemyDie",enemyDie);
-   temp.set("rockImpact",rockImpact);
-   temp.set("gravBoots",gravBoots);
-   temp.set("super",super);
-   temp.set("cactusImpact",cactusImpact);
+   map.set("jump",jump);
+   map.set("moving",moving);
+   map.set("pause",pause);
+   map.set("unpause",unpause);
+   map.set("poop",poopSound);
+   map.set("logoSound",logoSound);
+   map.set("eatBug",eatBug);
+   map.set("bird",bird);
+   map.set("cactus",cactus);
+   map.set("boing",boing);
+   map.set("playerHit",playerHit);
+   map.set("poopHit",poopHit);
+   map.set("enemyDie",enemyDie);
+   map.set("rockImpact",rockImpact);
+   map.set("gravBoots",gravBoots);
+   map.set("super",super);
+   map.set("cactusImpact",cactusImpact);
 
-   return temp;
+   return map;
 }
 
 fn MusicMap loadMusicMap(){
 
-  MusicMap temp;
+  MusicMap map;
    //music
 	 Music titleMusic = rl::loadMusicStream("resources/sounds/Intro_song_z.mp3");//intro_tune.wav
 	 Music gameMusic = rl::loadMusicStream("resources/sounds/game_loop.mp3"); //game loop music
      Music rain = rl::loadMusicStream("resources/sounds/rain.wav");//ambient rain noise
      Music fireworks = rl::loadMusicStream("resources/sounds/fireworks.mp3");//fireworks noise
 
-   temp.set("titleMusic",titleMusic);
-   temp.set("gameMusic",gameMusic);
-   temp.set("rain",rain);
-   temp.set("fireworks",fireworks);
+   map.set("titleMusic",titleMusic);
+   map.set("gameMusic",gameMusic);
+   map.set("rain",rain);
+   map.set("fireworks",fireworks);
 
-   return temp;
+   return map;
 }

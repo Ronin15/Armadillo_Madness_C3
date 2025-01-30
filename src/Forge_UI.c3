@@ -52,12 +52,30 @@ fn void updateButton(Button *b) {
 
 
 fn void drawButton(Button* b , float rotation = 0.0) {
+
+    Rectangle srcRec = {
+    srcRec.x = (float)b.currentFrame * b.texture.width / b.maxFrames,
+    srcRec.y = 0.0,
+    srcRec.width = (float)b.texture.width / b.maxFrames,
+    srcRec.height = (float)b.texture.height,
+    };
+
+    Rectangle destRec = {
+    destRec.x = b.pos.x,
+    destRec.y = b.pos.y,
+    destRec.width = (float)b.texture.width * b.maxFrames,
+    destRec.height = (float)b.texture.height,
+    };
+
+
+    rl::drawTextureEx(b.texture, b.pos, rotation, 1.0, rl::WHITE);
+
     if (b.bhover) {
-        rl::drawTextureEx(b.texture, b.pos, rotation, 1.0, rl::WHITE);
-    } else {
-        rl::drawTextureEx(b.texture, b.pos, rotation, 1.0, rl::GRAY);
-    }
-    if (b.bClicked) {
+            rl::drawTextureEx(b.texture, b.pos, rotation, 1.0, rl::WHITE);
+        } else {
+            rl::drawTextureEx(b.texture, b.pos, rotation, 1.0, rl::GRAY);
+        }
+        if (b.bClicked) {
       //  rl::drawText("Button Clicked!", screenWidth / 2 - 60, screenHeight / 2 - 60, 20, rl::RED);
     }
   //  rl::drawRectangleLinesEx(b.pos, 2, rl::BLACK);
