@@ -48,6 +48,7 @@ fn TexMap loadTexMap(){
      Texture2D nightGround = rl::loadTexture("resources/images/night_ground.png");
      Texture2D scorpionTex = rl::loadTexture("resources/images/scorpion-sheet.png");
      Texture2D owlTex = rl::loadTexture("resources/images/owl-sheet.png");
+     Texture2D spiderTex = rl::loadTexture("resources/images/spider-sheet.png");
     //Credits Page assets
      Texture2D creditsPageTex = rl::loadTexture("resources/images/credits_page.png");
      //buttons
@@ -91,6 +92,7 @@ fn TexMap loadTexMap(){
    map.set("nightground",nightGround);
    map.set("scorpion",scorpionTex);
    map.set("owl",owlTex);
+   map.set("spider",spiderTex);
    map.set("creditsPage",creditsPageTex);
    map.set("creditsButton",creditsButtonTex);
    map.set("menuButton",menubuttonTex);

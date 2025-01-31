@@ -20,6 +20,7 @@ const float FOX_SOFFSET = 80.0;
 const float SCORPION_SOFFSET = 40.0;
 const float TURTLE_SOFFSET = 35.0;
 const float SNAKE_SOFFSET = 35.0;
+const float SPIDER_SOFFSET = 80.0;
 const float POWERUP_SOFFSET = 35.0;
 
 float groundLevel = 1080.0 - 115;//120
@@ -100,7 +101,7 @@ fn String getRandomConstructName (ConstructType type){
    static int powerUpCount;// to track and restrict power up items to global const value
    //static int powerUpCountDemo;
 
-   String[*] groundTypes = {"ant","turtle","snake","fox","scorpion"};
+   String[*] groundTypes = {"ant","turtle","snake","fox","scorpion","spider"};
    String[*] flyingTypes = {"bird","beatle","owl"};
    String[*] obsticlesTypes = {"cactus","boulder","tree"};
    String[*] powerUps = {"grav","food","super"};
@@ -387,14 +388,46 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                   c.isDead = true;
                   rl::playSound(sMap.get("enemyDie")!!);
 
-               }
+            }
 
-            //optimize later to switch
-            if (c.name == "ant") {c.pos.x -= (c.friction + ANT_SOFFSET) * deltaTime;c.groundLevel = groundLevel + 5;}
-            if (c.name == "turtle") {c.pos.x -= (c.friction + TURTLE_SOFFSET) * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
-            if (c.name == "fox") {c.pos.x -= (c.friction + FOX_SOFFSET)  * deltaTime;c.groundLevel = groundLevel + 15;} //ground level hit box adjust
-            if (c.name == "snake") {c.pos.x -= (c.friction + SNAKE_SOFFSET) * deltaTime;c.groundLevel = groundLevel + 5;}
-            if (c.name == "scorpion") {c.pos.x -= (c.friction + SCORPION_SOFFSET)  * deltaTime;}
+            switch (c.name){
+            
+            
+               case "ant":
+                        
+                        c.pos.x -= (c.friction + ANT_SOFFSET) * deltaTime;
+                        c.groundLevel = groundLevel + 5;
+               break;
+
+               case "turtle":  
+                        
+                        c.pos.x -= (c.friction + TURTLE_SOFFSET) * deltaTime;
+                        c.groundLevel = groundLevel + 15; //ground level hit box adjust
+               break;         
+
+               case "fox":  
+                        
+                        c.pos.x -= (c.friction + FOX_SOFFSET)  * deltaTime;
+                        c.groundLevel = groundLevel + 15; //ground level hit box adjust
+               break;
+
+               case "snake": 
+                        
+                        c.pos.x -= (c.friction + SNAKE_SOFFSET) * deltaTime;
+                        c.groundLevel = groundLevel + 5;
+               break;
+
+               case "scorpion":
+                        
+                        c.pos.x -= (c.friction + SCORPION_SOFFSET)  * deltaTime;
+               break;
+
+               case "spider": 
+                        
+                        c.pos.x -= (c.friction + SPIDER_SOFFSET)  * deltaTime;
+               break;
+
+            }
 
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
