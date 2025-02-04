@@ -551,7 +551,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 }
 
 fn void drawPoopShot(Construct* c, Construct* b, float rotation = 90.0, float scale = 1.0) {
-	scale = 1.5;
+   scale = 1.5;
    rotation = rotation;
    //b is the player for poop location.
 
@@ -567,7 +567,7 @@ fn void drawPoopShot(Construct* c, Construct* b, float rotation = 90.0, float sc
 
 //draw sprites without animation
 fn void drawConstruct(Construct* c, float rotation = 0.0, float scale = 2.0){ //Construct *b = {}
-	scale = scale;
+   scale = scale;
    rotation = rotation;
 
 	rl::drawTextureEx(c.texture, c.pos, rotation, scale, rl::WHITE);
@@ -575,38 +575,38 @@ fn void drawConstruct(Construct* c, float rotation = 0.0, float scale = 2.0){ //
 
 //draw animated sprites
 fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
-//setting up animation data on contructs
-Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
-float obsSize = 3.5; //scaling up onbsticles
-float normal = 2.0; // normal scale size without camera zoon
-float powerUpSize = 1.0;
-float scale @noinit;
+   //setting up animation data on contructs
+   Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
+   float obsSize = 3.5; //scaling up onbsticles
+   float normal = 2.0; // normal scale size without camera zoon
+   float powerUpSize = 1.0;
+   float scale @noinit;
 
-Rectangle srcRec = {
-  srcRec.x = (float)c.currentFrame * c.texture.width / c.maxFrames,
-  srcRec.y = 0.0,
-  srcRec.width = (float)c.texture.width / c.maxFrames,
-  srcRec.height = (float)c.texture.height,
-};
-
-scale = normal;
-if (c.type == OBS){
-   scale = obsSize;
-}
-if (c.type == POWER_UP){
-   scale = powerUpSize;
-}
-
-Rectangle destRec = {
-   destRec.x = c.pos.x,
-   destRec.y = c.pos.y,
-   destRec.width = (float)c.texture.width * scale / c.maxFrames,
-   destRec.height = (float)c.texture.height * scale,
+   Rectangle srcRec = {
+     srcRec.x = (float)c.currentFrame * c.texture.width / c.maxFrames,
+     srcRec.y = 0.0,
+     srcRec.width = (float)c.texture.width / c.maxFrames,
+     srcRec.height = (float)c.texture.height,
    };
 
-   if(c.isDead) {c.texFlip = true; rotation = 180.0;}
-   if (c.texFlip) {srcRec.width =- srcRec.width;}
+      scale = normal;
+         if (c.type == OBS){
+               scale = obsSize;
+      }
+         if (c.type == POWER_UP){
+               scale = powerUpSize;
+      }
 
+   Rectangle destRec = {
+      destRec.x = c.pos.x,
+      destRec.y = c.pos.y,
+      destRec.width = (float)c.texture.width * scale / c.maxFrames,
+      destRec.height = (float)c.texture.height * scale,
+     };
 
-   rl::drawTexturePro(c.texture, srcRec, destRec, origin, rotation, rl::WHITE);
+      
+         if(c.isDead) {c.texFlip = true; rotation = 180.0;}
+         if (c.texFlip) {srcRec.width =- srcRec.width;}
+
+      rl::drawTexturePro(c.texture, srcRec, destRec, origin, rotation, rl::WHITE);
 }

@@ -2,7 +2,7 @@ module forge_ui;
 import forge_main;
 import forge_load;
 import raylib5::rl;
-
+import std::io;
 
 Vector2 mousePos; //= rl::getMousePosition();
 
@@ -17,46 +17,62 @@ struct Button {
     bool bhover;
 }
 
-fn Button createButton(Vector2 pos, TexMap *tMap, SoundMap *sMap, String name) {
+fn Button createButton(TexMap* tMap, SoundMap* sMap, int count) {
+
+    static int spacing = 0;
+    String[*] buttons = {"playButton","optionsButton","quitButton","creditsButton","menuButton","restartButton"};
 
     Button b;
-
-    b.name = name;
-    b.pos = pos;
+    
+    b.name = buttons[count];
     b.texture = tMap.get(b.name)!!;
     b.sound = sMap.get("button")!!;
+    b.pos.x = (float)(forge_main::WINDOW_WIDTH / 2) - b.texture.width;
+    b.pos.y = (float)(forge_main::WINDOW_HEIGHT / 2) - (b.texture.height) + spacing;
     b.maxFrames = 2;
     b.currentFrame = 1;
     b.bClicked = false;
     b.bhover = false;
+    spacing += 5;
+    
+    io::printfn("Button : %s was created",b.name);
+
     return b;
 }
 
 
-fn void updateButton(Button *b) {
+fn void updateButton(Button* b) {
     Rectangle bRect = {
-        b.pos.x,
-        b.pos.y,
-        b.texture.width,
-        b.texture.height
+        bRect.x = b.pos.x,
+        bRect.y = b.pos.y,
+        bRect.width = b.texture.width,
+        bRect.height = b.texture.height
     };
 
     mousePos = rl::getMousePosition();
     b.bhover = rl::checkCollisionPointRec(mousePos, bRect);
     if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
-        b.bClicked = true;
-    } else {
-        b.bClicked = false;
+            b.bClicked = true;
+        } else {
+            b.bClicked = false;
     }
-}
+
+    if (b.bhover) {
+            b.currentFrame = 2;
+        } else {
+            b.currentFrame = 1;
+        }
+    }
 
 
-fn void drawButton(Button* b , float rotation = 0.0) {
+fn void drawButton(Button* b, float rotation = 0.0) {
+
+    Vector2 origin ={0.0,0.0};
 
     Rectangle srcRec = {
-    srcRec.x = (float)b.currentFrame * b.texture.width / b.maxFrames,
+    srcRec.x = (float)b.currentFrame * b.texture.width / 2,
     srcRec.y = 0.0,
-    srcRec.width = (float)b.texture.width / b.maxFrames,
+    srcRec.width = (float)b.texture.width / 2,
     srcRec.height = (float)b.texture.height,
     };
 
@@ -67,66 +83,6 @@ fn void drawButton(Button* b , float rotation = 0.0) {
     destRec.height = (float)b.texture.height,
     };
 
-
-    rl::drawTextureEx(b.texture, b.pos, rotation, 1.0, rl::WHITE);
-
-    if (b.bhover) {
-            rl::drawTextureEx(b.texture, b.pos, rotation, 1.0, rl::WHITE);
-        } else {
-            rl::drawTextureEx(b.texture, b.pos, rotation, 1.0, rl::GRAY);
-        }
-        if (b.bClicked) {
-      //  rl::drawText("Button Clicked!", screenWidth / 2 - 60, screenHeight / 2 - 60, 20, rl::RED);
-    }
-  //  rl::drawRectangleLinesEx(b.pos, 2, rl::BLACK);
-
-
-
+    rl::drawTexturePro(b.texture, srcRec, destRec, origin, rotation, rl::WHITE);
 }
-
-
-
-
-
-
-/*
-
-Vector2 mousePoint = GetMousePosition();
-        buttonHovered = CheckCollisionPointRec(mousePoint, button);
-
-        if (buttonHovered && IsMouseButtonPressed(MOUSE_LEFT_BUTTON))
-        {
-            buttonClicked = true;
-        }
-        else
-        {
-            buttonClicked = false;
-        }
-        //----------------------------------------------------------------------------------
-
-        // Draw
-        //----------------------------------------------------------------------------------
-        BeginDrawing();
-
-        ClearBackground(RAYWHITE);
-
-        if (buttonHovered)
-        {
-            DrawRectangleRec(button, LIGHTGRAY);
-        }
-        else
-        {
-            DrawRectangleRec(button, GRAY);
-        }
-
-        if (buttonClicked)
-        {
-            DrawText("Button Clicked!", screenWidth / 2 - 60, screenHeight / 2 - 60, 20, RED);
-        }
-
-        DrawText("Click the button", screenWidth / 2 - 70, screenHeight / 2 - 100, 20, DARKGRAY);
-        DrawRectangleLinesEx(button, 2, BLACK);
-
-        EndDrawing();
-
-        */
+     //  rl::drawText("Button Clicked!", screenWidth / 2 - 60, screenHeight / 2 - 60, 20, rl::RED);

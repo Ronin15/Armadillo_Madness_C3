@@ -125,7 +125,7 @@ fn SoundMap loadSoundMap(){
      Sound gravBoots = rl::loadSound("resources/sounds/grav_boots.wav");
      Sound super = rl::loadSound("resources/sounds/1up.wav");
      Sound cactusImpact = rl::loadSound("resources/sounds/cactus_impact.wav");
-
+     Sound button = rl::loadSound("resources/sounds/button_click.wav");
 
    map.set("jump",jump);
    map.set("moving",moving);
@@ -144,6 +144,7 @@ fn SoundMap loadSoundMap(){
    map.set("gravBoots",gravBoots);
    map.set("super",super);
    map.set("cactusImpact",cactusImpact);
+   map.set("button",button);
 
    return map;
 }

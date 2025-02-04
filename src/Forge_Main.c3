@@ -5,6 +5,7 @@ import forge_game;
 import forge_physics;
 import forge_fx;
 import forge_demo;
+import forge_ui;
 //vendor modules-------------------
 import raylib5::rl;
 //C3 standard modules--------------
@@ -19,11 +20,12 @@ const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.5.0";
 const int MAX_CONSTRUCTS = 200;//100
 const int MAX_POWERUPS = 12;//6
+const int MAX_BUTTONS = 6; 
 
 
 Construct[MAX_CONSTRUCTS] constructs;
 Construct[MAX_CONSTRUCTS] demoConstructs;
-
+Button[MAX_BUTTONS] uiButtons;
 
 enum GameState {
 	LOGO,
@@ -89,18 +91,23 @@ fn int main(String[] args) {
 	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap);
 
-	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
+	for(int i = 0; i < MAX_CONSTRUCTS; i++){
 	constructs[i] = forge_game::forgeConstruct(&tMap);
 	}
 
-	for( int i = 0; i < MAX_CONSTRUCTS; i++ ){
+	for(int i = 0; i < MAX_CONSTRUCTS; i++){
 	demoConstructs[i] = forge_game::forgeConstruct(&tMap);
+	}
+
+	for (int i = 0; i < MAX_BUTTONS; i++){
+		int count = i;
+		uiButtons[i] = forge_ui::createButton(&tMap, &sMap, count);
 	}
 
 	io::printfn("Objects created");
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = NIGHTLVL;
+	GameState state = MAIN;
 	rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -137,7 +144,9 @@ fn int main(String[] args) {
 				//	forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
 
 			case MAIN:
-
+				//slicing out Main ui buttons
+				//Button[] mainButtons = uiButtons[..3];
+				
 				rl::playMusicStream(mMap.get("titleMusic")!!);
 				rl::updateMusicStream(mMap.get("titleMusic")!!);
 				rl::clearBackground(rl::BLACK);
@@ -146,6 +155,14 @@ fn int main(String[] args) {
                 rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", ((WINDOW_WIDTH / 2) - 250), 340, 40, rl::BLACK);
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
+
+				foreach (&uiButton : uiButtons){
+					forge_ui::updateButton((Button*)&uiButton);	
+				}
+				foreach (&uiButton : uiButtons){
+					forge_ui::drawButton((Button*)&uiButton);	
+				}
+				
 				forge_fx::fireEffect(deltaTime);
 				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);
 
