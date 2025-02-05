@@ -20,7 +20,7 @@ const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.5.0";
 const int MAX_CONSTRUCTS = 200;//100
 const int MAX_POWERUPS = 12;//6
-const int MAX_BUTTONS = 6; 
+const int MAX_BUTTONS = 6;
 
 
 Construct[MAX_CONSTRUCTS] constructs;
@@ -145,31 +145,28 @@ fn int main(String[] args) {
 
 			case MAIN:
 				//slicing out Main ui buttons
-				//Button[] mainButtons = uiButtons[..3];
-				
+				Button[] mainButtons = uiButtons[0..3];
+				rl::showCursor();
 				rl::playMusicStream(mMap.get("titleMusic")!!);
 				rl::updateMusicStream(mMap.get("titleMusic")!!);
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("titlePage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
-                rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", ((WINDOW_WIDTH / 2) - 250), 340, 40, rl::BLACK);
+                //rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", ((WINDOW_WIDTH / 2) - 250), 340, 40, rl::BLACK); buttons working.
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
-
-				foreach (&uiButton : uiButtons){
-					forge_ui::updateButton((Button*)&uiButton);	
+				foreach (&mainButton : mainButtons){
+					forge_ui::updateButton(mainButton);
 				}
-				foreach (&uiButton : uiButtons){
-					forge_ui::drawButton((Button*)&uiButton);	
+				foreach (&mainButton : mainButtons){
+					forge_ui::drawButton(mainButton);
 				}
-				
 				forge_fx::fireEffect(deltaTime);
 				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);
 
 					if (rl::isKeyPressed(rl::KEY_ENTER)){
        					 state = GAME;
     				}
-
 					frameCounter += 1;
 					if (frameCounter > 800) { //800 for testing
 							state = DEMO;
@@ -368,6 +365,9 @@ fn int main(String[] args) {
 			}
 
 			case PAUSE:
+                 //slicing out Pause ui buttons.
+			     Button[] pauseButtons = uiButtons[4..5];
+			     rl::showCursor();
 
 				if (rl::isKeyPressed(rl::KEY_P)){
 					if (day){state = GAME;}

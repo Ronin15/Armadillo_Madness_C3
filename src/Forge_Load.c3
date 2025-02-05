@@ -53,10 +53,10 @@ fn TexMap loadTexMap(){
      Texture2D creditsPageTex = rl::loadTexture("resources/images/credits_page.png");
      //buttons
      Texture2D creditsButtonTex = rl::loadTexture("resources/images/creditsButton-sheet.png");
-     Texture2D menubuttonTex = rl::loadTexture("resources/images/menuButton-sheet.png");
+     Texture2D menuButtonTex = rl::loadTexture("resources/images/menuButton-sheet.png");
      Texture2D optionsButtonTex = rl::loadTexture("resources/images/optionsButton-sheet.png");
      Texture2D quitButtonTex = rl::loadTexture("resources/images/quitButton-sheet.png");
-     Texture2D restartButtonTex = rl::loadTexture("resources/images/restarButton-sheet.png");
+     Texture2D restartButtonTex = rl::loadTexture("resources/images/restartButton-sheet.png");
      Texture2D playButtonTex = rl::loadTexture("resources/images/playButton-sheet.png");
 
    map.set("sky",backGroundSky);
@@ -95,7 +95,7 @@ fn TexMap loadTexMap(){
    map.set("spider",spiderTex);
    map.set("creditsPage",creditsPageTex);
    map.set("creditsButton",creditsButtonTex);
-   map.set("menuButton",menubuttonTex);
+   map.set("menuButton",menuButtonTex);
    map.set("optionsButton",optionsButtonTex);
    map.set("quitButton",quitButtonTex);
    map.set("restartButton",restartButtonTex);
