@@ -20,7 +20,7 @@ struct Button {
 fn Button createButton(TexMap* tMap, SoundMap* sMap, int count) {
 
     static int spacing = 0;
-    String[6] buttons = {"playButton","optionsButton","quitButton","creditsButton","menuButton","restartButton"};
+    String[7] buttons = {"playButton","optionsButton","quitButton","creditsButton","menuButton","restartButton","resumeButton"};
 
     Button b;
 
@@ -41,7 +41,7 @@ fn Button createButton(TexMap* tMap, SoundMap* sMap, int count) {
 }
 
 
-fn void updateButton(Button* b) {
+fn void updateButton(Button* b, SoundMap* sMap) {
     Rectangle bRect = {
         bRect.x = b.pos.x,
         bRect.y = b.pos.y,
@@ -53,6 +53,8 @@ fn void updateButton(Button* b) {
     b.bhover = rl::checkCollisionPointRec(mousePos, bRect);
     if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
             b.bClicked = true;
+            
+            rl::playSound(sMap.get("button")!!);
             io::printfn("Button: %s -> Cicked! ",b.name);
         } else {
             b.bClicked = false;;

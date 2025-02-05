@@ -58,6 +58,7 @@ fn TexMap loadTexMap(){
      Texture2D quitButtonTex = rl::loadTexture("resources/images/quitButton-sheet.png");
      Texture2D restartButtonTex = rl::loadTexture("resources/images/restartButton-sheet.png");
      Texture2D playButtonTex = rl::loadTexture("resources/images/playButton-sheet.png");
+     Texture2D resumeButtonTex = rl::loadTexture("resources/images/resumeButton-sheet.png");
 
    map.set("sky",backGroundSky);
    map.set("mid",backGroundMid);
@@ -100,7 +101,7 @@ fn TexMap loadTexMap(){
    map.set("quitButton",quitButtonTex);
    map.set("restartButton",restartButtonTex);
    map.set("playButton",playButtonTex);
-
+   map.set("resumeButton", resumeButtonTex);
    return map;
 }
 

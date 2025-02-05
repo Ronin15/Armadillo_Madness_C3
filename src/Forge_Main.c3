@@ -20,7 +20,7 @@ const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.5.0";
 const int MAX_CONSTRUCTS = 200;//100
 const int MAX_POWERUPS = 12;//6
-const int MAX_BUTTONS = 6;
+const int MAX_BUTTONS = 7;
 
 
 Construct[MAX_CONSTRUCTS] constructs;
@@ -156,7 +156,7 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 				foreach (&mainButton : mainButtons){
-					forge_ui::updateButton(mainButton);
+					forge_ui::updateButton(mainButton, &sMap);
 				}
 				foreach (&mainButton : mainButtons){
 					forge_ui::drawButton(mainButton);
@@ -366,7 +366,7 @@ fn int main(String[] args) {
 
 			case PAUSE:
                  //slicing out Pause ui buttons.
-			     Button[] pauseButtons = uiButtons[4..5];
+			     Button[] pauseButtons = uiButtons[4..6];
 			     rl::showCursor();
 
 				if (rl::isKeyPressed(rl::KEY_P)){
@@ -379,7 +379,7 @@ fn int main(String[] args) {
 					//clean all assetes needed here to fully reset
 				}
 				if (day){
-				        rl::hideCursor();
+			
         				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
@@ -415,10 +415,17 @@ fn int main(String[] args) {
        					    }
         				}
         				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
+
+							foreach (&pauseButton : pauseButtons){
+								forge_ui::updateButton(pauseButton, &sMap);
+							}
+							foreach (&pauseButton : pauseButtons){
+							forge_ui::drawButton(pauseButton);
+							}
         				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
                     }
                 if (night){
-                        rl::hideCursor();
+
         				//draw game elements------------------------------------------------------------------------------
         				rl::drawTexture(tMap.get("nightsky")!!, 0, 0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
@@ -455,7 +462,14 @@ fn int main(String[] args) {
        					    }
         				}
         				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
-        				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
+						
+							foreach (&pauseButton : pauseButtons){
+								forge_ui::updateButton(pauseButton, &sMap);
+								}
+							foreach (&pauseButton : pauseButtons){
+								forge_ui::drawButton(pauseButton);
+								}
+         				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
                 }
 
 			case GAME_WIN:
