@@ -156,11 +156,13 @@ fn MusicMap loadMusicMap(){
    //music
 	 Music titleMusic = rl::loadMusicStream("resources/sounds/Intro_song_z.mp3");//intro_tune.wav
 	 Music gameMusic = rl::loadMusicStream("resources/sounds/game_loop.mp3"); //game loop music
+     Music gameMusic2 = rl::loadMusicStream("resources/sounds/banjos.mp3");
      Music rain = rl::loadMusicStream("resources/sounds/rain.wav");//ambient rain noise
      Music fireworks = rl::loadMusicStream("resources/sounds/fireworks.mp3");//fireworks noise
 
    map.set("titleMusic",titleMusic);
    map.set("gameMusic",gameMusic);
+   map.set("gameMusic2",gameMusic2);
    map.set("rain",rain);
    map.set("fireworks",fireworks);
 
