@@ -108,7 +108,7 @@ fn int main(String[] args) {
 
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = MAIN;
-	rl::playSound(sMap.get("logoSound")!!);
+	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
 	  	float deltaTime = rl::getFrameTime();
