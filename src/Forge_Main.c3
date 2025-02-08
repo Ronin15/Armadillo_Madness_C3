@@ -156,7 +156,7 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 				foreach (&mainButton : mainButtons){
-					forge_ui::updateButton(mainButton, &sMap);
+					state = forge_ui::updateButton(mainButton, &sMap, state);
 				}
 				foreach (&mainButton : mainButtons){
 					forge_ui::drawButton(mainButton);
@@ -164,9 +164,10 @@ fn int main(String[] args) {
 				forge_fx::fireEffect(deltaTime);
 				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);
 
-					if (rl::isKeyPressed(rl::KEY_ENTER)){
+				/* 	if (rl::isKeyPressed(rl::KEY_ENTER)){
        					 state = GAME;
     				}
+                */
 					frameCounter += 1;
 					if (frameCounter > 800) { //800 for testing
 							state = DEMO;
@@ -379,7 +380,7 @@ fn int main(String[] args) {
 					//clean all assetes needed here to fully reset
 				}
 				if (day){
-			
+
         				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
@@ -417,7 +418,7 @@ fn int main(String[] args) {
         				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
 
 							foreach (&pauseButton : pauseButtons){
-								forge_ui::updateButton(pauseButton, &sMap);
+							state = forge_ui::updateButton(pauseButton, &sMap, state);
 							}
 							foreach (&pauseButton : pauseButtons){
 							forge_ui::drawButton(pauseButton);
@@ -462,9 +463,9 @@ fn int main(String[] args) {
        					    }
         				}
         				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
-						
+
 							foreach (&pauseButton : pauseButtons){
-								forge_ui::updateButton(pauseButton, &sMap);
+							state =	forge_ui::updateButton(pauseButton, &sMap, state);
 								}
 							foreach (&pauseButton : pauseButtons){
 								forge_ui::drawButton(pauseButton);

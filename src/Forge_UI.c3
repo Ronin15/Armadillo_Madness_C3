@@ -41,7 +41,10 @@ fn Button createButton(TexMap* tMap, SoundMap* sMap, int count) {
 }
 
 
-fn void updateButton(Button* b, SoundMap* sMap) {
+fn GameState updateButton(Button* b, SoundMap* sMap, GameState state) {
+
+    state = state;
+
     Rectangle bRect = {
         bRect.x = b.pos.x,
         bRect.y = b.pos.y,
@@ -51,22 +54,90 @@ fn void updateButton(Button* b, SoundMap* sMap) {
 
     mousePos = rl::getMousePosition();
     b.bhover = rl::checkCollisionPointRec(mousePos, bRect);
-    if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
-            b.bClicked = true;
-            
-            rl::playSound(sMap.get("button")!!);
-            io::printfn("Button: %s -> Cicked! ",b.name);
-        } else {
-            b.bClicked = false;;
-    }
 
-    if (b.bhover) {
-            b.currentFrame = 2;
-        } else {
-            b.currentFrame = 1;
-        }
-    }
+    switch(b.name)
+    {
 
+        case "playButton":
+            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+                b.bClicked = true;
+                rl::playSound(sMap.get("button")!!);
+                io::printfn("Button: %s -> Cicked! ",b.name);
+                state = GAME;
+            } else {
+                b.bClicked = false;
+            }
+             return state;
+
+        case "optionsButton":
+            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+                b.bClicked = true;
+                rl::playSound(sMap.get("button")!!);
+                io::printfn("Button: %s -> Cicked! ",b.name);
+                state = OPTIONS;
+            } else {
+                b.bClicked = false;
+            }
+            return state;
+
+        case "quitButton":
+            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+                b.bClicked = true;
+                rl::playSound(sMap.get("button")!!);
+                io::printfn("Button: %s -> Cicked! ",b.name);
+            } else {
+                b.bClicked = false;
+            }
+             return state;
+
+        case "creditsButton":
+            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+                b.bClicked = true;
+                rl::playSound(sMap.get("button")!!);
+                io::printfn("Button: %s -> Cicked! ",b.name);
+                state = CREDITS;
+            } else {
+                b.bClicked = false;
+            }
+             return state;
+
+        case "menuButton":
+            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+                b.bClicked = true;
+                rl::playSound(sMap.get("button")!!);
+                io::printfn("Button: %s -> Cicked! ",b.name);
+                state = MAIN;
+            } else {
+                b.bClicked = false;
+            }
+             return state;
+
+        case "restartButton":
+            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+                b.bClicked = true;
+                rl::playSound(sMap.get("button")!!);
+                io::printfn("Button: %s -> Cicked! ",b.name);
+                state = MAIN;
+            } else {
+                b.bClicked = false;
+            }
+             return state;
+
+        case "resumeButton":
+            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+                b.bClicked = true;
+                rl::playSound(sMap.get("button")!!);
+                io::printfn("Button: %s -> Cicked! ",b.name);
+                state = GAME;
+            } else {
+                b.bClicked = false;
+            }
+            return state;
+
+
+    }
+     return state;
+}
 
 fn void drawButton(Button* b, float rotation = 0.0) {
 
