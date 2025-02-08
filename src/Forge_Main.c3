@@ -220,12 +220,12 @@ fn int main(String[] args) {
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 340}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 340}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
 				rl::drawFPS(15,160);
 				//rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				//sun
@@ -315,17 +315,17 @@ fn int main(String[] args) {
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("nightsky")!!, 0, 0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("nightmid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 340}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("nightmid")!!, {WINDOW_WIDTH + scrollMid, 340}, 0.0, 1.0, rl::WHITE);
 				forge_fx::forgeFXManager(&mMap,"starrySky", deltaTime);
 				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("nightground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("nightground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+				rl::drawTextureEx(tMap.get("nightground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("nightground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
 				rl::drawFPS(15,160);
 				//moon
 				forge_fx::drawLight(1815, 105, 150, rl::fade(rl::YELLOW, 0.8));
-				forge_fx::drawLight(1815, 105, 350, rl::fade(rl::WHITE, 0.8));
+				forge_fx::drawLight(1815, 105, 351, rl::fade(rl::WHITE, 0.8));
 				//end moon
 
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
@@ -382,12 +382,12 @@ fn int main(String[] args) {
 				if (day){
 
         				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
-        				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-        				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 340}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 340}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
-        				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
-        				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+        				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
         				forge_fx::drawLight(1815, 105, 300, rl::fade(rl::YELLOW, 0.7));
         				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
         				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
@@ -429,16 +429,16 @@ fn int main(String[] args) {
 
         				//draw game elements------------------------------------------------------------------------------
         				rl::drawTexture(tMap.get("nightsky")!!, 0, 0, rl::WHITE);
-        				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-        				rl::drawTextureEx(tMap.get("nightmid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 340}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("nightmid")!!, {WINDOW_WIDTH + scrollMid, 340}, 0.0, 1.0, rl::WHITE);
         				forge_fx::forgeFXManager(&mMap,"starrySky", deltaTime);
         				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
-        				rl::drawTextureEx(tMap.get("nightground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
-        				rl::drawTextureEx(tMap.get("nightground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
+        				rl::drawTextureEx(tMap.get("nightground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("nightground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
         				//moon
         				forge_fx::drawLight(1815, 105, 150, rl::fade(rl::YELLOW, 0.8));
-        				forge_fx::drawLight(1815, 105, 350, rl::fade(rl::WHITE, 0.8));
+        				forge_fx::drawLight(1815, 105, 351, rl::fade(rl::WHITE, 0.8));
         				//end moon
 
          			    forge_game::drawAnitmatedConstruct(&player);
@@ -545,13 +545,13 @@ fn int main(String[] args) {
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 350}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 350}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("mid")!!, {scrollMid, 340}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("mid")!!, {WINDOW_WIDTH + scrollMid, 340}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 945}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 945},0.0,1.0,rl::WHITE);
-				rl::drawText("Aramadillo Madness", (WINDOW_WIDTH / 2) - 350, 340, 65, {185,71,0,200}); //rust orange
+				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
+				rl::drawText("Aramadillo Madness", (WINDOW_WIDTH / 2) - 355, 340, 65, {185,71,0,200}); //rust orange
 				forge_fx::drawLight(1815, 105, 300, rl::fade(rl::YELLOW, 0.7));
 				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
 				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));

@@ -23,7 +23,7 @@ const float SNAKE_SOFFSET = 35.0;
 const float SPIDER_SOFFSET = 80.0;
 const float POWERUP_SOFFSET = 35.0;
 
-float groundLevel = 1080.0 - 115;//120
+float groundLevel = 1080.0 - 70;//115
 bool poopPenatrate = false;
 
 //GAME Structures Types ---------------------------------------------------------
@@ -347,6 +347,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                c.isGrounded = false;
             }
                c.pos.y += c.vel.y * deltaTime;
+               c.groundLevel = groundLevel - c.texture.height - 5;
 
          break;
 
@@ -391,40 +392,42 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
             }
 
             switch (c.name){
-            
-            
+
+
                case "ant":
-                        
+
                         c.pos.x -= (c.friction + ANT_SOFFSET) * deltaTime;
-                        c.groundLevel = groundLevel + 5;
+                        c.groundLevel = groundLevel - 40;
                break;
 
-               case "turtle":  
-                        
+               case "turtle":
+
                         c.pos.x -= (c.friction + TURTLE_SOFFSET) * deltaTime;
-                        c.groundLevel = groundLevel + 15; //ground level hit box adjust
-               break;         
-
-               case "fox":  
-                        
-                        c.pos.x -= (c.friction + FOX_SOFFSET)  * deltaTime;
-                        c.groundLevel = groundLevel + 15; //ground level hit box adjust
+                        c.groundLevel = groundLevel - 30; //ground level hit box adjust
                break;
 
-               case "snake": 
-                        
+               case "fox":
+
+                        c.pos.x -= (c.friction + FOX_SOFFSET)  * deltaTime;
+                        c.groundLevel = groundLevel - 30; //ground level hit box adjust
+               break;
+
+               case "snake":
+
                         c.pos.x -= (c.friction + SNAKE_SOFFSET) * deltaTime;
-                        c.groundLevel = groundLevel + 5;
+                        c.groundLevel = groundLevel - 40;
                break;
 
                case "scorpion":
-                        
+
                         c.pos.x -= (c.friction + SCORPION_SOFFSET)  * deltaTime;
+                        c.groundLevel = groundLevel - 30;
                break;
 
-               case "spider": 
-                        
+               case "spider":
+
                         c.pos.x -= (c.friction + SPIDER_SOFFSET)  * deltaTime;
+                        c.groundLevel = groundLevel - 30;
                break;
 
             }
@@ -471,9 +474,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
          case OBS:
           //io::printfn("OBS update reached");
           //optimize to switch later
-         if (c.name == "cactus") {c.groundLevel = groundLevel - 106;}
-         if (c.name == "tree") {c.groundLevel = groundLevel - 106;}
-         if (c.name == "boulder"){c.groundLevel = groundLevel - 55 ;}
+         if (c.name == "cactus") {c.groundLevel = groundLevel - 155;}
+         if (c.name == "tree") {c.groundLevel = groundLevel - 155;}
+         if (c.name == "boulder"){c.groundLevel = groundLevel - 102 ;}
 
 
          if((c.hHit)){
@@ -543,6 +546,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
           c.vel.y += c.gravity * deltaTime;
           c.pos.y += c.vel.y * deltaTime;
           c.pos.x -= (c.friction + POWERUP_SOFFSET) * deltaTime;
+          c.groundLevel = groundLevel - 40;
 
          break;
       }
@@ -580,6 +584,7 @@ fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
    float obsSize = 3.5; //scaling up onbsticles
    float normal = 2.0; // normal scale size without camera zoon
    float powerUpSize = 1.0;
+   float super = 2.5;
    float scale @noinit;
 
    Rectangle srcRec = {
@@ -596,6 +601,9 @@ fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
          if (c.type == POWER_UP){
                scale = powerUpSize;
       }
+        if(c.type == PLAYER && c.powerUpTimer > 0){
+               scale = super;
+      }
 
    Rectangle destRec = {
       destRec.x = c.pos.x,
@@ -604,7 +612,6 @@ fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
       destRec.height = (float)c.texture.height * scale,
      };
 
-      
          if(c.isDead) {c.texFlip = true; rotation = 180.0;}
          if (c.texFlip) {srcRec.width =- srcRec.width;}
 
