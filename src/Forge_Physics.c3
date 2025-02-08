@@ -7,7 +7,7 @@ const int PLAYER_OFFSET = 10;
 const int POOP_SHOT_OFFSET = 5;
 const int ROCK_OFFSET = 10;
 const int CACTUS_OFFSET = 10;
-const int TREE_OFFSET = 10; 
+const int TREE_OFFSET = 10;
 const int TURTLE_OFFSET = 10;
 const int ANT_OFFSET = 10;
 const int FOX_OFFSET = 10;
@@ -36,35 +36,35 @@ fn bool checkCollision(Construct* a, Construct* b) {
         a.pos.x + a.texture.width - aoffset  > b.pos.x &&
         a.pos.y < b.pos.y + b.texture.height - boffset  &&
         a.pos.y + a.texture.height - aoffset  > b.pos.y) {
-        
+
         io::printfn("%s -> hit -> %s !",a.name,b.name);
-        
+
         return true;
     }
     return false;
 }
 
-fn void resolveCollision(Construct* a, Construct* b) { 
-     
-    
-    float overlapX = (a.pos.x + (float)a.texture.width) - (b.pos.x + (float)b.texture.width); 
-    float overlapY = (a.pos.y + (float)a.texture.height) - (b.pos.y + (float)b.texture.height); 
-    
+fn void resolveCollision(Construct* a, Construct* b) {
+
+
+    float overlapX = (a.pos.x + (float)a.texture.width) - (b.pos.x + (float)b.texture.width);
+    float overlapY = (a.pos.y + (float)a.texture.height) - (b.pos.y + (float)b.texture.height);
+
     if (math::abs(overlapX) >= math::abs(overlapY)) {
-            //horizontal collision  
+            //horizontal collision
            a.hHit = true;
            b.hHit = true;
            b.vel.y *= -1;
-            
+
           if(a.type == PROJECTILE_POOP){b.hHit = true;}
-           
+
           if(b.name == "beatle"){a.bHit = true; b.lives = 0; a.hHit = false;}
           if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.hHit = false; b.hHit = false; b.isDead = false;}
           if(a.type == PLAYER && b.type == POWER_UP){
                 a.hHit = false;
-                
+
                 switch (b.name){
-                     
+
                      case "grav":
                             a.gHit = true;
                      break;
@@ -79,22 +79,22 @@ fn void resolveCollision(Construct* a, Construct* b) {
                  }
           }
           io::printfn("%s -> Horizotal_hit -> %s !",a.name,b.name);
-         
-         }else{ 
+
+         }else{
           // Vertical collision
-          a.vel.y *= -1; 
+          a.vel.y *= -1;
           b.vel.y *= -1;
           a.vHit = true;
           b.vHit = true;
-          
+
           if(b.name == "beatle"){a.bHit = true; b.lives = 0;}
           if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.vHit = false; b.vHit = false;}
           if(a.type == PLAYER && b.type == POWER_UP){
-            
+
                 a.vHit = false;
 
                 switch (b.name){
-                            
+
                             case "grav":
                                     a.gHit = true;
                             break;
@@ -111,4 +111,3 @@ fn void resolveCollision(Construct* a, Construct* b) {
           io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);
         }
 }
-//*/

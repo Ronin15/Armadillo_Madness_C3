@@ -133,8 +133,6 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state) {
                 b.bClicked = false;
             }
             return state;
-
-
     }
      return state;
 }
