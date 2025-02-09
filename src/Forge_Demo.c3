@@ -61,6 +61,7 @@ fn void moveRight(Construct* c, float deltaTime){
         
          c.vel.y += c.gravity * deltaTime;
          c.pos.y += c.vel.y * deltaTime;
+         c.groundLevel = forge_game::groundLevel - c.texture.height - 5;
 	}
 
 fn void moveLeft(Construct* c, float deltaTime){
