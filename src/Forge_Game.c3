@@ -397,37 +397,37 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                case "ant":
 
                         c.pos.x -= (c.friction + ANT_SOFFSET) * deltaTime;
-                        c.groundLevel = groundLevel - 40;
+                        c.groundLevel = groundLevel - 50;
                break;
 
                case "turtle":
 
                         c.pos.x -= (c.friction + TURTLE_SOFFSET) * deltaTime;
-                        c.groundLevel = groundLevel - 30; //ground level hit box adjust
+                        c.groundLevel = groundLevel - 40; //ground level hit box adjust
                break;
 
                case "fox":
 
                         c.pos.x -= (c.friction + FOX_SOFFSET)  * deltaTime;
-                        c.groundLevel = groundLevel - 30; //ground level hit box adjust
+                        c.groundLevel = groundLevel - 40; //ground level hit box adjust
                break;
 
                case "snake":
 
                         c.pos.x -= (c.friction + SNAKE_SOFFSET) * deltaTime;
-                        c.groundLevel = groundLevel - 40;
+                        c.groundLevel = groundLevel - 50;
                break;
 
                case "scorpion":
 
                         c.pos.x -= (c.friction + SCORPION_SOFFSET)  * deltaTime;
-                        c.groundLevel = groundLevel - 30;
+                        c.groundLevel = groundLevel - 40;
                break;
 
                case "spider":
 
                         c.pos.x -= (c.friction + SPIDER_SOFFSET)  * deltaTime;
-                        c.groundLevel = groundLevel - 30;
+                        c.groundLevel = groundLevel - 40;
                break;
 
             }
