@@ -594,24 +594,15 @@ fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
      srcRec.height = (float)c.texture.height,
    };
 
-        switch (c.type){
-
-                case OBS:
-                    scale = obsSize;
-                    break;
-
-                case POWER_UP:
-                    scale = powerUpSize;
-                    break;
-
-                case PLAYER:
-                    if (c.powerUpTimer > 0){
-                    scale = super;
-                }
-                    scale = normal;
-                    break;
-            default:
-                scale = normal;
+         scale = normal;
+         if (c.type == OBS){
+               scale = obsSize;
+      }
+         if (c.type == POWER_UP){
+               scale = powerUpSize;
+      }
+        if(c.type == PLAYER && c.powerUpTimer > 0){
+               scale = super;
     }
 
    Rectangle destRec = {
