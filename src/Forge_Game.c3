@@ -141,7 +141,6 @@ fn String getRandomConstructName (ConstructType type){
       return "default"; // TO DO ADD DEFAULT TEX
    }
 
-
 fn Construct forgeCronstructProjectile(TexMap *tMap) {
 
       Construct c;
@@ -393,7 +392,6 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 
             switch (c.name){
 
-
                case "ant":
 
                         c.pos.x -= (c.friction + ANT_SOFFSET) * deltaTime;
@@ -456,7 +454,6 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                   c.isGrounded = true;
                   rl::playSound(sMap.get("enemyDie")!!);
 
-
                }
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
@@ -477,7 +474,6 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
          if (c.name == "cactus") {c.groundLevel = groundLevel - 155;}
          if (c.name == "tree") {c.groundLevel = groundLevel - 155;}
          if (c.name == "boulder"){c.groundLevel = groundLevel - 102 ;}
-
 
          if((c.hHit)){
 

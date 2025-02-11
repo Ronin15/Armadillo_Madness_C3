@@ -40,7 +40,6 @@ enum GameState {
 	DEMO,
 }
 
-
 fn int main(String[] args) {
 
 	//init Game Systems
@@ -51,7 +50,6 @@ fn int main(String[] args) {
 	defer rl::closeAudioDevice();
 	rl::setTargetFPS(FPS_CAP);
 	forge_game::toggleFullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
-
 
 	//asset loading
 	TexMap tMap = forge_load::loadTexMap();
@@ -117,12 +115,10 @@ fn int main(String[] args) {
 	  	lastTime = currentTime;
 	  	accumulator += updateTime;
 
-
 	  	//render and game states-----------------------------------------------
 		rl::beginDrawing();
 		defer rl::endDrawing();
 		rl::clearBackground(rl::BLACK);
-
 
 		switch (state) {
 
@@ -501,7 +497,6 @@ fn int main(String[] args) {
 					//clean all assetes needed here to fully reset. Use Diffrent Demo Array.
 				}
 
-
 				//Demo Loop------------------------------------------------------------------------------
 
 				demoCounter1 += 1;
@@ -541,7 +536,6 @@ fn int main(String[] args) {
 				foreach ( &demoConstruct : demoConstructs){
 							forge_game::updateConstruct(demoConstruct,&sMap, raining, deltaTime);
 						}
-
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);

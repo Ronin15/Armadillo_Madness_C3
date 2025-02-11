@@ -40,7 +40,6 @@ fn Button createButton(TexMap* tMap, SoundMap* sMap, int count) {
     return b;
 }
 
-
 fn GameState updateButton(Button* b, SoundMap* sMap, GameState state) {
 
     state = state;

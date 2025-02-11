@@ -38,7 +38,6 @@ fn void moveRight(Construct* c, float deltaTime){
               if (poopPenatrate){poopPenatrate = false;}
             }
             
-            
             //powerup
             if (c.sHit){c.powerUpTimer += 400; c.invlunerable = true; c.sHit = false;}
 
@@ -98,7 +97,6 @@ fn void moveLeft(Construct* c, float deltaTime){
               if (poopPenatrate){poopPenatrate = false;}
             }
             
-            
             //powerup
             if (c.sHit){c.powerUpTimer += 400; c.invlunerable = true; c.sHit = false;}
 
@@ -120,7 +118,6 @@ fn void moveLeft(Construct* c, float deltaTime){
         c.vel.y += c.gravity * deltaTime;
         c.pos.y += c.vel.y * deltaTime; 
 }
-
 
 fn void jump(Construct* c, float deltaTime){
         
@@ -144,7 +141,6 @@ fn void jump(Construct* c, float deltaTime){
               if (poopPenatrate){poopPenatrate = false;}
             }
             
-            
             //powerup
             if (c.sHit){c.powerUpTimer += 400; c.invlunerable = true; c.sHit = false;}
 
@@ -160,7 +156,6 @@ fn void jump(Construct* c, float deltaTime){
             //powerup
             if (c.fHit){c.powerUpTimer += 400; poopPenatrate = true; c.fHit = false;} 
             if (c.gHit){c.powerUpTimer += 400; c.gravity = 400.0; c.gHit = false;}
-
 
             c.vel.y += c.gravity * deltaTime;
             c.pos.y += c.vel.y * deltaTime;

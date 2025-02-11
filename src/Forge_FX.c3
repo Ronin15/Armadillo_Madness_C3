@@ -6,8 +6,6 @@ import std::math;
 import std::io;
 import raylib5::rl;
 
-
-
 //_P const name ending short for particles
 const int MAX_RAINDROPS = 500;
 const int MAX_FIREWORK_P = 200;
@@ -69,7 +67,6 @@ struct Fire_Particle{
 	float size;
 }
 
-
 struct Particle { 
     Vector2 pos; 
     Vector2 vel;
@@ -94,7 +91,6 @@ struct Raindrop {
     Vector2 pos;
     float vel;
 }
-
 
 fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
         String effect = type;
@@ -236,7 +232,6 @@ fn void initFireWork(Firework *firework){
     }
 
 }
-
 
 fn void updateFireWork(Firework *firework,float deltaTime){
     

@@ -13,9 +13,7 @@ const int ANT_OFFSET = 10;
 const int FOX_OFFSET = 10;
 const int SNAKE_OFFSET = 10;
 
-
 // a will always be player or poop, b will always be other objects
-
 
 //AABB collision Detection
 fn bool checkCollision(Construct* a, Construct* b) {
@@ -45,7 +43,6 @@ fn bool checkCollision(Construct* a, Construct* b) {
 }
 
 fn void resolveCollision(Construct* a, Construct* b) {
-
 
     float overlapX = (a.pos.x + (float)a.texture.width) - (b.pos.x + (float)b.texture.width);
     float overlapY = (a.pos.y + (float)a.texture.height) - (b.pos.y + (float)b.texture.height);
