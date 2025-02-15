@@ -102,7 +102,7 @@ fn String getRandomConstructName (ConstructType type){
    //static int powerUpCountDemo;
 
    String[*] groundTypes = {"ant","turtle","snake","fox","scorpion","spider"};
-   String[*] flyingTypes = {"bird","beatle","owl"};
+   String[*] flyingTypes = {"bird","beatle","owl","moth"};
    String[*] obsticlesTypes = {"cactus","boulder","tree"};
    String[*] powerUps = {"grav","food","super"};
 
@@ -296,7 +296,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                   rl::playSound(sMap.get("boing")!!);
                }
 
-            if (c.bHit && c.lives < MAX_LIVES){ // beatle hit
+            if (c.bHit && c.lives < MAX_LIVES){ // beatle hit and moth hit
 
                   c.bHit = false;
                   rl::playSound(sMap.get("eatBug")!!);

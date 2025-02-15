@@ -55,7 +55,7 @@ fn void resolveCollision(Construct* a, Construct* b) {
 
           if(a.type == PROJECTILE_POOP){b.hHit = true;}
 
-          if(b.name == "beatle"){a.bHit = true; b.lives = 0; a.hHit = false;}
+          if(b.name == "beatle" || b.name == "moth"){a.bHit = true; b.lives = 0; a.hHit = false;} //handles hit tracking for giving hearts back.
           if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.hHit = false; b.hHit = false; b.isDead = false;}
           if(a.type == PLAYER && b.type == POWER_UP){
                 a.hHit = false;
@@ -84,7 +84,7 @@ fn void resolveCollision(Construct* a, Construct* b) {
           a.vHit = true;
           b.vHit = true;
 
-          if(b.name == "beatle"){a.bHit = true; b.lives = 0;}
+          if(b.name == "beatle" || b.name == "moth"){a.bHit = true; b.lives = 0;}
           if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.vHit = false; b.vHit = false;}
           if(a.type == PLAYER && b.type == POWER_UP){
 
