@@ -22,6 +22,7 @@ const float TURTLE_SOFFSET = 35.0;
 const float SNAKE_SOFFSET = 35.0;
 const float SPIDER_SOFFSET = 80.0;
 const float POWERUP_SOFFSET = 35.0;
+const float MOUSE_SOFFSET = 50.0;
 
 float groundLevel = 1080.0 - 70;//115
 bool poopPenatrate = false;
@@ -101,7 +102,7 @@ fn String getRandomConstructName (ConstructType type){
    static int powerUpCount;// to track and restrict power up items to global const value
    //static int powerUpCountDemo;
 
-   String[*] groundTypes = {"ant","turtle","snake","fox","scorpion","spider"};
+   String[*] groundTypes = {"ant","turtle","snake","fox","scorpion","spider","mouse"};
    String[*] flyingTypes = {"bird","beatle","owl","moth"};
    String[*] obsticlesTypes = {"cactus","boulder","tree"};
    String[*] powerUps = {"grav","food","super"};
@@ -428,6 +429,10 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                         c.groundLevel = groundLevel - 40;
                break;
 
+               case "mouse": 
+
+                        c.pos.x -= (c.friction + MOUSE_SOFFSET)  * deltaTime;
+                        c.groundLevel = groundLevel - 40;
             }
 
             if(c.vHit){c.vHit = false;c.lives -= 1;}
