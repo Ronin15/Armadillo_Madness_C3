@@ -572,7 +572,7 @@ fn int main(String[] args) {
 				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				//rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 				
-					state = forge_ui::updateButton(&creditButton, &sMap, state);
+					state = forge_ui::updateButton(&creditButton, &sMap, state, {10,10});
 				
 					forge_ui::drawButton(&creditButton);
 				
