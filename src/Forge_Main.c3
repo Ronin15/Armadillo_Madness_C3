@@ -558,7 +558,24 @@ fn int main(String[] args) {
 						}
 
 			case CREDITS:
-				io::printfn("Credits State");
+			
+				//io::printfn("Credits State");
+				//slicing out Main ui buttons
+				Button creditButton = uiButtons[4];
+				rl::showCursor();
+				//rl::playMusicStream(mMap.get("titleMusic")!!);
+				//rl::updateMusicStream(mMap.get("titleMusic")!!);
+				rl::clearBackground(rl::BLACK);
+                rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
+                rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
+                
+				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
+				//rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
+				
+					state = forge_ui::updateButton(&creditButton, &sMap, state);
+				
+					forge_ui::drawButton(&creditButton);
+				
    		}
    			accumulator -= TIME_STEP;
 	}

@@ -4,8 +4,6 @@ import forge_load;
 import raylib5::rl;
 import std::io;
 
-Vector2 mousePos; //= rl::getMousePosition();
-
 struct Button {
     Vector2 pos;
     Texture2D texture;
@@ -40,22 +38,42 @@ fn Button createButton(TexMap* tMap, SoundMap* sMap, int count) {
     return b;
 }
 
-fn GameState updateButton(Button* b, SoundMap* sMap, GameState state) {
+//customPos used for credits page buttom to move it out of the way.
+fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, Vector2 customPos = {0.0,0.0} ) {
+
+    Vector2 mousePos;
+    Rectangle bRect;
 
     state = state;
+    customPos = customPos;
 
-    Rectangle bRect = {
+    if (customPos.x == 0.0 && customPos.y == 0.0) {
+    
+    bRect = {
         bRect.x = b.pos.x,
         bRect.y = b.pos.y,
         bRect.width = (float)b.texture.width / b.maxFrames,
         bRect.height = b.texture.height,
-    };
+        };
+
+    } else {
+
+        b.pos.x = customPos.x;
+        b.pos.y = customPos.y;
+
+    bRect = {
+        bRect.x = b.pos.x,
+        bRect.y = b.pos.y,
+        bRect.width = (float)b.texture.width / b.maxFrames,
+        bRect.height = b.texture.height,
+        };
+    }
+
 
     mousePos = rl::getMousePosition();
     b.bhover = rl::checkCollisionPointRec(mousePos, bRect);
 
-    switch(b.name)
-    {
+    switch(b.name) {
 
         case "playButton":
             
