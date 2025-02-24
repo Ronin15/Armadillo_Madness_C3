@@ -138,6 +138,7 @@ fn int main(String[] args) {
 							frameCounter = 0;
 					}
 				//	forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
+				break;
 
 			case MAIN:
 				//slicing out Main ui buttons
@@ -169,7 +170,8 @@ fn int main(String[] args) {
 							state = DEMO;
 							frameCounter = 0;
 					}
-
+				 break;
+						
 			case GAME:
 			     night = false;
 			     day = true;
@@ -264,6 +266,7 @@ fn int main(String[] args) {
 			if(weatherTimer <= 0.0){
 				raining = false;
 			}
+				break;
 
 			case NIGHTLVL:
 			     night = true;
@@ -360,6 +363,7 @@ fn int main(String[] args) {
 			if(weatherTimer <= 0.0){
 				raining = false;
 			}
+			break;
 
 			case PAUSE:
                  //slicing out Pause ui buttons.
@@ -469,15 +473,40 @@ fn int main(String[] args) {
          				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
                 }
 
+				break;
+
 			case GAME_WIN:
-				io::printfn("Game_WIN State");
+				//TODO still needs more work but framework is there, needs art animations, music.
+				//io::printfn("Game_WIN State");
+				Button gameWinButton = uiButtons[3];
+				rl::showCursor();
+				rl::playMusicStream(mMap.get("titleMusic")!!);
+				rl::updateMusicStream(mMap.get("titleMusic")!!);
+				rl::clearBackground(rl::BLACK);
+                //rl::drawTexture(tmap.get("creditsPage")!!, 0, 0, rl::WHITE);
+                rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
+                
+				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
+				
+					state = forge_ui::updateButton(&gameWinButton, &sMap, state, {10,10});
+				
+					forge_ui::drawButton(&gameWinButton);
+				
+				forge_fx::drawRainbow();
+				forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
+
+				rl::drawTextureEx(tMap.get("armadillo")!!, {750, 825}, 0.0, 2.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 815}, 0.0, 3.0, rl::WHITE);
+				
+				break;
 
 			case GAME_OVER:
 				io::printfn("Game_Over State");
-
+				break;
 			case OPTIONS:
                 io::printfn("Options State");
-
+				break;
 			case DEMO:
 
 				rl::hideCursor();
@@ -556,15 +585,16 @@ fn int main(String[] args) {
 					foreach ( &demoConstruct : demoConstructs){
 								forge_game::drawAnitmatedConstruct(demoConstruct);
 						}
-
+				 break;
+				
 			case CREDITS:
 			
 				//io::printfn("Credits State");
-				//slicing out Main ui buttons
+				//just using menu button.
 				Button creditButton = uiButtons[4];
 				rl::showCursor();
-				//rl::playMusicStream(mMap.get("titleMusic")!!);
-				//rl::updateMusicStream(mMap.get("titleMusic")!!);
+				rl::playMusicStream(mMap.get("titleMusic")!!);
+				rl::updateMusicStream(mMap.get("titleMusic")!!);
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
