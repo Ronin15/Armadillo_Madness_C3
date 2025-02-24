@@ -81,8 +81,9 @@ fn int main(String[] args) {
 	Image windowIcon = rl::loadImage("resources/images/ForgeEngine.png");
 	rl::setWindowIcon(windowIcon);
 
-	//volume manager - need to addtional volume control in optuions menu.
-	rl::setMasterVolume(0.6);
+	//volume manager - need to addtional volume control in options menu.
+	rl::setMasterVolume(0.5);
+	String randSong = forge_game::getRandomSong();
 
 	//game objects init
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
@@ -103,6 +104,8 @@ fn int main(String[] args) {
 	}
 
 	io::printfn("Objects created");
+	io::printfn("Song selected: %s!", randSong);
+	
 
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = MAIN;
@@ -178,8 +181,8 @@ fn int main(String[] args) {
 				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
-				rl::playMusicStream(mMap.get("gameMusic")!!);
-	  			rl::updateMusicStream(mMap.get("gameMusic")!!);
+				rl::playMusicStream(mMap.get(randSong)!!);
+	  			rl::updateMusicStream(mMap.get(randSong)!!);
 	  			scrollGround -= 5.0;
 				scrollMid -= 0.6;
 				scrollClouds -= 0.3;
@@ -234,7 +237,7 @@ fn int main(String[] args) {
 
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);
-				rl::drawText("Lives", 16, 60, 35, rl::RAYWHITE);
+				rl::drawText("Health", 16, 60, 35, rl::RAYWHITE);
 				//life tracking updating
 				if (&player.lives == &player.lives){
 					for (int i = 0; i < player.lives; i++){
@@ -274,8 +277,8 @@ fn int main(String[] args) {
 				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
-				rl::playMusicStream(mMap.get("gameMusic")!!);
-	  			rl::updateMusicStream(mMap.get("gameMusic")!!);
+				rl::playMusicStream(mMap.get("night")!!);
+	  			rl::updateMusicStream(mMap.get("night")!!);
 	  			scrollGround -= 5.0;
 				scrollMid -= 0.6;
 				scrollClouds -= 0.3;
@@ -329,7 +332,7 @@ fn int main(String[] args) {
 
 				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);
-				rl::drawText("Lives", 16, 60, 35, rl::RAYWHITE);
+				rl::drawText("Health", 16, 60, 35, rl::RAYWHITE);
 				//life tracking updating
 				if (&player.lives == &player.lives){
 					for (int i = 0; i < player.lives; i++){
@@ -408,7 +411,7 @@ fn int main(String[] args) {
         				//drawing pause stuff here so objects dont cover it up
         				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
         				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);
-        				rl::drawText("Lives", 16, 60, 35, rl::RAYWHITE);
+        				rl::drawText("Health", 16, 60, 35, rl::RAYWHITE);
         				if (&player.lives == &player.lives){
        					for (int i = 0; i < player.lives; i++){
       						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
@@ -455,7 +458,7 @@ fn int main(String[] args) {
         				//drawing pause stuff here so objects dont cover it up
         				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
         				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);
-        				rl::drawText("Lives", 16, 60, 35, rl::RAYWHITE);
+        				rl::drawText("Health", 16, 60, 35, rl::RAYWHITE);
         				if (&player.lives == &player.lives){
        					for (int i = 0; i < player.lives; i++){
       						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
@@ -480,8 +483,8 @@ fn int main(String[] args) {
 				//io::printfn("Game_WIN State");
 				Button gameWinButton = uiButtons[3];
 				rl::showCursor();
-				rl::playMusicStream(mMap.get("titleMusic")!!);
-				rl::updateMusicStream(mMap.get("titleMusic")!!);
+				rl::playMusicStream(mMap.get("gameWin")!!);
+				rl::updateMusicStream(mMap.get("gameWin")!!);
 				rl::clearBackground(rl::BLACK);
                 //rl::drawTexture(tmap.get("creditsPage")!!, 0, 0, rl::WHITE);
                 rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
@@ -593,8 +596,8 @@ fn int main(String[] args) {
 				//just using menu button.
 				Button creditButton = uiButtons[4];
 				rl::showCursor();
-				rl::playMusicStream(mMap.get("titleMusic")!!);
-				rl::updateMusicStream(mMap.get("titleMusic")!!);
+				rl::playMusicStream(mMap.get(randSong)!!);
+				rl::updateMusicStream(mMap.get(randSong)!!);
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);

@@ -80,6 +80,20 @@ fn void toggleFullScreen (int gsWidth, int gsHeight){
 	if (width <= gsWidth || height <= gsHeight && rl::isWindowFullscreen() == false) {rl::toggleFullscreen();}
 }
 
+fn String getRandomSong(){
+   String[*] playList = {"bicycle","banjo","banana"};
+
+   int playListLength = playList.len -1;
+
+   int min = 0;
+   int max = playListLength;
+
+   int randSong = rand_in_range(min,max);
+
+   return playList[randSong];
+}
+
+
 fn ConstructType getRandomType(){
    int min = ConstructType.ENEMY_GROUND.ordinal;
    int max = ConstructType.OBS.ordinal;
