@@ -6,6 +6,7 @@ import forge_physics;
 import forge_fx;
 import forge_demo;
 import forge_ui;
+import forge_options;
 //vendor modules-------------------
 import raylib5::rl;
 //C3 standard modules--------------
@@ -21,7 +22,6 @@ const String GAME_NAME = "Armadillo Madness 0.5.1"; //ui update
 const int MAX_CONSTRUCTS = 200;//100
 const int MAX_POWERUPS = 12;//6
 const int MAX_BUTTONS = 7;
-
 
 Construct[MAX_CONSTRUCTS] constructs;
 Construct[MAX_CONSTRUCTS] demoConstructs;
@@ -51,6 +51,7 @@ fn int main(String[] args) {
 	rl::setTargetFPS(FPS_CAP);
 	forge_game::toggleFullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
 
+
 	//asset loading
 	TexMap tMap = forge_load::loadTexMap();
 	SoundMap sMap = forge_load::loadSoundMap();
@@ -68,7 +69,7 @@ fn int main(String[] args) {
 	bool night = false;
 	bool raining = false;
 	float weatherTimer;
-
+	//demo time counters
 	float demoCounter1;
 	float demoCounter2;
 
@@ -82,9 +83,11 @@ fn int main(String[] args) {
 	rl::setWindowIcon(windowIcon);
 
 	//volume manager - need to addtional volume control in options menu.
-	rl::setMasterVolume(0.5);
+	//rl::setMasterVolume(0.5);
 	String randSong = forge_game::getRandomSong();
-
+	//Music music = rl::updateMusicStream(mMap.get(randSong)!!); //used in options state.
+	
+	
 	//game objects init
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
 	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
@@ -106,7 +109,6 @@ fn int main(String[] args) {
 	io::printfn("Objects created");
 	io::printfn("Song selected: %s!", randSong);
 	
-
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = MAIN;
 	//rl::playSound(sMap.get("logoSound")!!);
@@ -508,8 +510,29 @@ fn int main(String[] args) {
 				io::printfn("Game_Over State");
 				break;
 			case OPTIONS:
-                io::printfn("Options State");
+
+				//just using menu button.
+				Button menuButton = uiButtons[4];
+				rl::showCursor();
+				Music song = mMap.get(randSong)!!;
+				rl::playMusicStream(mMap.get(randSong)!!);
+				rl::updateMusicStream(mMap.get(randSong)!!);
+				rl::clearBackground(rl::BLACK);
+                rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
+                rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
+                
+				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
+				//rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
+				state = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
+				forge_ui::drawButton(&menuButton);
+
+				//update master volume, music volume, toggle fullscreen if not fullscreen already.
+				forge_options::adjustUpdateOptions(song);
+				//draw Options
+				forge_options::drawOptions();
+                
 				break;
+				
 			case DEMO:
 
 				rl::hideCursor();
@@ -594,7 +617,7 @@ fn int main(String[] args) {
 			
 				//io::printfn("Credits State");
 				//just using menu button.
-				Button creditButton = uiButtons[4];
+				Button menuButton = uiButtons[4];
 				rl::showCursor();
 				rl::playMusicStream(mMap.get(randSong)!!);
 				rl::updateMusicStream(mMap.get(randSong)!!);
@@ -605,9 +628,9 @@ fn int main(String[] args) {
 				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				//rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 				
-					state = forge_ui::updateButton(&creditButton, &sMap, state, {10,10});
+					state = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
 				
-					forge_ui::drawButton(&creditButton);
+					forge_ui::drawButton(&menuButton);
 				
    		}
    			accumulator -= TIME_STEP;
