@@ -18,10 +18,12 @@ const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const String GAME_NAME = "Armadillo Madness 0.5.1"; //ui update
+const String GAME_NAME = "Armadillo Madness 0.7.0"; //ui update, options update, and almost all game states complete
 const int MAX_CONSTRUCTS = 200;//100
 const int MAX_POWERUPS = 12;//6
 const int MAX_BUTTONS = 7;
+const float MASTER_VOLUME = 0.8;
+const float MUSIC_VOLUME = 0.5;
 
 Construct[MAX_CONSTRUCTS] constructs;
 Construct[MAX_CONSTRUCTS] demoConstructs;
@@ -43,7 +45,7 @@ enum GameState {
 fn int main(String[] args) {
 
 	//init Game Systems
-	rl::setConfigFlags(rl::FLAG_VSYNC_HINT);
+  //rl::setConfigFlags(rl::FLAG_VSYNC_HINT);
 	rl::initWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
 	defer rl::closeWindow();
 	rl::initAudioDevice();
@@ -83,10 +85,10 @@ fn int main(String[] args) {
 	rl::setWindowIcon(windowIcon);
 
 	//volume manager - need to addtional volume control in options menu.
-	//rl::setMasterVolume(0.5);
+	rl::setMasterVolume(MASTER_VOLUME);
 	String randSong = forge_game::getRandomSong();
-	//Music music = rl::updateMusicStream(mMap.get(randSong)!!); //used in options state.
-	
+	Music song = mMap.get(randSong)!!;
+	rl::setMusicVolume(song,MUSIC_VOLUME);
 	
 	//game objects init
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
@@ -373,6 +375,7 @@ fn int main(String[] args) {
 			case PAUSE:
                  //slicing out Pause ui buttons.
 			     Button[] pauseButtons = uiButtons[4..6];
+				 Button optionButton = uiButtons[1];
 			     rl::showCursor();
 
 				if (rl::isKeyPressed(rl::KEY_P)){
@@ -514,9 +517,15 @@ fn int main(String[] args) {
 				//just using menu button.
 				Button menuButton = uiButtons[4];
 				rl::showCursor();
-				Music song = mMap.get(randSong)!!;
-				rl::playMusicStream(mMap.get(randSong)!!);
-				rl::updateMusicStream(mMap.get(randSong)!!);
+				if(rl::isMusicStreamPlaying(song) == false){
+						rl::playMusicStream(song);
+						//std::io::printfn("music play");
+						
+					}else{
+						forge_options::adjustUpdateOptions(song);
+						rl::updateMusicStream(song);
+						//std::io::printfn("music update: %s",song);
+					}
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
@@ -527,7 +536,7 @@ fn int main(String[] args) {
 				forge_ui::drawButton(&menuButton);
 
 				//update master volume, music volume, toggle fullscreen if not fullscreen already.
-				forge_options::adjustUpdateOptions(song);
+				
 				//draw Options
 				forge_options::drawOptions();
                 
