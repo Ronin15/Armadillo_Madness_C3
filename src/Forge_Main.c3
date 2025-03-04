@@ -53,7 +53,11 @@ fn int main(String[] args) {
 	rl::setTargetFPS(FPS_CAP);
 	forge_game::toggleFullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
 
-
+	//camera
+	Camera2D camera;
+	camera.zoom = 1.0;
+	//camera.target = {WINDOW_WIDTH,WINDOW_HEIGHT};  
+	
 	//asset loading
 	TexMap tMap = forge_load::loadTexMap();
 	SoundMap sMap = forge_load::loadSoundMap();
@@ -124,8 +128,10 @@ fn int main(String[] args) {
 
 	  	//render and game states-----------------------------------------------
 		rl::beginDrawing();
+		rl::beginMode2D(camera);
+		defer rl::endMode2D();	
 		defer rl::endDrawing();
-		rl::clearBackground(rl::BLACK);
+				rl::clearBackground(rl::BLACK);
 
 		switch (state) {
 

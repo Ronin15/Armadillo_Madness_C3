@@ -596,10 +596,10 @@ fn void drawConstruct(Construct* c, float rotation = 0.0, float scale = 2.0){ //
 fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
    //setting up animation data on contructs
    Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
-   float obsSize = 3.5; //scaling up onbsticles
-   float normal = 2.0; // normal scale size without camera zoon
+   float obsSize = 3.5; //scaling up onbsticles 3.5
+   float normal = 2.0; // normal scale size without camera zoom 2.0
    float powerUpSize = 1.0;
-   float super = 2.5;
+   float super = 2.5; //2.5
    float scale @noinit;
 
    Rectangle srcRec = {

@@ -3,15 +3,15 @@ import forge_game;
 import std::io;
 import std::math;
 
-const int PLAYER_OFFSET = 10;
-const int POOP_SHOT_OFFSET = 5;
-const int ROCK_OFFSET = 10;
-const int CACTUS_OFFSET = 10;
-const int TREE_OFFSET = 10;
-const int TURTLE_OFFSET = 10;
-const int ANT_OFFSET = 10;
-const int FOX_OFFSET = 10;
-const int SNAKE_OFFSET = 10;
+const int PLAYER_OFFSET = 0;
+const int POOP_SHOT_OFFSET = 0; //5
+const int ROCK_OFFSET = 0;
+const int CACTUS_OFFSET = 0;
+const int TREE_OFFSET = 0;
+const int TURTLE_OFFSET = 0;
+const int ANT_OFFSET = 0;
+const int FOX_OFFSET = 0;
+const int SNAKE_OFFSET = 0;
 
 // a will always be player or poop, b will always be other objects
 

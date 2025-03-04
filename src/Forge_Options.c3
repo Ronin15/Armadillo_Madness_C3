@@ -4,7 +4,7 @@ import raylib5::rl;
 import std::io;
 
 
-const int NUM_OPTIONS = 3;
+const int NUM_OPTIONS = 2;
 
 int optionIndex = 0;
 int numOptions = NUM_OPTIONS;
@@ -18,8 +18,7 @@ struct Option{
 
 Option [NUM_OPTIONS] options = {
 		  {"Master Volume", forge_main::MASTER_VOLUME},
-          {"Music Volume", forge_main::MUSIC_VOLUME},
-          {"Fullscreen", 0.0}
+          {"Music Volume", forge_main::MUSIC_VOLUME}
       	};
 		
 fn void  adjustUpdateOptions(Music song) {
@@ -36,11 +35,7 @@ fn void  adjustUpdateOptions(Music song) {
                      if (options[optionIndex].value > 0.0) options[optionIndex].value -= 0.1;
                      rl::setMusicVolume(song, (float)options[optionIndex].value / 1.0);
                      // Set sound effects volume accordingly
-                 } else if (optionIndex == 2) { // Toggle Fullscreen
-                     options[optionIndex].value = (int)!options[optionIndex].value;
-                     if (options[optionIndex].value) rl::toggleFullscreen();
-                 }
-             }
+                              }
              if (rl::isKeyPressed(rl::KEY_RIGHT)) {
                  if (optionIndex == 0) { // Increase Master Volume
                      if (options[optionIndex].value < 1.0) options[optionIndex].value += 0.1;
@@ -51,6 +46,7 @@ fn void  adjustUpdateOptions(Music song) {
             }
 		}
 	}
+}
 
 fn void drawOptions() {
          for (int i = 0; i < numOptions; i++) {
