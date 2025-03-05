@@ -35,6 +35,7 @@ bool poopPenatrate = false;
    ENEMEY_FLY,
    POWER_UP,
    OBS,
+   BOSS
 }
 
  struct Construct {
@@ -563,6 +564,10 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
           c.pos.x -= (c.friction + POWERUP_SOFFSET) * deltaTime;
           c.groundLevel = groundLevel - 40;
 
+         break;
+
+         case BOSS:
+            io::printfn("Reached the BOSS updating section");
          break;
       }
 

@@ -27,6 +27,7 @@ const float MUSIC_VOLUME = 0.5;
 
 Construct[MAX_CONSTRUCTS] constructs;
 Construct[MAX_CONSTRUCTS] demoConstructs;
+Contruct[MAX_CONSTRUCTS] nightContructs;
 Button[MAX_BUTTONS] uiButtons;
 
 enum GameState {
@@ -107,6 +108,10 @@ fn int main(String[] args) {
 	demoConstructs[i] = forge_game::forgeConstruct(&tMap);
 	}
 
+	for(int i = 0; i < MAX_CONSTRUCTS; i++){
+	nightConstructs[i] = forge_game::forgeConstruct(&tMap);
+	}
+
 	for (int i = 0; i < MAX_BUTTONS; i++){
 		int count = i;
 		uiButtons[i] = forge_ui::createButton(&tMap, &sMap, count);
@@ -117,7 +122,7 @@ fn int main(String[] args) {
 	
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = MAIN;
-	//rl::playSound(sMap.get("logoSound")!!);
+	rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
 	  	float deltaTime = rl::getFrameTime();
