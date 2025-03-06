@@ -11,7 +11,7 @@ import forge_options;
 import raylib5::rl;
 //C3 standard modules--------------
 import std::io;
-
+ 
 //Game Consts---------------------------------
 const int FPS_CAP = 60; //FPS Cap
 const float TARGET_FPS = 60.0; //target FPS
@@ -46,7 +46,7 @@ enum GameState {
 fn int main(String[] args) {
 
 	//init Game Systems
-  //rl::setConfigFlags(rl::FLAG_VSYNC_HINT);
+  	rl::setConfigFlags(rl::FLAG_VSYNC_HINT);
 	rl::initWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
 	defer rl::closeWindow();
 	rl::initAudioDevice();
@@ -101,15 +101,15 @@ fn int main(String[] args) {
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap);
 
 	for(int i = 0; i < MAX_CONSTRUCTS; i++){
-	constructs[i] = forge_game::forgeConstruct(&tMap);
+	constructs[i] = forge_game::forgeConstruct(&tMap,"day");
 	}
 
 	for(int i = 0; i < MAX_CONSTRUCTS; i++){
-	demoConstructs[i] = forge_game::forgeConstruct(&tMap);
+	demoConstructs[i] = forge_game::forgeConstruct(&tMap,"demo");
 	}
 
 	for(int i = 0; i < MAX_CONSTRUCTS; i++){
-	nightConstructs[i] = forge_game::forgeConstruct(&tMap);
+		nightConstructs[i] = forge_game::forgeConstruct(&tMap,"night");
 	}
 
 	for (int i = 0; i < MAX_BUTTONS; i++){
@@ -121,7 +121,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);
 	
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = NIGHTLVL;
+	GameState state = MAIN;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
