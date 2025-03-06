@@ -24,29 +24,36 @@ Option [NUM_OPTIONS] options = {
 fn void  adjustUpdateOptions(Music song) {
 
 				
-			 if (rl::isKeyPressed(rl::KEY_UP)) optionIndex = (optionIndex - 1 + NUM_OPTIONS) % NUM_OPTIONS;
-             if (rl::isKeyPressed(rl::KEY_DOWN)) optionIndex = (optionIndex + 1) % NUM_OPTIONS;
+			if (rl::isKeyPressed(rl::KEY_UP)) {optionIndex = (optionIndex - 1 + NUM_OPTIONS) % NUM_OPTIONS;}
+            if (rl::isKeyPressed(rl::KEY_DOWN)) {optionIndex = (optionIndex + 1) % NUM_OPTIONS;}
    
              if (rl::isKeyPressed(rl::KEY_LEFT)) {
 				if (optionIndex == 0) { // Decrease Master Volume
-                     if (options[optionIndex].value > 0.0) options[optionIndex].value -= 0.1;
-                    rl::setMasterVolume((float)options[optionIndex].value / 1.0);
-                 } else if (optionIndex == 1) { // Decrease Music Volume
-                     if (options[optionIndex].value > 0.0) options[optionIndex].value -= 0.1;
+                     if (options[optionIndex].value > 0.0) {
+                         options[optionIndex].value -= 0.1;
+                         rl::setMasterVolume((float)options[optionIndex].value / 1.0);
+                        }
+                } else if (optionIndex == 1) { // Decrease Music Volume
+                     if (options[optionIndex].value > 0.0) {
+                     options[optionIndex].value -= 0.1;
                      rl::setMusicVolume(song, (float)options[optionIndex].value / 1.0);
-                     // Set sound effects volume accordingly
-                              }
+                     // Set sound effects volume accordingly 
+                    }
+                } 
+            }
              if (rl::isKeyPressed(rl::KEY_RIGHT)) {
                  if (optionIndex == 0) { // Increase Master Volume
                      if (options[optionIndex].value < 1.0) options[optionIndex].value += 0.1;
                      rl::setMasterVolume((float)options[optionIndex].value / 1.0);
                  } else if (optionIndex == 1) { // Increase Music Volume
-                     if (options[optionIndex].value < 1.0) options[optionIndex].value += 0.1;
-                     rl::setMusicVolume(song, (float)options[optionIndex].value / 1.0);
+                     if (options[optionIndex].value < 1.0){
+                        options[optionIndex].value += 0.1;
+                        rl::setMusicVolume(song, (float)options[optionIndex].value / 1.0);
+                }
             }
 		}
 	}
-}
+
 
 fn void drawOptions() {
          for (int i = 0; i < numOptions; i++) {
