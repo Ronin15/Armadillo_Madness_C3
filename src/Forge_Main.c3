@@ -27,7 +27,7 @@ const float MUSIC_VOLUME = 0.5;
 
 Construct[MAX_CONSTRUCTS] constructs;
 Construct[MAX_CONSTRUCTS] demoConstructs;
-Contruct[MAX_CONSTRUCTS] nightContructs;
+Construct[MAX_CONSTRUCTS] nightConstructs;
 Button[MAX_BUTTONS] uiButtons;
 
 enum GameState {
@@ -121,7 +121,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);
 	
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = GAME_WIN;
 	rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
