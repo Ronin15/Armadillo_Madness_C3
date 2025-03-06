@@ -105,6 +105,6 @@ fn void resolveCollision(Construct* a, Construct* b) {
                             break;
                         }
           }
-          io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);
+          io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);//debug
         }
 }

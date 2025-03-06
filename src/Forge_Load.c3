@@ -28,6 +28,9 @@ fn TexMap loadTexMap(){
      Texture2D snakeTex = rl::loadTexture("resources/images/snake-sheet.png");
      Texture2D foxTex = rl::loadTexture("resources/images/fox-sheet.png");
      Texture2D treeTex = rl::loadTexture("resources/images/tree.png");
+	//Boss Textures
+	 Texture2D cougarBossTex = rl::loadTexture("resources/images/cougar-sheet.png");
+	 Texture2D alienBossTex = rl::loadTexture("resources/images/alien_face-sheet.png");
     //powerups
      Texture2D gravBootsTex = rl::loadTexture("resources/images/grav_boots.png");
      Texture2D superTex = rl::loadTexture("resources/images/super_mushroom_sheet.png");
@@ -98,6 +101,8 @@ fn TexMap loadTexMap(){
    map.set("spider",spiderTex);
    map.set("moth",mothTex);
    map.set("mouse",mouseTex);
+   map.set("cougar_boss",cougarBossTex);
+   map.set("alien_boss",alienBossTex);
    map.set("creditsPage",creditsPageTex);
    map.set("creditsButton",creditsButtonTex);
    map.set("menuButton",menuButtonTex);

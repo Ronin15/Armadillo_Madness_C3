@@ -649,7 +649,7 @@ fn int main(String[] args) {
 					forge_ui::drawButton(&menuButton);
 				
    		}
-   			accumulator -= TIME_STEP;
+   			//accumulator -= TIME_STEP;
 	}
 	return 0;
 }

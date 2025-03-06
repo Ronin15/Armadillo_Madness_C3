@@ -23,6 +23,7 @@ const float SNAKE_SOFFSET = 35.0;
 const float SPIDER_SOFFSET = 80.0;
 const float POWERUP_SOFFSET = 35.0;
 const float MOUSE_SOFFSET = 50.0;
+const float COUGAR_SOFFSET = 40.0;
 
 float groundLevel = 1080.0 - 70;//115
 bool poopPenatrate = false;
@@ -118,8 +119,8 @@ fn String getRandomConstructName (ConstructType type, String array_type){
    static int powerUpCount_demo;
    static int powerUpCount_night;
 
-   String[*] groundTypes = {"ant","turtle","snake","fox","scorpion","spider","mouse"};
-   String[*] flyingTypes = {"bird","beatle","owl","moth"};
+   String[*] groundTypes = {"ant","turtle","snake","fox","scorpion","spider","mouse","cougar_boss"};
+   String[*] flyingTypes = {"bird","beatle","owl","moth","alien_boss"};
    String[*] obsticlesTypes = {"cactus","boulder","tree"};
    String[*] powerUps = {"grav","food","super"};
 
@@ -315,9 +316,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
       switch (c.type)
       {
          case PLAYER:
-            //io::printfn("invuln Timer: %f", c.invulnTimer);
-            //io::printfn("power Up Timer: %f", c.powerUpTimer);
-            //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
+            //io::printfn("invuln Timer: %f", c.invulnTimer);//debug
+            //io::printfn("power Up Timer: %f", c.powerUpTimer);//debug
+            //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);//debug
             if (raining){c.acceleration = 125;}
             if (!raining && c.acceleration == 125){c.acceleration = ACCELERATION;}
 
@@ -397,8 +398,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
          break;
 
          case PROJECTILE_POOP:
-            //io::printfn("POOP Shot :) update reached");
-            // c.isProjectileActive = false;
+            //io::printfn("POOP Shot :) update reached");//debug
+            // c.isProjectileActive = false;//debug
             if(c.hHit && !poopPenatrate){
                c.hHit = false;
                rl::playSound(sMap.get("poopHit")!!);
@@ -478,6 +479,13 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 
                         c.pos.x -= (c.friction + MOUSE_SOFFSET)  * deltaTime;
                         c.groundLevel = groundLevel - 40;
+               //TODO move to boss case later after testing is done
+               case "cougar_boss" :
+
+                        c.pos.x -= (c.friction + COUGAR_SOFFSET)  * deltaTime;
+                        c.groundLevel = groundLevel - 50;
+
+               break;
             }
 
             if(c.vHit){c.vHit = false;c.lives -= 1;}
@@ -597,8 +605,20 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
          break;
 
          case BOSS:
-            io::printfn("Reached the BOSS updating section");
-         break;
+
+            switch (c.name) {
+
+                  case "cougar_boss":
+
+                        c.pos.x -= (c.friction + COUGAR_SOFFSET)  * deltaTime;
+                        c.groundLevel = groundLevel - 50;
+                  
+                  break;
+
+                  case "alien_boss":
+
+                  break;
+            }
       }
 
       return score;
@@ -634,6 +654,7 @@ fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
    float obsSize = 3.5; //scaling up onbsticles 3.5
    float normal = 2.0; // normal scale size without camera zoom 2.0
    float powerUpSize = 1.0;
+   float bossSize = 3.0;
    float super = 2.5; //2.5
    float scale @noinit;
 
@@ -651,9 +672,12 @@ fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
          if (c.type == POWER_UP){
                scale = powerUpSize;
       }
-        if(c.type == PLAYER && c.powerUpTimer > 0){
+         if(c.type == PLAYER && c.powerUpTimer > 0){
                scale = super;
-    }
+      }
+         if(c.type == BOSS){
+            scale == bossSize;
+         }
 
    Rectangle destRec = {
       destRec.x = c.pos.x,
