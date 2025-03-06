@@ -121,7 +121,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);
 	
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = GAME_WIN;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -503,7 +503,6 @@ fn int main(String[] args) {
 				rl::updateMusicStream(mMap.get("gameWin")!!);
 				rl::clearBackground(rl::BLACK);
                 //rl::drawTexture(tmap.get("creditsPage")!!, 0, 0, rl::WHITE);
-                rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
 				
 					state = forge_ui::updateButton(&gameWinButton, &sMap, state, {10,10});
 				
@@ -515,6 +514,7 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("armadillo")!!, {750, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 815}, 0.0, 3.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
+				rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 700), 150, 105, {185,71,0,200});
 
 			case GAME_OVER:
 				io::printfn("Game_Over State");
