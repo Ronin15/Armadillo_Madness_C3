@@ -121,8 +121,8 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);
 	
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = GAME_WIN;
-	rl::playSound(sMap.get("logoSound")!!);
+	GameState state = NIGHTLVL;
+	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
 	  	float deltaTime = rl::getFrameTime();
@@ -242,8 +242,8 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
-				rl::drawFPS(15,160);
-				//rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
+				
+				rl::drawFPS(15,160); //debug
 				//sun
 				forge_fx::drawLight(1815, 105, 300, rl::fade(rl::YELLOW, 0.7));
 				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
@@ -279,7 +279,7 @@ fn int main(String[] args) {
 
 				forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
 				weatherTimer -=1;
-				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer);
+				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer); //debug
 			}
 			if(weatherTimer <= 0.0){
 				raining = false;
@@ -309,15 +309,15 @@ fn int main(String[] args) {
 
 					//check Collisions
 
-					foreach ( &construct : constructs){
+					foreach ( &nightConstruct : nightConstructs){
 
-							if (forge_physics::checkCollision(&player,construct) && construct.isDead == false){
-								forge_physics::resolveCollision(&player,construct);
+							if (forge_physics::checkCollision(&player,nightConstruct) && nightConstruct.isDead == false){
+								forge_physics::resolveCollision(&player,nightConstruct);
 							}
 
 							if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
-								if(forge_physics::checkCollision(&poopShot,construct)){
-									forge_physics::resolveCollision(&poopShot,construct);
+								if(forge_physics::checkCollision(&poopShot,nightConstruct)){
+									forge_physics::resolveCollision(&poopShot,nightConstruct);
 							}
 						}
 					}
@@ -326,8 +326,8 @@ fn int main(String[] args) {
 				forge_game::updateConstruct(&player,&sMap, raining, deltaTime);
 				forge_game::updateConstruct(&poopShot,&sMap, raining, deltaTime);
 
-					foreach ( &construct : constructs){
-								score += forge_game::updateConstruct(construct,&sMap, raining, deltaTime);
+					foreach ( &nightConstruct : nightConstructs){
+								score += forge_game::updateConstruct(nightConstruct,&sMap, raining, deltaTime);
 						}
 
 				//draw game elements------------------------------------------------------------------------------
@@ -359,8 +359,8 @@ fn int main(String[] args) {
 				forge_game::drawAnitmatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
 
-					foreach ( &construct : constructs){
-								forge_game::drawAnitmatedConstruct(construct);
+					foreach ( &nightConstruct : nightConstructs){
+								forge_game::drawAnitmatedConstruct(nightConstruct);
 						}
 
 			forge_fx::forgeFXManager(&mMap,"shootingStars", deltaTime);
@@ -376,7 +376,7 @@ fn int main(String[] args) {
 
 				forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
 				weatherTimer -=1;
-				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer);
+				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer);//debug
 			}
 			if(weatherTimer <= 0.0){
 				raining = false;
@@ -463,8 +463,8 @@ fn int main(String[] args) {
          			    forge_game::drawAnitmatedConstruct(&player);
         				forge_game::drawPoopShot(&poopShot,&player);
 
-       					foreach ( &construct : constructs){
-        								forge_game::drawAnitmatedConstruct(construct);
+       					foreach ( &nightConstruct : nightConstructs){
+        								forge_game::drawAnitmatedConstruct(nightConstruct);
       						}
         				//if raining it should be raining when paused.
         				if (raining){
@@ -504,9 +504,6 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
                 //rl::drawTexture(tmap.get("creditsPage")!!, 0, 0, rl::WHITE);
                 rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
-                
-				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 				
 					state = forge_ui::updateButton(&gameWinButton, &sMap, state, {10,10});
 				
@@ -517,8 +514,7 @@ fn int main(String[] args) {
 
 				rl::drawTextureEx(tMap.get("armadillo")!!, {750, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 815}, 0.0, 3.0, rl::WHITE);
-				
-				break;
+				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 
 			case GAME_OVER:
 				io::printfn("Game_Over State");
@@ -546,7 +542,7 @@ fn int main(String[] args) {
 				state = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
 				forge_ui::drawButton(&menuButton);
 
-				//update master volume, music volume, toggle fullscreen if not fullscreen already.
+				//update master volume, music volume.
 				
 				//draw Options
 				forge_options::drawOptions();
