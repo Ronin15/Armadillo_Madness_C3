@@ -661,7 +661,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                                  }
                                  
                            c.pos.x -= (c.friction + COUGAR_SOFFSET)  * deltaTime;
-                           c.groundLevel = groundLevel - 50;
+                           c.groundLevel = groundLevel - 140;
 
                            if(c.vHit){c.vHit = false;c.lives -= 1;}
                            if(c.hHit){c.hHit = false;c.lives -= 1;}
@@ -734,7 +734,7 @@ fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
    float obsSize = 3.5; //scaling up onbsticles 3.5
    float normal = 2.0; // normal scale size without camera zoom 2.0
    float powerUpSize = 1.0;
-   float bossSize = 3.0;
+   float bossSize = 3.5;
    float super = 2.5; //2.5
    float scale @noinit;
 
