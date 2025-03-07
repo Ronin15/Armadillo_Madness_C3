@@ -19,7 +19,7 @@ const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.7.0"; //ui update, options update, and almost all game states complete
-const int MAX_CONSTRUCTS = 200;//100
+const int MAX_CONSTRUCTS = 2;//100
 const int MAX_POWERUPS = 12;//6
 const int MAX_BUTTONS = 7;
 const float MASTER_VOLUME = 0.8;
@@ -192,8 +192,9 @@ fn int main(String[] args) {
 					}
 						
 			case GAME:
-			     night = false;
-			     day = true;
+				dayBoss.active = true;
+			    night = false;
+			    day = true;
 				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
@@ -227,13 +228,34 @@ fn int main(String[] args) {
 						}
 					}
 
+					if(dayBoss.active){
+					
+								if (forge_physics::checkCollision(&player,&dayBoss) && dayBoss.isDead == false) {
+									forge_physics::resolveCollision(&player,&dayBoss);}
+								
+									if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
+										if (forge_physics::checkCollision(&poopShot,&dayBoss)) {
+											forge_physics::resolveCollision(&poopShot,&dayBoss);
+										}
+									}
+								}
+								
+							
+						
+							
+						
+				
+
 				//update game logic-------------------------------------------------------------------------------
-				forge_game::updateConstruct(&player,&sMap, raining, deltaTime);
-				forge_game::updateConstruct(&poopShot,&sMap, raining, deltaTime);
+				forge_game::updateConstruct(&player, &sMap, raining, deltaTime);
+				forge_game::updateConstruct(&poopShot, &sMap, raining, deltaTime);
 
 					foreach ( &construct : constructs){
-								score += forge_game::updateConstruct(construct,&sMap, raining, deltaTime);
+								score += forge_game::updateConstruct(construct, &sMap, raining, deltaTime);
 						}
+				if(dayBoss.active){
+					score += forge_game::updateConstruct(&dayBoss, &sMap, raining, deltaTime);
+				}
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
@@ -268,6 +290,10 @@ fn int main(String[] args) {
 					foreach ( &construct : constructs){
 								forge_game::drawAnitmatedConstruct(construct);
 						}
+				if(dayBoss.active){
+					forge_game::drawAnitmatedConstruct(&dayBoss);
+				}
+				
 			//weather
 			if (!raining && weatherTimer <= 0.0){
 				raining = forge_game::randChanceCheck();

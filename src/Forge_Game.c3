@@ -65,6 +65,7 @@ bool poopPenatrate = false;
     bool isProjectileActive;
     bool invlunerable;
     bool expired;
+    bool active;
     bool hHit; //horizontal hit
     bool vHit; //vertical hit
     bool bHit; //beatle hit
@@ -655,7 +656,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                                  }
 
                                  c.isDead = true;
-                                 rl::playSound(sMap.get("enemydie")!!);
+                                 rl::playSound(sMap.get("enemyDie")!!);
 
                                  }
                                  
@@ -755,7 +756,7 @@ fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
                scale = super;
       }
          if(c.type == BOSS){
-            scale == bossSize;
+            scale = bossSize;
          }
 
    Rectangle destRec = {
