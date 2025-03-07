@@ -252,6 +252,42 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
       io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
 }
+fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
+
+      Construct c;
+
+      c.type = BOSS;
+      c.name = name;
+      c.texture = tMap.get(c.name)!!;
+      //c.sound = sMap.get(c.name)!!;
+      if (c.name == "cougar_boss"){
+          c.pos = {2000,200};
+          c.lives = 20;  
+      }else{
+          c.pos = {2000,460};
+          c.lives = 30;
+      }
+      c.maxFrames = 2;
+      c.gravity = GRAVITY;
+      c.jumpVelocity = MOVE_VELOCITY;
+      c.groundLevel = groundLevel;
+      c.acceleration = ACCELERATION;
+      c.friction = FRICTION;
+      c.frameLength = 0.1;
+      c.currentFrame = 1;
+      c.texFlip = false;
+      c.isDead = false;
+      c.isProjectileActive = false;
+      c.expired = true;
+      c.invlunerable = false;
+      c.invulnTimer = 0.0;
+      c.hHit = false;
+      c.vHit = false;
+
+      io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
+      return c;
+}
+
 
 //creates game objects
 fn Construct forgeConstruct(TexMap *tMap, String array_type) {
@@ -497,9 +533,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
          break;
 
          case ENEMEY_FLY:
-            //io::printfn("ENEMEY_FLY update reached");
-            //c.pos.y += c.acceleration * deltaTime;
-            //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);
+            //io::printfn("ENEMEY_FLY update reached");//debug
+            //c.pos.y += c.acceleration * deltaTime;//debug
+            //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);//debug
             if((c.hHit || c.vHit) && c.lives <= 0){
 
                   if(c.hHit){
@@ -563,7 +599,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
           c.vel.y += c.gravity * deltaTime;
           c.pos.y += c.vel.y * deltaTime;
           c.pos.x -= (c.friction + OBS_SOFFSET) * deltaTime;
-
+         
          break;
 
          case POWER_UP:
@@ -610,13 +646,56 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 
                   case "cougar_boss":
 
-                        c.pos.x -= (c.friction + COUGAR_SOFFSET)  * deltaTime;
-                        c.groundLevel = groundLevel - 50;
+                           if((c.hHit || c.vHit) && c.lives <= 0){
+
+                                 if(c.hHit){
+                                       score += 1500;
+                                 }else{
+                                       score += 500;
+                                 }
+
+                                 c.isDead = true;
+                                 rl::playSound(sMap.get("enemydie")!!);
+
+                                 }
+                                 
+                           c.pos.x -= (c.friction + COUGAR_SOFFSET)  * deltaTime;
+                           c.groundLevel = groundLevel - 50;
+
+                           if(c.vHit){c.vHit = false;c.lives -= 1;}
+                           if(c.hHit){c.hHit = false;c.lives -= 1;}
+                           c.pos.y += c.vel.y * deltaTime;
+                           c.vel.y += c.gravity * deltaTime;
                   
                   break;
 
                   case "alien_boss":
 
+                         if((c.hHit || c.vHit) && c.lives <= 0){
+
+                              if(c.hHit){
+                                    score += 2300;
+                              }else{
+                                    score += 1000;
+                              }
+
+                        c.isDead = true;
+                        c.isGrounded = true;
+                        rl::playSound(sMap.get("enemyDie")!!);
+
+                        }
+                        
+                        if(c.vHit){c.vHit = false;c.lives -= 1;}
+                        if(c.hHit){c.hHit = false;c.lives -= 1;}
+                        c.pos.x -= 125 * deltaTime;//15
+                        c.texFlip = false;//15
+                        //if (c.pos.x <= 0){c.pos.x += 15.0 * deltaTime;c.texFlip = true;}
+                        if (!c.isDead){
+                              c.pos.y += AMPLITUDE * math::sin(FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
+                        }else{
+                              c.pos.y += c.vel.y * deltaTime;
+                              c.vel.y += c.gravity * deltaTime;
+                              }
                   break;
             }
       }

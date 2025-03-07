@@ -99,6 +99,9 @@ fn int main(String[] args) {
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
 	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap);
+	//Boss init
+	Construct dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
+	Construct nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
 
 	for(int i = 0; i < MAX_CONSTRUCTS; i++){
 	constructs[i] = forge_game::forgeConstruct(&tMap,"day");
@@ -121,7 +124,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);
 	
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = GAME_WIN;
+	GameState state = MAIN;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -156,7 +159,6 @@ fn int main(String[] args) {
 							frameCounter = 0;
 					}
 				//	forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
-				break;
 
 			case MAIN:
 				//slicing out Main ui buttons
@@ -188,7 +190,6 @@ fn int main(String[] args) {
 							state = DEMO;
 							frameCounter = 0;
 					}
-				 break;
 						
 			case GAME:
 			     night = false;
@@ -284,7 +285,6 @@ fn int main(String[] args) {
 			if(weatherTimer <= 0.0){
 				raining = false;
 			}
-				break;
 
 			case NIGHTLVL:
 			     night = true;
@@ -381,7 +381,6 @@ fn int main(String[] args) {
 			if(weatherTimer <= 0.0){
 				raining = false;
 			}
-			break;
 
 			case PAUSE:
                  //slicing out Pause ui buttons.
@@ -492,7 +491,7 @@ fn int main(String[] args) {
          				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
                 }
 
-				break;
+				
 
 			case GAME_WIN:
 				//TODO still needs more work but framework is there, needs art animations, music.
@@ -518,7 +517,7 @@ fn int main(String[] args) {
 
 			case GAME_OVER:
 				io::printfn("Game_Over State");
-				break;
+			
 			case OPTIONS:
 
 				//just using menu button.
@@ -547,7 +546,7 @@ fn int main(String[] args) {
 				//draw Options
 				forge_options::drawOptions();
                 
-				break;
+				
 				
 			case DEMO:
 
@@ -627,7 +626,6 @@ fn int main(String[] args) {
 					foreach ( &demoConstruct : demoConstructs){
 								forge_game::drawAnitmatedConstruct(demoConstruct);
 						}
-				 break;
 				
 			case CREDITS:
 			
@@ -647,7 +645,6 @@ fn int main(String[] args) {
 					state = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
 				
 					forge_ui::drawButton(&menuButton);
-				
    		}
    			//accumulator -= TIME_STEP;
 	}
