@@ -691,9 +691,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 
 				            }
                 }
-				if(c.pos.x < 0){
+				if(c.pos.x < 2000){
                    //right
-                   c.pos.x += c.acceleration * deltaTime;
+                   c.pos.x += (c.acceleration * 2) * deltaTime;
                    c.texFlip = true;
 				   c.vel.y += c.gravity * deltaTime;
                    c.pos.y += c.vel.y * deltaTime; 	
