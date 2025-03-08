@@ -1,5 +1,4 @@
-module forge_demo;
-import raylib5::rl;
+module forge_ai;
 import forge_game;
 
 bool poopPenatrate = false;

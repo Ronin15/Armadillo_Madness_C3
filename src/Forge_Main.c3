@@ -4,7 +4,7 @@ import forge_load;
 import forge_game;
 import forge_physics;
 import forge_fx;
-import forge_demo;
+import forge_ai;
 import forge_ui;
 import forge_options;
 //vendor modules-------------------
@@ -124,7 +124,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);
 	
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = NIGHTLVL;
+	GameState state = MAIN;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -628,15 +628,15 @@ fn int main(String[] args) {
 				demoCounter1 += 1;
 				demoCounter2 += 1;
 
-				if(demoCounter1 < 500 ){forge_demo::moveRight(&demoPlayer, deltaTime);
+				if(demoCounter1 < 500 ){forge_ai::moveRight(&demoPlayer, deltaTime);
 
 				}
 				if(demoCounter1 > 500){
-					forge_demo::moveLeft(&demoPlayer, deltaTime);
+					forge_ai::moveLeft(&demoPlayer, deltaTime);
 
 					if (demoCounter1 % 100 == 0){
 
-					forge_demo::jump(&demoPlayer, deltaTime);
+					forge_ai::jump(&demoPlayer, deltaTime);
 					}
 				}
 				if (demoCounter1 > 1000){

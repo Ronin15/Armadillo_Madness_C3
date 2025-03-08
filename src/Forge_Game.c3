@@ -1,6 +1,7 @@
 module forge_game;
 import forge_main;
 import forge_load;
+import forge_ai;
 import raylib5::rl;
 import std::io;
 import std::math;
@@ -27,6 +28,10 @@ const float COUGAR_SOFFSET = 40.0;
 
 float groundLevel = 1080.0 - 70;//115
 bool poopPenatrate = false;
+
+//AI movement counter
+float aiCounter1;
+
 
 //GAME Structures Types ---------------------------------------------------------
  enum ConstructType : int {
@@ -273,7 +278,7 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
       c.jumpVelocity = MOVE_VELOCITY;
       c.groundLevel = groundLevel;
       c.acceleration = ACCELERATION;
-      c.friction = FRICTION;
+      c.friction = 0;
       c.frameLength = 0.1;
       c.currentFrame = 1;
       c.texFlip = false;
@@ -657,16 +662,57 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 
                                  c.isDead = true;
                                  rl::playSound(sMap.get("enemyDie")!!);
-
-                                 }
+                                 aiCounter1 = 0;
+                              }
                                  
-                           c.pos.x -= (c.friction + COUGAR_SOFFSET)  * deltaTime;
+                           //c.pos.x -= (c.friction + COUGAR_SOFFSET)  * deltaTime;
                            c.groundLevel = groundLevel - 140;
 
                            if(c.vHit){c.vHit = false;c.lives -= 1;}
                            if(c.hHit){c.hHit = false;c.lives -= 1;}
-                           c.pos.y += c.vel.y * deltaTime;
-                           c.vel.y += c.gravity * deltaTime;
+                         
+                  //AI MOVEMENT
+                  aiCounter1 += 1;
+
+				if(c.pos.x > 0) {
+                   //left
+                   c.pos.x -= c.acceleration * deltaTime;
+                   c.texFlip = false;
+                   c.vel.y += c.gravity * deltaTime;
+                   c.pos.y += c.vel.y * deltaTime;
+
+                        if (aiCounter1 % 100 == 0){
+
+                              if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
+                                   if (c.isGrounded) { 
+                                       c.vel.y = c.jumpVelocity; 
+                                       c.isGrounded = false; 
+                                       }
+
+				            }
+                }
+				if(c.pos.x < 0){
+                   //right
+                   c.pos.x += c.acceleration * deltaTime;
+                   c.texFlip = true;
+				   c.vel.y += c.gravity * deltaTime;
+                   c.pos.y += c.vel.y * deltaTime; 	
+
+					if (aiCounter1 % 100 == 0){
+
+                        if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
+                             if (c.isGrounded) { 
+                                 c.vel.y = c.jumpVelocity; 
+                                 c.isGrounded = false; 
+                                 }
+
+					
+					}
+				}
+                  //vertical movement.
+                   c.pos.y += c.vel.y * deltaTime;
+                   c.vel.y += c.gravity * deltaTime;        
+
                   
                   break;
 
