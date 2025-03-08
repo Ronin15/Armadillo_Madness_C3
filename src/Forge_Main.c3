@@ -124,7 +124,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);
 	
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = NIGHTLVL;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -192,7 +192,8 @@ fn int main(String[] args) {
 					}
 						
 			case GAME:
-				dayBoss.active = true;
+
+				dayBoss.active = true;//debug
 			    night = false;
 			    day = true;
 				//misc game stuff
@@ -313,6 +314,8 @@ fn int main(String[] args) {
 			}
 
 			case NIGHTLVL:
+
+				 nightBoss.active = true;
 			     night = true;
 				 day = false;
 				//misc game stuff
@@ -347,7 +350,17 @@ fn int main(String[] args) {
 							}
 						}
 					}
-
+					if(nightBoss.active){
+					
+								if (forge_physics::checkCollision(&player,&nightBoss) && nightBoss.isDead == false) {
+									forge_physics::resolveCollision(&player,&nightBoss);}
+								
+									if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
+										if (forge_physics::checkCollision(&poopShot,&nightBoss)) {
+											forge_physics::resolveCollision(&poopShot,&nightBoss);
+										}
+									}
+								}
 				//update game logic-------------------------------------------------------------------------------
 				forge_game::updateConstruct(&player,&sMap, raining, deltaTime);
 				forge_game::updateConstruct(&poopShot,&sMap, raining, deltaTime);
@@ -355,6 +368,11 @@ fn int main(String[] args) {
 					foreach ( &nightConstruct : nightConstructs){
 								score += forge_game::updateConstruct(nightConstruct,&sMap, raining, deltaTime);
 						}
+
+					if(nightBoss.active){
+							score += forge_game::updateConstruct(&nightBoss, &sMap, raining, deltaTime);
+						}
+
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("nightsky")!!, 0, 0, rl::WHITE);
@@ -389,7 +407,11 @@ fn int main(String[] args) {
 								forge_game::drawAnitmatedConstruct(nightConstruct);
 						}
 
-			forge_fx::forgeFXManager(&mMap,"shootingStars", deltaTime);
+				forge_fx::forgeFXManager(&mMap,"shootingStars", deltaTime);
+
+					if(nightBoss.active){
+						forge_game::drawAnitmatedConstruct(&nightBoss);
+						}
 			//weather
 			if (!raining && weatherTimer <= 0.0){
 				raining = forge_game::randChanceCheck();
@@ -444,6 +466,10 @@ fn int main(String[] args) {
        					foreach ( &construct : constructs){
         								forge_game::drawAnitmatedConstruct(construct);
       						}
+
+						if(dayBoss.active){
+							forge_game::drawAnitmatedConstruct(&dayBoss);
+						}
         				//if raining it should be raining when paused.
         				if (raining){
        					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
@@ -491,6 +517,10 @@ fn int main(String[] args) {
        					foreach ( &nightConstruct : nightConstructs){
         								forge_game::drawAnitmatedConstruct(nightConstruct);
       						}
+
+						if(nightBoss.active){
+							forge_game::drawAnitmatedConstruct(&nightBoss);
+							}
         				//if raining it should be raining when paused.
         				if (raining){
        					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
