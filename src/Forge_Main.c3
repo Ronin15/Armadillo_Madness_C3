@@ -124,7 +124,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);
 	
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = NIGHTLVL;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -376,8 +376,8 @@ fn int main(String[] args) {
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("nightsky")!!, 0, 0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 340}, 0.0, 1.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("nightmid")!!, {WINDOW_WIDTH + scrollMid, 340}, 0.0, 1.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 380}, 0.0, 1.0, rl::WHITE);//340
+				rl::drawTextureEx(tMap.get("nightmid")!!, {WINDOW_WIDTH + scrollMid, 380}, 0.0, 1.0, rl::WHITE);
 				forge_fx::forgeFXManager(&mMap,"starrySky", deltaTime);
 				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
@@ -499,8 +499,8 @@ fn int main(String[] args) {
 
         				//draw game elements------------------------------------------------------------------------------
         				rl::drawTexture(tMap.get("nightsky")!!, 0, 0, rl::WHITE);
-        				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 340}, 0.0, 1.0, rl::WHITE);
-        				rl::drawTextureEx(tMap.get("nightmid")!!, {WINDOW_WIDTH + scrollMid, 340}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 380}, 0.0, 1.0, rl::WHITE);
+        				rl::drawTextureEx(tMap.get("nightmid")!!, {WINDOW_WIDTH + scrollMid, 380}, 0.0, 1.0, rl::WHITE);
         				forge_fx::forgeFXManager(&mMap,"starrySky", deltaTime);
         				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
