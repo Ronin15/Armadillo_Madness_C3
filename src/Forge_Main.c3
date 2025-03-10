@@ -181,10 +181,10 @@ fn int main(String[] args) {
 				forge_fx::fireEffect(deltaTime);
 				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);
 
-				/* 	if (rl::isKeyPressed(rl::KEY_ENTER)){
+				 	if (rl::isKeyPressed(rl::KEY_ENTER)){
        					 state = GAME;
     				}
-                */
+                
 					frameCounter += 1;
 					if (frameCounter > 800) { //800 for testing
 							state = DEMO;
@@ -293,6 +293,15 @@ fn int main(String[] args) {
 						}
 				if(dayBoss.active){
 					forge_game::drawAnitmatedConstruct(&dayBoss);
+					//dayboss life bar
+					rl::drawRectangle(5, 195, 260, 40, rl::BLACK);
+					rl::drawText("MAD COUGAR", 20, 200, 35, rl::RED);
+					if (&dayBoss.lives == &dayBoss.lives){
+						for (int i = 0; i < dayBoss.lives; i++){
+							Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 300};
+							rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
+						}
+					}
 				}
 				
 			//weather
