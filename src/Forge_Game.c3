@@ -30,7 +30,7 @@ float groundLevel = 1080.0 - 70;//115
 bool poopPenatrate = false;
 
 //AI BOSS movement
-float aiCounter1;
+float jumpCounter = 0;
 bool movingLeft = true;
 
 //GAME Structures Types ---------------------------------------------------------
@@ -652,8 +652,6 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 
                   case "cougar_boss":
 
-                           
-
                            //boss invuln and life decrementing
                            if(c.invulnTimer >= 0.0){
                               c.invulnTimer -= 1.0;
@@ -679,9 +677,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                            if((c.hHit || c.vHit) && c.lives <= 0){
 
                                  if(c.hHit){
-                                       score += 1500;
+                                       score += 15000;
                                  }else{
-                                       score += 500;
+                                       score += 5000;
                                  }
 
                                  c.invlunerable = false;
@@ -689,10 +687,11 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                                  c.isDead = true;
                                  
                                  rl::playSound(sMap.get("enemyDie")!!);
-                                 aiCounter1 = 0;
-                                 break; //Stops AI movement when dead.
+                                 jumpCounter = 0;
                               }
+
                            if(c.isDead){
+                              //Stops AI movement when dead.
                               c.pos.y += c.vel.y * deltaTime;
                               c.vel.y += c.gravity * deltaTime;
                               c.groundLevel = groundLevel - 140;
@@ -700,9 +699,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                            }
 
                   //AI MOVEMENT
-                  aiCounter1 += 1;
+                  jumpCounter += 1;
                   
-                 io::printfn("BOSS_POS name: %s x :%f : y :%f timer: %f lives: %d invuln: %s",c.name,c.pos.x,c.pos.y,c.invulnTimer,c.lives,c.invlunerable);//DEBUG
+                 //io::printfn("BOSS_POS name: %s x :%f : y :%f timer: %f lives: %d invuln: %s",c.name,c.pos.x,c.pos.y,c.invulnTimer,c.lives,c.invlunerable);//DEBUG
 
 				if(movingLeft) {
                    //left
@@ -710,22 +709,21 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                    c.texFlip = false;
                       if(c.pos.x < 0.0) {movingLeft = false;}
 
-                        if (aiCounter1 % 100 == 0){
+                        if (jumpCounter % 100 == 0){
 
                               if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
                                    if (c.isGrounded) { 
                                        c.vel.y = c.jumpVelocity; 
                                        c.isGrounded = false; 
-                                       }
-
-				            }
+                              }
+				        }
                 }else{ 
                    //right
                    c.pos.x += (c.acceleration * 4) * deltaTime;
                    c.texFlip = true;
 				      if(c.pos.x >= (float)forge_main::WINDOW_WIDTH) {movingLeft = true;} 	
 
-					if (aiCounter1 % 100 == 0){
+					if (jumpCounter % 100 == 0){
 
                         if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
                              if (c.isGrounded) { 
@@ -745,9 +743,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                          if((c.hHit || c.vHit) && c.lives <= 0){
 
                               if(c.hHit){
-                                    score += 2300;
+                                    score += 23000;
                               }else{
-                                    score += 1000;
+                                    score += 10000;
                               }
 
                         c.isDead = true;
