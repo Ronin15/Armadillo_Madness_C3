@@ -5,13 +5,14 @@ import std::math;
 
 const int PLAYER_OFFSET = 0;
 const int POOP_SHOT_OFFSET = 0; //5
-const int ROCK_OFFSET = 0;
-const int CACTUS_OFFSET = 0;
-const int TREE_OFFSET = 0;
-const int TURTLE_OFFSET = 0;
-const int ANT_OFFSET = 0;
-const int FOX_OFFSET = 0;
-const int SNAKE_OFFSET = 0;
+const int BOSS_OFFSET = 20;
+//const int ROCK_OFFSET = 0;
+//const int CACTUS_OFFSET = 0;
+//const int TREE_OFFSET = 0;
+//const int TURTLE_OFFSET = 0;
+//const int ANT_OFFSET = 0;
+//const int FOX_OFFSET = 0;
+//const int SNAKE_OFFSET = 0;
 
 // a will always be player or poop, b will always be other objects
 
@@ -22,17 +23,18 @@ fn bool checkCollision(Construct* a, Construct* b) {
     int boffset;
     if (a.type == PROJECTILE_POOP) {aoffset = POOP_SHOT_OFFSET;}
     if (a.type == PLAYER) {aoffset = PLAYER_OFFSET;}
-    if (b.name == "boulder") {boffset = ROCK_OFFSET;}
-    if (b.name == "cactus") {boffset = CACTUS_OFFSET;}
-    if (b.name == "tree") {boffset = TREE_OFFSET;}
-    if (b.name == "turtle") {boffset = TURTLE_OFFSET;}
-    if (b.name == "ant") {boffset = ANT_OFFSET;}
-    if (b.name == "fox") {boffset = FOX_OFFSET;}
-    if (b.name == "snake") {boffset = SNAKE_OFFSET;}
+	if (b.type == BOSS) {boffset = BOSS_OFFSET;}
+    //if (b.name == "boulder") {boffset = ROCK_OFFSET;}
+    //if (b.name == "cactus") {boffset = CACTUS_OFFSET;}
+    //if (b.name == "tree") {boffset = TREE_OFFSET;}
+    //if (b.name == "turtle") {boffset = TURTLE_OFFSET;}
+    //if (b.name == "ant") {boffset = ANT_OFFSET;}
+    //if (b.name == "fox") {boffset = FOX_OFFSET;}
+    //if (b.name == "snake") {boffset = SNAKE_OFFSET;}
 
-    if (a.pos.x < b.pos.x + b.texture.width - boffset  &&
+    if (a.pos.x < b.pos.x + b.texture.width + boffset  &&
         a.pos.x + a.texture.width - aoffset  > b.pos.x &&
-        a.pos.y < b.pos.y + b.texture.height - boffset  &&
+        a.pos.y < b.pos.y + b.texture.height + boffset  &&
         a.pos.y + a.texture.height - aoffset  > b.pos.y) {
 
         io::printfn("%s -> hit -> %s !",a.name,b.name);
@@ -75,7 +77,7 @@ fn void resolveCollision(Construct* a, Construct* b) {
                      break;
                  }
           }
-          io::printfn("%s -> Horizotal_hit -> %s !",a.name,b.name);
+          io::printfn("%s -> Horizotal_hit -> %s !",a.name,b.name);//DEBUG
 
          }else{
           // Vertical collision
@@ -105,6 +107,6 @@ fn void resolveCollision(Construct* a, Construct* b) {
                             break;
                         }
           }
-          io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);//debug
+          io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);//DEBUG
         }
 }

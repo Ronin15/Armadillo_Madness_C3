@@ -46,7 +46,7 @@ enum GameState {
 fn int main(String[] args) {
 
 	//init Game Systems
-  	rl::setConfigFlags(rl::FLAG_VSYNC_HINT);
+  	rl::setConfigFlags(rl::FLAG_VSYNC_HINT);//VSYNC not applicable with Raylib target FPS set below vsync capabilities. Need to address when doing the time step.
 	rl::initWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
 	defer rl::closeWindow();
 	rl::initAudioDevice();

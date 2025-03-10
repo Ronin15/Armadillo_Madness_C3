@@ -29,9 +29,9 @@ const float COUGAR_SOFFSET = 40.0;
 float groundLevel = 1080.0 - 70;//115
 bool poopPenatrate = false;
 
-//AI movement counter
+//AI BOSS movement
 float aiCounter1;
-
+bool movingLeft = true;
 
 //GAME Structures Types ---------------------------------------------------------
  enum ConstructType : int {
@@ -267,10 +267,10 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
       c.texture = tMap.get(c.name)!!;
       //c.sound = sMap.get(c.name)!!;
       if (c.name == "cougar_boss"){
-          c.pos = {2000,200};
+          c.pos = {2200,200};
           c.lives = 20;  
       }else{
-          c.pos = {2000,460};
+          c.pos = {2200,460};
           c.lives = 30;
       }
       c.maxFrames = 2;
@@ -652,6 +652,30 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 
                   case "cougar_boss":
 
+                           
+
+                           //boss invuln and life decrementing
+                           if(c.invulnTimer >= 0.0){
+                              c.invulnTimer -= 1.0;
+                           }else{
+                              c.invlunerable = false;
+                           }
+
+                           if(c.vHit && !c.invlunerable) {
+                              c.vHit = false;
+                              c.lives -= 1;
+                              c.invulnTimer = 100.0;
+                              c.invlunerable = true;
+                           }
+
+                           if(c.hHit && !c.invlunerable) {
+                              c.hHit = false;
+                              c.lives -= 1;
+                              c.invulnTimer = 100.0;
+                              c.invlunerable = true;
+                           }
+
+                           
                            if((c.hHit || c.vHit) && c.lives <= 0){
 
                                  if(c.hHit){
@@ -660,26 +684,31 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                                        score += 500;
                                  }
 
+                                 c.invlunerable = false;
+                                 c.invulnTimer = 0.0;
                                  c.isDead = true;
+                                 
                                  rl::playSound(sMap.get("enemyDie")!!);
                                  aiCounter1 = 0;
+                                 break; //Stops AI movement when dead.
                               }
-                                 
-                           //c.pos.x -= (c.friction + COUGAR_SOFFSET)  * deltaTime;
-                           c.groundLevel = groundLevel - 140;
+                           if(c.isDead){
+                              c.pos.y += c.vel.y * deltaTime;
+                              c.vel.y += c.gravity * deltaTime;
+                              c.groundLevel = groundLevel - 140;
+                              break;
+                           }
 
-                           if(c.vHit){c.vHit = false;c.lives -= 1;}
-                           if(c.hHit){c.hHit = false;c.lives -= 1;}
-                         
                   //AI MOVEMENT
                   aiCounter1 += 1;
+                  
+                 io::printfn("BOSS_POS name: %s x :%f : y :%f timer: %f lives: %d invuln: %s",c.name,c.pos.x,c.pos.y,c.invulnTimer,c.lives,c.invlunerable);//DEBUG
 
-				if(c.pos.x > 0) {
+				if(movingLeft) {
                    //left
                    c.pos.x -= c.acceleration * deltaTime;
                    c.texFlip = false;
-                   c.vel.y += c.gravity * deltaTime;
-                   c.pos.y += c.vel.y * deltaTime;
+                      if(c.pos.x < 0.0) {movingLeft = false;}
 
                         if (aiCounter1 % 100 == 0){
 
@@ -690,13 +719,11 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                                        }
 
 				            }
-                }
-				if(c.pos.x < 2000){
+                }else{ 
                    //right
-                   c.pos.x += (c.acceleration * 2) * deltaTime;
+                   c.pos.x += (c.acceleration * 4) * deltaTime;
                    c.texFlip = true;
-				   c.vel.y += c.gravity * deltaTime;
-                   c.pos.y += c.vel.y * deltaTime; 	
+				      if(c.pos.x >= (float)forge_main::WINDOW_WIDTH) {movingLeft = true;} 	
 
 					if (aiCounter1 % 100 == 0){
 
@@ -704,16 +731,13 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                              if (c.isGrounded) { 
                                  c.vel.y = c.jumpVelocity; 
                                  c.isGrounded = false; 
-                                 }
+                              }
+					       }  
+				        }
 
-					
-					}
-				}
-                  //vertical movement.
-                   c.pos.y += c.vel.y * deltaTime;
-                   c.vel.y += c.gravity * deltaTime;        
-
-                  
+                         c.pos.y += c.vel.y * deltaTime;
+                         c.vel.y += c.gravity * deltaTime;
+                         c.groundLevel = groundLevel - 140;
                   break;
 
                   case "alien_boss":
