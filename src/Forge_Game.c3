@@ -268,7 +268,7 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
       //c.sound = sMap.get(c.name)!!;
       if (c.name == "cougar_boss"){
           c.pos = {2200,200};
-          c.lives = 20;  
+          c.lives = 20;
       }else{
           c.pos = {2200,460};
           c.lives = 30;
@@ -517,7 +517,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                         c.groundLevel = groundLevel - 40;
                break;
 
-               case "mouse": 
+               case "mouse":
 
                         c.pos.x -= (c.friction + MOUSE_SOFFSET)  * deltaTime;
                         c.groundLevel = groundLevel - 40;
@@ -605,7 +605,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
           c.vel.y += c.gravity * deltaTime;
           c.pos.y += c.vel.y * deltaTime;
           c.pos.x -= (c.friction + OBS_SOFFSET) * deltaTime;
-         
+
          break;
 
          case POWER_UP:
@@ -673,7 +673,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                               c.invlunerable = true;
                            }
 
-                           
+
                            if((c.hHit || c.vHit) && c.lives <= 0){
 
                                  if(c.hHit){
@@ -685,7 +685,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                                  c.invlunerable = false;
                                  c.invulnTimer = 0.0;
                                  c.isDead = true;
-                                 
+
                                  rl::playSound(sMap.get("enemyDie")!!);
                                  jumpCounter = 0;
                               }
@@ -700,7 +700,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 
                   //AI MOVEMENT
                   jumpCounter += 1;
-                  
+
                  //io::printfn("BOSS_POS name: %s x :%f : y :%f timer: %f lives: %d invuln: %s",c.name,c.pos.x,c.pos.y,c.invulnTimer,c.lives,c.invlunerable);//DEBUG
 
 				if(movingLeft) {
@@ -712,25 +712,25 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                         if (jumpCounter % 100 == 0){
 
                               if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
-                                   if (c.isGrounded) { 
-                                       c.vel.y = c.jumpVelocity; 
-                                       c.isGrounded = false; 
+                                   if (c.isGrounded) {
+                                       c.vel.y = c.jumpVelocity;
+                                       c.isGrounded = false;
                               }
 				        }
-                }else{ 
+                }else{
                    //right
                    c.pos.x += (c.acceleration * 4) * deltaTime;
                    c.texFlip = true;
-				      if(c.pos.x >= (float)forge_main::WINDOW_WIDTH) {movingLeft = true;} 	
+				      if(c.pos.x >= forge_main::WINDOW_WIDTH + 300) {movingLeft = true;}
 
 					if (jumpCounter % 100 == 0){
 
                         if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
-                             if (c.isGrounded) { 
-                                 c.vel.y = c.jumpVelocity; 
-                                 c.isGrounded = false; 
+                             if (c.isGrounded) {
+                                 c.vel.y = c.jumpVelocity;
+                                 c.isGrounded = false;
                               }
-					       }  
+					       }
 				        }
 
                          c.pos.y += c.vel.y * deltaTime;
@@ -753,7 +753,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                         rl::playSound(sMap.get("enemyDie")!!);
 
                         }
-                        
+
                         if(c.vHit){c.vHit = false;c.lives -= 1;}
                         if(c.hHit){c.hHit = false;c.lives -= 1;}
                         c.pos.x -= 125 * deltaTime;//15

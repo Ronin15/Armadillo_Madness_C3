@@ -11,7 +11,7 @@ import forge_options;
 import raylib5::rl;
 //C3 standard modules--------------
 import std::io;
- 
+
 //Game Consts---------------------------------
 const int FPS_CAP = 60; //FPS Cap
 const float TARGET_FPS = 60.0; //target FPS
@@ -57,8 +57,8 @@ fn int main(String[] args) {
 	//camera
 	Camera2D camera;
 	camera.zoom = 1.0;
-	//camera.target = {WINDOW_WIDTH,WINDOW_HEIGHT};  
-	
+	//camera.target = {WINDOW_WIDTH,WINDOW_HEIGHT};
+
 	//asset loading
 	TexMap tMap = forge_load::loadTexMap();
 	SoundMap sMap = forge_load::loadSoundMap();
@@ -94,7 +94,7 @@ fn int main(String[] args) {
 	String randSong = forge_game::getRandomSong();
 	Music song = mMap.get(randSong)!!;
 	rl::setMusicVolume(song,MUSIC_VOLUME);
-	
+
 	//game objects init
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
 	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
@@ -122,7 +122,7 @@ fn int main(String[] args) {
 
 	io::printfn("Objects created");
 	io::printfn("Song selected: %s!", randSong);
-	
+
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = MAIN;
 	//rl::playSound(sMap.get("logoSound")!!);
@@ -137,7 +137,7 @@ fn int main(String[] args) {
 	  	//render and game states-----------------------------------------------
 		rl::beginDrawing();
 		rl::beginMode2D(camera);
-		defer rl::endMode2D();	
+		defer rl::endMode2D();
 		defer rl::endDrawing();
 				rl::clearBackground(rl::BLACK);
 
@@ -184,13 +184,13 @@ fn int main(String[] args) {
 				 	if (rl::isKeyPressed(rl::KEY_ENTER)){
        					 state = GAME;
     				}
-                
+
 					frameCounter += 1;
 					if (frameCounter > 800) { //800 for testing
 							state = DEMO;
 							frameCounter = 0;
 					}
-						
+
 			case GAME:
 
 				dayBoss.active = true;//debug
@@ -230,22 +230,16 @@ fn int main(String[] args) {
 					}
 
 					if(dayBoss.active){
-					
+
 								if (forge_physics::checkCollision(&player,&dayBoss) && dayBoss.isDead == false) {
 									forge_physics::resolveCollision(&player,&dayBoss);}
-								
+
 									if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
 										if (forge_physics::checkCollision(&poopShot,&dayBoss)) {
 											forge_physics::resolveCollision(&poopShot,&dayBoss);
 										}
 									}
 								}
-								
-							
-						
-							
-						
-				
 
 				//update game logic-------------------------------------------------------------------------------
 				forge_game::updateConstruct(&player, &sMap, raining, deltaTime);
@@ -266,7 +260,7 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
-				
+
 				rl::drawFPS(15,160); //debug
 				//sun
 				forge_fx::drawLight(1815, 105, 300, rl::fade(rl::YELLOW, 0.7));
@@ -303,7 +297,7 @@ fn int main(String[] args) {
 						}
 					}
 				}
-				
+
 			//weather
 			if (!raining && weatherTimer <= 0.0){
 				raining = forge_game::randChanceCheck();
@@ -360,10 +354,10 @@ fn int main(String[] args) {
 						}
 					}
 					if(nightBoss.active){
-					
+
 								if (forge_physics::checkCollision(&player,&nightBoss) && nightBoss.isDead == false) {
 									forge_physics::resolveCollision(&player,&nightBoss);}
-								
+
 									if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
 										if (forge_physics::checkCollision(&poopShot,&nightBoss)) {
 											forge_physics::resolveCollision(&poopShot,&nightBoss);
@@ -556,7 +550,7 @@ fn int main(String[] args) {
          				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
                 }
 
-				
+
 
 			case GAME_WIN:
 				//TODO still needs more work but framework is there, needs art animations, music.
@@ -567,11 +561,11 @@ fn int main(String[] args) {
 				rl::updateMusicStream(mMap.get("gameWin")!!);
 				rl::clearBackground(rl::BLACK);
                 //rl::drawTexture(tmap.get("creditsPage")!!, 0, 0, rl::WHITE);
-				
+
 					state = forge_ui::updateButton(&gameWinButton, &sMap, state, {10,10});
-				
+
 					forge_ui::drawButton(&gameWinButton);
-				
+
 				forge_fx::drawRainbow();
 				forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
 
@@ -582,7 +576,7 @@ fn int main(String[] args) {
 
 			case GAME_OVER:
 				io::printfn("Game_Over State");
-			
+
 			case OPTIONS:
 
 				//just using menu button.
@@ -591,7 +585,7 @@ fn int main(String[] args) {
 				if(rl::isMusicStreamPlaying(song) == false){
 						rl::playMusicStream(song);
 						//std::io::printfn("music play");
-						
+
 					}else{
 						forge_options::adjustUpdateOptions(song);
 						rl::updateMusicStream(song);
@@ -600,19 +594,19 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
-                
+
 				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				//rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 				state = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
 				forge_ui::drawButton(&menuButton);
 
 				//update master volume, music volume.
-				
+
 				//draw Options
 				forge_options::drawOptions();
-                
-				
-				
+
+
+
 			case DEMO:
 
 				rl::hideCursor();
@@ -691,9 +685,9 @@ fn int main(String[] args) {
 					foreach ( &demoConstruct : demoConstructs){
 								forge_game::drawAnitmatedConstruct(demoConstruct);
 						}
-				
+
 			case CREDITS:
-			
+
 				//io::printfn("Credits State");
 				//just using menu button.
 				Button menuButton = uiButtons[4];
@@ -703,12 +697,12 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
-                
+
 				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				//rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
-				
+
 					state = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
-				
+
 					forge_ui::drawButton(&menuButton);
    		}
    			//accumulator -= TIME_STEP;
