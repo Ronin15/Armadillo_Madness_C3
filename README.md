@@ -40,11 +40,15 @@ Notes:
     The Art is either from my 6-year-old or my wife's concept art.
     Any support is extremely appreciated.
     Generative AI used for game summary, itch.io backdrop/game credits page/game options page, Game Studio, Engine Logos and game cover art. Game title page, back drop picture only, from icth.io Ansimuz. All other assets created in Aseprite by Hammer Forged Games.
-    Music from Chosic.com. Credit for artists is in game on credits screen.
+    Music from Chosic.com. Credit for artists is in game on credits screen and below.
 
 GAME RELEASE DATE : Q2 2025 or maybe earlier.
 
+CREDITS:
+
     Music promoted by https://www.chosic.com/free-music/all/
+
+    Artists : Komiku and Alexander Nakrada.
     
     SFX : Soundly - https://getsoundly.com/
 
