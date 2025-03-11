@@ -37,7 +37,7 @@ Notes:
 
     Need to implement more levels only two planned so far. If successful will add more. This is a game that my 6-year-old at the time helped design and provided inspiration for the art.
     The Title page song with the Harmonica is her playing her Harmonica.
-    The Art is either from my 6-year-old or my wife's concept art.
+    The Art is either from my 7-year-old or my wife's concept art.
     Any support is extremely appreciated.
     Generative AI used for game summary, itch.io backdrop/game credits page/game options page, Game Studio, Engine Logos and game cover art. Game title page, back drop picture only, from icth.io Ansimuz. All other assets created in Aseprite by Hammer Forged Games.
     Music from Chosic.com. Credit for artists is in game on credits screen and below.
