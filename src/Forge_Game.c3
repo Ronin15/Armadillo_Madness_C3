@@ -652,13 +652,17 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 
                   case "cougar_boss":
 
-                           //boss invuln and life decrementing
-                           if(c.invulnTimer >= 0.0){
-                              c.invulnTimer -= 1.0;
-                           }else{
-                              c.invlunerable = false;
+                           
+                              if(c.isDead){
+                              //Stops AI movement when dead.
+                              c.pos.y += c.vel.y * deltaTime;
+                              c.vel.y += c.gravity * deltaTime;
+                              c.groundLevel = groundLevel - 140;
+                              break;
                            }
 
+
+                           //boss invuln and life decrementing
                            if(c.vHit && !c.invlunerable) {
                               c.vHit = false;
                               c.lives -= 1;
@@ -673,8 +677,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                               c.invlunerable = true;
                            }
 
-
-                           if((c.hHit || c.vHit) && c.lives <= 0){
+                           if(c.lives <= 0){
 
                                  if(c.hHit){
                                        score += 15000;
@@ -690,14 +693,16 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                                  jumpCounter = 0;
                               }
 
-                           if(c.isDead){
-                              //Stops AI movement when dead.
-                              c.pos.y += c.vel.y * deltaTime;
-                              c.vel.y += c.gravity * deltaTime;
-                              c.groundLevel = groundLevel - 140;
-                              break;
+                              
+                           if(c.invulnTimer >= 0.0){
+                              c.invulnTimer -= 1.0;
+                              c.hHit = false;
+                              c.vHit = false;
+                           }else{
+                              c.invlunerable = false;
                            }
-
+                              
+                           
                   //AI MOVEMENT
                   jumpCounter += 1;
 
