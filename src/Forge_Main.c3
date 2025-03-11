@@ -497,6 +497,19 @@ fn int main(String[] args) {
 							forge_ui::drawButton(pauseButton);
 							}
         				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
+
+						if(dayBoss.active){
+							forge_game::drawAnitmatedConstruct(&dayBoss);
+							//dayboss life bar
+							rl::drawRectangle(5, 195, 260, 40, rl::BLACK);
+							rl::drawText("MAD COUGAR", 20, 200, 35, rl::RED);
+								if (&dayBoss.lives == &dayBoss.lives){
+									for (int i = 0; i < dayBoss.lives; i++){
+											Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 300};
+											rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
+									}
+								}
+						}
                     }
                 if (night){
 
