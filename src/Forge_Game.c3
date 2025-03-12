@@ -652,7 +652,6 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 
                   case "cougar_boss":
 
-                           
                               if(c.isDead){
                               //Stops AI movement when dead.
                               c.pos.y += c.vel.y * deltaTime;
@@ -660,7 +659,6 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                               c.groundLevel = groundLevel - 140;
                               break;
                            }
-
 
                            //boss invuln and life decrementing
                            if(c.vHit && !c.invlunerable) {
@@ -693,7 +691,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                                  jumpCounter = 0;
                               }
 
-                              
+
                            if(c.invulnTimer >= 0.0){
                               c.invulnTimer -= 1.0;
                               c.hHit = false;
@@ -701,8 +699,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                            }else{
                               c.invlunerable = false;
                            }
-                              
-                           
+
                   //AI MOVEMENT
                   jumpCounter += 1;
 
