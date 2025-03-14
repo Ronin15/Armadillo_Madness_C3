@@ -12,8 +12,10 @@ const float MOVE_VELOCITY = -600.0;
 const float SKY_LEVEL = 0.0;
 const float ACCELERATION = 250.0;
 const float FRICTION = 40.0;
+const float NIGHTB_FREQUENCY = 0.01;
+const float NIGHTB_AMPLITUDE = 400.0;
 const float AMPLITUDE = 300.0;//300
-const float FREQUENCY = 0.05;//0.05
+const float FREQUENCY = 0.03;//0.05
 const int MAX_LIVES = 6;
 const float OBS_SOFFSET = 30.0;
 const float ANT_SOFFSET = 60.0;
@@ -30,7 +32,8 @@ float groundLevel = 1080.0 - 70;//115
 bool poopPenatrate = false;
 
 //AI BOSS movement
-float jumpCounter = 0;
+float jumpCounter;
+float shootCounter;
 bool movingLeft = true;
 
 //GAME Structures Types ---------------------------------------------------------
@@ -270,7 +273,7 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
           c.pos = {2200,200};
           c.lives = 20;
       }else{
-          c.pos = {2200,460};
+          c.pos = {2200,660};
           c.lives = 30;
       }
       c.maxFrames = 2;
@@ -734,7 +737,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                               }
 					       }
 				        }
-
+ 
                          c.pos.y += c.vel.y * deltaTime;
                          c.vel.y += c.gravity * deltaTime;
                          c.groundLevel = groundLevel - 140;
@@ -742,31 +745,83 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
 
                   case "alien_boss":
 
-                         if((c.hHit || c.vHit) && c.lives <= 0){
-
-                              if(c.hHit){
-                                    score += 23000;
-                              }else{
-                                    score += 10000;
-                              }
-
-                        c.isDead = true;
-                        c.isGrounded = true;
-                        rl::playSound(sMap.get("enemyDie")!!);
-
-                        }
-
-                        if(c.vHit){c.vHit = false;c.lives -= 1;}
-                        if(c.hHit){c.hHit = false;c.lives -= 1;}
-                        c.pos.x -= 125 * deltaTime;//15
-                        c.texFlip = false;//15
-                        //if (c.pos.x <= 0){c.pos.x += 15.0 * deltaTime;c.texFlip = true;}
-                        if (!c.isDead){
-                              c.pos.y += AMPLITUDE * math::sin(FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
-                        }else{
+                         if(c.isDead){
+                              //Stops AI movement when dead.
                               c.pos.y += c.vel.y * deltaTime;
                               c.vel.y += c.gravity * deltaTime;
+                              c.groundLevel = groundLevel - 140;
+                              break;
+                           }
+
+                           //boss invuln and life decrementing
+                           if(c.vHit && !c.invlunerable) {
+                              c.vHit = false;
+                              c.lives -= 1;
+                              c.invulnTimer = 100.0;
+                              c.invlunerable = true;
+                           }
+
+                           if(c.hHit && !c.invlunerable) {
+                              c.hHit = false;
+                              c.lives -= 1;
+                              c.invulnTimer = 100.0;
+                              c.invlunerable = true;
+                           }
+
+                           if(c.lives <= 0){
+
+                                 if(c.hHit){
+                                       score += 25000;
+                                 }else{
+                                       score += 15000;
+                                 }
+
+                                 c.invlunerable = false;
+                                 c.invulnTimer = 0.0;
+                                 c.isDead = true;
+
+                                 rl::playSound(sMap.get("enemyDie")!!);
+                                 jumpCounter = 0;
                               }
+
+
+                           if(c.invulnTimer >= 0.0){
+                              c.invulnTimer -= 1.0;
+                              c.hHit = false;
+                              c.vHit = false;
+                           }else{
+                              c.invlunerable = false;
+                           }
+                  
+            
+                shootCounter += 1;
+
+                 //io::printfn("BOSS_POS name: %s x :%f : y :%f timer: %f lives: %d invuln: %s",c.name,c.pos.x,c.pos.y,c.invulnTimer,c.lives,c.invlunerable);//DEBUG
+
+				if(movingLeft) {
+                   //left
+                   c.pos.y -= NIGHTB_AMPLITUDE * math::sin(NIGHTB_FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
+                   c.pos.x -= 125 * deltaTime;
+                   c.texFlip = false;
+                      if(c.pos.x < 0.0) {movingLeft = false;}
+
+                        if (shootCounter % 100 == 0){
+                           //TODO add shoot logic
+				        }
+                }else{
+                   //right
+                   c.pos.y += NIGHTB_AMPLITUDE * math::sin(NIGHTB_FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
+                   c.pos.x += (125 * 4) * deltaTime;
+                   c.texFlip = true;
+				      if(c.pos.x >= forge_main::WINDOW_WIDTH + 300) {movingLeft = true;}
+                     
+					if (shootCounter % 100 == 0){
+
+                        //TODO add shoot Logic
+                           
+				        }
+                     }
+ 
                   break;
             }
       }

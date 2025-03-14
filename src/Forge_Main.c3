@@ -18,12 +18,17 @@ const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const String GAME_NAME = "Armadillo Madness 0.7.5"; //ui update, options update, and almost all game states complete
-const int MAX_CONSTRUCTS = 2;//100 - 200
+const String GAME_NAME = "Armadillo Madness 0.7.8"; //ui update, options update, and almost all game states complete
+const int MAX_CONSTRUCTS = 100;//100 - 200
+const int MAX_BOSS_CONTUCTS = 20;
 const int MAX_POWERUPS = 12;//6
 const int MAX_BUTTONS = 7;
 const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
+
+//Hammer Forge Colors RGB
+const Color FORGE_GRAY = {31,32,34,255};
+const Color FORGE_ORANGE = {185,71,0,200};
 
 Construct[MAX_CONSTRUCTS] constructs;
 Construct[MAX_CONSTRUCTS] demoConstructs;
@@ -103,6 +108,7 @@ fn int main(String[] args) {
 	Construct dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
 	Construct nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
 
+	//build arrays TODO change to heap values for dynamic spawning.
 	for(int i = 0; i < MAX_CONSTRUCTS; i++){
 	constructs[i] = forge_game::forgeConstruct(&tMap,"day");
 	}
@@ -124,7 +130,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = LOGO;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -145,9 +151,9 @@ fn int main(String[] args) {
 
         	case LOGO:
                 rl::hideCursor();
-				rl::clearBackground({31, 32, 34, 255});//Forge_Gray
+				rl::clearBackground(FORGE_GRAY);//Forge_Gray
 				rl::drawTexture(tMap.get("logo")!!, 800, 420, rl::WHITE);
-				rl::drawText("Hammer Forged Games", 580, 340, 60, rl::ORANGE);
+				rl::drawText("Hammer Forged Games", 580, 340, 60, FORGE_ORANGE);
 				rl::drawText("Made with", 800, 725, 20, rl::WHITE);
 				rl::drawTexture(tMap.get("raylib")!!, 920, 700, rl::WHITE);
 				rl::drawTexture(tMap.get("c3")!!, 990, 713, rl::WHITE);
@@ -193,7 +199,7 @@ fn int main(String[] args) {
 
 			case GAME:
 
-				dayBoss.active = true;//debug
+				//dayBoss.active = false;//debug
 			    night = false;
 			    day = true;
 				//misc game stuff
@@ -288,7 +294,7 @@ fn int main(String[] args) {
 				if(dayBoss.active){
 					forge_game::drawAnitmatedConstruct(&dayBoss);
 					//dayboss life bar
-					rl::drawRectangle(5, 195, 260, 40, rl::BLACK);
+					rl::drawRectangle(5, 195, 260, 40, FORGE_GRAY);
 					rl::drawText("MAD COUGAR", 20, 200, 35, rl::RED);
 					if (&dayBoss.lives == &dayBoss.lives){
 						for (int i = 0; i < dayBoss.lives; i++){
@@ -317,10 +323,9 @@ fn int main(String[] args) {
 			}
 
 			case NIGHTLVL:
-
-				 nightBoss.active = true;
-			     night = true;
-				 day = false;
+				//nightBoss.active = flase;//debug
+				night = true;
+				day = false;
 				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
@@ -413,8 +418,18 @@ fn int main(String[] args) {
 				forge_fx::forgeFXManager(&mMap,"shootingStars", deltaTime);
 
 					if(nightBoss.active){
-						forge_game::drawAnitmatedConstruct(&nightBoss);
+					forge_game::drawAnitmatedConstruct(&nightBoss);
+					//dayboss life bar
+					rl::drawRectangle(5, 195, 325, 40, FORGE_GRAY);
+					rl::drawText("MAD Alien Visage", 20, 200, 35, rl::RED);
+					if (&nightBoss.lives == &nightBoss.lives){
+						for (int i = 0; i < nightBoss.lives; i++){
+							Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 300};
+							rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
 						}
+					}
+				}
+								
 			//weather
 			if (!raining && weatherTimer <= 0.0){
 				raining = forge_game::randChanceCheck();
@@ -501,7 +516,7 @@ fn int main(String[] args) {
 						if(dayBoss.active){
 							forge_game::drawAnitmatedConstruct(&dayBoss);
 							//dayboss life bar
-							rl::drawRectangle(5, 195, 260, 40, rl::BLACK);
+							rl::drawRectangle(5, 195, 260, 40, FORGE_GRAY);
 							rl::drawText("MAD COUGAR", 20, 200, 35, rl::RED);
 								if (&dayBoss.lives == &dayBoss.lives){
 									for (int i = 0; i < dayBoss.lives; i++){
@@ -561,7 +576,19 @@ fn int main(String[] args) {
 								forge_ui::drawButton(pauseButton);
 								}
          				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
-                }
+				if(nightBoss.active){
+					forge_game::drawAnitmatedConstruct(&nightBoss);
+					//dayboss life bar
+					rl::drawRectangle(5, 195, 325, 40, FORGE_GRAY);
+					rl::drawText("MAD Alien Visage", 20, 200, 35, rl::RED);
+					if (&nightBoss.lives == &nightBoss.lives){
+						for (int i = 0; i < nightBoss.lives; i++){
+							Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 300};
+							rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
+						}
+					}
+				}
+            }
 
 
 
@@ -687,7 +714,7 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
-				rl::drawText("Aramadillo Madness", (WINDOW_WIDTH / 2) - 355, 340, 65, {185,71,0,200}); //rust orange
+				rl::drawText("Aramadillo Madness", (WINDOW_WIDTH / 2) - 355, 340, 65, FORGE_ORANGE); //Forge orange
 				forge_fx::drawLight(1815, 105, 300, rl::fade(rl::YELLOW, 0.7));
 				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
 				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
@@ -722,3 +749,4 @@ fn int main(String[] args) {
 	}
 	return 0;
 }
+					
