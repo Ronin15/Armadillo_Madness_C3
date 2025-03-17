@@ -264,7 +264,7 @@ fn int main(String[] args) {
 							}
 					}
 
-					io::printfn("Last enitity pos-x: %f",constructs[entIndex].pos.x);
+					//io::printfn("Last enitity pos-x: %f",constructs[entIndex].pos.x);
 					if (constructs[entIndex].pos.x < 0.0){
 						io::printfn("COUGAR_BOSS Triggered!");
 
