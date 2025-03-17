@@ -66,7 +66,6 @@ fn int main(String[] args) {
 	//camera.target = {WINDOW_WIDTH,WINDOW_HEIGHT};
 
 	//asset loading
-
 	TexMap tMap = forge_load::loadTexMap();
 	SoundMap sMap = forge_load::loadSoundMap();
 	MusicMap mMap = forge_load::loadMusicMap();
@@ -76,13 +75,19 @@ fn int main(String[] args) {
 	float scrollMid = 0.0;
 	float scrollClouds = 0.0;
 	float lifeSpace = (float)tMap.get("lifeCount")!!.width + 5.0;
+	
 	//score
 	int score;
+
+	//entity array index switching for bad guys waves.
+	int entIndex;
+
 	//weather
 	bool day = true;
 	bool night = false;
 	bool raining = false;
 	float weatherTimer;
+
 	//demo time counters
 	float demoCounter1;
 	float demoCounter2;
@@ -258,13 +263,28 @@ fn int main(String[] args) {
 				//update game logic-------------------------------------------------------------------------------
 				forge_game::updateConstruct(&player, &sMap, raining, deltaTime);
 				forge_game::updateConstruct(&poopShot, &sMap, raining, deltaTime);
-
+						
 					foreach ( &construct : constructs){
 								score += forge_game::updateConstruct(construct, &sMap, raining, deltaTime);
-						}
-				if(dayBoss.active){
-					score += forge_game::updateConstruct(&dayBoss, &sMap, raining, deltaTime);
-				}
+					}
+
+					if(dayBoss.active){
+						score += forge_game::updateConstruct(&dayBoss, &sMap, raining, deltaTime);
+							entIndex = constructs.len - 1;
+
+							if (dayBoss.isDead){
+									state = NIGHTLVL;		
+							}
+					}
+
+					io::printfn("Last enitity pos-x: %f",constructs[entIndex].pos.x);
+					if (constructs[entIndex].pos.x < 0.0){
+						io::printfn("COUGAR_BOSS Triggered!");
+
+							dayBoss.active = true;
+										constructs = forge_game::forgeConstruct(&tMap,"day",MAX_BOSS_CONSTRUCTS);
+					}
+				
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);

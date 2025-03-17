@@ -105,6 +105,12 @@ fn void resolveCollision(Construct* a, Construct* b) {
                             case "super":
                                     a.sHit = true;
                             break;
+
+							case "alien_boss":
+							
+								a.vel.y *= -5;
+								
+							break;
                         }
           }
           io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);//DEBUG

@@ -273,7 +273,7 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
           c.pos = {2200,200};
           c.lives = 20;
       }else{
-          c.pos = {2200,660};
+          c.pos = {2200,280};
           c.lives = 30;
       }
       c.maxFrames = 2;
@@ -301,23 +301,21 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
 
 //creates game objects
 fn Construct[] forgeConstruct(TexMap *tMap, String array_type, int capacity = forge_main::MAX_CONSTRUCTS) {
-
+   
    Construct[] constructs = mem::new_array(Construct, capacity);
-   /*
-   Construct* constructs = (Construct*)malloc(capacity * sizeof(Construct));
-   if(constructs == null){
-   io::printfn("memory allocation failed");
-        return;
-   }
- */
-
+    
    for (int i = 0; i < capacity; i++){
    constructs[i].name = "default"; // this is for generating object spawn limits based on random name and type counts. For powerups only at the moment.
    while (constructs[i].name == "default"){
       constructs[i].type = getRandomType();
       constructs[i].name = (String)getRandomConstructName(constructs[i].type,array_type);
    }
-    constructs[i].pos = {(float)rand_in_range(2000,26000) + (float)rand_in_range(100,200),(float)rand_in_range(460,650) + (float)rand_in_range(64,100)};//21000
+    if (capacity <= forge_main::MAX_CONSTRUCTS){
+      constructs[i].pos = {(float)rand_in_range(2000,26000) + (float)rand_in_range(100,200),(float)rand_in_range(460,650) + (float)rand_in_range(64,100)};//21000 26000
+   }else{
+      constructs[i].pos = {(float)rand_in_range(2000,15000) + (float)rand_in_range(100,200),(float)rand_in_range(460,650) + (float)rand_in_range(64,100)};//21000 26000
+   }
+
     constructs[i].texture = tMap.get(constructs[i].name)!!;
    // c.sound = sMap.get(c.name)!!;  NEED TO ADD SOUNDS FOR ALL TYPES
     constructs[i].lives = 2;
