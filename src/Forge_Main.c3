@@ -19,8 +19,8 @@ const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.7.8"; //ui update, options update, and almost all game states complete
-const int MAX_CONSTRUCTS = 100;//100 - 200
-const int MAX_BOSS_CONTUCTS = 20;
+const int MAX_CONSTRUCTS = 200;//100 - 200
+const int MAX_BOSS_CONSTRUCTS = 20;
 const int MAX_POWERUPS = 12;//6
 const int MAX_BUTTONS = 7;
 const float MASTER_VOLUME = 0.8;
@@ -30,9 +30,10 @@ const float MUSIC_VOLUME = 0.5;
 const Color FORGE_GRAY = {31,32,34,255};
 const Color FORGE_ORANGE = {185,71,0,200};
 
-Construct[MAX_CONSTRUCTS] constructs;
-Construct[MAX_CONSTRUCTS] demoConstructs;
-Construct[MAX_CONSTRUCTS] nightConstructs;
+Construct[] constructs;
+Construct[] demoConstructs;
+Construct[] nightConstructs;
+Construct[] bossConstructs;   //for boss fights used the max boss constuct constant
 Button[MAX_BUTTONS] uiButtons;
 
 enum GameState {
@@ -54,7 +55,7 @@ fn int main(String[] args) {
   	rl::setConfigFlags(rl::FLAG_VSYNC_HINT);//VSYNC not applicable with Raylib target FPS set below vsync capabilities. Need to address when doing the time step.
 	rl::initWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
 	defer rl::closeWindow();
-	rl::initAudioDevice();
+ 	rl::initAudioDevice();
 	defer rl::closeAudioDevice();
 	rl::setTargetFPS(FPS_CAP);
 	forge_game::toggleFullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
@@ -65,6 +66,7 @@ fn int main(String[] args) {
 	//camera.target = {WINDOW_WIDTH,WINDOW_HEIGHT};
 
 	//asset loading
+
 	TexMap tMap = forge_load::loadTexMap();
 	SoundMap sMap = forge_load::loadSoundMap();
 	MusicMap mMap = forge_load::loadMusicMap();
@@ -104,11 +106,11 @@ fn int main(String[] args) {
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
 	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap);
-	//Boss init
+	//Boss init TODO reset BOSSES after fight
 	Construct dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
 	Construct nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
 
-	//build arrays TODO change to heap values for dynamic spawning.
+/*build arrays TODO change to heap values for dynamic spawning.
 	for(int i = 0; i < MAX_CONSTRUCTS; i++){
 	constructs[i] = forge_game::forgeConstruct(&tMap,"day");
 	}
@@ -120,17 +122,17 @@ fn int main(String[] args) {
 	for(int i = 0; i < MAX_CONSTRUCTS; i++){
 		nightConstructs[i] = forge_game::forgeConstruct(&tMap,"night");
 	}
-
+*/
 	for (int i = 0; i < MAX_BUTTONS; i++){
 		int count = i;
 		uiButtons[i] = forge_ui::createButton(&tMap, &sMap, count);
 	}
 
-	io::printfn("Objects created");
-	io::printfn("Song selected: %s!", randSong);
+	io::printfn("Objects created");//DEBUG
+	io::printfn("Song selected: %s!", randSong);//DEBUG
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
+	GameState state = MAIN;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -188,17 +190,23 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);
 
 				 	if (rl::isKeyPressed(rl::KEY_ENTER)){
+						 constructs = forge_game::forgeConstruct(&tMap,"day");
        					 state = GAME;
     				}
 
 					frameCounter += 1;
 					if (frameCounter > 800) { //800 for testing
-							state = DEMO;
+					        state = DEMO;
 							frameCounter = 0;
 					}
 
 			case GAME:
-
+				if (!constructs){
+			         io::printfn("init array");
+					//creating game entities
+					constructs = forge_game::forgeConstruct(&tMap,"day");
+				}
+				
 				//dayBoss.active = false;//debug
 			    night = false;
 			    day = true;
@@ -323,7 +331,13 @@ fn int main(String[] args) {
 			}
 
 			case NIGHTLVL:
-				//nightBoss.active = flase;//debug
+
+			if (!nightConstructs){
+			         io::printfn("init array");
+					//creating game entities
+					nightConstructs = forge_game::forgeConstruct(&tMap,"night");
+				}
+				nightBoss.active = true;//debug
 				night = true;
 				day = false;
 				//misc game stuff
@@ -429,7 +443,7 @@ fn int main(String[] args) {
 						}
 					}
 				}
-								
+
 			//weather
 			if (!raining && weatherTimer <= 0.0){
 				raining = forge_game::randChanceCheck();
@@ -539,11 +553,11 @@ fn int main(String[] args) {
         				rl::drawTextureEx(tMap.get("nightground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
         				//moon
         				forge_fx::drawLight(1815, 105, 150, rl::fade(rl::YELLOW, 0.8));
-        				forge_fx::drawLight(1815, 105, 351, rl::fade(rl::WHITE, 0.8));
-        				//end moon
-
-         			    forge_game::drawAnitmatedConstruct(&player);
+						forge_fx::drawLight(1815, 105, 351, rl::fade(rl::WHITE, 0.8));
+						//end/
+						forge_game::drawAnitmatedConstruct(&player);
         				forge_game::drawPoopShot(&poopShot,&player);
+
 
        					foreach ( &nightConstruct : nightConstructs){
         								forge_game::drawAnitmatedConstruct(nightConstruct);
@@ -649,6 +663,12 @@ fn int main(String[] args) {
 
 			case DEMO:
 
+			     if (!demoConstructs){
+			         io::printfn("init array");
+					//creating demo entities
+					demoConstructs = forge_game::forgeConstruct(&tMap,"demo");
+				}
+
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
 	  			scrollGround -= 5.0;
@@ -686,9 +706,11 @@ fn int main(String[] args) {
 					demoCounter1 = 0;
 				}
 
-				if (demoCounter2 > 10000){
+				if (demoCounter2 > 10000){//10000
 					demoCounter2 = 0;
 					state = MAIN;
+					demoConstructs = forge_game::forgeConstruct(&tMap,"demo");
+					break;
 				}
 
 
@@ -743,10 +765,10 @@ fn int main(String[] args) {
 
 					state = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
 
+
 					forge_ui::drawButton(&menuButton);
    		}
    			//accumulator -= TIME_STEP;
 	}
 	return 0;
 }
-					

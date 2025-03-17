@@ -292,6 +292,7 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
       c.invulnTimer = 0.0;
       c.hHit = false;
       c.vHit = false;
+      c.active = false;
 
       io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
@@ -299,38 +300,49 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
 
 
 //creates game objects
-fn Construct forgeConstruct(TexMap *tMap, String array_type) {
+fn Construct[] forgeConstruct(TexMap *tMap, String array_type, int capacity = forge_main::MAX_CONSTRUCTS) {
 
-   Construct c;
-   c.name = "default"; // this is for generating object spawn limits based on random name and type counts. For powerups only at the moment.
-   while (c.name == "default"){
-      c.type = getRandomType();
-      c.name = (String)getRandomConstructName(c.type,array_type);
+   Construct[] constructs = mem::new_array(Construct, capacity);
+   /*
+   Construct* constructs = (Construct*)malloc(capacity * sizeof(Construct));
+   if(constructs == null){
+   io::printfn("memory allocation failed");
+        return;
    }
-    c.pos = {(float)rand_in_range(2000,26000) + (float)rand_in_range(100,200),(float)rand_in_range(460,650) + (float)rand_in_range(64,100)};//21000
-    c.texture = tMap.get(c.name)!!;
-   // c.sound = sMap.get(c.name)!!;  NEED TO ADD SOUNDS FOR ALL TYPES
-    c.lives = 2;
-    if (c.type == OBS ) {
-        c.maxFrames = 1;
-    }else{
-        c.maxFrames = 2;
-    }
-    c.gravity = GRAVITY;
-    c.jumpVelocity = MOVE_VELOCITY;
-    c.groundLevel = groundLevel;
-    c.acceleration = ACCELERATION;
-    c.friction = FRICTION;
-    c.frameLength = 0.1;
-    c.currentFrame = 1;
-    c.texFlip = false;
-    c.isDead = false;
-    c.expired = true;
-    c.hHit = false;
-    c.vHit = false;
+ */
 
-    io::printfn("name -> %s  type -> %s  texture -> %s",c.name,c.type,c.texture);
-    return  c;
+   for (int i = 0; i < capacity; i++){
+   constructs[i].name = "default"; // this is for generating object spawn limits based on random name and type counts. For powerups only at the moment.
+   while (constructs[i].name == "default"){
+      constructs[i].type = getRandomType();
+      constructs[i].name = (String)getRandomConstructName(constructs[i].type,array_type);
+   }
+    constructs[i].pos = {(float)rand_in_range(2000,26000) + (float)rand_in_range(100,200),(float)rand_in_range(460,650) + (float)rand_in_range(64,100)};//21000
+    constructs[i].texture = tMap.get(constructs[i].name)!!;
+   // c.sound = sMap.get(c.name)!!;  NEED TO ADD SOUNDS FOR ALL TYPES
+    constructs[i].lives = 2;
+    if (constructs[i].type == OBS ) {
+        constructs[i].maxFrames = 1;
+    }else{
+        constructs[i].maxFrames = 2;
+    }
+    constructs[i].gravity = GRAVITY;
+    constructs[i].jumpVelocity = MOVE_VELOCITY;
+    constructs[i].groundLevel = groundLevel;
+    constructs[i].acceleration = ACCELERATION;
+    constructs[i].friction = FRICTION;
+    constructs[i].frameLength = 0.1;
+    constructs[i].currentFrame = 1;
+    constructs[i].texFlip = false;
+    constructs[i].isDead = false;
+    constructs[i].expired = true;
+    constructs[i].hHit = false;
+    constructs[i].vHit = false;
+
+    io::printfn("name -> %s  type -> %s  texture -> %s",constructs[i].name,constructs[i].type,constructs[i].texture);
+   }
+
+    return constructs;
 }
 
 //update game contructs
@@ -737,7 +749,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                               }
 					       }
 				        }
- 
+
                          c.pos.y += c.vel.y * deltaTime;
                          c.vel.y += c.gravity * deltaTime;
                          c.groundLevel = groundLevel - 140;
@@ -792,8 +804,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                            }else{
                               c.invlunerable = false;
                            }
-                  
-            
+
+
                 shootCounter += 1;
 
                  //io::printfn("BOSS_POS name: %s x :%f : y :%f timer: %f lives: %d invuln: %s",c.name,c.pos.x,c.pos.y,c.invulnTimer,c.lives,c.invlunerable);//DEBUG
@@ -814,14 +826,14 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                    c.pos.x += (125 * 4) * deltaTime;
                    c.texFlip = true;
 				      if(c.pos.x >= forge_main::WINDOW_WIDTH + 300) {movingLeft = true;}
-                     
+
 					if (shootCounter % 100 == 0){
 
                         //TODO add shoot Logic
-                           
+
 				        }
                      }
- 
+
                   break;
             }
       }
