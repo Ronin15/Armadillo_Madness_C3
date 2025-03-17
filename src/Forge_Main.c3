@@ -115,19 +115,6 @@ fn int main(String[] args) {
 	Construct dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
 	Construct nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
 
-/*build arrays TODO change to heap values for dynamic spawning.
-	for(int i = 0; i < MAX_CONSTRUCTS; i++){
-	constructs[i] = forge_game::forgeConstruct(&tMap,"day");
-	}
-
-	for(int i = 0; i < MAX_CONSTRUCTS; i++){
-	demoConstructs[i] = forge_game::forgeConstruct(&tMap,"demo");
-	}
-
-	for(int i = 0; i < MAX_CONSTRUCTS; i++){
-		nightConstructs[i] = forge_game::forgeConstruct(&tMap,"night");
-	}
-*/
 	for (int i = 0; i < MAX_BUTTONS; i++){
 		int count = i;
 		uiButtons[i] = forge_ui::createButton(&tMap, &sMap, count);
