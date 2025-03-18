@@ -76,7 +76,7 @@ fn int main(String[] args) {
 	float scrollMid = 0.0;
 	float scrollClouds = 0.0;
 	float lifeSpace = (float)tMap.get("lifeCount")!!.width + 5.0;
-	
+
 	//score
 	int score;
 
@@ -125,7 +125,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);//DEBUG
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = LOGO;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -151,7 +151,7 @@ fn int main(String[] args) {
 				rl::drawText("Hammer Forged Games", 580, 340, 60, FORGE_ORANGE);
 				rl::drawText("Made with", 800, 725, 20, rl::WHITE);
 				rl::drawTexture(tMap.get("raylib")!!, 920, 700, rl::WHITE);
-				rl::drawTexture(tMap.get("c3")!!, 990, 713, rl::WHITE);
+				rl::drawTexture(tMap.get("c3")!!, 990, 700, rl::WHITE);
 				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
 				rl::drawText("*{}==[> Forge_Engine <]=={}*", 790, 790, 20, rl::LIGHTGRAY);
 					frameCounter += 1;
@@ -199,7 +199,7 @@ fn int main(String[] args) {
 					//creating game entities
 					constructs = forge_game::forgeConstruct(&tMap,"day");
 				}
-				
+
 				//dayBoss.active = false;//debug
 			    night = false;
 			    day = true;
@@ -251,7 +251,7 @@ fn int main(String[] args) {
 				//update game logic-------------------------------------------------------------------------------
 				forge_game::updateConstruct(&player, &sMap, raining, deltaTime);
 				forge_game::updateConstruct(&poopShot, &sMap, raining, deltaTime);
-						
+
 					foreach ( &construct : constructs){
 								score += forge_game::updateConstruct(construct, &sMap, raining, deltaTime);
 					}
@@ -261,7 +261,7 @@ fn int main(String[] args) {
 							entIndex = constructs.len - 1;
 
 							if (dayBoss.isDead){
-									state = NIGHTLVL;		
+									state = NIGHTLVL;
 							}
 					}
 
@@ -272,7 +272,7 @@ fn int main(String[] args) {
 							dayBoss.active = true;
 										constructs = forge_game::forgeConstruct(&tMap,"day",MAX_BOSS_CONSTRUCTS);
 					}
-				
+
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
