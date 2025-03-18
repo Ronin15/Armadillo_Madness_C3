@@ -159,7 +159,7 @@ fn int main(String[] args) {
 							state = MAIN;
 							frameCounter = 0;
 					}
-				//	forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
+				//forge_fx::forgeFXManager(&mMap,"explode",deltaTime);
 
 			case MAIN:
 				//slicing out Main ui buttons
