@@ -30,6 +30,7 @@ const float MUSIC_VOLUME = 0.5;
 const Color FORGE_GRAY = {31,32,34,255};
 const Color FORGE_ORANGE = {185,71,0,200};
 
+//Entity Containers
 Construct[] constructs;
 Construct[] demoConstructs;
 Construct[] nightConstructs;
