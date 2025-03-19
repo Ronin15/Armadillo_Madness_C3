@@ -18,13 +18,14 @@ const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const String GAME_NAME = "Armadillo Madness 0.7.8"; //ui update, options update, and almost all game states complete
+const String GAME_NAME = "Armadillo Madness 0.8.0:"; //ui update, options update, and almost all game states complete
 const int MAX_CONSTRUCTS = 200;//100 - 200
-const int MAX_BOSS_CONSTRUCTS = 20;
+const int MAX_BOSS_CONSTRUCTS = 50;
 const int MAX_POWERUPS = 12;//6
 const int MAX_BUTTONS = 7;
 const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
+const int BOSS_TIMER = 13700;
 
 //Hammer Forge Colors RGB
 const Color FORGE_GRAY = {31,32,34,255};
@@ -79,9 +80,6 @@ fn int main(String[] args) {
 
 	//score
 	int score;
-
-	//entity array index switching for bad guys waves.
-	int entIndex;
 
 	//weather
 	bool day = true;
@@ -249,28 +247,30 @@ fn int main(String[] args) {
 								}
 
 				//update game logic-------------------------------------------------------------------------------
+				frameCounter +=1;
 				forge_game::updateConstruct(&player, &sMap, raining, deltaTime);
 				forge_game::updateConstruct(&poopShot, &sMap, raining, deltaTime);
-
+						
 					foreach ( &construct : constructs){
 								score += forge_game::updateConstruct(construct, &sMap, raining, deltaTime);
 					}
 
 					if(dayBoss.active){
 						score += forge_game::updateConstruct(&dayBoss, &sMap, raining, deltaTime);
-							entIndex = constructs.len - 1;
 
 							if (dayBoss.isDead){
 									state = NIGHTLVL;
+									frameCounter = 0;		
 							}
 					}
 
 					//io::printfn("Last enitity pos-x: %f",constructs[entIndex].pos.x);
-					if (constructs[entIndex].pos.x < 0.0){
+						if (frameCounter == BOSS_TIMER){
 						io::printfn("COUGAR_BOSS Triggered!");
+						frameCounter = 0;
 
 							dayBoss.active = true;
-										constructs = forge_game::forgeConstruct(&tMap,"day",MAX_BOSS_CONSTRUCTS);
+							constructs = forge_game::forgeConstruct(&tMap,"day",MAX_BOSS_CONSTRUCTS);
 					}
 
 
@@ -345,7 +345,7 @@ fn int main(String[] args) {
 					//creating game entities
 					nightConstructs = forge_game::forgeConstruct(&tMap,"night");
 				}
-				nightBoss.active = true;//debug
+				//nightBoss.active = true;//debug
 				night = true;
 				day = false;
 				//misc game stuff
@@ -392,16 +392,31 @@ fn int main(String[] args) {
 									}
 								}
 				//update game logic-------------------------------------------------------------------------------
-				forge_game::updateConstruct(&player,&sMap, raining, deltaTime);
-				forge_game::updateConstruct(&poopShot,&sMap, raining, deltaTime);
-
+				frameCounter +=1;
+				forge_game::updateConstruct(&player, &sMap, raining, deltaTime);
+				forge_game::updateConstruct(&poopShot, &sMap, raining, deltaTime);
+						
 					foreach ( &nightConstruct : nightConstructs){
-								score += forge_game::updateConstruct(nightConstruct,&sMap, raining, deltaTime);
-						}
+								score += forge_game::updateConstruct(nightConstruct, &sMap, raining, deltaTime);
+					}
 
 					if(nightBoss.active){
-							score += forge_game::updateConstruct(&nightBoss, &sMap, raining, deltaTime);
-						}
+						score += forge_game::updateConstruct(&nightBoss, &sMap, raining, deltaTime);
+
+							if (nightBoss.isDead){
+									state = GAME_WIN;
+									frameCounter = 0;		
+							}
+					}
+
+					//io::printfn("Last enitity pos-x: %f",constructs[entIndex].pos.x);
+						if (frameCounter == BOSS_TIMER){
+						io::printfn("ALIEN_BOSS Triggered!");
+						frameCounter = 0;
+
+							nightBoss.active = true;
+							nightConstructs = forge_game::forgeConstruct(&tMap,"night",MAX_BOSS_CONSTRUCTS);
+					}
 
 
 				//draw game elements------------------------------------------------------------------------------
