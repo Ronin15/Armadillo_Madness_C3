@@ -67,9 +67,13 @@ bool movingLeft = true;
     int currentFrame;
     int maxFrames;
     int lives;
+    bool isProjectileActive;
+    bool expired;
+    bool invlunerable;
     bool isGrounded;
     bool texFlip;
     bool isDead;
+    bool active;
     bool hHit; //horizontal hit
     bool vHit; //vertical hit
     bool bHit; //beatle hit
