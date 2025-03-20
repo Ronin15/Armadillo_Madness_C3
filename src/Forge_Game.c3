@@ -70,10 +70,6 @@ bool movingLeft = true;
     bool isGrounded;
     bool texFlip;
     bool isDead;
-    bool isProjectileActive;
-    bool invlunerable;
-    bool expired;
-    bool active;
     bool hHit; //horizontal hit
     bool vHit; //vertical hit
     bool bHit; //beatle hit
