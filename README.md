@@ -2,7 +2,7 @@ Armadillo Madness
 
 SPECS:
 
-OS: Windows 10/11
+    OS: Windows 10/11
 
     MAC OS M series only
 
