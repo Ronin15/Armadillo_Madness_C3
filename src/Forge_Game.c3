@@ -7,28 +7,34 @@ import std::io;
 import std::math;
 
 //GAME globals and consts -------------------------------------------------
-const float GRAVITY = 700.0;//200 for grav boots
-const float MOVE_VELOCITY = -600.0;
-const float SKY_LEVEL = 0.0;
-const float ACCELERATION = 250.0;
-const float FRICTION = 40.0;
-const float NIGHTB_FREQUENCY = 0.01;
-const float NIGHTB_AMPLITUDE = 400.0;
-const float AMPLITUDE = 300.0;//300
-const float FREQUENCY = 0.03;//0.05
+const float GRAVITY = 700.0f;//200 for grav boots
+const float MOVE_VELOCITY = -600.0f;
+const float SKY_LEVEL = 0.0f;
+const float ACCELERATION = 250.0f;
+const float FRICTION = 40.0f;
+const float NIGHTB_FREQUENCY = 0.01f;
+const float NIGHTB_AMPLITUDE = 400.0f;
+const float AMPLITUDE = 300.0f;//300
+const float FREQUENCY = 0.03f;//0.05
 const int MAX_LIVES = 6;
-const float OBS_SOFFSET = 30.0;
-const float ANT_SOFFSET = 60.0;
-const float FOX_SOFFSET = 80.0;
-const float SCORPION_SOFFSET = 40.0;
-const float TURTLE_SOFFSET = 35.0;
-const float SNAKE_SOFFSET = 35.0;
-const float SPIDER_SOFFSET = 80.0;
-const float POWERUP_SOFFSET = 35.0;
-const float MOUSE_SOFFSET = 50.0;
-const float COUGAR_SOFFSET = 40.0;
+const float OBS_SOFFSET = 30.0f;
+const float ANT_SOFFSET = 60.0f;
+const float FOX_SOFFSET = 80.0f;
+const float SCORPION_SOFFSET = 40.0f;
+const float TURTLE_SOFFSET = 35.0f;
+const float SNAKE_SOFFSET = 35.0f;
+const float SPIDER_SOFFSET = 80.0f;
+const float POWERUP_SOFFSET = 35.0f;
+const float MOUSE_SOFFSET = 50.0f;
+const float COUGAR_SOFFSET = 40.0f;
+const int ENTITY_HITBOX_WIDTH = 64;
+const int ENTITY_HITBOX_HEIGHT = 64;
+const int BOSS_HITBOX_WIDTH = 124;
+const int BOSS_HITBOX_HEIGHT = 124;
+const float ENTITY_HITBOX_OFFSET = 30.0f;
+const float OBS_HITBOX_OFFSET = 25.0f;
 
-float groundLevel = 1080.0 - 70;//115
+float groundLevel = 1080.0f - 70.0f;//115
 bool poopPenatrate = false;
 
 //AI BOSS movement
@@ -54,6 +60,7 @@ bool movingLeft = true;
     Vector2 vel;
     Sound sound;
     String name;
+    Rectangle  hitBox;
     float gravity;
     float jumpVelocity;
     float groundLevel;
@@ -208,6 +215,7 @@ fn Construct forgeCronstructProjectile(TexMap *tMap) {
       c.texture = tMap.get(c.name)!!;
       //c.sound = sMap.get(c.name)!!;
       c.lives = 1;
+      c.hitBox = {c.pos.x,c.pos.y,ENTITY_HITBOX_WIDTH,ENTITY_HITBOX_HEIGHT};
       c.maxFrames = 1;
       c.gravity = GRAVITY;
       c.jumpVelocity = MOVE_VELOCITY;
@@ -234,6 +242,7 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
       c.type = PLAYER;
       c.name = "player";
       c.pos = {100,950};
+      c.hitBox = {c.pos.x,c.pos.y,ENTITY_HITBOX_WIDTH,ENTITY_HITBOX_HEIGHT};
       c.texture = tMap.get(c.name)!!;
      // c.sound = sMap.get(c.name)!!;
       c.lives = 6;
@@ -277,6 +286,7 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
           c.pos = {2200,280};
           c.lives = 30;
       }
+      c.hitBox = {c.pos.x,c.pos.y,ENTITY_HITBOX_WIDTH,ENTITY_HITBOX_HEIGHT};
       c.maxFrames = 2;
       c.gravity = GRAVITY;
       c.jumpVelocity = MOVE_VELOCITY;
@@ -302,9 +312,9 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
 
 //creates game objects
 fn Construct[] forgeConstruct(TexMap *tMap, String array_type, int capacity = forge_main::MAX_CONSTRUCTS) {
-   
+
    Construct[] constructs = mem::new_array(Construct, capacity);
-    
+
    for (int i = 0; i < capacity; i++){
    constructs[i].name = "default"; // this is for generating object spawn limits based on random name and type counts. For powerups only at the moment.
    while (constructs[i].name == "default"){
@@ -312,9 +322,9 @@ fn Construct[] forgeConstruct(TexMap *tMap, String array_type, int capacity = fo
       constructs[i].name = (String)getRandomConstructName(constructs[i].type,array_type);
    }
     if (capacity <= forge_main::MAX_CONSTRUCTS){
-      constructs[i].pos = {(float)rand_in_range(2000,26000) + (float)rand_in_range(100,200),(float)rand_in_range(460,650) + (float)rand_in_range(64,100)};//21000 26000
+      constructs[i].pos = {(float)rand_in_range(2000,26000) + (float)rand_in_range(100,200),(float)rand_in_range(580,650) + (float)rand_in_range(64,100)};//21000 26000
    }else{
-      constructs[i].pos = {(float)rand_in_range(2000,15000) + (float)rand_in_range(100,200),(float)rand_in_range(460,650) + (float)rand_in_range(64,100)};//21000 26000
+      constructs[i].pos = {(float)rand_in_range(2000,15000) + (float)rand_in_range(100,200),(float)rand_in_range(580,650) + (float)rand_in_range(64,100)};//21000 26000
    }
 
     constructs[i].texture = tMap.get(constructs[i].name)!!;
@@ -367,6 +377,12 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                c.vel.y = 0.0;
                c.pos.x -= c.friction * deltaTime;
             }
+            //update hitbox
+
+            c.hitBox = {((float)c.pos.x + (float)c.texture.width / 2.0f) - ENTITY_HITBOX_OFFSET,
+                       ((float)c.pos.y + (float)c.texture.height / 2.0f),
+                       ENTITY_HITBOX_WIDTH,
+                       ENTITY_HITBOX_HEIGHT}; //ENTITY_HITBOX_WIDTH,ENTITY_HITBOX_HEIGHT
 
       //swtich on construct type for specific type updates.-----------------------
       switch (c.type)
@@ -583,11 +599,16 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
          break;
 
          case OBS:
+
+         c.hitBox = {((float)c.pos.x + (float)c.texture.width / 2.0f) + OBS_HITBOX_OFFSET,
+                       ((float)c.pos.y + (float)c.texture.height / 2.0f),
+                       ENTITY_HITBOX_WIDTH,
+                       ENTITY_HITBOX_HEIGHT}; //ENTITY_HITBOX_WIDTH,ENTITY_HITBOX_HEIGHT
           //io::printfn("OBS update reached");
           //optimize to switch later
          if (c.name == "cactus") {c.groundLevel = groundLevel - 155;}
          if (c.name == "tree") {c.groundLevel = groundLevel - 155;}
-         if (c.name == "boulder"){c.groundLevel = groundLevel - 102 ;}
+         if (c.name == "boulder"){c.groundLevel = groundLevel - 102;}
 
          if((c.hHit)){
 
@@ -661,7 +682,11 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
          break;
 
          case BOSS:
-
+            //io::printfn("BOSS update reached
+            c.hitBox = {((float)c.pos.x + (float)c.texture.width / 2.0f),
+                       ((float)c.pos.y + (float)c.texture.height / 2.0f),
+                       BOSS_HITBOX_WIDTH,
+                       BOSS_HITBOX_HEIGHT};
             switch (c.name) {
 
                   case "cougar_boss":
@@ -861,6 +886,11 @@ fn void drawConstruct(Construct* c, float rotation = 0.0, float scale = 2.0){ //
    rotation = rotation;
 
 	rl::drawTextureEx(c.texture, c.pos, rotation, scale, rl::WHITE);
+}
+
+//draw hitboxes
+fn void drawHitBox(Construct* c, Color color = rl::RED){
+   rl::drawRectangleLinesEx(c.hitBox, 2.0, color);
 }
 
 //draw animated sprites

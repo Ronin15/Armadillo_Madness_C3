@@ -123,7 +123,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);//DEBUG
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
+	GameState state = GAME;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -198,7 +198,7 @@ fn int main(String[] args) {
 					constructs = forge_game::forgeConstruct(&tMap,"day");
 				}
 
-				//dayBoss.active = false;//debug
+				dayBoss.active = true;//debug
 			    night = false;
 			    day = true;
 				//misc game stuff
@@ -224,12 +224,12 @@ fn int main(String[] args) {
 					foreach ( &construct : constructs){
 
 							if (forge_physics::checkCollision(&player,construct) && construct.isDead == false){
-								forge_physics::resolveCollision(&player,construct);
+								forge_physics::resolveCollision(&player,construct, deltaTime);
 							}
 
-							if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
+							if (poopShot.isProjectileActive && poopShot.expired == false && construct.isDead == false){ //only check poopshot collsions if active
 								if(forge_physics::checkCollision(&poopShot,construct)){
-									forge_physics::resolveCollision(&poopShot,construct);
+									forge_physics::resolveCollision(&poopShot,construct,deltaTime);
 							}
 						}
 					}
@@ -237,20 +237,20 @@ fn int main(String[] args) {
 					if(dayBoss.active){
 
 								if (forge_physics::checkCollision(&player,&dayBoss) && dayBoss.isDead == false) {
-									forge_physics::resolveCollision(&player,&dayBoss);}
+									forge_physics::resolveCollision(&player,&dayBoss,deltaTime);}
 
 									if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
 										if (forge_physics::checkCollision(&poopShot,&dayBoss)) {
-											forge_physics::resolveCollision(&poopShot,&dayBoss);
+											forge_physics::resolveCollision(&poopShot,&dayBoss,deltaTime);
 										}
 									}
-								}
+					}
 
 				//update game logic-------------------------------------------------------------------------------
 				frameCounter +=1;
 				forge_game::updateConstruct(&player, &sMap, raining, deltaTime);
 				forge_game::updateConstruct(&poopShot, &sMap, raining, deltaTime);
-						
+
 					foreach ( &construct : constructs){
 								score += forge_game::updateConstruct(construct, &sMap, raining, deltaTime);
 					}
@@ -260,7 +260,7 @@ fn int main(String[] args) {
 
 							if (dayBoss.isDead){
 									state = NIGHTLVL;
-									frameCounter = 0;		
+									frameCounter = 0;
 							}
 					}
 
@@ -302,13 +302,16 @@ fn int main(String[] args) {
 				}
 
 				forge_game::drawAnitmatedConstruct(&player);
+				forge_game::drawHitBox(&player);//debug
 				forge_game::drawPoopShot(&poopShot,&player);
-
+				forge_game::drawHitBox(&poopShot);//debug
 					foreach ( &construct : constructs){
 								forge_game::drawAnitmatedConstruct(construct);
+								forge_game::drawHitBox(construct);//debug
 						}
 				if(dayBoss.active){
 					forge_game::drawAnitmatedConstruct(&dayBoss);
+					forge_game::drawHitBox(&dayBoss);//debug
 					//dayboss life bar
 					rl::drawRectangle(5, 195, 260, 40, FORGE_GRAY);
 					rl::drawText("MAD COUGAR", 20, 200, 35, rl::RED);
@@ -371,23 +374,23 @@ fn int main(String[] args) {
 					foreach ( &nightConstruct : nightConstructs){
 
 							if (forge_physics::checkCollision(&player,nightConstruct) && nightConstruct.isDead == false){
-								forge_physics::resolveCollision(&player,nightConstruct);
+								forge_physics::resolveCollision(&player,nightConstruct, deltaTime);
 							}
 
-							if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
+							if (poopShot.isProjectileActive && poopShot.expired == false && nightConstruct.isDead == false){ //only check poopshot collsions if active
 								if(forge_physics::checkCollision(&poopShot,nightConstruct)){
-									forge_physics::resolveCollision(&poopShot,nightConstruct);
+									forge_physics::resolveCollision(&poopShot,nightConstruct,deltaTime);
 							}
 						}
 					}
 					if(nightBoss.active){
 
 								if (forge_physics::checkCollision(&player,&nightBoss) && nightBoss.isDead == false) {
-									forge_physics::resolveCollision(&player,&nightBoss);}
+									forge_physics::resolveCollision(&player,&nightBoss,deltaTime);}
 
 									if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
 										if (forge_physics::checkCollision(&poopShot,&nightBoss)) {
-											forge_physics::resolveCollision(&poopShot,&nightBoss);
+											forge_physics::resolveCollision(&poopShot,&nightBoss,deltaTime);
 										}
 									}
 								}
@@ -395,7 +398,7 @@ fn int main(String[] args) {
 				frameCounter +=1;
 				forge_game::updateConstruct(&player, &sMap, raining, deltaTime);
 				forge_game::updateConstruct(&poopShot, &sMap, raining, deltaTime);
-						
+
 					foreach ( &nightConstruct : nightConstructs){
 								score += forge_game::updateConstruct(nightConstruct, &sMap, raining, deltaTime);
 					}
@@ -405,7 +408,7 @@ fn int main(String[] args) {
 
 							if (nightBoss.isDead){
 									state = GAME_WIN;
-									frameCounter = 0;		
+									frameCounter = 0;
 							}
 					}
 
@@ -740,7 +743,7 @@ fn int main(String[] args) {
 				foreach ( &demoConstruct : demoConstructs){
 
 							if (forge_physics::checkCollision(&demoPlayer,demoConstruct) && demoConstruct.isDead == false){
-								forge_physics::resolveCollision(&demoPlayer,demoConstruct);
+								forge_physics::resolveCollision(&demoPlayer,demoConstruct, deltaTime);
 								}
 						}
 
