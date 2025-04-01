@@ -20,8 +20,16 @@ fn void moveRight(Construct* c, float deltaTime){
             c.isGrounded = true;
             c.pos.y = c.groundLevel;
             c.vel.y = 0.0;
-            c.pos.x -= c.vel.x * deltaTime;
+           // c.pos.x -= c.vel.x * deltaTime;
         }
+
+			c.hitBox = {((float)c.pos.x + (float)c.texture.width / 2.0f) - forge_game::ENTITY_HITBOX_OFFSET,
+                       ((float)c.pos.y + (float)c.texture.height / 2.0f),
+                       forge_game::ENTITY_HITBOX_WIDTH,
+                       forge_game::ENTITY_HITBOX_HEIGHT};
+
+		
+
 
         if(c.invulnTimer >= 0.0){
                c.invulnTimer -= 1.0;

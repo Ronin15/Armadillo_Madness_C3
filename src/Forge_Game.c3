@@ -384,7 +384,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
             c.hitBox = {((float)c.pos.x + (float)c.texture.width / 2.0f) - ENTITY_HITBOX_OFFSET,
                        ((float)c.pos.y + (float)c.texture.height / 2.0f),
                        ENTITY_HITBOX_WIDTH,
-                       ENTITY_HITBOX_HEIGHT}; //ENTITY_HITBOX_WIDTH,ENTITY_HITBOX_HEIGHT
+                       ENTITY_HITBOX_HEIGHT};
 
       //swtich on construct type for specific type updates.-----------------------
       switch (c.type)

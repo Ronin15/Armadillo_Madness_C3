@@ -123,7 +123,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);//DEBUG
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = GAME;
+	GameState state = MAIN;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -768,10 +768,12 @@ fn int main(String[] args) {
 				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				//draw objects
 				forge_game::drawAnitmatedConstruct(&demoPlayer);
+				forge_game::drawHitBox(&demoPlayer);
 				//forge_game::drawPoopShot(&poopShot,&demoPlayer);
 
 					foreach ( &demoConstruct : demoConstructs){
 								forge_game::drawAnitmatedConstruct(demoConstruct);
+								forge_game::drawHitBox(demoConstruct);
 						}
 
 			case CREDITS:
