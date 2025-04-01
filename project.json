@@ -3,7 +3,7 @@
   "warnings":  [ "no-unused" ],
   "dependency-search-paths":  [ "lib" ],
   "dependencies":  [ "raylib5" ],
-  "authors":  [ "John Sims <simsjohn15@gmail.com>" ],
+  "authors":  [ "roninxv <simsjohn15@gmail.com>" ],
   "version": "0.1.0",
   "sources":  [ "src/**" ],
   "output": "build",
