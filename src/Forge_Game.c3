@@ -29,10 +29,12 @@ const float MOUSE_SOFFSET = 50.0f;
 const float COUGAR_SOFFSET = 40.0f;
 const int ENTITY_HITBOX_WIDTH = 64;
 const int ENTITY_HITBOX_HEIGHT = 64;
-const int BOSS_HITBOX_WIDTH = 124;
-const int BOSS_HITBOX_HEIGHT = 124;
+const int BOSS_HITBOX_WIDTH = 100;
+const int BOSS_HITBOX_HEIGHT = 120;
 const float ENTITY_HITBOX_OFFSET = 30.0f;
 const float OBS_HITBOX_OFFSET = 25.0f;
+const float ROCK_HITBOX_OFFSET = 55.0f;
+const float ROCK_HITBOX_HEIGHT_OFFSET = 35.0f;
 
 float groundLevel = 1080.0f - 70.0f;//115
 bool poopPenatrate = false;
@@ -603,12 +605,18 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
          c.hitBox = {((float)c.pos.x + (float)c.texture.width / 2.0f) + OBS_HITBOX_OFFSET,
                        ((float)c.pos.y + (float)c.texture.height / 2.0f),
                        ENTITY_HITBOX_WIDTH,
-                       ENTITY_HITBOX_HEIGHT}; //ENTITY_HITBOX_WIDTH,ENTITY_HITBOX_HEIGHT
+                       ENTITY_HITBOX_HEIGHT};
           //io::printfn("OBS update reached");
           //optimize to switch later
          if (c.name == "cactus") {c.groundLevel = groundLevel - 155;}
          if (c.name == "tree") {c.groundLevel = groundLevel - 155;}
-         if (c.name == "boulder"){c.groundLevel = groundLevel - 102;}
+         if (c.name == "boulder"){
+            c.groundLevel = groundLevel - 102;
+            c.hitBox = {((float)c.pos.x + (float)c.texture.width / 2.0f) + ROCK_HITBOX_OFFSET,
+                       ((float)c.pos.y + (float)c.texture.height / 2.0f) - ROCK_HITBOX_HEIGHT_OFFSET,
+                       ENTITY_HITBOX_WIDTH,
+                       ENTITY_HITBOX_HEIGHT};
+         }
 
          if((c.hHit)){
 
