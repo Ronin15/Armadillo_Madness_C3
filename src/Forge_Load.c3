@@ -2,9 +2,9 @@ module forge_load;
 import raylib5::rl;
 import std::collections::map;
 
-def TexMap = HashMap(<String,Texture2D>);
-def SoundMap = HashMap(<String,Sound>);
-def MusicMap = HashMap(<String,Music>);
+alias TexMap = HashMap{String,Texture2D};
+alias SoundMap = HashMap{String,Sound};
+alias MusicMap = HashMap{String,Music};
 
 fn TexMap loadTexMap(){
 
