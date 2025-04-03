@@ -1,7 +1,6 @@
 module forge_physics;
 import forge_game;
 import std::io;
-import std::math;
 import raylib5::rl;
 
 //AABB collision Detection
@@ -13,7 +12,8 @@ fn bool checkCollision(Construct* a, Construct* b) {
 }
 
 fn void resolveCollision(Construct* a, Construct* b, float deltaTime) {
-        float bounce = 1.0f;
+        float playerBounce = 1.0f;
+        float enemyBounce = 1.5f;
         bool wasAbove = (a.hitBox.y + a.hitBox.height) <= b.hitBox.y + 10.0f;
         bool wasBelow = a.hitBox.y >= (b.hitBox.y + b.hitBox.height - 10.0f);
 
@@ -43,7 +43,10 @@ fn void resolveCollision(Construct* a, Construct* b, float deltaTime) {
             io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);//DEBUG
             // Collision from above - bounce!
             a.pos.y = b.hitBox.y - a.hitBox.height;
-            a.vel.y = -a.vel.y * bounce;
+            a.vel.y = -a.vel.y * playerBounce;
+            //inverse for b
+            b.pos.y = a.hitBox.y + b.hitBox.height;
+            b.vel.y = -b.vel.y * enemyBounce;
 
             }else if (wasBelow && a.vel.y < 0) {
                     a.vHit = true;
@@ -72,7 +75,9 @@ fn void resolveCollision(Construct* a, Construct* b, float deltaTime) {
 
                 // Collision from below - bounce downward
                 a.pos.y = b.hitBox.y + b.hitBox.height - a.hitBox.height;
-                a.vel.y = -a.vel.y * bounce;
+                a.vel.y = -a.vel.y * playerBounce;
+                b.pos.y = a.hitBox.y - a.hitBox.height - b.hitBox.height;
+                b.vel.y = -b.vel.y * enemyBounce;
             }else{
             // Horizontal collision
             a.hHit = true;
