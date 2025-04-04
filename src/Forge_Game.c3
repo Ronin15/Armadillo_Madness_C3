@@ -35,6 +35,9 @@ const float ENTITY_HITBOX_OFFSET = 30.0f;
 const float OBS_HITBOX_OFFSET = 25.0f;
 const float ROCK_HITBOX_OFFSET = 55.0f;
 const float ROCK_HITBOX_HEIGHT_OFFSET = 35.0f;
+const int PLAYER_HITBOX_WIDTH = 115;
+const int PLAYER_HITBOX_HEIGHT = 64;
+const float PLAYER_HITBOX_OFFSET = 55.0f;
 
 float groundLevel = 1080.0f - 70.0f;//115
 bool poopPenatrate = false;
@@ -244,7 +247,7 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
       c.type = PLAYER;
       c.name = "player";
       c.pos = {100,950};
-      c.hitBox = {c.pos.x,c.pos.y,ENTITY_HITBOX_WIDTH,ENTITY_HITBOX_HEIGHT};
+      c.hitBox = {c.pos.x,c.pos.y,PLAYER_HITBOX_WIDTH,PLAYER_HITBOX_HEIGHT};
       c.texture = tMap.get(c.name)!!;
      // c.sound = sMap.get(c.name)!!;
       c.lives = 6;
@@ -381,7 +384,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
             }
             //update hitbox
 
-            c.hitBox = {((float)c.pos.x + (float)c.texture.width / 2.0f) - ENTITY_HITBOX_OFFSET,
+          c.hitBox = {((float)c.pos.x + (float)c.texture.width / 2.0f) - ENTITY_HITBOX_OFFSET,
                        ((float)c.pos.y + (float)c.texture.height / 2.0f),
                        ENTITY_HITBOX_WIDTH,
                        ENTITY_HITBOX_HEIGHT};
@@ -393,6 +396,12 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
             //io::printfn("invuln Timer: %f", c.invulnTimer);//debug
             //io::printfn("power Up Timer: %f", c.powerUpTimer);//debug
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);//debug
+            c.hitBox = {((float)c.pos.x + (float)c.texture.width / 2.0f) - PLAYER_HITBOX_OFFSET,
+                       ((float)c.pos.y + (float)c.texture.height / 2.0f),
+                       PLAYER_HITBOX_WIDTH,
+                       PLAYER_HITBOX_HEIGHT};
+
+
             if (raining){c.acceleration = 125;}
             if (!raining && c.acceleration == 125){c.acceleration = ACCELERATION;}
 

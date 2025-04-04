@@ -718,7 +718,11 @@ fn int main(String[] args) {
 				demoCounter2 += 1;
 
 				if(demoCounter1 < 500 ){forge_ai::moveRight(&demoPlayer, deltaTime);
+				
+					if (demoCounter1 % 100 == 0){
 
+					forge_ai::jump(&demoPlayer, deltaTime);
+					}
 				}
 				if(demoCounter1 > 500){
 					forge_ai::moveLeft(&demoPlayer, deltaTime);
