@@ -35,7 +35,7 @@ const float ENTITY_HITBOX_OFFSET = 30.0f;
 const float OBS_HITBOX_OFFSET = 25.0f;
 const float ROCK_HITBOX_OFFSET = 55.0f;
 const float ROCK_HITBOX_HEIGHT_OFFSET = 35.0f;
-const int PLAYER_HITBOX_WIDTH = 115;
+const int PLAYER_HITBOX_WIDTH = 100;
 const int PLAYER_HITBOX_HEIGHT = 64;
 const float PLAYER_HITBOX_OFFSET = 55.0f;
 
@@ -911,7 +911,7 @@ fn void drawHitBox(Construct* c, Color color = rl::RED){
 }
 
 //draw animated sprites
-fn void drawAnitmatedConstruct(Construct* c, float rotation = 0.0){
+fn void drawAnimatedConstruct(Construct* c, float rotation = 0.0){
    //setting up animation data on contructs
    Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
    float obsSize = 3.5; //scaling up onbsticles 3.5
