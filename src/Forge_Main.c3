@@ -198,7 +198,7 @@ fn int main(String[] args) {
 					constructs = forge_game::forgeConstruct(&tMap,"day");
 				}
 
-				dayBoss.active = true;//debug
+				//dayBoss.active = true;//debug
 			    night = false;
 			    day = true;
 				//misc game stuff
@@ -302,16 +302,16 @@ fn int main(String[] args) {
 				}
 
 				forge_game::drawAnimatedConstruct(&player);
-				forge_game::drawHitBox(&player);//debug
+				//forge_game::drawHitBox(&player);//debug
 				forge_game::drawPoopShot(&poopShot,&player);
-				forge_game::drawHitBox(&poopShot);//debug
+				//forge_game::drawHitBox(&poopShot);//debug
 					foreach ( &construct : constructs){
 								forge_game::drawAnimatedConstruct(construct);
-								forge_game::drawHitBox(construct);//debug
+								//forge_game::drawHitBox(construct);//debug
 						}
 				if(dayBoss.active){
 					forge_game::drawAnimatedConstruct(&dayBoss);
-					forge_game::drawHitBox(&dayBoss);//debug
+					//forge_game::drawHitBox(&dayBoss);//debug
 					//dayboss life bar
 					rl::drawRectangle(5, 195, 260, 40, FORGE_GRAY);
 					rl::drawText("MAD COUGAR", 20, 200, 35, rl::RED);
@@ -772,12 +772,12 @@ fn int main(String[] args) {
 				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				//draw objects
 				forge_game::drawAnimatedConstruct(&demoPlayer);
-				forge_game::drawHitBox(&demoPlayer);
+				//forge_game::drawHitBox(&demoPlayer);//debug
 				//forge_game::drawPoopShot(&poopShot,&demoPlayer);
 
 					foreach ( &demoConstruct : demoConstructs){
 								forge_game::drawAnimatedConstruct(demoConstruct);
-								forge_game::drawHitBox(demoConstruct);
+								//forge_game::drawHitBox(demoConstruct);//debug
 						}
 
 			case CREDITS:
