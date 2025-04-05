@@ -248,15 +248,15 @@ fn int main(String[] args) {
 
 				//update game logic-------------------------------------------------------------------------------
 				frameCounter +=1;
-				forge_game::updateConstruct(&player, &sMap, raining, deltaTime);
-				forge_game::updateConstruct(&poopShot, &sMap, raining, deltaTime);
+				forge_game::updateConstruct(&player, &sMap, &tMap, raining, deltaTime);
+				forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
 
 					foreach ( &construct : constructs){
-								score += forge_game::updateConstruct(construct, &sMap, raining, deltaTime);
+								score += forge_game::updateConstruct(construct, &sMap, &tMap, raining, deltaTime);
 					}
 
 					if(dayBoss.active){
-						score += forge_game::updateConstruct(&dayBoss, &sMap, raining, deltaTime);
+						score += forge_game::updateConstruct(&dayBoss, &sMap, &tMap, raining, deltaTime);
 
 							if (dayBoss.isDead){
 									state = NIGHTLVL;
@@ -396,15 +396,15 @@ fn int main(String[] args) {
 								}
 				//update game logic-------------------------------------------------------------------------------
 				frameCounter +=1;
-				forge_game::updateConstruct(&player, &sMap, raining, deltaTime);
-				forge_game::updateConstruct(&poopShot, &sMap, raining, deltaTime);
+				forge_game::updateConstruct(&player, &sMap, &tMap, raining, deltaTime);
+				forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
 
 					foreach ( &nightConstruct : nightConstructs){
-								score += forge_game::updateConstruct(nightConstruct, &sMap, raining, deltaTime);
+								score += forge_game::updateConstruct(nightConstruct, &sMap, &tMap, raining, deltaTime);
 					}
 
 					if(nightBoss.active){
-						score += forge_game::updateConstruct(&nightBoss, &sMap, raining, deltaTime);
+						score += forge_game::updateConstruct(&nightBoss, &sMap, &tMap, raining, deltaTime);
 
 							if (nightBoss.isDead){
 									state = GAME_WIN;
@@ -755,7 +755,7 @@ fn int main(String[] args) {
 				//forge_game::updateConstruct(&poopShot,&sMap);
 
 				foreach ( &demoConstruct : demoConstructs){
-							forge_game::updateConstruct(demoConstruct,&sMap, raining, deltaTime);
+							forge_game::updateConstruct(demoConstruct,&sMap, &tMap, raining, deltaTime);
 						}
 
 				//draw game elements------------------------------------------------------------------------------

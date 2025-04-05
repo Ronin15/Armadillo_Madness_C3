@@ -360,7 +360,7 @@ fn Construct[] forgeConstruct(TexMap *tMap, String array_type, int capacity = fo
 }
 
 //update game contructs
-fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTime) {
+fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining, float deltaTime) {
        int score = 0;
       //all construct update info-------------------------------------------------
       //Frame updates
@@ -424,6 +424,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
             if(c.vHit){
                   c.vHit = false;
                   rl::playSound(sMap.get("boing")!!);
+                  c.texture = tMap.get("playerHit")!!;
+               }else{
+                c.texture = tMap.get("player")!!;
                }
 
             if (c.bHit && c.lives < MAX_LIVES){ // beatle hit and moth hit
@@ -442,10 +445,12 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, bool raining, float deltaTi
                   c.hHit = false;
                   c.invlunerable = true;
                   rl::playSound(sMap.get("playerHit")!!);
+                  c.texture = tMap.get("playerHit")!!;
                   c.lives -= 1;
                   c.invulnTimer = 600.0;
             }else{
                   c.hHit = false;
+                  c.texture = tMap.get("player")!!;
             }
 
             //powerup
