@@ -1,118 +1,109 @@
 module forge_physics;
 import forge_game;
 import std::io;
-import std::math;
-
-const int PLAYER_OFFSET = 0;
-const int POOP_SHOT_OFFSET = 0; //5
-const int BOSS_OFFSET = 20;
-//const int ROCK_OFFSET = 0;
-//const int CACTUS_OFFSET = 0;
-//const int TREE_OFFSET = 0;
-//const int TURTLE_OFFSET = 0;
-//const int ANT_OFFSET = 0;
-//const int FOX_OFFSET = 0;
-//const int SNAKE_OFFSET = 0;
-
-// a will always be player or poop, b will always be other objects
+import raylib5::rl;
 
 //AABB collision Detection
 fn bool checkCollision(Construct* a, Construct* b) {
-    //collision tuning offset - pixels from texture.
-    int aoffset;
-    int boffset;
-    if (a.type == PROJECTILE_POOP) {aoffset = POOP_SHOT_OFFSET;}
-    if (a.type == PLAYER) {aoffset = PLAYER_OFFSET;}
-	if (b.type == BOSS) {boffset = BOSS_OFFSET;}
-    //if (b.name == "boulder") {boffset = ROCK_OFFSET;}
-    //if (b.name == "cactus") {boffset = CACTUS_OFFSET;}
-    //if (b.name == "tree") {boffset = TREE_OFFSET;}
-    //if (b.name == "turtle") {boffset = TURTLE_OFFSET;}
-    //if (b.name == "ant") {boffset = ANT_OFFSET;}
-    //if (b.name == "fox") {boffset = FOX_OFFSET;}
-    //if (b.name == "snake") {boffset = SNAKE_OFFSET;}
-
-    if (a.pos.x < b.pos.x + b.texture.width + boffset  &&
-        a.pos.x + a.texture.width - aoffset  > b.pos.x &&
-        a.pos.y < b.pos.y + b.texture.height + boffset  &&
-        a.pos.y + a.texture.height - aoffset  > b.pos.y) {
-
-        io::printfn("%s -> hit -> %s !",a.name,b.name);
-
-        return true;
-    }
+  if(rl::checkCollisionRecs(a.hitBox, b.hitBox)){
+    return true;
+  }
     return false;
 }
 
-fn void resolveCollision(Construct* a, Construct* b) {
+fn void resolveCollision(Construct* a, Construct* b, float deltaTime) {
+        float playerBounce = 1.1f;
+        float enemyBounce = 1.3f;
+        bool wasAbove = (a.hitBox.y + a.hitBox.height) <= b.hitBox.y + 10.0f;
+        bool wasBelow = a.hitBox.y >= (b.hitBox.y + b.hitBox.height - 10.0f);
 
-    float overlapX = (a.pos.x + (float)a.texture.width) - (b.pos.x + (float)b.texture.width);
-    float overlapY = (a.pos.y + (float)a.texture.height) - (b.pos.y + (float)b.texture.height);
+        if (wasAbove && a.vel.y > 0) {
+            a.vHit = true;
+            b.vHit = true;
+            if(b.name == "beatle" || b.name == "moth"){a.bHit = true; b.lives = 0;}
+            if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.vHit = false; b.vHit = false;}
+            if(b.name == "tree"){a.vHit = false;}
+            if(a.type == PLAYER && b.type == POWER_UP){
+            a.vHit = false;
+              switch (b.name){
 
-    if (math::abs(overlapX) >= math::abs(overlapY)) {
-            //horizontal collision
-           a.hHit = true;
-           b.hHit = true;
-           b.vel.y *= -1;
+                          case "grav":
+                                  a.gHit = true;
+                          break;
 
-          if(a.type == PROJECTILE_POOP){b.hHit = true;}
+                          case "food":
+                                  a.fHit = true;
+                          break;
 
-          if(b.name == "beatle" || b.name == "moth"){a.bHit = true; b.lives = 0; a.hHit = false;} //handles hit tracking for giving hearts back.
-          if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.hHit = false; b.hHit = false; b.isDead = false;}
-          if(a.type == PLAYER && b.type == POWER_UP){
-                a.hHit = false;
+                          case "super":
+                                  a.sHit = true;
+                          break;
+                          }
+                      }
+            io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);//DEBUG
+            // Collision from above - bounce!
+            a.pos.y = b.hitBox.y - a.hitBox.height;
+            a.vel.y = -a.vel.y * playerBounce;
+            //inverse for b
+            b.pos.y = a.hitBox.y + b.hitBox.height;
+            b.vel.y = -b.vel.y * enemyBounce;
 
-                switch (b.name){
+            }else if (wasBelow && a.vel.y < 0) {
+                    a.vHit = true;
+                    b.vHit = true;
+                    if(b.name == "beatle" || b.name == "moth"){a.bHit = true; b.lives = 0;}
+                    if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.vHit = false; b.vHit = false;}
+                    if(b.name == "tree"){a.vHit = false;}
+                    if(a.type == PLAYER && b.type == POWER_UP){
+                    a.vHit = false;
+                    switch (b.name){
 
-                     case "grav":
-                            a.gHit = true;
-                     break;
+                                case "grav":
+                                        a.gHit = true;
+                                break;
 
-                     case "food":
-                            a.fHit = true;
-                     break;
+                                case "food":
+                                        a.fHit = true;
+                                break;
 
-                     case "super":
-                            a.sHit = true;
-                     break;
-                 }
-          }
-          io::printfn("%s -> Horizotal_hit -> %s !",a.name,b.name);//DEBUG
+                                case "super":
+                                        a.sHit = true;
+                                break;
+                                }
+                            }
+                    io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);//DEBUG
 
-         }else{
-          // Vertical collision
-          a.vel.y *= -1;
-          b.vel.y *= -1;
-          a.vHit = true;
-          b.vHit = true;
+                // Collision from below - bounce downward
+                a.pos.y = b.hitBox.y + b.hitBox.height - a.hitBox.height;
+                a.vel.y = -a.vel.y * playerBounce;
+                b.pos.y = a.hitBox.y - a.hitBox.height - b.hitBox.height;
+                b.vel.y = -b.vel.y * enemyBounce;
+            }else{
+            // Horizontal collision
+            a.hHit = true;
+            b.hHit = true;
+            if(a.type == PROJECTILE_POOP){b.hHit = true;}
+            if(b.name == "beatle" || b.name == "moth"){a.bHit = true; b.lives = 0; a.hHit = false;} //handles hit tracking for giving hearts back.
+            if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.hHit = false; b.hHit = false; b.isDead = false;}
+            if(b.name == "tree"){a.hHit = false;}
+            if(a.type == PLAYER && b.type == POWER_UP){
+                 a.hHit = false;
 
-          if(b.name == "beatle" || b.name == "moth"){a.bHit = true; b.lives = 0;}
-          if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.vHit = false; b.vHit = false;}
-          if(a.type == PLAYER && b.type == POWER_UP){
+                 switch (b.name){
 
-                a.vHit = false;
+                      case "grav":
+                             a.gHit = true;
+                      break;
 
-                switch (b.name){
+                      case "food":
+                             a.fHit = true;
+                      break;
 
-                            case "grav":
-                                    a.gHit = true;
-                            break;
-
-                            case "food":
-                                    a.fHit = true;
-                            break;
-
-                            case "super":
-                                    a.sHit = true;
-                            break;
-
-							case "alien_boss":
-							
-								a.vel.y *= -5;
-								
-							break;
-                        }
-          }
-          io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);//DEBUG
+                      case "super":
+                             a.sHit = true;
+                      break;
+                  }
+           }
+                io::printfn("%s -> Horizontal_hit -> %s !",a.name,b.name);//DEBUG
         }
 }

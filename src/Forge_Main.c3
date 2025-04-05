@@ -18,7 +18,7 @@ const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const String GAME_NAME = "Armadillo Madness 0.8.0"; //ui update, options update, and almost all game states complete
+const String GAME_NAME = "Armadillo Madness 0.8.5"; //ui update, options update, and almost all game states complete
 const int MAX_CONSTRUCTS = 200;//100 - 200
 const int MAX_BOSS_CONSTRUCTS = 50;
 const int MAX_POWERUPS = 12;//6
@@ -123,7 +123,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);//DEBUG
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
+	GameState state = MAIN;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -149,7 +149,7 @@ fn int main(String[] args) {
 				rl::drawText("Hammer Forged Games", 580, 340, 60, FORGE_ORANGE);
 				rl::drawText("Made with", 800, 725, 20, rl::WHITE);
 				rl::drawTexture(tMap.get("raylib")!!, 920, 700, rl::WHITE);
-				rl::drawTexture(tMap.get("c3")!!, 990, 700, rl::WHITE);
+				rl::drawTexture(tMap.get("c3")!!, 990, 705, rl::WHITE);
 				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
 				rl::drawText("*{}==[> Forge_Engine <]=={}*", 790, 790, 20, rl::LIGHTGRAY);
 					frameCounter += 1;
@@ -198,7 +198,7 @@ fn int main(String[] args) {
 					constructs = forge_game::forgeConstruct(&tMap,"day");
 				}
 
-				//dayBoss.active = false;//debug
+				dayBoss.active = true;//debug
 			    night = false;
 			    day = true;
 				//misc game stuff
@@ -224,12 +224,12 @@ fn int main(String[] args) {
 					foreach ( &construct : constructs){
 
 							if (forge_physics::checkCollision(&player,construct) && construct.isDead == false){
-								forge_physics::resolveCollision(&player,construct);
+								forge_physics::resolveCollision(&player,construct, deltaTime);
 							}
 
-							if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
+							if (poopShot.isProjectileActive && poopShot.expired == false && construct.isDead == false){ //only check poopshot collsions if active
 								if(forge_physics::checkCollision(&poopShot,construct)){
-									forge_physics::resolveCollision(&poopShot,construct);
+									forge_physics::resolveCollision(&poopShot,construct,deltaTime);
 							}
 						}
 					}
@@ -237,30 +237,30 @@ fn int main(String[] args) {
 					if(dayBoss.active){
 
 								if (forge_physics::checkCollision(&player,&dayBoss) && dayBoss.isDead == false) {
-									forge_physics::resolveCollision(&player,&dayBoss);}
+									forge_physics::resolveCollision(&player,&dayBoss,deltaTime);}
 
 									if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
 										if (forge_physics::checkCollision(&poopShot,&dayBoss)) {
-											forge_physics::resolveCollision(&poopShot,&dayBoss);
+											forge_physics::resolveCollision(&poopShot,&dayBoss,deltaTime);
 										}
 									}
-								}
+					}
 
 				//update game logic-------------------------------------------------------------------------------
 				frameCounter +=1;
-				forge_game::updateConstruct(&player, &sMap, raining, deltaTime);
-				forge_game::updateConstruct(&poopShot, &sMap, raining, deltaTime);
-						
+				forge_game::updateConstruct(&player, &sMap, &tMap, raining, deltaTime);
+				forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
+
 					foreach ( &construct : constructs){
-								score += forge_game::updateConstruct(construct, &sMap, raining, deltaTime);
+								score += forge_game::updateConstruct(construct, &sMap, &tMap, raining, deltaTime);
 					}
 
 					if(dayBoss.active){
-						score += forge_game::updateConstruct(&dayBoss, &sMap, raining, deltaTime);
+						score += forge_game::updateConstruct(&dayBoss, &sMap, &tMap, raining, deltaTime);
 
 							if (dayBoss.isDead){
 									state = NIGHTLVL;
-									frameCounter = 0;		
+									frameCounter = 0;
 							}
 					}
 
@@ -301,14 +301,17 @@ fn int main(String[] args) {
 					}
 				}
 
-				forge_game::drawAnitmatedConstruct(&player);
+				forge_game::drawAnimatedConstruct(&player);
+				forge_game::drawHitBox(&player);//debug
 				forge_game::drawPoopShot(&poopShot,&player);
-
+				forge_game::drawHitBox(&poopShot);//debug
 					foreach ( &construct : constructs){
-								forge_game::drawAnitmatedConstruct(construct);
+								forge_game::drawAnimatedConstruct(construct);
+								forge_game::drawHitBox(construct);//debug
 						}
 				if(dayBoss.active){
-					forge_game::drawAnitmatedConstruct(&dayBoss);
+					forge_game::drawAnimatedConstruct(&dayBoss);
+					forge_game::drawHitBox(&dayBoss);//debug
 					//dayboss life bar
 					rl::drawRectangle(5, 195, 260, 40, FORGE_GRAY);
 					rl::drawText("MAD COUGAR", 20, 200, 35, rl::RED);
@@ -371,41 +374,41 @@ fn int main(String[] args) {
 					foreach ( &nightConstruct : nightConstructs){
 
 							if (forge_physics::checkCollision(&player,nightConstruct) && nightConstruct.isDead == false){
-								forge_physics::resolveCollision(&player,nightConstruct);
+								forge_physics::resolveCollision(&player,nightConstruct, deltaTime);
 							}
 
-							if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
+							if (poopShot.isProjectileActive && poopShot.expired == false && nightConstruct.isDead == false){ //only check poopshot collsions if active
 								if(forge_physics::checkCollision(&poopShot,nightConstruct)){
-									forge_physics::resolveCollision(&poopShot,nightConstruct);
+									forge_physics::resolveCollision(&poopShot,nightConstruct,deltaTime);
 							}
 						}
 					}
 					if(nightBoss.active){
 
 								if (forge_physics::checkCollision(&player,&nightBoss) && nightBoss.isDead == false) {
-									forge_physics::resolveCollision(&player,&nightBoss);}
+									forge_physics::resolveCollision(&player,&nightBoss,deltaTime);}
 
 									if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
 										if (forge_physics::checkCollision(&poopShot,&nightBoss)) {
-											forge_physics::resolveCollision(&poopShot,&nightBoss);
+											forge_physics::resolveCollision(&poopShot,&nightBoss,deltaTime);
 										}
 									}
 								}
 				//update game logic-------------------------------------------------------------------------------
 				frameCounter +=1;
-				forge_game::updateConstruct(&player, &sMap, raining, deltaTime);
-				forge_game::updateConstruct(&poopShot, &sMap, raining, deltaTime);
-						
+				forge_game::updateConstruct(&player, &sMap, &tMap, raining, deltaTime);
+				forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
+
 					foreach ( &nightConstruct : nightConstructs){
-								score += forge_game::updateConstruct(nightConstruct, &sMap, raining, deltaTime);
+								score += forge_game::updateConstruct(nightConstruct, &sMap, &tMap, raining, deltaTime);
 					}
 
 					if(nightBoss.active){
-						score += forge_game::updateConstruct(&nightBoss, &sMap, raining, deltaTime);
+						score += forge_game::updateConstruct(&nightBoss, &sMap, &tMap, raining, deltaTime);
 
 							if (nightBoss.isDead){
 									state = GAME_WIN;
-									frameCounter = 0;		
+									frameCounter = 0;
 							}
 					}
 
@@ -445,17 +448,17 @@ fn int main(String[] args) {
 					}
 				}
 
-				forge_game::drawAnitmatedConstruct(&player);
+				forge_game::drawAnimatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
 
 					foreach ( &nightConstruct : nightConstructs){
-								forge_game::drawAnitmatedConstruct(nightConstruct);
+								forge_game::drawAnimatedConstruct(nightConstruct);
 						}
 
 				forge_fx::forgeFXManager(&mMap,"shootingStars", deltaTime);
 
 					if(nightBoss.active){
-					forge_game::drawAnitmatedConstruct(&nightBoss);
+					forge_game::drawAnimatedConstruct(&nightBoss);
 					//dayboss life bar
 					rl::drawRectangle(5, 195, 325, 40, FORGE_GRAY);
 					rl::drawText("MAD Alien Visage", 20, 200, 35, rl::RED);
@@ -515,15 +518,15 @@ fn int main(String[] args) {
         				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
 
 
-        				forge_game::drawAnitmatedConstruct(&player);
+        				forge_game::drawAnimatedConstruct(&player);
         				forge_game::drawPoopShot(&poopShot,&player);
 
        					foreach ( &construct : constructs){
-        								forge_game::drawAnitmatedConstruct(construct);
+        								forge_game::drawAnimatedConstruct(construct);
       						}
 
 						if(dayBoss.active){
-							forge_game::drawAnitmatedConstruct(&dayBoss);
+							forge_game::drawAnimatedConstruct(&dayBoss);
 						}
         				//if raining it should be raining when paused.
         				if (raining){
@@ -551,7 +554,7 @@ fn int main(String[] args) {
         				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
 
 						if(dayBoss.active){
-							forge_game::drawAnitmatedConstruct(&dayBoss);
+							forge_game::drawAnimatedConstruct(&dayBoss);
 							//dayboss life bar
 							rl::drawRectangle(5, 195, 260, 40, FORGE_GRAY);
 							rl::drawText("MAD COUGAR", 20, 200, 35, rl::RED);
@@ -578,16 +581,16 @@ fn int main(String[] args) {
         				forge_fx::drawLight(1815, 105, 150, rl::fade(rl::YELLOW, 0.8));
 						forge_fx::drawLight(1815, 105, 351, rl::fade(rl::WHITE, 0.8));
 						//end/
-						forge_game::drawAnitmatedConstruct(&player);
+						forge_game::drawAnimatedConstruct(&player);
         				forge_game::drawPoopShot(&poopShot,&player);
 
 
        					foreach ( &nightConstruct : nightConstructs){
-        								forge_game::drawAnitmatedConstruct(nightConstruct);
+        								forge_game::drawAnimatedConstruct(nightConstruct);
       						}
 
 						if(nightBoss.active){
-							forge_game::drawAnitmatedConstruct(&nightBoss);
+							forge_game::drawAnimatedConstruct(&nightBoss);
 							}
         				//if raining it should be raining when paused.
         				if (raining){
@@ -614,7 +617,7 @@ fn int main(String[] args) {
 								}
          				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
 				if(nightBoss.active){
-					forge_game::drawAnitmatedConstruct(&nightBoss);
+					forge_game::drawAnimatedConstruct(&nightBoss);
 					//dayboss life bar
 					rl::drawRectangle(5, 195, 325, 40, FORGE_GRAY);
 					rl::drawText("MAD Alien Visage", 20, 200, 35, rl::RED);
@@ -716,6 +719,10 @@ fn int main(String[] args) {
 
 				if(demoCounter1 < 500 ){forge_ai::moveRight(&demoPlayer, deltaTime);
 
+					if (demoCounter1 % 100 == 0){
+
+					forge_ai::jump(&demoPlayer, deltaTime);
+					}
 				}
 				if(demoCounter1 > 500){
 					forge_ai::moveLeft(&demoPlayer, deltaTime);
@@ -740,7 +747,7 @@ fn int main(String[] args) {
 				foreach ( &demoConstruct : demoConstructs){
 
 							if (forge_physics::checkCollision(&demoPlayer,demoConstruct) && demoConstruct.isDead == false){
-								forge_physics::resolveCollision(&demoPlayer,demoConstruct);
+								forge_physics::resolveCollision(&demoPlayer,demoConstruct, deltaTime);
 								}
 						}
 
@@ -748,7 +755,7 @@ fn int main(String[] args) {
 				//forge_game::updateConstruct(&poopShot,&sMap);
 
 				foreach ( &demoConstruct : demoConstructs){
-							forge_game::updateConstruct(demoConstruct,&sMap, raining, deltaTime);
+							forge_game::updateConstruct(demoConstruct,&sMap, &tMap, raining, deltaTime);
 						}
 
 				//draw game elements------------------------------------------------------------------------------
@@ -764,11 +771,13 @@ fn int main(String[] args) {
 				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
 				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				//draw objects
-				forge_game::drawAnitmatedConstruct(&demoPlayer);
+				forge_game::drawAnimatedConstruct(&demoPlayer);
+				forge_game::drawHitBox(&demoPlayer);
 				//forge_game::drawPoopShot(&poopShot,&demoPlayer);
 
 					foreach ( &demoConstruct : demoConstructs){
-								forge_game::drawAnitmatedConstruct(demoConstruct);
+								forge_game::drawAnimatedConstruct(demoConstruct);
+								forge_game::drawHitBox(demoConstruct);
 						}
 
 			case CREDITS:
