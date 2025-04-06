@@ -454,11 +454,8 @@ fn void drawFireParticles() {
     }
 }
 
-fn void fireEffect(float deltaTime, Construct* c = null) {
+fn void fireEffect(float deltaTime) {
 	static bool initFireP @noinit;
-	if (c != null){
-
-	}
 	if (!initFireP) {
 		initFireParticles();
 		initFireP = true;
