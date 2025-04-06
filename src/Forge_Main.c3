@@ -123,7 +123,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);//DEBUG
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = NIGHTLVL;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -572,15 +572,15 @@ fn int main(String[] args) {
         				rl::drawTexture(tMap.get("nightsky")!!, 0, 0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 380}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("nightmid")!!, {WINDOW_WIDTH + scrollMid, 380}, 0.0, 1.0, rl::WHITE);
-        				forge_fx::forgeFXManager(&mMap,"starrySky", deltaTime);
+                        //moon
+        				forge_fx::drawLight(1815, 105, 150, rl::fade(rl::YELLOW, 0.8));
+						forge_fx::drawLight(1815, 105, 351, rl::fade(rl::WHITE, 0.8));
+						//end/
+                        forge_fx::forgeFXManager(&mMap,"starrySky", deltaTime);
         				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("nightground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("nightground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
-        				//moon
-        				forge_fx::drawLight(1815, 105, 150, rl::fade(rl::YELLOW, 0.8));
-						forge_fx::drawLight(1815, 105, 351, rl::fade(rl::WHITE, 0.8));
-						//end/
 						forge_game::drawAnimatedConstruct(&player);
         				forge_game::drawPoopShot(&poopShot,&player);
 

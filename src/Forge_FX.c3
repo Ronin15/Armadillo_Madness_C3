@@ -46,7 +46,7 @@ struct ShootingStar{
 	Vector2 pos;
     Vector2 vel;
     Vector2 [TRAIL_LENGTH] trail;
-    Color color; 
+    Color color;
     int trailIndex;
     bool exploded;
 }
@@ -67,24 +67,24 @@ struct Fire_Particle{
 	float size;
 }
 
-struct Particle { 
-    Vector2 pos; 
+struct Particle {
+    Vector2 pos;
     Vector2 vel;
     Vector2 [TRAIL_LENGTH] trail;
-    int trailIndex; 
-    Color color; 
-    float life; 
-} 
+    int trailIndex;
+    Color color;
+    float life;
+}
 
  struct Firework {
-    Particle [MAX_FIREWORK_P] particles; 
-    Vector2 pos; 
+    Particle [MAX_FIREWORK_P] particles;
+    Vector2 pos;
     Vector2 vel;
     Vector2 [TRAIL_LENGTH] trail;
-    int trailIndex; 
+    int trailIndex;
     float life;
     bool exploded;
-    bool active; 
+    bool active;
 }
 
 struct Raindrop {
@@ -106,10 +106,10 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
                 case RAIN:
 
                     if(rain){
-                        
+
                         rl::playMusicStream(mMap.get("rain")!!);
 				        rl::updateMusicStream(mMap.get("rain")!!);
-                        
+
                         rainFall(deltaTime);
                     }
 
@@ -145,23 +145,23 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
 
                         rl::playMusicStream(mMap.get("fireworks")!!);
 				        rl::updateMusicStream(mMap.get("fireworks")!!);
-                        
+
                         runFireWorks(deltaTime);
                     }
 
                     break;
 
                 case DEFAULT:
-                
+
                     break;
             }
 }
 //Draw Light --------------------------------------------
-fn void drawLight(int x, int y, float radius, Color color) { 
-   
+fn void drawLight(int x, int y, float radius, Color color) {
+
     rl::beginBlendMode(rl::BlendMode.ADDITIVE.ordinal);
     defer rl::endBlendMode();
-    rl::drawCircleGradient(x, y, radius, color, rl::BLANK); 
+    rl::drawCircleGradient(x, y, radius, color, rl::BLANK);
 }
 
 //begin rain fall----------------------------------------
@@ -169,7 +169,7 @@ fn void drawLight(int x, int y, float radius, Color color) {
 Raindrop [MAX_RAINDROPS] rainDrops;
 
 fn void initRainDrops(Raindrop []rainDrops, int count) {
-    
+
 	for (int i = 0; i < count; i++) {
         rainDrops[i].pos = { rand_in_range(0, forge_main::WINDOW_WIDTH), rand_in_range(-forge_main::WINDOW_HEIGHT, 0) };
         rainDrops[i].vel = (float)rand_in_range(1000, 1200) / 10.0 * 30;
@@ -177,7 +177,7 @@ fn void initRainDrops(Raindrop []rainDrops, int count) {
 }
 
 fn void updateRainDrops(Raindrop []rainDrops, int count, float deltaTime) {
-    
+
 	for (int i = 0; i < count; i++) {
         rainDrops[i].pos.y += rainDrops[i].vel * deltaTime;
         if (rainDrops[i].pos.y > forge_main::WINDOW_HEIGHT) {
@@ -197,7 +197,7 @@ fn void rainFall(float deltaTime){
 	if (!initRain) {
 		initRainDrops(&rainDrops, MAX_RAINDROPS);
 		initRain = true;
-	}	
+	}
 	updateRainDrops(&rainDrops, MAX_RAINDROPS, deltaTime);
 	drawRainDrops(&rainDrops, MAX_RAINDROPS);
 }
@@ -223,18 +223,18 @@ fn void initFireWork(Firework *firework){
             firework.particles[i].vel ={(float)(rand_in_range(0,300) - 200) / 10.0, (float)(rand_in_range(0,300) - 200) / 10.0};
             firework.particles[i].color = {(char)rand_in_range(0,255),(char)rand_in_range(0,255),(char)rand_in_range(0,255),255};
             firework.particles[i].life = (float)(rand_in_range(0,100))/ 10.0 + 1.0;
-            
+
             for (int j = 0; j < TRAIL_LENGTH; j++) {
             firework.particles[i].trail[j] = firework.particles[i].pos;
         }
-        
+
             firework.particles[i].trailIndex = 0;
     }
 
 }
 
 fn void updateFireWork(Firework *firework,float deltaTime){
-    
+
     if (!firework.active) {return;}
 
     if (!firework.exploded) {
@@ -302,16 +302,16 @@ if (!firework.active) {return;}
 }
 
 fn void runFireWorks(float deltaTime){
-  
+
     if(rand_in_range(0,100) < 2){
         initFireWork(&fireWorks[currentFirework]);
         currentFirework = (currentFirework + 1) % MAX_FIREWORKS;
     }
-    
+
     for (int i = 0; i < MAX_FIREWORKS; i++) {
         updateFireWork(&fireWorks[i],deltaTime);
     }
-    
+
     for (int i = 0; i < MAX_FIREWORKS; i++) {
         drawFireWork(&fireWorks[i]);
     }
@@ -402,7 +402,7 @@ fn void shootingStars() {
 		if (!resetStar) {
 			resetShootingStar(&star);
 			resetStar = true;
-		}	
+		}
 
     updateShootingStar(&star, &starParticles);
     updateStarParticles(&starParticles);
@@ -454,8 +454,11 @@ fn void drawFireParticles() {
     }
 }
 
-fn void fireEffect(float deltaTime) {
+fn void fireEffect(float deltaTime, Construct* c = null) {
 	static bool initFireP @noinit;
+	if (c != null){
+
+	}
 	if (!initFireP) {
 		initFireParticles();
 		initFireP = true;
@@ -465,7 +468,7 @@ fn void fireEffect(float deltaTime) {
 
 }
 
-//starry sky 
+//starry sky
  Star [MAX_STARS] stars;
 
 fn void createStars(Star []stars, int count) {
@@ -488,8 +491,8 @@ fn void updateStars(Star []stars, int count) {
 fn void drawStars(Star []stars, int count) {
     for (int i = 0; i < count; i++) {
         Color starColor = { 255, 255, 255, (char)(stars[i].opacity * 255) };
-        rl::drawCircleV(stars[i].pos, 2.5, starColor);
-        //drawLight((int)stars[i].pos.x, (int)stars[i].pos.y, 5, starColor);
+        rl::drawCircleV(stars[i].pos, 2.0, starColor);
+        drawLight((int)stars[i].pos.x, (int)stars[i].pos.y, 5, starColor);
     }
 }
 
@@ -508,7 +511,7 @@ fn void starrySky(){
 
 //begin explosion -----------------------------------------
 Particle [MAX_EXPLOSION_P] explosion;
-float explosionRadius = 100.0; 
+float explosionRadius = 100.0;
 
 fn void initParticlesExplosion(Vector2 explosionCenter){
     for (int i = 0; i < MAX_EXPLOSION_P; i++){
@@ -534,13 +537,13 @@ fn void drawExplosion(){
     for (int i = 0; i < MAX_EXPLOSION_P; i++) {
             if(explosion[i].life > 0){
             rl::drawCircleV(explosion[i].pos, explosionRadius, explosion[i].color);
-            drawLight((int)explosion[i].pos.x, (int)explosion[i].pos.y, explosionRadius, explosion[i].color); 
-        } 
+            drawLight((int)explosion[i].pos.x, (int)explosion[i].pos.y, explosionRadius, explosion[i].color);
+        }
     }
 }
 
 fn void runExplosion(float deltaTime){
-    
+
         Vector2 pos = {rand_in_range(0,forge_main::WINDOW_WIDTH),rand_in_range(900,forge_main::WINDOW_HEIGHT)};
         initParticlesExplosion(pos);
         updateExplosion(deltaTime);

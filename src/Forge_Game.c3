@@ -41,6 +41,7 @@ const float PLAYER_HITBOX_OFFSET = 55.0f;
 
 float groundLevel = 1080.0f - 70.0f;//115
 bool poopPenatrate = false;
+bool shouldPlayHitAnim;
 
 //AI BOSS movement
 float jumpCounter;
