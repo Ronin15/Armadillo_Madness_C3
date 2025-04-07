@@ -71,7 +71,7 @@ fn TexMap loadTexMap(){
     map.set("ground",backGroundGround);
     map.set("clouds",clouds);
     map.set("player",playerTex);
-	map.set("playerHit",playerHitTex);
+	  map.set("playerHit",playerHitTex);
     map.set("sun",sunTex);
     map.set("cactus",cactus1Tex);
     map.set("boulder",bigBoulderTex);
