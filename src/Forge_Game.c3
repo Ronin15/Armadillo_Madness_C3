@@ -77,6 +77,7 @@ bool movingLeft = true;
     float frameLength;
     float invulnTimer;
     float powerUpTimer;
+    float animTimer;
     int currentFrame;
     int maxFrames;
     int lives;
@@ -93,6 +94,7 @@ bool movingLeft = true;
     bool sHit; //super power up hit
     bool fHit; //food hit
     bool gHit; //grav boot hit
+    bool anim;
 }
 
 //GAME Functions ------------------------------------------------------------
@@ -141,6 +143,8 @@ fn String getRandomConstructName (ConstructType type, String array_type){
    static int powerUpCount_day;// to track and restrict power up items to global const value
    static int powerUpCount_demo;
    static int powerUpCount_night;
+   static int powerUpCount_dayBoss;
+   static int powerUpCount_nightBoss;
 
    String[*] groundTypes = {"ant","turtle","snake","fox","scorpion","spider","mouse","cougar_boss"};
    String[*] flyingTypes = {"bird","beatle","owl","moth","alien_boss"};
@@ -187,23 +191,43 @@ fn String getRandomConstructName (ConstructType type, String array_type){
 
                         case "demo":
 
-                              if(powerUpCount_demo < forge_main::MAX_POWERUPS){
+                                if(powerUpCount_demo < forge_main::MAX_POWERUPS){
 
-                                 powerUpCount_demo += 1;
-                                 return powerUps[index];
-                              }
+                                    powerUpCount_demo += 1;
+                                    return powerUps[index];
+                                 }
 
                            break;
 
                         case "night":
 
-                              if(powerUpCount_night < forge_main::MAX_POWERUPS){
+                                if(powerUpCount_night < forge_main::MAX_POWERUPS){
 
-                                 powerUpCount_night += 1;
-                                 return powerUps[index];
-                              }
+                                    powerUpCount_night += 1;
+                                    return powerUps[index];
+                                 }
 
                            break;
+
+                           case "day_boss":
+
+                                if(powerUpCount_dayBoss < forge_main::MAX_BOSS_POWER_UPS){
+
+                                    powerUpCount_dayBoss += 1;
+                                    return powerUps[index];
+                                 }
+
+                            break;
+
+                            case "night_boss":
+
+                                if(powerUpCount_nightBoss < forge_main::MAX_BOSS_POWER_UPS){
+
+                                       powerUpCount_nightBoss += 1;
+                                       return powerUps[index];
+                                    }
+
+                            break;
             }
       }
 
@@ -237,6 +261,7 @@ fn Construct forgeCronstructProjectile(TexMap *tMap) {
       c.invlunerable = false;
       c.hHit = false;
       c.vHit = false;
+      c.anim = false;
       io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
 }
@@ -273,6 +298,7 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
       c.sHit = false;
       c.fHit = false;
       c.gHit = false;
+      c.anim = false;
 
       io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
@@ -310,6 +336,7 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
       c.hHit = false;
       c.vHit = false;
       c.active = false;
+      c.anim = false;
 
       io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
@@ -353,6 +380,7 @@ fn Construct[] forgeConstruct(TexMap *tMap, String array_type, int capacity = fo
     constructs[i].expired = true;
     constructs[i].hHit = false;
     constructs[i].vHit = false;
+    constructs[i].anim = false;
 
     io::printfn("name -> %s  type -> %s  texture -> %s",constructs[i].name,constructs[i].type,constructs[i].texture);
    }
@@ -397,6 +425,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             //io::printfn("invuln Timer: %f", c.invulnTimer);//debug
             //io::printfn("power Up Timer: %f", c.powerUpTimer);//debug
             //io::printfn("pos: %f:%f",c.pos.x,c.pos.y);//debug
+            //io::printfn("anim Timer: %f", c.animTimer);//debug
             c.hitBox = {((float)c.pos.x + (float)c.texture.width / 2.0f) - PLAYER_HITBOX_OFFSET,
                        ((float)c.pos.y + (float)c.texture.height / 2.0f),
                        PLAYER_HITBOX_WIDTH,
@@ -405,6 +434,11 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
             if (raining){c.acceleration = 125;}
             if (!raining && c.acceleration == 125){c.acceleration = ACCELERATION;}
+
+            if(c.animTimer >= 0.0){
+               c.animTimer -= 1.0;
+            }else{
+               c.anim = false;}
 
             if(c.invulnTimer >= 0.0){
                c.invulnTimer -= 1.0;
@@ -425,9 +459,6 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             if(c.vHit){
                   c.vHit = false;
                   rl::playSound(sMap.get("boing")!!);
-                  c.texture = tMap.get("playerHit")!!;
-               }else{
-                c.texture = tMap.get("player")!!;
                }
 
             if (c.bHit && c.lives < MAX_LIVES){ // beatle hit and moth hit
@@ -440,23 +471,34 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                }
 
             //powerup
-            if (c.sHit){c.powerUpTimer += 400; c.invlunerable = true; c.acceleration = 500; c.sHit = false;}
-
+            if (c.sHit){c.powerUpTimer += 500; c.invlunerable = true; c.invulnTimer += 800; c.acceleration = 500; c.sHit = false;}
+            //invuln
             if(c.hHit && c.invulnTimer <= 0){
                   c.hHit = false;
                   c.invlunerable = true;
                   rl::playSound(sMap.get("playerHit")!!);
-                  c.texture = tMap.get("playerHit")!!;
                   c.lives -= 1;
-                  c.invulnTimer = 600.0;
+                  c.invulnTimer += 600.0;
+                  c.animTimer = 100.0;
+                  c.anim = true;
+
             }else{
                   c.hHit = false;
-                  c.texture = tMap.get("player")!!;
+            }
+
+            //animation
+            if (c.animTimer >= 0 ){
+
+                c.texture = tMap.get("playerHit")!!;
+
+            }else{
+                c.texture = tMap.get("player")!!;
+                c.anim = false;
             }
 
             //powerup
-            if (c.fHit){c.powerUpTimer += 400; poopPenatrate = true; c.fHit = false;}
-            if (c.gHit){c.powerUpTimer += 400; c.gravity = 400.0; c.gHit = false;}
+            if (c.fHit){c.powerUpTimer += 500; poopPenatrate = true; c.fHit = false;}
+            if (c.gHit){c.powerUpTimer += 500; c.gravity = 400.0; c.gHit = false;}
             //movement
             if (rl::isKeyDown(rl::KEY_LEFT)) {
                if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(sMap.get("moving")!!); }

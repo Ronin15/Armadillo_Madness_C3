@@ -21,7 +21,8 @@ const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.8.5"; //ui update, options update, and almost all game states complete
 const int MAX_CONSTRUCTS = 200;//100 - 200
 const int MAX_BOSS_CONSTRUCTS = 50;
-const int MAX_POWERUPS = 12;//6
+const int MAX_BOSS_POWER_UPS = 5;
+const int MAX_POWERUPS = 15;//6
 const int MAX_BUTTONS = 7;
 const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
@@ -123,7 +124,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);//DEBUG
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = NIGHTLVL;
+	GameState state = MAIN;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -270,7 +271,7 @@ fn int main(String[] args) {
 						frameCounter = 0;
 
 							dayBoss.active = true;
-							constructs = forge_game::forgeConstruct(&tMap,"day",MAX_BOSS_CONSTRUCTS);
+							constructs = forge_game::forgeConstruct(&tMap,"day_boss",MAX_BOSS_CONSTRUCTS);
 					}
 
 
@@ -282,16 +283,16 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
-
-				rl::drawFPS(15,160); //debug
 				//sun
 				forge_fx::drawLight(1815, 105, 300, rl::fade(rl::YELLOW, 0.7));
 				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
 				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				//end sun
 
-				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
-				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);
+				rl::drawFPS(15,205); //debug
+				//game hud
+				rl::drawRectangle(5, 5, 400, 200, {0,0,0,150});
+				rl::drawText(rl::textFormat("Score: %08i", score), 15, 20, 40, rl::RAYWHITE);
 				rl::drawText("Health", 16, 60, 35, rl::RAYWHITE);
 				//life tracking updating
 				if (&player.lives == &player.lives){
@@ -300,6 +301,14 @@ fn int main(String[] args) {
 						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
 					}
 				}
+
+				if(player.invlunerable){
+				    rl::drawText(rl::textFormat("Invulnerable: %.1f", player.invulnTimer), 15, 150, 23, rl::RAYWHITE);
+				}
+				if(player.powerUpTimer >= 0){
+				    rl::drawText(rl::textFormat("PowerUp: %.1f", player.powerUpTimer), 15, 175, 23, rl::RAYWHITE);
+				}
+				//end Hud
 
 				forge_game::drawAnimatedConstruct(&player);
 				//forge_game::drawHitBox(&player);//debug
@@ -313,11 +322,11 @@ fn int main(String[] args) {
 					forge_game::drawAnimatedConstruct(&dayBoss);
 					//forge_game::drawHitBox(&dayBoss);//debug
 					//dayboss life bar
-					rl::drawRectangle(5, 195, 260, 40, FORGE_GRAY);
-					rl::drawText("MAD COUGAR", 20, 200, 35, rl::RED);
+					rl::drawRectangle(5, 225, 270, 40, FORGE_GRAY);
+					rl::drawText("MAD COUGAR", 20, 230, 35, rl::RED);
 					if (&dayBoss.lives == &dayBoss.lives){
 						for (int i = 0; i < dayBoss.lives; i++){
-							Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 300};
+							Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 325};
 							rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
 						}
 					}
@@ -418,7 +427,7 @@ fn int main(String[] args) {
 						frameCounter = 0;
 
 							nightBoss.active = true;
-							nightConstructs = forge_game::forgeConstruct(&tMap,"night",MAX_BOSS_CONSTRUCTS);
+							nightConstructs = forge_game::forgeConstruct(&tMap,"night_boss",MAX_BOSS_CONSTRUCTS);
 					}
 
 
@@ -431,14 +440,15 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("nightground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("nightground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
-				rl::drawFPS(15,160);
 				//moon
 				forge_fx::drawLight(1815, 105, 150, rl::fade(rl::YELLOW, 0.8));
 				forge_fx::drawLight(1815, 105, 351, rl::fade(rl::WHITE, 0.8));
 				//end moon
 
-				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
-				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);
+				rl::drawFPS(15,205); //debug
+				//game hud
+				rl::drawRectangle(5, 5, 400, 200, {0,0,0,150});
+				rl::drawText(rl::textFormat("Score: %08i", score), 15, 20, 40, rl::RAYWHITE);
 				rl::drawText("Health", 16, 60, 35, rl::RAYWHITE);
 				//life tracking updating
 				if (&player.lives == &player.lives){
@@ -447,6 +457,14 @@ fn int main(String[] args) {
 						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
 					}
 				}
+
+				if(player.invlunerable){
+				    rl::drawText(rl::textFormat("Invulnerable: %.1f", player.invulnTimer), 15, 150, 23, rl::RAYWHITE);
+				}
+				if(player.powerUpTimer >= 0){
+				    rl::drawText(rl::textFormat("PowerUp: %.1f", player.powerUpTimer), 15, 175, 23, rl::RAYWHITE);
+				}
+				//end Hud
 
 				forge_game::drawAnimatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
@@ -460,11 +478,11 @@ fn int main(String[] args) {
 					if(nightBoss.active){
 					forge_game::drawAnimatedConstruct(&nightBoss);
 					//dayboss life bar
-					rl::drawRectangle(5, 195, 325, 40, FORGE_GRAY);
-					rl::drawText("MAD Alien Visage", 20, 200, 35, rl::RED);
+					rl::drawRectangle(5, 225, 325, 40, FORGE_GRAY);
+					rl::drawText("MAD Alien Visage", 20, 230, 35, rl::RED);
 					if (&nightBoss.lives == &nightBoss.lives){
 						for (int i = 0; i < nightBoss.lives; i++){
-							Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 300};
+							Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 325};
 							rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
 						}
 					}
