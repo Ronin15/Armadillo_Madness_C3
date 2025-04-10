@@ -344,7 +344,7 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
 
 
 //creates game objects
-fn Construct[] forgeConstruct(TexMap *tMap, String array_type, int capacity = forge_main::MAX_CONSTRUCTS) {
+fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = forge_main::MAX_CONSTRUCTS) {
 
    Construct[] constructs = mem::new_array(Construct, capacity);
 
