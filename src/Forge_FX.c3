@@ -489,7 +489,7 @@ fn void drawStars(Star []stars, int count) {
     for (int i = 0; i < count; i++) {
         Color starColor = { 255, 255, 255, (char)(stars[i].opacity * 255) };
         rl::drawCircleV(stars[i].pos, 2.0, starColor);
-        drawLight((int)stars[i].pos.x, (int)stars[i].pos.y, 5, starColor);
+        //drawLight((int)stars[i].pos.x, (int)stars[i].pos.y, 5, starColor);
     }
 }
 
