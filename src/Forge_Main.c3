@@ -182,7 +182,7 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);
 
 				 	if (rl::isKeyPressed(rl::KEY_ENTER)){
-						 constructs = forge_game::forgeConstruct(&tMap,"day");
+						 constructs = forge_game::forgeConstructs(&tMap,"day");
        					 state = GAME;
     				}
 
@@ -196,7 +196,7 @@ fn int main(String[] args) {
 				if (!constructs){
 			         io::printfn("init array");
 					//creating game entities
-					constructs = forge_game::forgeConstruct(&tMap,"day");
+					constructs = forge_game::forgeConstructs(&tMap,"day");
 				}
 
 				//dayBoss.active = true;//debug
@@ -271,7 +271,7 @@ fn int main(String[] args) {
 						frameCounter = 0;
 
 							dayBoss.active = true;
-							constructs = forge_game::forgeConstruct(&tMap,"day_boss",MAX_BOSS_CONSTRUCTS);
+							constructs = forge_game::forgeConstructs(&tMap,"day_boss",MAX_BOSS_CONSTRUCTS);
 					}
 
 
@@ -355,7 +355,7 @@ fn int main(String[] args) {
 			if (!nightConstructs){
 			         io::printfn("init array");
 					//creating game entities
-					nightConstructs = forge_game::forgeConstruct(&tMap,"night");
+					nightConstructs = forge_game::forgeConstructs(&tMap,"night");
 				}
 				//nightBoss.active = true;//debug
 				night = true;
@@ -427,7 +427,7 @@ fn int main(String[] args) {
 						frameCounter = 0;
 
 							nightBoss.active = true;
-							nightConstructs = forge_game::forgeConstruct(&tMap,"night_boss",MAX_BOSS_CONSTRUCTS);
+							nightConstructs = forge_game::forgeConstructs(&tMap,"night_boss",MAX_BOSS_CONSTRUCTS);
 					}
 
 
@@ -710,7 +710,7 @@ fn int main(String[] args) {
 			     if (!demoConstructs){
 			         io::printfn("init array");
 					//creating demo entities
-					demoConstructs = forge_game::forgeConstruct(&tMap,"demo");
+					demoConstructs = forge_game::forgeConstructs(&tMap,"demo");
 				}
 
 				rl::hideCursor();
@@ -757,7 +757,7 @@ fn int main(String[] args) {
 				if (demoCounter2 > 10000){//10000
 					demoCounter2 = 0;
 					state = MAIN;
-					demoConstructs = forge_game::forgeConstruct(&tMap,"demo");
+					demoConstructs = forge_game::forgeConstructs(&tMap,"demo");
 					break;
 				}
 
