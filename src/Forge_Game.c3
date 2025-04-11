@@ -209,7 +209,7 @@ fn String getRandomConstructName (ConstructType type, String array_type){
 
                            break;
 
-                           case "day_boss":
+                        case "day_boss":
 
                                 if(powerUpCount_dayBoss < forge_main::MAX_BOSS_POWER_UPS){
 
@@ -219,13 +219,13 @@ fn String getRandomConstructName (ConstructType type, String array_type){
 
                             break;
 
-                            case "night_boss":
+                        case "night_boss":
 
                                 if(powerUpCount_nightBoss < forge_main::MAX_BOSS_POWER_UPS){
 
-                                       powerUpCount_nightBoss += 1;
-                                       return powerUps[index];
-                                    }
+                                    powerUpCount_nightBoss += 1;
+                                    return powerUps[index];
+                                }
 
                             break;
             }
