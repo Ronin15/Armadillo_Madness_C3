@@ -209,7 +209,7 @@ fn int main(String[] args) {
 	  			rl::updateMusicStream(mMap.get(randSong)!!);
 	  			scrollGround -= 5.0;
 				scrollMid -= 0.6;
-				scrollClouds -= 0.3;
+				scrollClouds -= 0.2;
 				if(scrollMid <= - WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
 				if(scrollGround <= - WINDOW_WIDTH) {scrollGround = 0;}
