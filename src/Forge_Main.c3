@@ -745,8 +745,6 @@ fn int main(String[] args) {
 				}
             }
 
-
-
 			case GAME_WIN:
 				//TODO still needs more work but framework is there, needs art animations, music.
 				//io::printfn("Game_WIN State");
@@ -799,6 +797,8 @@ fn int main(String[] args) {
 					score = 0;
 					dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
 					nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
+					constructs = forge_game::forgeConstructs(&tMap,"day");
+					constructs = forge_game::forgeConstructs(&tMap,"night");
 					state = MAIN;
 				}
 
