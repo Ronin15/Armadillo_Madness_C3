@@ -364,7 +364,7 @@ fn int main(String[] args) {
 				// Draw transition effect if boss is dead
 				if (inTransition && dayBoss.isDead) {
 
-				forge_fx::forgeFXManager(&mMap, &sMap, "explode", deltaTime);
+				//forge_fx::forgeFXManager(&mMap,"explode", deltaTime);
 					// Add a transparent overlay
 					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.4f));
 					// Display transition message
@@ -403,7 +403,7 @@ fn int main(String[] args) {
 			}
 			if (raining){
 
-				forge_fx::forgeFXManager(&mMap, &sMap, "rain", deltaTime);
+				forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
 				weatherTimer -=1;
 				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer); //debug
 			}
@@ -418,7 +418,7 @@ fn int main(String[] args) {
 					//creating game entities
 					nightConstructs = forge_game::forgeConstructs(&tMap,"night");
 				}
-				nightBoss.active = true;//debug
+				//nightBoss.active = true;//debug
 				night = true;
 				day = false;
 				//misc game stuff
@@ -521,7 +521,7 @@ fn int main(String[] args) {
 				rl::drawTexture(tMap.get("nightsky")!!, 0, 0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 380}, 0.0, 1.0, rl::WHITE);//340
 				rl::drawTextureEx(tMap.get("nightmid")!!, {WINDOW_WIDTH + scrollMid, 380}, 0.0, 1.0, rl::WHITE);
-				forge_fx::forgeFXManager(&mMap, &sMap, "starrySky", deltaTime);
+				forge_fx::forgeFXManager(&mMap,"starrySky", deltaTime);
 				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("nightground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
@@ -559,7 +559,7 @@ fn int main(String[] args) {
 								forge_game::drawAnimatedConstruct(nightConstruct);
 						}
 
-				forge_fx::forgeFXManager(&mMap, &sMap ,"shootingStars", deltaTime);
+				forge_fx::forgeFXManager(&mMap,"shootingStars", deltaTime);
 
 					if(nightBoss.active){
 					forge_game::drawAnimatedConstruct(&nightBoss);
@@ -576,7 +576,7 @@ fn int main(String[] args) {
 
 				// Draw transition effect if night boss is dead
 				if (inTransition && nightBoss.isDead) {
-				    forge_fx::forgeFXManager(&mMap, &sMap,"explode", deltaTime);
+				   // forge_fx::forgeFXManager(&mMap,"explode", deltaTime);
 					// Add a transparent overlay
 					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.4f));
 					// Display transition message
@@ -595,7 +595,7 @@ fn int main(String[] args) {
 			}
 			if (raining){
 
-				forge_fx::forgeFXManager(&mMap, &sMap,"rain", deltaTime);
+				forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
 				weatherTimer -=1;
 				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer);//debug
 			}
@@ -645,7 +645,7 @@ fn int main(String[] args) {
 						}
         				//if raining it should be raining when paused.
         				if (raining){
-       					forge_fx::forgeFXManager(&mMap, &sMap, "rain", deltaTime);
+       					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
         				}
 
         				//drawing pause stuff here so objects dont cover it up
@@ -691,7 +691,7 @@ fn int main(String[] args) {
         				forge_fx::drawLight(1815, 105, 150, rl::fade(rl::YELLOW, 0.8));
 						forge_fx::drawLight(1815, 105, 351, rl::fade(rl::WHITE, 0.8));
 						//end/
-                        forge_fx::forgeFXManager(&mMap, &sMap, "starrySky", deltaTime);
+                        forge_fx::forgeFXManager(&mMap,"starrySky", deltaTime);
         				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("nightground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
@@ -709,7 +709,7 @@ fn int main(String[] args) {
 							}
         				//if raining it should be raining when paused.
         				if (raining){
-       					forge_fx::forgeFXManager(&mMap, &sMap,"rain", deltaTime);
+       					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
         				}
 
         				//drawing pause stuff here so objects dont cover it up
@@ -762,7 +762,7 @@ fn int main(String[] args) {
 					forge_ui::drawButton(&gameWinButton);
 
 				forge_fx::drawRainbow();
-				forge_fx::forgeFXManager(&mMap, &sMap,"fireworks",deltaTime);
+				forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
 
 				rl::drawTextureEx(tMap.get("armadillo")!!, {750, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 815}, 0.0, 3.0, rl::WHITE);
@@ -780,7 +780,7 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
 
 				// Background elements
-				rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::BLACK);
+				//rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::BLACK);
 
 				// Game over text
 				rl::drawText("GAME OVER", ((WINDOW_WIDTH / 2) - 300), 200, 105, rl::RED);
@@ -794,7 +794,7 @@ fn int main(String[] args) {
 				rl::drawText("Press ENTER to try again", ((WINDOW_WIDTH / 2) - 300), 450, 40, rl::WHITE);
 
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
-					// Reset player
+					// Reset player and Bosses
 					player = forge_game::forgeCronstructPlayer(&tMap);
 					score = 0;
 					dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
