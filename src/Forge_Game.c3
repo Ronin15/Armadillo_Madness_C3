@@ -482,6 +482,12 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                   c.animTimer = 100.0;
                   c.anim = true;
 
+                  // Check for player death
+                  if (c.lives <= 0) {
+                        c.isDead = true;
+                        return -1; // Return -1 to indicate player death
+                  }
+
             }else{
                   c.hHit = false;
             }

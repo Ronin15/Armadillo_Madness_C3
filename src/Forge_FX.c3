@@ -119,6 +119,7 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
 
                     if (explode){
                          runExplosion(deltaTime);
+                        // rl::playSound(sMap.get("explosion")!!);
                     }
 
                    break;

@@ -65,13 +65,14 @@ fn TexMap loadTexMap(){
     Texture2D restartButtonTex = rl::loadTexture("resources/images/restartButton-sheet.png");
     Texture2D playButtonTex = rl::loadTexture("resources/images/playButton-sheet.png");
     Texture2D resumeButtonTex = rl::loadTexture("resources/images/resumeButton-sheet.png");
+    Texture2D desertNightTex = rl::loadTexture("resources/images/desert_night.png");
 
     map.set("sky",backGroundSky);
     map.set("mid",backGroundMid);
     map.set("ground",backGroundGround);
     map.set("clouds",clouds);
     map.set("player",playerTex);
-	  map.set("playerHit",playerHitTex);
+	map.set("playerHit",playerHitTex);
     map.set("sun",sunTex);
     map.set("cactus",cactus1Tex);
     map.set("boulder",bigBoulderTex);
@@ -113,6 +114,7 @@ fn TexMap loadTexMap(){
     map.set("restartButton",restartButtonTex);
     map.set("playButton",playButtonTex);
     map.set("resumeButton", resumeButtonTex);
+    map.set("desertNight", desertNightTex);
 
    return map;
 }
@@ -139,6 +141,8 @@ fn SoundMap loadSoundMap(){
     Sound super = rl::loadSound("resources/sounds/1up.wav");
     Sound cactusImpact = rl::loadSound("resources/sounds/cactus_impact.wav");
     Sound button = rl::loadSound("resources/sounds/button_click.wav");
+    Sound explosion = rl::loadSound("resources/sounds/explosions.wav");
+    Sound levelComplete = rl::loadSound("resources/sounds/level_complete.wav");
 
     map.set("jump",jump);
     map.set("moving",moving);
@@ -158,6 +162,8 @@ fn SoundMap loadSoundMap(){
     map.set("super",super);
     map.set("cactusImpact",cactusImpact);
     map.set("button",button);
+    map.set("explosion",explosion);
+    map.set("levelComplete",levelComplete);
 
    return map;
 }

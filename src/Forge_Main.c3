@@ -27,6 +27,7 @@ const int MAX_BUTTONS = 7;
 const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
 const int BOSS_TIMER = 13700;
+const float BOSS_TRANSITION_TIME = 6.0; // Time in seconds to display transition after boss death
 
 //Hammer Forge Colors RGB
 const Color FORGE_GRAY = {31,32,34,255};
@@ -87,6 +88,10 @@ fn int main(String[] args) {
 	bool night = false;
 	bool raining = false;
 	float weatherTimer;
+
+	//transition between states
+	float bossTransitionTimer = 0.0;
+	bool inTransition = false;
 
 	//demo time counters
 	float demoCounter1;
@@ -158,7 +163,6 @@ fn int main(String[] args) {
 							state = MAIN;
 							frameCounter = 0;
 					}
-				//forge_fx::forgeFXManager(&mMap,"explode",deltaTime);
 
 			case MAIN:
 				//slicing out Main ui buttons
@@ -249,7 +253,23 @@ fn int main(String[] args) {
 
 				//update game logic-------------------------------------------------------------------------------
 				frameCounter +=1;
-				forge_game::updateConstruct(&player, &sMap, &tMap, raining, deltaTime);
+				int playerUpdateResult = forge_game::updateConstruct(&player, &sMap, &tMap, raining, deltaTime);
+
+				// Check for player death
+				if (playerUpdateResult == -1 && !inTransition) {
+					inTransition = true;
+					bossTransitionTimer = BOSS_TRANSITION_TIME;
+				}
+
+				if (inTransition && player.isDead) {
+					bossTransitionTimer -= deltaTime;
+					if (bossTransitionTimer <= 0.0) {
+						state = GAME_OVER;
+						frameCounter = 0;
+						inTransition = false;
+					}
+				}
+
 				forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
 
 					foreach ( &construct : constructs){
@@ -259,9 +279,18 @@ fn int main(String[] args) {
 					if(dayBoss.active){
 						score += forge_game::updateConstruct(&dayBoss, &sMap, &tMap, raining, deltaTime);
 
-							if (dayBoss.isDead){
+							if (dayBoss.isDead && !inTransition){
+									inTransition = true;
+									bossTransitionTimer = BOSS_TRANSITION_TIME;
+							}
+
+							if (inTransition && dayBoss.isDead && !player.isDead) {
+								bossTransitionTimer -= deltaTime;
+								if (bossTransitionTimer <= 0.0) {
 									state = NIGHTLVL;
 									frameCounter = 0;
+									inTransition = false;
+								}
 							}
 					}
 
@@ -332,6 +361,38 @@ fn int main(String[] args) {
 					}
 				}
 
+				// Draw transition effect if boss is dead
+				if (inTransition && dayBoss.isDead) {
+
+				forge_fx::forgeFXManager(&mMap, &sMap, "explode", deltaTime);
+					// Add a transparent overlay
+					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.4f));
+					// Display transition message
+					rl::drawText("VICTORY!", (WINDOW_WIDTH / 2) - 200, WINDOW_HEIGHT / 2 - 100, 80, FORGE_ORANGE);
+					rl::drawText("PREPARING NIGHT LEVEL...", (WINDOW_WIDTH / 2) - 400, WINDOW_HEIGHT / 2, 60, rl::WHITE);
+					rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
+				}
+
+			// Draw game over transition effect
+			if (inTransition && player.isDead) {
+				// Add a transparent overlay (darker for game over)
+				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(rl::BLACK, 0.6f));
+				// Display transition message
+				rl::drawText("GAME OVER", (WINDOW_WIDTH / 2) - 250, WINDOW_HEIGHT / 2 - 100, 80, rl::RED);
+				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 300, WINDOW_HEIGHT / 2, 60, rl::WHITE);
+				rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
+			}
+
+			// Draw game over transition effect
+			if (inTransition && player.isDead) {
+				// Add a transparent overlay (darker for game over)
+				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(rl::BLACK, 0.6f));
+				// Display transition message
+				rl::drawText("GAME OVER", (WINDOW_WIDTH / 2) - 250, WINDOW_HEIGHT / 2 - 100, 80, rl::RED);
+				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 300, WINDOW_HEIGHT / 2, 60, rl::WHITE);
+				rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
+			}
+
 			//weather
 			if (!raining && weatherTimer <= 0.0){
 				raining = forge_game::randChanceCheck();
@@ -342,7 +403,7 @@ fn int main(String[] args) {
 			}
 			if (raining){
 
-				forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
+				forge_fx::forgeFXManager(&mMap, &sMap, "rain", deltaTime);
 				weatherTimer -=1;
 				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer); //debug
 			}
@@ -357,7 +418,7 @@ fn int main(String[] args) {
 					//creating game entities
 					nightConstructs = forge_game::forgeConstructs(&tMap,"night");
 				}
-				//nightBoss.active = true;//debug
+				nightBoss.active = true;//debug
 				night = true;
 				day = false;
 				//misc game stuff
@@ -405,7 +466,23 @@ fn int main(String[] args) {
 								}
 				//update game logic-------------------------------------------------------------------------------
 				frameCounter +=1;
-				forge_game::updateConstruct(&player, &sMap, &tMap, raining, deltaTime);
+				int playerUpdateResult = forge_game::updateConstruct(&player, &sMap, &tMap, raining, deltaTime);
+
+				// Check for player death
+				if (playerUpdateResult == -1 && !inTransition) {
+					inTransition = true;
+					bossTransitionTimer = BOSS_TRANSITION_TIME;
+				}
+
+				if (inTransition && player.isDead) {
+					bossTransitionTimer -= deltaTime;
+					if (bossTransitionTimer <= 0.0) {
+						state = GAME_OVER;
+						frameCounter = 0;
+						inTransition = false;
+					}
+				}
+
 				forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
 
 					foreach ( &nightConstruct : nightConstructs){
@@ -415,9 +492,18 @@ fn int main(String[] args) {
 					if(nightBoss.active){
 						score += forge_game::updateConstruct(&nightBoss, &sMap, &tMap, raining, deltaTime);
 
-							if (nightBoss.isDead){
+							if (nightBoss.isDead && !inTransition){
+									inTransition = true;
+									bossTransitionTimer = BOSS_TRANSITION_TIME;
+							}
+
+							if (inTransition && nightBoss.isDead && !player.isDead) {
+								bossTransitionTimer -= deltaTime;
+								if (bossTransitionTimer <= 0.0) {
 									state = GAME_WIN;
 									frameCounter = 0;
+									inTransition = false;
+								}
 							}
 					}
 
@@ -435,7 +521,7 @@ fn int main(String[] args) {
 				rl::drawTexture(tMap.get("nightsky")!!, 0, 0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 380}, 0.0, 1.0, rl::WHITE);//340
 				rl::drawTextureEx(tMap.get("nightmid")!!, {WINDOW_WIDTH + scrollMid, 380}, 0.0, 1.0, rl::WHITE);
-				forge_fx::forgeFXManager(&mMap,"starrySky", deltaTime);
+				forge_fx::forgeFXManager(&mMap, &sMap, "starrySky", deltaTime);
 				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("nightground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
@@ -473,7 +559,7 @@ fn int main(String[] args) {
 								forge_game::drawAnimatedConstruct(nightConstruct);
 						}
 
-				forge_fx::forgeFXManager(&mMap,"shootingStars", deltaTime);
+				forge_fx::forgeFXManager(&mMap, &sMap ,"shootingStars", deltaTime);
 
 					if(nightBoss.active){
 					forge_game::drawAnimatedConstruct(&nightBoss);
@@ -488,6 +574,17 @@ fn int main(String[] args) {
 					}
 				}
 
+				// Draw transition effect if night boss is dead
+				if (inTransition && nightBoss.isDead) {
+				    forge_fx::forgeFXManager(&mMap, &sMap,"explode", deltaTime);
+					// Add a transparent overlay
+					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.4f));
+					// Display transition message
+					rl::drawText("FINAL VICTORY!", (WINDOW_WIDTH / 2) - 280, WINDOW_HEIGHT / 2 - 100, 80, FORGE_ORANGE);
+					rl::drawText("YOU HAVE CONQUERED THE NIGHT!", (WINDOW_WIDTH / 2) - 520, WINDOW_HEIGHT / 2, 60, rl::WHITE);
+					rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
+				}
+
 			//weather
 			if (!raining && weatherTimer <= 0.0){
 				raining = forge_game::randChanceCheck();
@@ -498,7 +595,7 @@ fn int main(String[] args) {
 			}
 			if (raining){
 
-				forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
+				forge_fx::forgeFXManager(&mMap, &sMap,"rain", deltaTime);
 				weatherTimer -=1;
 				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer);//debug
 			}
@@ -548,7 +645,7 @@ fn int main(String[] args) {
 						}
         				//if raining it should be raining when paused.
         				if (raining){
-       					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
+       					forge_fx::forgeFXManager(&mMap, &sMap, "rain", deltaTime);
         				}
 
         				//drawing pause stuff here so objects dont cover it up
@@ -594,7 +691,7 @@ fn int main(String[] args) {
         				forge_fx::drawLight(1815, 105, 150, rl::fade(rl::YELLOW, 0.8));
 						forge_fx::drawLight(1815, 105, 351, rl::fade(rl::WHITE, 0.8));
 						//end/
-                        forge_fx::forgeFXManager(&mMap,"starrySky", deltaTime);
+                        forge_fx::forgeFXManager(&mMap, &sMap, "starrySky", deltaTime);
         				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("nightground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
@@ -612,7 +709,7 @@ fn int main(String[] args) {
 							}
         				//if raining it should be raining when paused.
         				if (raining){
-       					forge_fx::forgeFXManager(&mMap,"rain", deltaTime);
+       					forge_fx::forgeFXManager(&mMap, &sMap,"rain", deltaTime);
         				}
 
         				//drawing pause stuff here so objects dont cover it up
@@ -665,7 +762,7 @@ fn int main(String[] args) {
 					forge_ui::drawButton(&gameWinButton);
 
 				forge_fx::drawRainbow();
-				forge_fx::forgeFXManager(&mMap,"fireworks",deltaTime);
+				forge_fx::forgeFXManager(&mMap, &sMap,"fireworks",deltaTime);
 
 				rl::drawTextureEx(tMap.get("armadillo")!!, {750, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 815}, 0.0, 3.0, rl::WHITE);
@@ -673,7 +770,37 @@ fn int main(String[] args) {
 				rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 700), 150, 105, {185,71,0,200});
 
 			case GAME_OVER:
-				io::printfn("Game_Over State");
+				//io::printfn("Game_Over State");
+
+				// Just using menu button
+				//Button menuButton = uiButtons[4];
+				rl::showCursor();
+				//rl::playMusicStream(mMap.get("gameOver")!!);
+				//rl::updateMusicStream(mMap.get("gameOver")!!);
+				rl::clearBackground(rl::BLACK);
+
+				// Background elements
+				rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::BLACK);
+
+				// Game over text
+				rl::drawText("GAME OVER", ((WINDOW_WIDTH / 2) - 300), 200, 105, rl::RED);
+				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 350), 350, 60, rl::WHITE);
+
+				// Menu button handling
+				//state = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
+				//forge_ui::drawButton(&menuButton);
+
+				// Additional instructions
+				rl::drawText("Press ENTER to try again", ((WINDOW_WIDTH / 2) - 300), 450, 40, rl::WHITE);
+
+				if (rl::isKeyPressed(rl::KEY_ENTER)){
+					// Reset player
+					player = forge_game::forgeCronstructPlayer(&tMap);
+					score = 0;
+					dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
+					nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
+					state = MAIN;
+				}
 
 			case OPTIONS:
 
