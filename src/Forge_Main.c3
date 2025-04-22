@@ -799,6 +799,8 @@ fn int main(String[] args) {
 					nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
 					constructs = forge_game::forgeConstructs(&tMap,"day");
 					constructs = forge_game::forgeConstructs(&tMap,"night");
+					randSong = forge_game::getRandomSong();
+					song = mMap.get(randSong)!!;
 					state = MAIN;
 				}
 
