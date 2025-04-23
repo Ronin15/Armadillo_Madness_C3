@@ -129,7 +129,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);//DEBUG
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = GAME_WIN;
 	//rl::playSound(sMap.get("logoSound")!!);
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
@@ -766,6 +766,15 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 815}, 0.0, 3.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 700), 150, 105, {185,71,0,200});
+
+				player = forge_game::forgeCronstructPlayer(&tMap);
+				dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
+				nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
+				constructs = forge_game::forgeConstructs(&tMap,"day");
+				constructs = forge_game::forgeConstructs(&tMap,"night");
+				randSong = forge_game::getRandomSong();
+				song = mMap.get(randSong)!!;
+				//score = 0; need to zero score after its recorded
 
 			case GAME_OVER:
 				//io::printfn("Game_Over State");
