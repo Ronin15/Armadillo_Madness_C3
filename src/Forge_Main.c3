@@ -792,7 +792,7 @@ fn int main(String[] args) {
 				rl::drawText("Press ENTER to try again", ((WINDOW_WIDTH / 2) - 300), 450, 40, rl::WHITE);
 
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
-					// Reset player and Bosses
+					// Reset player,Bosses, Entities
 					player = forge_game::forgeCronstructPlayer(&tMap);
 					score = 0;
 					dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
