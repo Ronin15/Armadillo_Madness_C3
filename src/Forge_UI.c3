@@ -48,7 +48,7 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, Vector2 cu
     customPos = customPos;
 
     if (customPos.x == 0.0 && customPos.y == 0.0) {
-    
+
     bRect = {
         bRect.x = b.pos.x,
         bRect.y = b.pos.y,
@@ -76,14 +76,14 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, Vector2 cu
     switch(b.name) {
 
         case "playButton":
-            
+
             if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
                 b.currentFrame = 2;
-                state = GAME;                
-            }else if 
+                state = GAME;
+            }else if
                 (b.bhover) {
                 rl::playSound(sMap.get("button")!!);
                 b.currentFrame = 2;
@@ -95,7 +95,7 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, Vector2 cu
              return state;
 
         case "optionsButton":
-            
+
             if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
@@ -111,12 +111,12 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, Vector2 cu
             return state;
 
         case "quitButton":
-            
+
             if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
-    
+
             }else if (b.bhover) {
                 rl::playSound(sMap.get("button")!!);
                 b.currentFrame = 2;
@@ -143,13 +143,13 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, Vector2 cu
              return state;
 
         case "menuButton":
-            
+
             if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
                 state = MAIN;
-            }else if 
+            }else if
                 (b.bhover) {
                 rl::playSound(sMap.get("button")!!);
                 b.currentFrame = 2;
@@ -160,13 +160,13 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, Vector2 cu
              return state;
 
         case "restartButton":
-            
+
             if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
                 state = MAIN;
-    
+
             }else if (b.bhover) {
                 rl::playSound(sMap.get("button")!!);
                 b.currentFrame = 2;

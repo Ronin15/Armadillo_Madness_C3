@@ -89,9 +89,10 @@ fn int main(String[] args) {
 	bool raining = false;
 	float weatherTimer;
 
-	//transition between states
+	//transition between states and misc
 	float bossTransitionTimer = 0.0;
 	bool inTransition = false;
+	bool gameReset = true;
 
 	//demo time counters
 	float demoCounter1;
@@ -188,12 +189,25 @@ fn int main(String[] args) {
 				 	if (rl::isKeyPressed(rl::KEY_ENTER)){
 						 constructs = forge_game::forgeConstructs(&tMap,"day");
        					 state = GAME;
+                         gameReset = true;
     				}
 
 					frameCounter += 1;
 					if (frameCounter > 800) { //800 for testing
 					        state = DEMO;
 							frameCounter = 0;
+					}
+
+					if (gameReset){
+    				player = forge_game::forgeCronstructPlayer(&tMap);
+    				dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
+    				nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
+    				constructs = forge_game::forgeConstructs(&tMap,"day");
+    				constructs = forge_game::forgeConstructs(&tMap,"night");
+    				randSong = forge_game::getRandomSong();
+    				song = mMap.get(randSong)!!;
+                    gameReset = false;
+                    //score = 0; need to zero score after its recorded
 					}
 
 			case GAME:
@@ -767,15 +781,17 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 700), 150, 105, {185,71,0,200});
 
-				player = forge_game::forgeCronstructPlayer(&tMap);
-				dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
-				nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
-				constructs = forge_game::forgeConstructs(&tMap,"day");
-				constructs = forge_game::forgeConstructs(&tMap,"night");
-				randSong = forge_game::getRandomSong();
-				song = mMap.get(randSong)!!;
-				//score = 0; need to zero score after its recorded
-
+				if (gameReset){
+    				player = forge_game::forgeCronstructPlayer(&tMap);
+    				dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
+    				nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
+    				constructs = forge_game::forgeConstructs(&tMap,"day");
+    				constructs = forge_game::forgeConstructs(&tMap,"night");
+    				randSong = forge_game::getRandomSong();
+    				song = mMap.get(randSong)!!;
+                    gameReset = false;
+                    //score = 0; need to zero score after its recorded
+				}
 			case GAME_OVER:
 				//io::printfn("Game_Over State");
 
