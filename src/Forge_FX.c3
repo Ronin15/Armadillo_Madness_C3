@@ -92,7 +92,7 @@ struct Raindrop {
     float vel;
 }
 
-fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
+fn void forgeFXManager(MusicMap* mMap,SoundMap* sMap, String type, float deltaTime){
         String effect = type;
 
             if(effect == "rain"){ event = RAIN; rain = true;}
@@ -119,7 +119,9 @@ fn void forgeFXManager(MusicMap *mMap,String type, float deltaTime){
 
                     if (explode){
                          runExplosion(deltaTime);
-                        // rl::playSound(sMap.get("explosion")!!);
+                        if(!rl::isSoundPlaying(sMap.get("explosion")!!)){
+                            rl::playSound(sMap.get("explosion")!!);
+                        }
                     }
 
                    break;
