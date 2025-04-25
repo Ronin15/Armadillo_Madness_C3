@@ -106,6 +106,9 @@ fn int main(String[] args) {
 	float frameCounter;
 	float lastTime = (float)rl::getTime();
 
+	//load font
+	Font customFont = rl::loadFontEx("resources/fonts/west_test.ttf", 105, null, 250);
+
 	//windows window Icon
 	Image windowIcon = rl::loadImage("resources/images/ForgeEngine.png");
 	rl::setWindowIcon(windowIcon);
@@ -133,7 +136,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);//DEBUG
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
+	GameState state = MAIN;
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
 	  	float deltaTime = rl::getFrameTime();
@@ -177,7 +180,7 @@ fn int main(String[] args) {
 				rl::updateMusicStream(mMap.get("titleMusic")!!);
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("titlePage")!!, 0, 0, rl::WHITE);
-                rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
+                rl::drawTextEx(customFont, GAME_NAME, {((WINDOW_WIDTH / 2) - 700), 200}, 105, 2, rl::BLACK);
                 //rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", ((WINDOW_WIDTH / 2) - 250), 340, 40, rl::BLACK); buttons working.
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
