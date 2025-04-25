@@ -142,6 +142,8 @@ fn SoundMap loadSoundMap(){
     Sound cactusImpact = rl::loadSound("resources/sounds/cactus_impact.wav");
     Sound button = rl::loadSound("resources/sounds/button_click.wav");
     Sound explosion = rl::loadSound("resources/sounds/explosions.wav");
+    Sound playerDeath = rl::loadSound("resources/sounds/death.wav");
+    Sound gameOver = rl::loadSound("resources/sounds/game_over.wav");
     Sound levelComplete = rl::loadSound("resources/sounds/level_complete.wav");
 
     map.set("jump",jump);
@@ -164,6 +166,8 @@ fn SoundMap loadSoundMap(){
     map.set("button",button);
     map.set("explosion",explosion);
     map.set("levelComplete",levelComplete);
+    map.set("playerDeath",playerDeath);
+    map.set("gameOver",gameOver);
 
    return map;
 }

@@ -40,7 +40,7 @@ fn void resolveCollision(Construct* a, Construct* b, float deltaTime) {
                           break;
                           }
                       }
-            io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);//DEBUG
+            //io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);//DEBUG
             // Collision from above - bounce!
             a.pos.y = b.hitBox.y - a.hitBox.height;
             a.vel.y = -a.vel.y * playerBounce;
@@ -71,7 +71,7 @@ fn void resolveCollision(Construct* a, Construct* b, float deltaTime) {
                                 break;
                                 }
                             }
-                    io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);//DEBUG
+                   //io::printfn("%s -> vertical_hit -> %s !",a.name,b.name);//DEBUG
 
                 // Collision from below - bounce downward
                 a.pos.y = b.hitBox.y + b.hitBox.height - a.hitBox.height;
@@ -104,6 +104,6 @@ fn void resolveCollision(Construct* a, Construct* b, float deltaTime) {
                       break;
                   }
            }
-                io::printfn("%s -> Horizontal_hit -> %s !",a.name,b.name);//DEBUG
+                //io::printfn("%s -> Horizontal_hit -> %s !",a.name,b.name);//DEBUG
         }
 }

@@ -80,6 +80,9 @@ fn int main(String[] args) {
 	float scrollClouds = 0.0;
 	float lifeSpace = (float)tMap.get("lifeCount")!!.width + 5.0;
 
+	//soundfx managment
+	 bool soundPlayed = false;
+
 	//score
 	int score;
 
@@ -110,7 +113,7 @@ fn int main(String[] args) {
 	//volume manager - need to addtional volume control in options menu.
 	rl::setMasterVolume(MASTER_VOLUME);
 	String randSong = forge_game::getRandomSong();
-	Music song = mMap.get(randSong)!!;
+	Music song = mMap.get(randSong)!!; // song needed for music volume
 	rl::setMusicVolume(song,MUSIC_VOLUME);
 
 	//game objects init
@@ -130,8 +133,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);//DEBUG
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
-	rl::playSound(sMap.get("logoSound")!!);
+	GameState state = MAIN;
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
 	  	float deltaTime = rl::getFrameTime();
@@ -151,6 +153,7 @@ fn int main(String[] args) {
 
         	case LOGO:
                 rl::hideCursor();
+                if(!soundPlayed){rl::playSound(sMap.get("logoSound")!!); soundPlayed = true;};
 				rl::clearBackground(FORGE_GRAY);//Forge_Gray
 				rl::drawTexture(tMap.get("logo")!!, 800, 420, rl::WHITE);
 				rl::drawText("Hammer Forged Games", 580, 340, 60, FORGE_ORANGE);
@@ -163,6 +166,7 @@ fn int main(String[] args) {
 					if (frameCounter > 500) {
 							state = MAIN;
 							frameCounter = 0;
+							soundPlayed = false;
 					}
 
 			case MAIN:
@@ -205,7 +209,7 @@ fn int main(String[] args) {
         				constructs = forge_game::forgeConstructs(&tMap,"day");
         				constructs = forge_game::forgeConstructs(&tMap,"night");
         				randSong = forge_game::getRandomSong();
-        				song = mMap.get(randSong)!!;
+        				//song = mMap.get(randSong)!!;
                         gameReset = false;
                     //score = 0; need to zero score after its recorded
 					}
@@ -271,6 +275,7 @@ fn int main(String[] args) {
 
 				// Check for player death
 				if (playerUpdateResult == -1 && !inTransition) {
+				    rl::playSound(sMap.get("playerDeath")!!);
 					inTransition = true;
 					bossTransitionTimer = BOSS_TRANSITION_TIME;
 				}
@@ -474,6 +479,7 @@ fn int main(String[] args) {
 
 				// Check for player death
 				if (playerUpdateResult == -1 && !inTransition) {
+				    rl::playSound(sMap.get("playerDeath")!!);
 					inTransition = true;
 					bossTransitionTimer = BOSS_TRANSITION_TIME;
 				}
@@ -802,6 +808,7 @@ fn int main(String[] args) {
 				//rl::playMusicStream(mMap.get("gameOver")!!);
 				//rl::updateMusicStream(mMap.get("gameOver")!!);
 				rl::clearBackground(rl::BLACK);
+				if(!soundPlayed){rl::playSound(sMap.get("gameOver")!!); soundPlayed = true;};
 
 				// Background elements
 				//rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::BLACK);
@@ -817,6 +824,7 @@ fn int main(String[] args) {
 				// Additional instructions
 				rl::drawText("Press ENTER to try again", ((WINDOW_WIDTH / 2) - 300), 450, 40, rl::WHITE);
 
+
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
 					// Reset player,Bosses, Entities
 					player = forge_game::forgeCronstructPlayer(&tMap);
@@ -828,6 +836,7 @@ fn int main(String[] args) {
 					randSong = forge_game::getRandomSong();
 					song = mMap.get(randSong)!!;
 					state = MAIN;
+					soundPlayed = false;
 				}
 
 			case OPTIONS:

@@ -111,10 +111,8 @@ fn String getRandomSong(){
    String[*] playList = {"bicycle","banjo","banana"};
 
    int playListLength = playList.len -1;
-
    int min = 0;
    int max = playListLength;
-
    int randSong = rand_in_range(min,max);
 
    return playList[randSong];
@@ -313,10 +311,10 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
       //c.sound = sMap.get(c.name)!!;
       if (c.name == "cougar_boss"){
           c.pos = {2200,200};
-          c.lives = 20;
+          c.lives = 15;//20 hard
       }else{
           c.pos = {2200,280};
-          c.lives = 30;
+          c.lives = 25;//30 hard
       }
       c.hitBox = {c.pos.x,c.pos.y,ENTITY_HITBOX_WIDTH,ENTITY_HITBOX_HEIGHT};
       c.maxFrames = 2;
