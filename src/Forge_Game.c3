@@ -537,12 +537,16 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             // c.isProjectileActive = false;//debug
             if(c.hHit && !poopPenatrate){
                c.hHit = false;
+               if(!rl::isSoundPlaying(sMap.get("poopHit")!!)){
                rl::playSound(sMap.get("poopHit")!!);
+               }
                c.expired = true;
                c.isProjectileActive = false;
             }
              if (c.hHit && poopPenatrate){
-               rl::playSound(sMap.get("poopHit")!!);
+                if(!rl::isSoundPlaying(sMap.get("poopHit")!!)){
+                rl::playSound(sMap.get("poopHit")!!);
+                }
                c.expired = false;
                c.isProjectileActive = true;
                c.hHit = false;
@@ -685,20 +689,23 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
                      case "cactus":
 
-                        rl::playSound(sMap.get("cactusImpact")!!);
-
+                     if(!rl::isSoundPlaying(sMap.get("cactusImpact")!!)){
+                         rl::playSound(sMap.get("cactusImpact")!!);
+                         }
                      break;
 
                      case "tree":
 
-                        rl::playSound(sMap.get("cactusImpact")!!);
-
+                     if(!rl::isSoundPlaying(sMap.get("cactusImpact")!!)){
+                         rl::playSound(sMap.get("cactusImpact")!!);
+                        }
                      break;
 
                      case "boulder":
 
-                        rl::playSound(sMap.get("rockImpact")!!);
-
+                     if(!rl::isSoundPlaying(sMap.get("rockImpact")!!)){
+                         rl::playSound(sMap.get("rockImpact")!!);
+                        }
                      break;
                  }
          }

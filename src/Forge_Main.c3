@@ -301,6 +301,7 @@ fn int main(String[] args) {
 							if (dayBoss.isDead && !inTransition){
 									inTransition = true;
 									bossTransitionTimer = BOSS_TRANSITION_TIME;
+                                    rl::playSound(sMap.get("levelComplete")!!);
 							}
 
 							if (inTransition && dayBoss.isDead && !player.isDead) {
@@ -505,6 +506,7 @@ fn int main(String[] args) {
 							if (nightBoss.isDead && !inTransition){
 									inTransition = true;
 									bossTransitionTimer = BOSS_TRANSITION_TIME;
+									rl::playSound(sMap.get("levelComplete")!!);
 							}
 
 							if (inTransition && nightBoss.isDead && !player.isDead) {
@@ -933,7 +935,7 @@ fn int main(String[] args) {
 								}
 						}
 
-				//player not updated in demo because demo fucntions take over the update role.
+				forge_game::updateConstruct(&demoPlayer, &sMap, &tMap, raining, deltaTime);
 				//forge_game::updateConstruct(&poopShot,&sMap);
 
 				foreach ( &demoConstruct : demoConstructs){

@@ -22,7 +22,7 @@ fn void resolveCollision(Construct* a, Construct* b, float deltaTime) {
             b.vHit = true;
             if(b.name == "beatle" || b.name == "moth"){a.bHit = true; b.lives = 0;}
             if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.vHit = false; b.vHit = false;}
-            if(b.name == "tree"){a.vHit = false;}
+            //if(b.name == "tree"){a.vHit = false;}
             if(a.type == PLAYER && b.type == POWER_UP){
             a.vHit = false;
               switch (b.name){
@@ -53,7 +53,7 @@ fn void resolveCollision(Construct* a, Construct* b, float deltaTime) {
                     b.vHit = true;
                     if(b.name == "beatle" || b.name == "moth"){a.bHit = true; b.lives = 0;}
                     if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.vHit = false; b.vHit = false;}
-                    if(b.name == "tree"){a.vHit = false;}
+                    //if(b.name == "tree"){a.vHit = false;}
                     if(a.type == PLAYER && b.type == POWER_UP){
                     a.vHit = false;
                     switch (b.name){
