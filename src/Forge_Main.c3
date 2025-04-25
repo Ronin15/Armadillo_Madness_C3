@@ -18,7 +18,7 @@ const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const String GAME_NAME = "Armadillo Madness 0.8.5"; //ui update, options update, and almost all game states complete
+const String GAME_NAME = "Armadillo Madness 0.9.5"; //ui update, options update, and almost all game states complete
 const int MAX_CONSTRUCTS = 200;//100 - 200
 const int MAX_BOSS_CONSTRUCTS = 50;
 const int MAX_BOSS_POWER_UPS = 5;
@@ -31,7 +31,7 @@ const float BOSS_TRANSITION_TIME = 6.0; // Time in seconds to display transition
 
 //Hammer Forge Colors RGB
 const Color FORGE_GRAY = {31,32,34,255};
-const Color FORGE_ORANGE = {185,71,0,200};
+const Color FORGE_ORANGE = rl::ORANGE;
 
 //Entity Containers
 Construct[] constructs;
@@ -133,7 +133,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);//DEBUG
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = LOGO;
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
 	  	float deltaTime = rl::getFrameTime();
