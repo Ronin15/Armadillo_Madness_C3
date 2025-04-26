@@ -66,4 +66,4 @@ CREDITS:
 
 # Third-Party Assets: Various Licenses
 
-- See THIRD_PARTY_NOTICE.md
+- See third-party-notice.md
