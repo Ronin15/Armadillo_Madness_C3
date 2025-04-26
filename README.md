@@ -56,6 +56,8 @@ CREDITS:
 
     https://ansimuz.itch.io/
 
+    for individual accreditation see third-party-notice.md
+
 # Armadillo Madness Licensing
   - Dual Licensing Approach
   - Source Code: MIT License
