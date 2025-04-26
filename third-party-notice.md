@@ -7,22 +7,21 @@ Armadillo Madness includes certain third-party art, music, and sound effect asse
 The following assets are owned by third parties and are used in Armadillo Madness under their respective licenses:
 
 ### Third-Party Art Assets
-- [List specific art assets here with attribution]
-  - Example: Character sprites in `/assets/graphics/npc/` by Artist Name (license type)
-  - Example: Background textures in `/assets/graphics/environment/desert/` by Company Name (license type)
+  - Title Page (Main Menu) Background textures in `resources/images/Title_Page.png` Desert Dusk by Ansimuz
+  - https://ansimuz.itch.io/
 
 ### Third-Party Music
 
 - Title: Fast Feel Banana Peel by Alexander Nakarada
-    - Background music track in game location `resources/sounds/bananaPeel.mp3` 
+    - Background music track in game location `resources/sounds/bananaPeel.mp3`
     - URL:https://www.chosic.com/download-audio/28655/
     - Fast Feel Banana Peel by Alexander Nakarada | https://creatorchords.com
     - Music promoted on https://www.chosic.com/free-music/all/
     - Creative Commons Attribution 4.0 International (CC BY 4.0)
     - https://creativecommons.org/licenses/by/4.0/
- 
+
  - Title: Banjos, Unite! by Alexander Nakarada
-    - Background music track in game location `resources/sounds/banjos.mp3` 
+    - Background music track in game location `resources/sounds/banjos.mp3`
     - https://www.chosic.com/download-audio/28664/
     - Fast Feel Banana Peel by Alexander Nakarada | https://creatorchords.com
     - Music promoted on https://www.chosic.com/free-music/all/
@@ -35,9 +34,10 @@ The following assets are owned by third parties and are used in Armadillo Madnes
     -Comments: http://freemusicarchive.org/
 
 ### Third-Party Sound Effects
-- [List specific sound effects here with attribution]
-  - Example: Animal sounds in `/assets/audio/sfx/creatures/` from Sound Library Name (license type)
-  - Example: UI sound effects by Sound Designer Name (license type)
+  - All SFX are from Soundly SFX : Soundly - https://getsoundly.com/ except the below listed
+  - explosions.wav - rFXGenerator - Raylib Technologies https://raylibtech.itch.io/rfxgen
+  - Intro_song.wav - Zalia (c) Hammer Forged Games
+  - sfx are located in `resources/sounds/`*.wav files
 
 ## License Information
 
