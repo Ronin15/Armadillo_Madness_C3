@@ -1,3 +1,6 @@
+// Copyright (c) 2025 Hammer Forged Games
+// Licensed under the MIT License - see LICENSE file for details
+
 //Forge modules---------------------
 module forge_main;
 import forge_load;
