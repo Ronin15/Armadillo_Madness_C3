@@ -12,7 +12,7 @@ The following assets are owned by third parties and are used in Armadillo Madnes
 
 ### Third-Party Music
 
-- Title: Fast Feel Banana Peel by Alexander Nakarada
+- Title: "Fast Feel Banana Peel" by Alexander Nakarada
     - Background music track in game location `resources/sounds/bananaPeel.mp3`
     - URL:https://www.chosic.com/download-audio/28655/
     - Fast Feel Banana Peel by Alexander Nakarada | https://creatorchords.com
@@ -20,7 +20,7 @@ The following assets are owned by third parties and are used in Armadillo Madnes
     - Creative Commons Attribution 4.0 International (CC BY 4.0)
     - https://creativecommons.org/licenses/by/4.0/
 
- - Title: Banjos, Unite! by Alexander Nakarada
+- Title: "Banjos, Unite!" by Alexander Nakarada
     - Background music track in game location `resources/sounds/banjos.mp3`
     - https://www.chosic.com/download-audio/28664/
     - Fast Feel Banana Peel by Alexander Nakarada | https://creatorchords.com
@@ -28,16 +28,22 @@ The following assets are owned by third parties and are used in Armadillo Madnes
     - Creative Commons Attribution 4.0 International (CC BY 4.0)
     - https://creativecommons.org/licenses/by/4.0/
 
-- Title: Bicycle
+- Title: "Bicycle"
     -Background music track in game location `resources/sounds/game_loop.mp3`
+    -Author: Komiku
     -URL: http://freemusicarchive.org/music/Komiku/Poupis_incredible_adventures_/Komiku_-_Poupis_incredible_adventures__-_12_Bicycle
+    -Comments: http://freemusicarchive.org/
+
+- Title: "Travel to the Horizon"
+    -Background music track in game location `resources/sounds/night_lvl.mp3`
+    -Author: Komiku
+    -URL: http://freemusicarchive.org/music/Komiku/Poupis_incredible_adventures_/Komiku_-_Poupis_incredible_adventures__-_43_Travel_to_the_Horizon
     -Comments: http://freemusicarchive.org/
 
 ### Third-Party Sound Effects
   - All SFX are from Soundly SFX : Soundly - https://getsoundly.com/ except the below listed
   - explosions.wav - rFXGenerator - Raylib Technologies https://raylibtech.itch.io/rfxgen
-  - Intro_song.wav - Zalia (c) Hammer Forged Games
-  - sfx are located in `resources/sounds/`*.wav files
+  - sfx are located in `resources/sounds/`
 
 ## License Information
 
