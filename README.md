@@ -49,9 +49,21 @@ CREDITS:
     Music promoted by https://www.chosic.com/free-music/all/
 
     Artists : Komiku and Alexander Nakrada.
-    
+
     SFX : Soundly - https://getsoundly.com/
 
     Title Page - Desert Dusk
 
     https://ansimuz.itch.io/
+
+# Armadillo Madness Licensing
+  - Dual Licensing Approach
+  - Source Code: MIT License
+  - You can use, modify, and distribute the code See LICENSE file in repo
+  - Original Art Assets: Custom License
+  - art assets cannot be reused commercially
+  - See custom-art-license.md
+
+# Third-Party Assets: Various Licenses
+
+- See THIRD_PARTY_NOTICE.md
