@@ -31,7 +31,7 @@ const float BOSS_TRANSITION_TIME = 6.0; // Time in seconds to display transition
 
 //Hammer Forge Colors RGB
 const Color FORGE_GRAY = {31,32,34,255};
-const Color FORGE_ORANGE = rl::ORANGE;
+const Color FORGE_ORANGE = {186,65,14,255};
 
 //Entity Containers
 Construct[] constructs;
@@ -108,7 +108,7 @@ fn int main(String[] args) {
 
 	//load font
 	Font customFont = rl::loadFontEx("resources/fonts/west_test.ttf", 105, null, 250);
-
+	Font demoFont = rl::loadFontEx("resources/fonts/west_test.ttf", 65, null, 250);
 	//windows window Icon
 	Image windowIcon = rl::loadImage("resources/images/ForgeEngine.png");
 	rl::setWindowIcon(windowIcon);
@@ -121,7 +121,7 @@ fn int main(String[] args) {
 
 	//game objects init
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
-	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
+	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap,10000); //hack for demo player to not die
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap);
 	//Boss init TODO reset BOSSES after fight
 	Construct dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
@@ -136,7 +136,7 @@ fn int main(String[] args) {
 	io::printfn("Song selected: %s!", randSong);//DEBUG
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = LOGO;
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
 	  	float deltaTime = rl::getFrameTime();
@@ -159,7 +159,7 @@ fn int main(String[] args) {
                 if(!soundPlayed){rl::playSound(sMap.get("logoSound")!!); soundPlayed = true;};
 				rl::clearBackground(FORGE_GRAY);//Forge_Gray
 				rl::drawTexture(tMap.get("logo")!!, 800, 420, rl::WHITE);
-				rl::drawText("Hammer Forged Games", 580, 340, 60, FORGE_ORANGE);
+				rl::drawText("Hammer Forged Games", 580, 340, 60, rl::ORANGE);
 				rl::drawText("Made with", 800, 725, 20, rl::WHITE);
 				rl::drawTexture(tMap.get("raylib")!!, 920, 700, rl::WHITE);
 				rl::drawTexture(tMap.get("c3")!!, 990, 705, rl::WHITE);
@@ -396,41 +396,41 @@ fn int main(String[] args) {
 					rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
 				}
 
-			// Draw game over transition effect
-			if (inTransition && player.isDead) {
-				// Add a transparent overlay (darker for game over)
-				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(rl::BLACK, 0.6f));
-				// Display transition message
-				rl::drawText("GAME OVER", (WINDOW_WIDTH / 2) - 250, WINDOW_HEIGHT / 2 - 100, 80, rl::RED);
-				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 300, WINDOW_HEIGHT / 2, 60, rl::WHITE);
-				rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
-			}
+    			// Draw game over transition effect
+    			if (inTransition && player.isDead) {
+    				// Add a transparent overlay (darker for game over)
+    				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(rl::BLACK, 0.6f));
+    				// Display transition message
+    				rl::drawText("GAME OVER", (WINDOW_WIDTH / 2) - 250, WINDOW_HEIGHT / 2 - 100, 80, rl::RED);
+    				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 300, WINDOW_HEIGHT / 2, 60, rl::WHITE);
+    				rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
+    			}
 
-			//weather
-			if (!raining && weatherTimer <= 0.0){
-				raining = forge_game::randChanceCheck();
-			}
+    			//weather
+    			if (!raining && weatherTimer <= 0.0){
+    				raining = forge_game::randChanceCheck();
+    			}
 
-			if (raining && weatherTimer <= 0.0){
-				weatherTimer = 1250;
-			}
-			if (raining){
+    			if (raining && weatherTimer <= 0.0){
+    				weatherTimer = 1250;
+    			}
+    			if (raining){
 
-				forge_fx::forgeFXManager(&mMap, &sMap,"rain", deltaTime);
-				weatherTimer -=1;
-				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer); //debug
-			}
-			if(weatherTimer <= 0.0){
-				raining = false;
-			}
+    				forge_fx::forgeFXManager(&mMap, &sMap,"rain", deltaTime);
+    				weatherTimer -=1;
+    				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer); //debug
+    			}
+    			if(weatherTimer <= 0.0){
+    				raining = false;
+    			}
 
 			case NIGHTLVL:
 
-			if (!nightConstructs){
-			         io::printfn("init array");
-					//creating game entities
-					nightConstructs = forge_game::forgeConstructs(&tMap,"night");
-				}
+    			if (!nightConstructs){
+    			         io::printfn("init array");
+    					//creating game entities
+    					nightConstructs = forge_game::forgeConstructs(&tMap,"night");
+    			}
 				//nightBoss.active = true;//debug
 				night = true;
 				day = false;
@@ -953,7 +953,7 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
-				rl::drawText("Aramadillo Madness", (WINDOW_WIDTH / 2) - 355, 340, 65, FORGE_ORANGE); //Forge orange
+				rl::drawTextEx(demoFont, GAME_NAME, {((WINDOW_WIDTH / 2) - 500), 200}, 65, 2, FORGE_ORANGE); //Forge orange
 				forge_fx::drawLight(1815, 105, 300, rl::fade(rl::YELLOW, 0.7));
 				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
 				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));

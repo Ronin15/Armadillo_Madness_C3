@@ -264,7 +264,7 @@ fn Construct forgeCronstructProjectile(TexMap *tMap) {
       return c;
 }
 
-fn Construct forgeCronstructPlayer(TexMap *tMap) {
+fn Construct forgeCronstructPlayer(TexMap *tMap, int lives = 6) {
 
       Construct c;
 
@@ -274,7 +274,7 @@ fn Construct forgeCronstructPlayer(TexMap *tMap) {
       c.hitBox = {c.pos.x,c.pos.y,PLAYER_HITBOX_WIDTH,PLAYER_HITBOX_HEIGHT};
       c.texture = tMap.get(c.name)!!;
      // c.sound = sMap.get(c.name)!!;
-      c.lives = 6;
+      c.lives = lives;
       c.maxFrames = 2;
       c.gravity = GRAVITY;
       c.jumpVelocity = MOVE_VELOCITY;
