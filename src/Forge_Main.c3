@@ -10,6 +10,7 @@ import forge_fx;
 import forge_ai;
 import forge_ui;
 import forge_options;
+import forge_scores;
 //vendor modules-------------------
 import raylib5::rl;
 //C3 standard modules--------------
@@ -88,6 +89,7 @@ fn int main(String[] args) {
 
 	//score
 	int score;
+	String out_file = "HighScores.dat";
 
 	//weather
 	bool day = true;
