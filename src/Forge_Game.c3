@@ -141,11 +141,11 @@ fn bool randChanceCheck(){
 }
 
 fn String getRandomConstructName (ConstructType type, String array_type){
-   static int powerUpCount_day;// to track and restrict power up items to global const value
-   static int powerUpCount_demo;
-   static int powerUpCount_night;
-   static int powerUpCount_dayBoss;
-   static int powerUpCount_nightBoss;
+   static int powerUpCount_day = 0;// to track and restrict power up items to global const value
+   static int powerUpCount_demo = 0;
+   static int powerUpCount_night = 0;
+   static int powerUpCount_dayBoss = 0;
+   static int powerUpCount_nightBoss = 0;
 
    String[*] groundTypes = {"ant","turtle","snake","fox","scorpion","spider","mouse","cougar_boss"};
    String[*] flyingTypes = {"bird","beatle","owl","moth","alien_boss"};
@@ -314,7 +314,7 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
       //c.sound = sMap.get(c.name)!!;
       if (c.name == "cougar_boss"){
           c.pos = {2200,200};
-          c.lives = 15;//20 hard
+          c.lives = 20;//20 hard
       }else{
           c.pos = {2200,280};
           c.lives = 25;//30 hard

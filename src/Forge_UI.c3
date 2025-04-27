@@ -42,8 +42,8 @@ fn Button createButton(TexMap* tMap, SoundMap* sMap, int count) {
 }
 
 //customPos used for credits page buttom to move it out of the way.
-fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, Vector2 customPos = {0.0,0.0} ) {
-
+fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, bool gameReset = false, Vector2 customPos = {0.0,0.0} ) {
+    gameReset = gameReset;
     Vector2 mousePos;
     Rectangle bRect;
 
@@ -85,6 +85,7 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, Vector2 cu
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
                 b.currentFrame = 2;
+                gameReset = true;
                 state = GAME;
             }else if
                 (b.bhover) {

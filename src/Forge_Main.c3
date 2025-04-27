@@ -135,7 +135,7 @@ fn int main(String[] args) {
 		uiButtons[i] = forge_ui::createButton(&tMap, &sMap, count);
 	}
 
-	io::printfn("Objects created");//DEBUG
+	io::printfn("Initial Game Structures created");//DEBUG
 	io::printfn("Song selected: %s!", randSong);//DEBUG
 
     //set intial game state --- switch to LOGO for normal OP
@@ -167,7 +167,7 @@ fn int main(String[] args) {
 				rl::drawTexture(tMap.get("raylib")!!, 920, 700, rl::WHITE);
 				rl::drawTexture(tMap.get("c3")!!, 990, 705, rl::WHITE);
 				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
-				rl::drawText("*{}==[> Forge_Engine <]=={}*", 790, 790, 20, rl::LIGHTGRAY);
+				//rl::drawText("*{}==[> Forge_Engine <]=={}*", 790, 790, 20, rl::LIGHTGRAY);
 					frameCounter += 1;
 					if (frameCounter > 500) {
 							state = MAIN;
@@ -188,7 +188,7 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 				foreach (&mainButton : mainButtons){
-					state = forge_ui::updateButton(mainButton, &sMap, state);
+					state = forge_ui::updateButton(mainButton, &sMap, state, gameReset);
 				}
 				foreach (&mainButton : mainButtons){
 					forge_ui::drawButton(mainButton);
@@ -215,9 +215,9 @@ fn int main(String[] args) {
         				constructs = forge_game::forgeConstructs(&tMap,"day");
         				constructs = forge_game::forgeConstructs(&tMap,"night");
         				randSong = forge_game::getRandomSong();
-        				//song = mMap.get(randSong)!!;
+        				song = mMap.get(randSong)!!;
                         gameReset = false;
-                    //score = 0; need to zero score after its recorded
+                        //score = 0; need to zero score after its recorded
 					}
 
 			case GAME:
@@ -389,20 +389,19 @@ fn int main(String[] args) {
 
 				// Draw transition effect if boss is dead
 				if (inTransition && dayBoss.isDead) {
-
-					forge_fx::forgeFXManager(&mMap, &sMap,"explode", deltaTime);
 					// Add a transparent overlay
-					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.4f));
+					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.3f));
 					// Display transition message
 					rl::drawText("VICTORY!", (WINDOW_WIDTH / 2) - 200, WINDOW_HEIGHT / 2 - 100, 80, FORGE_ORANGE);
 					rl::drawText("PREPARING NIGHT LEVEL...", (WINDOW_WIDTH / 2) - 400, WINDOW_HEIGHT / 2, 60, rl::WHITE);
 					rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
+					forge_fx::forgeFXManager(&mMap, &sMap,"explode", deltaTime);
 				}
 
     			// Draw game over transition effect
     			if (inTransition && player.isDead) {
     				// Add a transparent overlay (darker for game over)
-    				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(rl::BLACK, 0.6f));
+    				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(rl::BLACK, 0.5f));
     				// Display transition message
     				rl::drawText("GAME OVER", (WINDOW_WIDTH / 2) - 250, WINDOW_HEIGHT / 2 - 100, 80, rl::RED);
     				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 300, WINDOW_HEIGHT / 2, 60, rl::WHITE);
@@ -594,19 +593,20 @@ fn int main(String[] args) {
 
 				// Draw transition effect if night boss is dead
 				if (inTransition && nightBoss.isDead) {
-				    forge_fx::forgeFXManager(&mMap, &sMap,"explode", deltaTime);
+
 					// Add a transparent overlay
-					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.4f));
+					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.3f));
 					// Display transition message
 					rl::drawText("FINAL VICTORY!", (WINDOW_WIDTH / 2) - 280, WINDOW_HEIGHT / 2 - 100, 80, FORGE_ORANGE);
 					rl::drawText("YOU HAVE CONQUERED THE NIGHT!", (WINDOW_WIDTH / 2) - 520, WINDOW_HEIGHT / 2, 60, rl::WHITE);
 					rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
+					forge_fx::forgeFXManager(&mMap, &sMap,"explode", deltaTime);
 				}
 
 				// Draw game over transition effect
 				if (inTransition && player.isDead) {
 					// Add a transparent overlay (darker for game over)
-					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(rl::BLACK, 0.6f));
+					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(rl::BLACK, 0.5f));
 					// Display transition message
 					rl::drawText("GAME OVER", (WINDOW_WIDTH / 2) - 250, WINDOW_HEIGHT / 2 - 100, 80, rl::RED);
 					rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 300, WINDOW_HEIGHT / 2, 60, rl::WHITE);
@@ -633,10 +633,6 @@ fn int main(String[] args) {
 			}
 
 			case PAUSE:
-                 //slicing out Pause ui buttons.
-			     Button[] pauseButtons = uiButtons[4..6];
-				 Button optionButton = uiButtons[1];
-			     rl::showCursor();
 
 				if (rl::isKeyPressed(rl::KEY_P)){
 					if (day){state = GAME;}
@@ -646,6 +642,14 @@ fn int main(String[] args) {
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
 				    state = MAIN;
 					//clean all assetes needed here to fully reset
+					player = forge_game::forgeCronstructPlayer(&tMap);
+    				dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
+    				nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
+    				constructs = forge_game::forgeConstructs(&tMap,"day");
+    				constructs = forge_game::forgeConstructs(&tMap,"night");
+    				randSong = forge_game::getRandomSong();
+    				song = mMap.get(randSong)!!;
+                    score = 0;
 				}
 				if (day){
 
@@ -688,14 +692,8 @@ fn int main(String[] args) {
        					    }
         				}
         				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
-
-							foreach (&pauseButton : pauseButtons){
-							state = forge_ui::updateButton(pauseButton, &sMap, state);
-							}
-							foreach (&pauseButton : pauseButtons){
-							forge_ui::drawButton(pauseButton);
-							}
-        				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
+                        //button update stuff would go here
+                        rl::drawText("! * GAME PAUSED * ! [-> ESCAPE key to quit. P key to RESUME. ENTER key to restart <-]", 180, 380, 30, rl::RAYWHITE);
 
 						if(dayBoss.active){
 							forge_game::drawAnimatedConstruct(&dayBoss);
@@ -753,26 +751,23 @@ fn int main(String[] args) {
         				}
         				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
 
-							foreach (&pauseButton : pauseButtons){
-							state =	forge_ui::updateButton(pauseButton, &sMap, state);
-								}
-							foreach (&pauseButton : pauseButtons){
-								forge_ui::drawButton(pauseButton);
-								}
-         				rl::drawText("Are you sure you want to exit the Game? [ ESC Yes / P key RESUME / ENTER to restart]", 180, 380, 30, rl::RAYWHITE);
-				if(nightBoss.active){
-					forge_game::drawAnimatedConstruct(&nightBoss);
-					//dayboss life bar
-					rl::drawRectangle(5, 195, 325, 40, FORGE_GRAY);
-					rl::drawText("MAD Alien Visage", 20, 200, 35, rl::RED);
-					if (&nightBoss.lives == &nightBoss.lives){
-						for (int i = 0; i < nightBoss.lives; i++){
-							Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 300};
-							rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
-						}
-					}
-				}
-            }
+						//button update stuff here.
+						rl::drawText("! * GAME PAUSED * ! [-> ESCAPE key to quit. P key to RESUME. ENTER key to restart <-]", 180, 380, 30, rl::RAYWHITE);
+
+						if(nightBoss.active){
+       					    forge_game::drawAnimatedConstruct(&nightBoss);
+           					//dayboss life bar
+           					rl::drawRectangle(5, 195, 325, 40, FORGE_GRAY);
+           					rl::drawText("MAD Alien Visage", 20, 200, 35, rl::RED);
+    					if (&nightBoss.lives == &nightBoss.lives){
+    						for (int i = 0; i < nightBoss.lives; i++){
+      				            Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 300};
+        				        rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
+
+                            }
+                        }
+                    }
+                }
 
 			case GAME_WIN:
 				//TODO still needs more work but framework is there, needs art animations, music.
@@ -782,11 +777,9 @@ fn int main(String[] args) {
 				rl::playMusicStream(mMap.get("gameWin")!!);
 				rl::updateMusicStream(mMap.get("gameWin")!!);
 				rl::clearBackground(rl::BLACK);
-                //rl::drawTexture(tmap.get("creditsPage")!!, 0, 0, rl::WHITE);
 
-					state = forge_ui::updateButton(&gameWinButton, &sMap, state, {10,10});
-
-					forge_ui::drawButton(&gameWinButton);
+				state = forge_ui::updateButton(&gameWinButton, &sMap, state, gameReset, {10,10});
+				forge_ui::drawButton(&gameWinButton);
 
 				forge_fx::drawRainbow();
 				forge_fx::forgeFXManager(&mMap, &sMap,"fireworks",deltaTime);
@@ -812,17 +805,18 @@ fn int main(String[] args) {
 
 				// Just using menu button
 				//Button menuButton = uiButtons[4];
-				rl::showCursor();
+				//rl::showCursor();
 				//rl::playMusicStream(mMap.get("gameOver")!!);
 				//rl::updateMusicStream(mMap.get("gameOver")!!);
 				rl::clearBackground(rl::BLACK);
 				if(!soundPlayed){rl::playSound(sMap.get("gameOver")!!); soundPlayed = true;};
 
 				// Background elements
-				//rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::BLACK);
+				rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
+				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.8f));
 
 				// Game over text
-				rl::drawText("GAME OVER", ((WINDOW_WIDTH / 2) - 300), 200, 105, rl::RED);
+				rl::drawText("! * GAME OVER * !", ((WINDOW_WIDTH / 2) - 500), 200, 105, rl::RED);
 				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 350), 350, 60, rl::WHITE);
 
 				// Menu button handling
@@ -830,7 +824,7 @@ fn int main(String[] args) {
 				//forge_ui::drawButton(&menuButton);
 
 				// Additional instructions
-				rl::drawText("Press ENTER to try again", ((WINDOW_WIDTH / 2) - 300), 450, 40, rl::WHITE);
+				rl::drawText("Press ENTER to try again!", ((WINDOW_WIDTH / 2) - 300), 450, 40, rl::WHITE);
 
 
 				if (rl::isKeyPressed(rl::KEY_ENTER)){
@@ -867,7 +861,7 @@ fn int main(String[] args) {
 
 				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				//rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
-				state = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
+				state = forge_ui::updateButton(&menuButton, &sMap, state, gameReset, {10,10});
 				forge_ui::drawButton(&menuButton);
 
 				//update master volume, music volume.
@@ -985,7 +979,7 @@ fn int main(String[] args) {
 				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				//rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 
-					state = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
+					state = forge_ui::updateButton(&menuButton, &sMap, state, gameReset, {10,10});
 
 
 					forge_ui::drawButton(&menuButton);
