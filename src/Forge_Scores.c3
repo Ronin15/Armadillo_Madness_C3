@@ -198,3 +198,24 @@ fn void draw_high_scores() {
     // Draw instructions
     rl::drawText("PRESS ENTER TO RETURN TO MAIN MENU", (rl::getScreenWidth() / 2) - 300, 650, 20, rl::LIGHTGRAY);
 }
+
+fn char[]? load_file(String filename){
+    File fh = file::open(filename, "rb")!;
+    defer (void)fh.close();
+
+    usz len = fh.seek(0, END)!;
+	    fh.seek(0, SET)!;
+
+		char* buffer = malloc(len);
+		usz read = fh.read(buffer[:len])!;
+
+		return buffer[:len];
+}
+
+fn void? save_file(String filename, char[] data)
+{
+	File fh = file::open(filename, "wb")!;
+	defer (void)fh.close();
+
+	fh.write(data)!;
+}

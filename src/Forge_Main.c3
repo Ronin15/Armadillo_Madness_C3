@@ -92,7 +92,6 @@ fn int main(String[] args) {
 
 	//score
 	int score;
-	String out_file = "HighScores.dat";
 
 	//weather
 	bool day = true;
