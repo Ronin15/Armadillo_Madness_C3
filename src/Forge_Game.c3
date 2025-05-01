@@ -236,7 +236,7 @@ fn String getRandomConstructName (ConstructType type, String array_type){
             }
       }
 
-      io::printfn("No Type Found! %s",type);
+      //io::printfn("No Type Found! %s",type);
       return "default"; // TO DO ADD DEFAULT TEX
    }
 
@@ -281,7 +281,7 @@ fn Construct forgeCronstructPlayer(TexMap *tMap, int lives = 6) {
       c.hitBox = {c.pos.x,c.pos.y,PLAYER_HITBOX_WIDTH,PLAYER_HITBOX_HEIGHT};
       c.texture = tMap.get(c.name)!!;
      // c.sound = sMap.get(c.name)!!;
-      c.lives = lives;
+      c.lives = 1;
       c.maxFrames = 2;
       c.gravity = GRAVITY;
       c.jumpVelocity = MOVE_VELOCITY;
@@ -387,7 +387,7 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
     constructs[i].vHit = false;
     constructs[i].anim = false;
 
-    io::printfn("name -> %s  type -> %s  texture -> %s",constructs[i].name,constructs[i].type,constructs[i].texture);
+    //io::printfn("name -> %s  type -> %s  texture -> %s",constructs[i].name,constructs[i].type,constructs[i].texture);
    }
 
     return constructs;

@@ -1025,7 +1025,7 @@ fn int main(String[] args) {
 				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)) {
 					// Return to main menu
 					state = MAIN;
-					gameReset = false;
+					gameReset = true;
 				}
 				break;
 
