@@ -196,7 +196,7 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("titlePage")!!, 0, 0, rl::WHITE);
                 rl::drawTextEx(customFont, GAME_NAME, {((WINDOW_WIDTH / 2) - 700), 200}, 105, 2, rl::BLACK);
-                rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", ((WINDOW_WIDTH / 2) - 250), 340, 40, rl::BLACK); //buttons working.
+                //rl::drawText("Press ENTER to Start !   or ESC to close :)", ((WINDOW_WIDTH / 2) - 250), 340, 40, rl::BLACK); //buttons working.
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 				foreach (&mainButton : mainButtons){
