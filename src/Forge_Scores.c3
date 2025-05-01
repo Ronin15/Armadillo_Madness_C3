@@ -1,5 +1,7 @@
-// Copyright (c) 2025 Hammer Forged Games
-// Licensed under the MIT License - see LICENSE file for details
+/* Copyright (c) 2025 Hammer Forged Games
+ * All rights reserved.
+ * Licensed under the MIT License - see LICENSE file for details
+*/
 
 module forge_scores;
 import std::io;
@@ -28,7 +30,7 @@ fn void init_high_scores() {
         highScores[i].initials[2] = 'A';
         highScores[i].score = 0;
     }
-    
+
     // Simplest implementation without file access
     io::printfn("High scores initialized with defaults");
     highScoresInitialized = true;
@@ -176,11 +178,11 @@ fn void draw_high_scores() {
         int yPos = 200 + (i * 40);
 
         // Format initials as a string
-        char[4] initialsStr = { 
+        char[4] initialsStr = {
             highScores[i].initials[0],
-            highScores[i].initials[1], 
-            highScores[i].initials[2], 
-            '\0' 
+            highScores[i].initials[1],
+            highScores[i].initials[2],
+            '\0'
         };
 
         // Draw rank

@@ -1,5 +1,7 @@
-// Copyright (c) 2025 Hammer Forged Games
-// Licensed under the MIT License - see LICENSE file for details
+/* Copyright (c) 2025 Hammer Forged Games
+ * All rights reserved.
+ * Licensed under the MIT License - see LICENSE file for details
+*/
 
 module forge_ui;
 import forge_main;
@@ -113,7 +115,7 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, bool gameR
                 b.currentFrame = 1;
             }
             return state;
-            
+
         case "highScoreButton":
 
             if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
