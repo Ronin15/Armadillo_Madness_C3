@@ -24,12 +24,13 @@ HighScore[MAX_HIGH_SCORES] highScores;
 bool highScoresInitialized = false;
 
 // Initialize high scores from file or set default values
+// Reads from a text-based .dat file with format: AAA,1000 (one entry per line)
 fn void init_high_scores() {
     // Initialize with default values
     init_defaults();
 
     // Attempt to load high scores from file
-    String highScoreFile = "resources/scores/highscores.txt";
+    String highScoreFile = "resources/scores/highscores.dat";
     char[] fileData = {};
     bool loaded = load_file(highScoreFile, &fileData);
 
@@ -134,7 +135,8 @@ fn void init_high_scores() {
     highScoresInitialized = true;
 }
 
-// Save high scores to a text file
+// Save high scores to a text-based .dat file
+// Format: AAA,1000 (one entry per line)
 fn bool save_high_scores() {
     // Ensure the directory exists
     ensure_scores_directory();
@@ -197,7 +199,7 @@ fn bool save_high_scores() {
     buffer = buffer[:pos];
 
     // Save the buffer to a file
-    String highScoreFile = "resources/scores/highscores.txt";
+    String highScoreFile = "resources/scores/highscores.dat";
 
     // Attempt to save to file
     bool result = save_file(highScoreFile, buffer);
