@@ -27,7 +27,7 @@ const int MAX_CONSTRUCTS = 200;//100 - 200
 const int MAX_BOSS_CONSTRUCTS = 50;
 const int MAX_BOSS_POWER_UPS = 5;
 const int MAX_POWERUPS = 15;//6
-const int MAX_BUTTONS = 7;
+const int MAX_BUTTONS = 8;
 const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
 const int BOSS_TIMER = 13700;
@@ -55,6 +55,7 @@ enum GameState {
 	GAME_OVER,
 	CREDITS,
 	DEMO,
+	HIGH_SCORE,
 }
 
 fn int main(String[] args) {
@@ -161,7 +162,7 @@ fn int main(String[] args) {
 
         	case LOGO:
                 rl::hideCursor();
-                if(!soundPlayed){rl::playSound(sMap.get("logoSound")!!); soundPlayed = true;};
+                if(!soundPlayed){rl::playSound(sMap.get("logoSound")!!); soundPlayed = true;}
 				rl::clearBackground(FORGE_GRAY);//Forge_Gray
 				rl::drawTexture(tMap.get("logo")!!, 800, 420, rl::WHITE);
 				rl::drawText("Hammer Forged Games", 580, 340, 60, rl::ORANGE);
@@ -176,10 +177,11 @@ fn int main(String[] args) {
 							frameCounter = 0;
 							soundPlayed = false;
 					}
+					break;
 
 			case MAIN:
 				//slicing out Main ui buttons
-				Button[] mainButtons = uiButtons[0..3];
+				Button[] mainButtons = uiButtons[0..4];
 				rl::showCursor();
 				rl::playMusicStream(mMap.get("titleMusic")!!);
 				rl::updateMusicStream(mMap.get("titleMusic")!!);
@@ -205,6 +207,7 @@ fn int main(String[] args) {
     				}
 
 					frameCounter += 1;
+
 					if (frameCounter > 800) { //800 for testing
 					        state = DEMO;
 							frameCounter = 0;
@@ -780,6 +783,18 @@ fn int main(String[] args) {
 				rl::updateMusicStream(mMap.get("gameWin")!!);
 				rl::clearBackground(rl::BLACK);
 
+				// Check if this is a high score and we need to save it
+				if (gameReset && forge_scores::is_high_score(score)) {
+					// Get player initials
+					char[forge_scores::MAX_INITIALS_LENGTH] initials = forge_scores::get_player_initials();
+					// Save the high score
+					forge_scores::add_high_score(initials, score);
+					// Go to high score display
+					state = HIGH_SCORE;
+					gameReset = false;
+				}
+
+
 				state = forge_ui::updateButton(&gameWinButton, &sMap, state, gameReset, {10,10});
 				forge_ui::drawButton(&gameWinButton);
 
@@ -790,6 +805,7 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 815}, 0.0, 3.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 700), 150, 105, {185,71,0,200});
+				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 350), 300, 60, rl::WHITE);
 
 				if (gameReset){
     				player = forge_game::forgeCronstructPlayer(&tMap);
@@ -802,6 +818,7 @@ fn int main(String[] args) {
                     gameReset = false;
                     //score = 0; need to zero score after its recorded
 				}
+				break;
 			case GAME_OVER:
 				//io::printfn("Game_Over State");
 
@@ -812,6 +829,18 @@ fn int main(String[] args) {
 				//rl::updateMusicStream(mMap.get("gameOver")!!);
 				rl::clearBackground(rl::BLACK);
 				if(!soundPlayed){rl::playSound(sMap.get("gameOver")!!); soundPlayed = true;};
+
+				// Check if this is a high score and we need to save it
+				if (!gameReset && forge_scores::is_high_score(score)) {
+					// Get player initials
+					char[forge_scores::MAX_INITIALS_LENGTH] initials = forge_scores::get_player_initials();
+					// Save the high score
+					forge_scores::add_high_score(initials, score);
+					// Go to high score display
+					state = HIGH_SCORE;
+					gameReset = true;
+					soundPlayed = false;
+				}
 
 				// Background elements
 				rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
@@ -841,7 +870,9 @@ fn int main(String[] args) {
 					song = mMap.get(randSong)!!;
 					state = MAIN;
 					soundPlayed = false;
+					gameReset = true;
 				}
+				break;
 
 			case OPTIONS:
 
@@ -871,7 +902,24 @@ fn int main(String[] args) {
 				//draw Options
 				forge_options::drawOptions();
 
+			case HIGH_SCORE:
+				// Render the high scores
+				rl::showCursor();
 
+				// Draw background
+				rl::clearBackground(rl::BLACK);
+				rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
+				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.7f));
+
+				// Draw high scores
+				forge_scores::draw_high_scores();
+
+				if (rl::isKeyPressed(rl::KEY_ENTER)) {
+					// Return to main menu
+					state = MAIN;
+					gameReset = false;
+				}
+				break;
 
 			case DEMO:
 

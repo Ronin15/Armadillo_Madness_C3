@@ -21,7 +21,7 @@ struct Button {
 fn Button createButton(TexMap* tMap, SoundMap* sMap, int count) {
 
     static int spacing = 0;
-    String[7] buttons = {"playButton","optionsButton","quitButton","creditsButton","menuButton","restartButton","resumeButton"};
+    String[8] buttons = {"playButton","optionsButton","highScoreButton","quitButton","creditsButton","menuButton","restartButton","resumeButton"};
 
     Button b;
 
@@ -105,6 +105,22 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, bool gameR
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
                 state = OPTIONS;
+            }else if (b.bhover) {
+                rl::playSound(sMap.get("button")!!);
+                b.currentFrame = 2;
+            } else {
+                b.bClicked = false;
+                b.currentFrame = 1;
+            }
+            return state;
+            
+        case "highScoreButton":
+
+            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+                b.bClicked = true;
+                rl::playSound(sMap.get("button")!!);
+                io::printfn("Button: %s -> Cicked! ",b.name);
+                state = HIGH_SCORE;
             }else if (b.bhover) {
                 rl::playSound(sMap.get("button")!!);
                 b.currentFrame = 2;
