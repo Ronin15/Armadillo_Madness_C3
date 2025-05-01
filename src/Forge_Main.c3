@@ -13,6 +13,7 @@ import forge_ai;
 import forge_ui;
 import forge_options;
 import forge_scores;
+import forge_controller;
 //vendor modules-------------------
 import raylib5::rl;
 //C3 standard modules--------------
@@ -102,7 +103,7 @@ fn int main(String[] args) {
 	//transition between states and misc
 	float bossTransitionTimer = 0.0;
 	bool inTransition = false;
-	bool gameReset = true;
+	bool gameReset = false;
 
 	//demo time counters
 	float demoCounter1;
@@ -141,6 +142,13 @@ fn int main(String[] args) {
 
 	io::printfn("Initial Game Structures created");//DEBUG
 	io::printfn("Song selected: %s!", randSong);//DEBUG
+	// Initialize controller support
+	forge_controller::init_controllers();
+
+	// If no controllers were detected, try alternative method as a fallback
+	if (!forge_controller::controllersDetected) {
+	    forge_controller::force_controller_init();
+	}
 
     //set intial game state --- switch to LOGO for normal OP
 	GameState state = LOGO;
@@ -171,7 +179,6 @@ fn int main(String[] args) {
 				rl::drawTexture(tMap.get("raylib")!!, 920, 700, rl::WHITE);
 				rl::drawTexture(tMap.get("c3")!!, 990, 705, rl::WHITE);
 				rl::drawTextureEx(tMap.get("forge")!!, {880, 820}, 0.0, 0.8, rl::WHITE);
-				//rl::drawText("*{}==[> Forge_Engine <]=={}*", 790, 790, 20, rl::LIGHTGRAY);
 					frameCounter += 1;
 					if (frameCounter > 500) {
 							state = MAIN;
@@ -189,7 +196,7 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("titlePage")!!, 0, 0, rl::WHITE);
                 rl::drawTextEx(customFont, GAME_NAME, {((WINDOW_WIDTH / 2) - 700), 200}, 105, 2, rl::BLACK);
-                //rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", ((WINDOW_WIDTH / 2) - 250), 340, 40, rl::BLACK); buttons working.
+                rl::drawText("Press ENTER to Start !\n\n\n   or ESC to close :)", ((WINDOW_WIDTH / 2) - 250), 340, 40, rl::BLACK); //buttons working.
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 				foreach (&mainButton : mainButtons){
@@ -201,7 +208,7 @@ fn int main(String[] args) {
 				forge_fx::fireEffect(deltaTime);
 				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);
 
-				 	if (rl::isKeyPressed(rl::KEY_ENTER)){
+				 	if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
 						 constructs = forge_game::forgeConstructs(&tMap,"day");
        					 state = GAME;
                          gameReset = true;
@@ -249,11 +256,58 @@ fn int main(String[] args) {
 				if(scrollGround <= - WINDOW_WIDTH) {scrollGround = 0;}
 
 		  		//update input and check events -----------------------------------------------------------------------------------
-		  		if (rl::isKeyPressed(rl::KEY_P)){
+		  		if (rl::isKeyPressed(rl::KEY_P) || forge_controller::is_button_pressed(rl::GamepadButton.MIDDLE_RIGHT.ordinal)){
 		  			state = PAUSE;
 		  			rl::playSound(sMap.get("pause")!!);
 		  		}
+				/* DEBUG
+		  		// Toggle controller debug with F1 key
+		  		if (rl::isKeyPressed(rl::KEY_F1)) {
+		  		    forge_controller::toggle_debug();
+		  		}
 
+		  		// Toggle raw controller detection with F2 key
+		  		if (rl::isKeyPressed(rl::KEY_F2)) {
+		  		    forge_controller::check_raw_buttons();
+		  		}
+
+		  		// Check for newly connected controllers every 5 seconds (300 frames at 60 FPS)
+		  		if (frameCounter % 300 == 0) {
+		  		    forge_controller::check_for_new_controllers();
+		  		}
+
+		  		// DEBUG: Check for any controller button press if debugging enabled
+		  		if (forge_controller::any_button_pressed()) {
+		  		    // Print detailed controller state when any button is pressed
+		  		    forge_controller::debug_controller_state();
+		  		}
+
+		  		// DEBUG: Every 300 frames, print controller state if debugging enabled
+		  		if (frameCounter % 300 == 0 && forge_controller::debugEnabled) {
+		  		    forge_controller::debug_controller_state();
+		  		}
+
+		  		// Toggle controller debug with F1 key
+		  		if (rl::isKeyPressed(rl::KEY_F1)) {
+		  		    forge_controller::toggle_debug();
+		  		}
+
+		  		// DEBUG: Check for any controller button press if debugging enabled
+		  		if (forge_controller::any_button_pressed()) {
+		  		    // Print detailed controller state when any button is pressed
+		  		    forge_controller::debug_controller_state();
+		  		}
+
+		  		// DEBUG: Every 300 frames, print controller state if debugging enabled
+		  		if (frameCounter % 300 == 0 && forge_controller::debugEnabled) {
+		  		    forge_controller::debug_controller_state();
+		  		}
+
+		  		// DEBUG: Every 300 frames, print controller state if debugging enabled
+		  		if (frameCounter % 300 == 0 && forge_controller::debugEnabled) {
+		  		    forge_controller::debug_controller_state();
+		  		}
+				*/
 					//check Collisions
 
 					foreach ( &construct : constructs){
@@ -284,6 +338,14 @@ fn int main(String[] args) {
 				//update game logic-------------------------------------------------------------------------------
 				frameCounter +=1;
 				int playerUpdateResult = forge_game::updateConstruct(&player, &sMap, &tMap, raining, deltaTime);
+
+                // Check if player requested to shoot poop
+                if (player.shootRequested) {
+                    poopShot.isProjectileActive = true;
+                    poopShot.expired = false;
+                    rl::playSound(sMap.get("poop")!!);
+                    player.shootRequested = false; // Reset the flag
+                }
 
 				// Check for player death
 				if (playerUpdateResult == -1 && !inTransition) {
@@ -355,6 +417,19 @@ fn int main(String[] args) {
 				rl::drawRectangle(5, 5, 400, 200, {0,0,0,150});
 				rl::drawText(rl::textFormat("Score: %08i", score), 15, 20, 40, rl::RAYWHITE);
 				rl::drawText("Health", 16, 60, 35, rl::RAYWHITE);
+
+				/* DEBUG
+				// Show controller status
+				if (forge_controller::controllersDetected) {
+				    rl::drawText(rl::textFormat("Controller: %s (#%d)", rl::getGamepadName(forge_controller::activeController),
+				                              forge_controller::activeController), 15, 300, 18, rl::GREEN);
+				    rl::drawText("Press F1 for controller debug", 15, 250, 15, rl::GREEN);
+				} else {
+				    rl::drawText("No controller detected", 15, 95, 18, rl::GREEN);
+				    rl::drawText("Press F2 to check for controllers", 15, 200, 15, rl::GREEN);
+				}
+				*/
+
 				//life tracking updating
 				if (&player.lives == &player.lives){
 					for (int i = 0; i < player.lives; i++){
@@ -455,7 +530,7 @@ fn int main(String[] args) {
 				if(scrollGround <= - WINDOW_WIDTH) {scrollGround = 0;}
 
 		  		//update input and check events -----------------------------------------------------------------------------------
-		  		if (rl::isKeyPressed(rl::KEY_P)){
+		  		if (rl::isKeyPressed(rl::KEY_P) || forge_controller::is_button_pressed(rl::GamepadButton.MIDDLE_RIGHT.ordinal)){
 		  			state = PAUSE;
 		  			rl::playSound(sMap.get("pause")!!);
 		  		}
@@ -488,6 +563,14 @@ fn int main(String[] args) {
 				//update game logic-------------------------------------------------------------------------------
 				frameCounter +=1;
 				int playerUpdateResult = forge_game::updateConstruct(&player, &sMap, &tMap, raining, deltaTime);
+
+                // Check if player requested to shoot poop
+                if (player.shootRequested) {
+                    poopShot.isProjectileActive = true;
+                    poopShot.expired = false;
+                    rl::playSound(sMap.get("poop")!!);
+                    player.shootRequested = false; // Reset the flag
+                }
 
 				// Check for player death
 				if (playerUpdateResult == -1 && !inTransition) {
@@ -559,6 +642,19 @@ fn int main(String[] args) {
 				rl::drawRectangle(5, 5, 400, 200, {0,0,0,150});
 				rl::drawText(rl::textFormat("Score: %08i", score), 15, 20, 40, rl::RAYWHITE);
 				rl::drawText("Health", 16, 60, 35, rl::RAYWHITE);
+
+				/* DEBUG
+				// Show controller status
+				if (forge_controller::controllersDetected) {
+				    rl::drawText(rl::textFormat("Controller: %s (#%d)", rl::getGamepadName(forge_controller::activeController),
+				                              forge_controller::activeController), 15, 300, 18, rl::GREEN);
+				    rl::drawText("Press F1 for controller debug", 15, 250, 15, rl::GREEN);
+				} else {
+				    rl::drawText("No controller detected", 15, 95, 18, rl::GREEN);
+				    rl::drawText("Press F2 to check for controllers", 15, 200, 15, rl::GREEN);
+				}
+				*/
+
 				//life tracking updating
 				if (&player.lives == &player.lives){
 					for (int i = 0; i < player.lives; i++){
@@ -640,12 +736,12 @@ fn int main(String[] args) {
 
 			case PAUSE:
 
-				if (rl::isKeyPressed(rl::KEY_P)){
+				if (rl::isKeyPressed(rl::KEY_P) || forge_controller::is_button_pressed(rl::GamepadButton.MIDDLE_RIGHT.ordinal)){
 					if (day){state = GAME;}
 					if (night){state = NIGHTLVL;}
 					rl::playSound(sMap.get("unpause")!!);
 				}
-				if (rl::isKeyPressed(rl::KEY_ENTER)){
+				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_LEFT.ordinal)){
 				    state = MAIN;
 					//clean all assetes needed here to fully reset
 					player = forge_game::forgeCronstructPlayer(&tMap);
@@ -700,6 +796,10 @@ fn int main(String[] args) {
         				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
                         //button update stuff would go here
                         rl::drawText("! * GAME PAUSED * ! [-> ESCAPE key to quit. P key to RESUME. ENTER key to restart <-]", 180, 380, 30, rl::RAYWHITE);
+                        // Show controller info if available
+                        if (forge_controller::controllersDetected) {
+                            rl::drawText("Controller: START to resume, B to restart", 530, 420, 30, rl::RAYWHITE);
+                        }
 
 						if(dayBoss.active){
 							forge_game::drawAnimatedConstruct(&dayBoss);
@@ -856,10 +956,10 @@ fn int main(String[] args) {
 				//forge_ui::drawButton(&menuButton);
 
 				// Additional instructions
-				rl::drawText("Press ENTER to try again!", ((WINDOW_WIDTH / 2) - 300), 450, 40, rl::WHITE);
+				rl::drawText("Press ENTER (or A button) to try again!", ((WINDOW_WIDTH / 2) - 350), 450, 40, rl::WHITE);
 
 
-				if (rl::isKeyPressed(rl::KEY_ENTER)){
+				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
 					// Reset player,Bosses, Entities
 					player = forge_game::forgeCronstructPlayer(&tMap);
 					score = 0;
@@ -915,7 +1015,14 @@ fn int main(String[] args) {
 				// Draw high scores
 				forge_scores::draw_high_scores();
 
-				if (rl::isKeyPressed(rl::KEY_ENTER)) {
+				// Show controller prompt if a controller is detected
+				if (forge_controller::controllersDetected) {
+					rl::drawText("PRESS ENTER OR A BUTTON TO CONTINUE", (rl::getScreenWidth() / 2) - 320, 700, 20, rl::LIGHTGRAY);
+				} else {
+					rl::drawText("PRESS ENTER TO RETURN TO MAIN MENU", (rl::getScreenWidth() / 2) - 300, 650, 20, rl::LIGHTGRAY);
+				}
+
+				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)) {
 					// Return to main menu
 					state = MAIN;
 					gameReset = false;

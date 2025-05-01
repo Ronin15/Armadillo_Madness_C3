@@ -7,6 +7,7 @@ module forge_game;
 import forge_main;
 import forge_load;
 import forge_ai;
+import forge_controller;
 import raylib5::rl;
 import std::io;
 import std::math;
@@ -99,6 +100,7 @@ bool movingLeft = true;
     bool sHit; //super power up hit
     bool fHit; //food hit
     bool gHit; //grav boot hit
+    bool shootRequested; // Flag to request a poop shoot
     bool anim;
 }
 
@@ -509,35 +511,98 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             if (c.fHit){c.powerUpTimer += 500; poopPenatrate = true; c.fHit = false;}
             if (c.gHit){c.powerUpTimer += 500; c.gravity = 400.0; c.gHit = false;}
             //movement
+            bool movingLeft = false;
+            bool movingRight = false;
+            bool jumping = false;
+
+            // Check keyboard input
             if (rl::isKeyDown(rl::KEY_LEFT)) {
-               if (rl::isKeyPressed(rl::KEY_LEFT)) {rl::playSound(sMap.get("moving")!!); }
+                movingLeft = true;
+            }
+            if (rl::isKeyDown(rl::KEY_RIGHT)) {
+                movingRight = true;
+            }
+            if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) {
+                jumping = true;
+            }
+            if (rl::isKeyPressed(rl::KEY_DOWN)) {
+                c.shootRequested = true;
+            }
+
+            // Check controller input
+            // D-pad movement
+            if (forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_LEFT.ordinal)) {
+                movingLeft = true;
+            }
+            if (forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_RIGHT.ordinal)) {
+                movingRight = true;
+            }
+
+            // Left analog stick movement
+            float leftStickX = forge_controller::get_axis(rl::GamepadAxis.LEFT_X.ordinal);
+            if (leftStickX < 0) {
+                movingLeft = true;
+            } else if (leftStickX > 0) {
+                movingRight = true;
+            }
+
+            // Jump button
+            if ((forge_controller::is_button_down(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal) ||
+                 forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_UP.ordinal)) &&
+                c.isGrounded) {
+                jumping = true;
+            }
+
+            // Poop shoot with controller (using B button)
+            if (forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_RIGHT.ordinal)) {
+                //io::printfn("B button pressed! Trying to shoot poop...");
+                // The projectile is accessed globally, not as the current construct
+                if(c.type == PLAYER) {
+                    //io::printfn("Player detected, should shoot poop now");
+                    // We need to set poopShot active in the main game loop
+                    // This is just a flag to indicate intent
+                    c.shootRequested = true;
+                }
+            }
+
+            // Handle movement based on inputs
+            if (movingLeft) {
+               if (rl::isKeyPressed(rl::KEY_LEFT) || forge_controller::is_button_pressed(rl::GamepadButton.LEFT_FACE_LEFT.ordinal)) {
+                  rl::playSound(sMap.get("moving")!!);
+               }
                 c.pos.x -= c.acceleration * deltaTime;
                 c.texFlip = true;
-            } else if (rl::isKeyDown(rl::KEY_RIGHT)){
-               if (rl::isKeyPressed(rl::KEY_RIGHT)) {rl::playSound(sMap.get("moving")!!); }
+            } else if (movingRight) {
+               if (rl::isKeyPressed(rl::KEY_RIGHT) || forge_controller::is_button_pressed(rl::GamepadButton.LEFT_FACE_RIGHT.ordinal)) {
+                  rl::playSound(sMap.get("moving")!!);
+               }
                 c.pos.x += c.acceleration * deltaTime;
                 c.texFlip = false;
-
             } else {
                c.vel.x = 0.0;
-
             }
 
             c.vel.y += c.gravity * deltaTime;
 
-            if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
+            if (c.pos.y >= c.groundLevel) {
+               c.isGrounded = true;
+            }
 
-            if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) {
-               if(rl::isKeyPressed(rl::KEY_SPACE)) {rl::playSound(sMap.get("jump")!!);}
+            if (jumping) {
+               if(rl::isKeyPressed(rl::KEY_SPACE) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)) {
+                  rl::playSound(sMap.get("jump")!!);
+               }
                c.vel.y = c.jumpVelocity;
                c.isGrounded = false;
             }
-               c.pos.y += c.vel.y * deltaTime;
-               c.groundLevel = groundLevel - c.texture.height - 5;
+
+            c.pos.y += c.vel.y * deltaTime;
+            c.groundLevel = groundLevel - c.texture.height - 5;
 
          break;
 
          case PROJECTILE_POOP:
+            //io::printfn("POOP Shot - Name: %s, Active: %d, Expired: %d", c.name, c.isProjectileActive ? 1 : 0, c.expired ? 1 : 0); //DEBUG
             //io::printfn("POOP Shot :) update reached");//debug
             // c.isProjectileActive = false;//debug
             if(c.hHit && !poopPenatrate){
@@ -557,7 +622,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                c.hHit = false;
              }
 
-            if(rl::isKeyPressed(rl::KEY_DOWN)){c.isProjectileActive = true; c.expired = false;rl::playSound(sMap.get("poop")!!);}
+            // Controller input for shooting is already handled in the player section
                c.groundLevel = groundLevel - c.texture.height + 80;
 
             if (c.pos.x > 1900) {c.expired = true; c.isProjectileActive = false;}

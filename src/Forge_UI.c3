@@ -87,7 +87,7 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, bool gameR
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
                 b.currentFrame = 2;
-                gameReset = true;
+                //gameReset = true;
                 state = GAME;
             }else if
                 (b.bhover) {
