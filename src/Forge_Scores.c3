@@ -9,7 +9,6 @@ import std::io::file;
 import std::core::mem;
 import raylib5::rl;
 import forge_controller;
-import std::encoding::json;
 
 const int MAX_HIGH_SCORES = 10;
 const int MAX_INITIALS_LENGTH = 3;
@@ -37,20 +36,20 @@ fn void init_high_scores() {
     if (loaded && fileData.len > 0) {
         // File exists, load high scores from text file
         // Format: AAA,1000
-        
+
         // Create a string to parse
         String content = (String)fileData;
-        
+
         // Parse each line
         int scoreCount = 0;
         usz lineStart = 0;
-        
+
         for (usz i = 0; i < content.len && scoreCount < MAX_HIGH_SCORES; i++) {
             // Look for newline character
             if (content[i] == '\n') {
                 // We found a line, parse it
                 String line = content[lineStart:i];
-                
+
                 // Find the comma separator
                 usz commaPos = (usz)-1;
                 for (usz j = 0; j < line.len; j++) {
@@ -59,14 +58,14 @@ fn void init_high_scores() {
                         break;
                     }
                 }
-                
+
                 // If we found a comma and it's at the expected position
                 if (commaPos == MAX_INITIALS_LENGTH) {
                     // Extract initials
                     for (int j = 0; j < MAX_INITIALS_LENGTH; j++) {
                         highScores[scoreCount].initials[j] = line[j];
                     }
-                    
+
                     // Parse score
                     int score = 0;
                     for (usz j = commaPos + 1; j < line.len; j++) {
@@ -77,20 +76,20 @@ fn void init_high_scores() {
                             break;
                         }
                     }
-                    
+
                     highScores[scoreCount].score = score;
                     scoreCount++;
                 }
-                
+
                 // Move to next line
                 lineStart = i + 1;
             }
         }
-        
+
         // Handle the last line if it doesn't end with a newline
         if (lineStart < content.len && scoreCount < MAX_HIGH_SCORES) {
             String line = content[lineStart:content.len];
-            
+
             // Find the comma separator
             usz commaPos = (usz)-1;
             for (usz j = 0; j < line.len; j++) {
@@ -99,14 +98,14 @@ fn void init_high_scores() {
                     break;
                 }
             }
-            
+
             // If we found a comma and it's at the expected position
             if (commaPos == MAX_INITIALS_LENGTH) {
                 // Extract initials
                 for (int j = 0; j < MAX_INITIALS_LENGTH; j++) {
                     highScores[scoreCount].initials[j] = line[j];
                 }
-                
+
                 // Parse score
                 int score = 0;
                 for (usz j = commaPos + 1; j < line.len; j++) {
@@ -117,14 +116,14 @@ fn void init_high_scores() {
                         break;
                     }
                 }
-                
+
                 highScores[scoreCount].score = score;
                 scoreCount++;
             }
         }
-        
+
         io::printfn("Loaded %d high scores from file", scoreCount);
-        
+
         // Clean up the loaded file data
         if (fileData.ptr) mem::free(fileData.ptr);
     } else {
@@ -138,8 +137,6 @@ fn void init_high_scores() {
 // Save high scores to a text-based .dat file
 // Format: AAA,1000 (one entry per line)
 fn bool save_high_scores() {
-    // Ensure the directory exists
-    ensure_scores_directory();
 
     // Create a text buffer to hold all the high scores data
     // Format: AAA,1000
@@ -147,7 +144,7 @@ fn bool save_high_scores() {
     // Each line needs: 3 chars for initials + 1 for comma + up to 10 for score + 1 for newline
     const int LINE_SIZE = MAX_INITIALS_LENGTH + 1 + 10 + 1;
     usz totalSize = MAX_HIGH_SCORES * LINE_SIZE;
-    
+
     char[] buffer = mem::alloc_array(char, totalSize);
     usz pos = 0;
     defer mem::free(buffer.ptr);
@@ -158,14 +155,14 @@ fn bool save_high_scores() {
         for (int j = 0; j < MAX_INITIALS_LENGTH; j++) {
             buffer[pos++] = highScores[i].initials[j];
         }
-        
+
         // Add comma separator
         buffer[pos++] = ',';
-        
+
         // Format the score as text
         // We'll convert the score to a string by repeatedly dividing by 10
         int score = highScores[i].score;
-        
+
         // Handle zero score specially
         if (score == 0) {
             buffer[pos++] = '0';
@@ -177,12 +174,12 @@ fn bool save_high_scores() {
                 digits++;
                 temp /= 10;
             }
-            
+
             // Then add the digits from right to left
             usz scoreStart = pos + digits - 1;
             usz scoreEnd = pos;
             pos += digits; // Advance pos past where the score will be
-            
+
             temp = score;
             for (usz j = scoreStart; j >= scoreEnd && temp > 0; j--) {
                 buffer[j] = (char)('0' + (temp % 10));
@@ -190,7 +187,7 @@ fn bool save_high_scores() {
                 if (j == scoreEnd) break; // Handle edge case for first digit
             }
         }
-        
+
         // Add newline
         buffer[pos++] = '\n';
     }
@@ -404,16 +401,6 @@ fn void draw_high_scores() {
     rl::drawText("PRESS ENTER TO RETURN TO MAIN MENU", (rl::getScreenWidth() / 2) - 300, 650, 20, rl::LIGHTGRAY);
 }
 
-// Ensure the resources/scores directory exists where possible
-fn void ensure_scores_directory() {
-    // Just log the attempt, we'll create the directories as needed via file::open
-    io::printfn("Attempting to use resources/scores directory for high score data");
-    
-    // Note: The file::open function in save_file will create the file
-    // even if the parent directory doesn't exist in many systems.
-    // If this fails, it will be handled in the save_file error handling.
-}
-
 fn bool load_file(String filename, char[]* out_data) {
     // Attempt to open the file for reading
     File? file_result = file::open(filename, "rb");
@@ -431,7 +418,7 @@ fn bool load_file(String filename, char[]* out_data) {
         return false;
     }
     usz filesize = size_result;
-    
+
     // Reset to beginning of file
     usz? seek_result = fh.seek(0, SET);
     if (catch err = seek_result) {
