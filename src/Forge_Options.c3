@@ -7,6 +7,7 @@ module forge_options;
 import forge_main;
 import raylib5::rl;
 import std::io;
+import forge_controller;
 
 // Increase number of options to include fullscreen
 const int NUM_OPTIONS = 3;
@@ -27,10 +28,16 @@ Option [NUM_OPTIONS] options = {
 };
 
 fn void adjustUpdateOptions(Music song) {
-    if (rl::isKeyPressed(rl::KEY_UP)) {optionIndex = (optionIndex - 1 + NUM_OPTIONS) % NUM_OPTIONS;}
-    if (rl::isKeyPressed(rl::KEY_DOWN)) {optionIndex = (optionIndex + 1) % NUM_OPTIONS;}
+    // Check keyboard input
+    if (rl::isKeyPressed(rl::KEY_UP) || forge_controller::is_button_pressed(1) || forge_controller::get_axis(1) < -0.5) {
+        optionIndex = (optionIndex - 1 + NUM_OPTIONS) % NUM_OPTIONS;
+    }
+    if (rl::isKeyPressed(rl::KEY_DOWN) || forge_controller::is_button_pressed(3) || forge_controller::get_axis(1) > 0.5) {
+        optionIndex = (optionIndex + 1) % NUM_OPTIONS;
+    }
 
-    if (rl::isKeyPressed(rl::KEY_LEFT)) {
+    // Handle left inputs (decrease value or toggle off)
+    if (rl::isKeyPressed(rl::KEY_LEFT) || forge_controller::is_button_pressed(4) || forge_controller::get_axis(0) < -0.5) {
         if (optionIndex == 0) { // Decrease Master Volume
             if (options[optionIndex].value > 0.0) {
                 options[optionIndex].value -= 0.1;
@@ -48,7 +55,8 @@ fn void adjustUpdateOptions(Music song) {
         }
     }
 
-    if (rl::isKeyPressed(rl::KEY_RIGHT)) {
+    // Handle right inputs (increase value or toggle on)
+    if (rl::isKeyPressed(rl::KEY_RIGHT) || forge_controller::is_button_pressed(2) || forge_controller::get_axis(0) > 0.5) {
         if (optionIndex == 0) { // Increase Master Volume
             if (options[optionIndex].value < 1.0) options[optionIndex].value += 0.1;
             rl::setMasterVolume((float)options[optionIndex].value / 1.0);
@@ -63,8 +71,12 @@ fn void adjustUpdateOptions(Music song) {
         }
     }
 
-    // Alternative: toggle with Enter/Space for boolean options
-    if (options[optionIndex].isBool && (rl::isKeyPressed(rl::KEY_ENTER) || rl::isKeyPressed(rl::KEY_SPACE))) {
+    // Alternative: toggle with Enter/Space for boolean options or controller buttons
+    if (options[optionIndex].isBool && 
+        (rl::isKeyPressed(rl::KEY_ENTER) || 
+         rl::isKeyPressed(rl::KEY_SPACE) || 
+         forge_controller::is_button_pressed(6) || // RIGHT_FACE_DOWN (usually A button) 
+         forge_controller::is_button_pressed(8))) { // RIGHT_FACE_LEFT (usually X button)
         options[optionIndex].value = options[optionIndex].value > 0.0 ? 0.0 : 1.0; // Toggle between 0 and 1
         rl::toggleFullscreen();
     }
