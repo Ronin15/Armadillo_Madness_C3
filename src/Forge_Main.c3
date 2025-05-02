@@ -579,7 +579,7 @@ fn int main(String[] args) {
     				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(rl::BLACK, 0.5f));
     				// Display transition message
     				rl::drawText("GAME OVER", (WINDOW_WIDTH / 2) - 250, WINDOW_HEIGHT / 2 - 100, 80, rl::RED);
-    				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 300, WINDOW_HEIGHT / 2, 60, rl::WHITE);
+    				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 400, WINDOW_HEIGHT / 2, 60, rl::WHITE);
     				rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
     			}
 
@@ -830,7 +830,7 @@ fn int main(String[] args) {
 					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(rl::BLACK, 0.5f));
 					// Display transition message
 					rl::drawText("GAME OVER", (WINDOW_WIDTH / 2) - 250, WINDOW_HEIGHT / 2 - 100, 80, rl::RED);
-					rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 300, WINDOW_HEIGHT / 2, 60, rl::WHITE);
+					rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 400, WINDOW_HEIGHT / 2, 60, rl::WHITE);
 					rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
 				}
 
@@ -1029,7 +1029,7 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 815}, 0.0, 3.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 700), 150, 105, {185,71,0,200});
-				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 350), 300, 60, rl::WHITE);
+				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 300), 300, 60, rl::WHITE);
 
                 // Draw custom cursor if using controller and it's active
                 if (forge_controller::controllersDetected && forge_controller::is_controller_active() && forge_controller::is_mouse_mode_enabled()) {
@@ -1061,11 +1061,11 @@ fn int main(String[] args) {
 
 				// Background elements
 				rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
-				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.8f));
+				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.5f));
 
 				// Game over text
 				rl::drawText("! * GAME OVER * !", ((WINDOW_WIDTH / 2) - 500), 200, 105, rl::RED);
-				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 350), 350, 60, rl::WHITE);
+				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 400), 350, 60, rl::WHITE);
 
 				// Menu button handling
 				forge_ui::ButtonResult result = forge_ui::updateButton(&menuButton, &sMap, state, gameReset, {10,10});
@@ -1074,8 +1074,19 @@ fn int main(String[] args) {
 				forge_ui::drawButton(&menuButton);
 
 				// Additional instructions
-				rl::drawText("Press ENTER (A or X button) to try again!", ((WINDOW_WIDTH / 2) - 350), 450, 40, rl::WHITE);
+				rl::drawText("", ((WINDOW_WIDTH / 2) - 350), 450, 40, rl::WHITE);
 
+				// Show controller prompt if a controller is detected and active
+				if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
+					rl::drawText("Press ENTER (A or X button) to try again!", (rl::getScreenWidth() / 2) - 250, 450, 20, rl::LIGHTGRAY);
+
+					// Draw custom cursor if using controller
+					if (forge_controller::is_mouse_mode_enabled()) {
+						forge_controller::draw_custom_cursor();
+					}
+				} else {
+					rl::drawText("PRESS ENTER TO CONTINUE", (rl::getScreenWidth() / 2) - 220, 450, 20, rl::LIGHTGRAY);
+				}
 
 				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
 					// Reset player,Bosses, Entities
@@ -1152,9 +1163,9 @@ fn int main(String[] args) {
 				static bool scoreProcessed = false;
 				static bool showingHighScores = false;
 
-				io::printfn("Current state flags: scoreProcessed=%s, showingHighScores=%s, __force_reset_score_processed=%s", 
-						scoreProcessed ? "true" : "false", 
-						showingHighScores ? "true" : "false", 
+				io::printfn("Current state flags: scoreProcessed=%s, showingHighScores=%s, __force_reset_score_processed=%s",
+						scoreProcessed ? "true" : "false",
+						showingHighScores ? "true" : "false",
 						__force_reset_score_processed ? "true" : "false");
 
 				// Check if we need to force a reset of the state flags
@@ -1162,8 +1173,8 @@ fn int main(String[] args) {
 					scoreProcessed = false;
 					showingHighScores = false;
 					__force_reset_score_processed = false; // Reset the flag
-					io::printfn("Reset score processing state: scoreProcessed=%s, showingHighScores=%s", 
-							scoreProcessed ? "true" : "false", 
+					io::printfn("Reset score processing state: scoreProcessed=%s, showingHighScores=%s",
+							scoreProcessed ? "true" : "false",
 							showingHighScores ? "true" : "false");
 				}
 
@@ -1196,7 +1207,7 @@ fn int main(String[] args) {
 
 					// Show different message based on whether we're just viewing or entered a score
 					if (!__high_score_viewing_only) {
-						rl::drawText("Congratulations on your high score!", (rl::getScreenWidth() / 2) - 400, 600, 30, rl::YELLOW);
+						rl::drawText("Congratulations on your high score!", (rl::getScreenWidth() / 2) - 300, 600, 30, rl::YELLOW);
 					} else {
 						rl::drawText("HIGH SCORES", (rl::getScreenWidth() / 2) - 150, 600, 30, rl::YELLOW);
 					}
