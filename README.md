@@ -18,7 +18,7 @@ GRAPHICS: any video device supports Open GL 3.0
 
     Hard Drive: SSD or better for optimal performance 100MB required.
 
-    Mobile and controller support will come later if demand is there.
+    Mobile support will come later if demand is there.
 
 Game Summary
 
@@ -30,6 +30,7 @@ Key Features:
     Unique power-ups High-quality graphics and sound effects
     Particle system like Rain, Fireworks.
     Weather interaction.
+    Xbox and PS4 controller support.
 
 Join the adventure and experience the madness of Armadillo Madness!
 
