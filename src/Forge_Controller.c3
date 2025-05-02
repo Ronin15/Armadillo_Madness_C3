@@ -12,10 +12,18 @@ import forge_main;
 // Controller constants
 const int CONTROLLER_DEADZONE = 25; // Deadzone for analog sticks (0-100)
 const int MAX_CONTROLLERS = 4;      // Maximum number of controllers to support
+const float CONTROLLER_INACTIVITY_TIMEOUT = 5.0; // Time in seconds before hiding controller UI when inactive
 
 // Track if controllers were detected
 bool controllersDetected = false;
 int activeController = 0;  // Currently active controller ID
+
+// Track controller activity
+bool controllerActive = false; // Whether controller is actively being used
+double lastControllerActivityTime = 0.0; // When the controller was last used
+
+// Flag to indicate if we've ever shown controller UI (starts off hidden)
+bool controllerUIShown = false;
 
 // Debug settings
 bool debugEnabled = false;
@@ -70,10 +78,16 @@ fn void init_controllers() {
                 }
             }
             
-            // This controller is now active
+            // This controller is now detected but not active until used
             controllersDetected = true;
             activeController = i;
-            io::printfn("Selected controller #%d as active controller", i);
+            
+            // Don't initialize activity tracking until user actually uses controller
+            controllerActive = false;
+            lastControllerActivityTime = 0.0;
+            controllerUIShown = false;
+            
+            io::printfn("Controller #%d detected, UI will show when used", i);
             return;
         }
     }
@@ -192,9 +206,16 @@ fn void check_for_new_controllers() {
             // Skip controllers with generic/empty names
             if (name == null || name[0] == '\0') continue;
             
-            io::printfn("New gamepad #%d connected: %s", i, name);
+            // Initialize controller as detected but not active until used
             controllersDetected = true;
             activeController = i;
+            
+            // Don't initialize activity tracking until user actually uses controller
+            controllerActive = false;
+            lastControllerActivityTime = 0.0;
+            controllerUIShown = false;
+            
+            io::printfn("New controller #%d connected, UI will show when used", i);
             return;
         }
     }
@@ -206,9 +227,16 @@ fn void force_controller_init() {
     
     // Try to force detect controller 0 even if it wasn't detected initially
     if (!controllersDetected) {
+        // Initialize controller as detected but not active until used
         controllersDetected = true;
         activeController = 0;
-        io::printfn("Forced controller #0 as active");
+        
+        // Don't initialize activity tracking until user actually uses controller
+        controllerActive = false;
+        lastControllerActivityTime = 0.0;
+        controllerUIShown = false;
+        
+        io::printfn("Forced controller #0 detection, UI will show when used");
         
         // Print current button states if any
         for (int btn = 0; btn < 18; btn++) {
@@ -231,6 +259,13 @@ fn void toggle_mouse_mode() {
     // Always show cursor when mouse mode is enabled
     if (mouseModeEnabled) {
         rl::showCursor();
+        // If toggling on, mark controller as active
+        if (controllersDetected) {
+            controllerActive = true;
+            lastControllerActivityTime = rl::getTime();
+            // Since this was a manual toggle, assume controller UI should be shown
+            controllerUIShown = true;
+        }
     }
 }
 
@@ -262,8 +297,8 @@ fn void auto_enable_mouse_mode(int state) {
         state == STATE_HIGH_SCORE || 
         state == STATE_GAME_WIN || 
         state == STATE_GAME_OVER) {
-        // Auto-enable mouse control for menu states if controller is detected
-        if (controllersDetected && !mouseModeEnabled) {
+        // Auto-enable mouse control for menu states if controller is detected and active
+        if (controllersDetected && controllerUIShown && is_controller_active() && !mouseModeEnabled) {
             mouseModeEnabled = true;
             io::printfn("Mouse control auto-enabled for menu state %d", state);
         }
@@ -382,7 +417,8 @@ fn bool is_simulating_mouse_click() {
 
 // Main function to update all mouse control functionality
 fn void update_mouse_control() {
-    if (mouseModeEnabled) {
+    // Only update if controller is active AND mouse mode is enabled AND UI has been shown
+    if (mouseModeEnabled && ((controllerActive && controllerUIShown) || !controllersDetected)) {
         // Make sure cursor is visible
         rl::showCursor();
         
@@ -418,9 +454,78 @@ fn bool is_mouse_mode_enabled() {
     return mouseModeEnabled;
 }
 
+// Track controller activity - call this every frame
+fn void update_controller_activity(float delta_time) {
+    // Unused parameter to match standard function pattern
+    delta_time = delta_time;
+    
+    if (!controllersDetected) {
+        controllerActive = false;
+        return;
+    }
+    
+    // Check for any controller input to determine if it's active
+    bool any_input = false;
+    
+    // Check if any button is pressed
+    for (int i = 0; i < 18; i++) {
+        if (is_button_down(i)) {
+            any_input = true;
+            break;
+        }
+    }
+    
+    // Check if any analog stick is moved beyond deadzone
+    if (!any_input) {
+        for (int i = 0; i < 6; i++) { // Check all possible axes
+            float value = get_axis(i);
+            if (math::abs(value) > 0.1) { // Use a small threshold
+                any_input = true;
+                break;
+            }
+        }
+    }
+    
+    // Update controller activity state
+    if (any_input) {
+        // If this is the first time controller is used, show a notification
+        if (!controllerActive && !controllerUIShown) {
+            controllerUIShown = true;
+            io::printfn("Controller input detected for the first time - enabling controller UI");
+        }
+        
+        controllerActive = true;
+        lastControllerActivityTime = rl::getTime();
+        
+        if (debugEnabled) {
+            io::printfn("Controller input detected, marking as active");
+        }
+    } else {
+        // Check if the controller has been inactive for a while
+        double current_time = rl::getTime();
+        if (current_time - lastControllerActivityTime > CONTROLLER_INACTIVITY_TIMEOUT) {
+            controllerActive = false;
+            
+            if (debugEnabled && controllerActive) {
+                io::printfn("Controller inactive for %.1f seconds, hiding controller UI", 
+                          CONTROLLER_INACTIVITY_TIMEOUT);
+            }
+        }
+    }
+}
+
+// Check if controller is currently active and should show UI elements
+fn bool is_controller_active() {
+    // We need three conditions for controller UI to be visible:
+    // 1. A controller is detected
+    // 2. The controller has been actively used at least once (controllerUIShown)
+    // 3. The controller is currently active (recent input)
+    return controllersDetected && controllerUIShown && controllerActive;
+}
+
 // Draw a custom, more visible cursor if needed
 fn void draw_custom_cursor() {
-    if (!mouseModeEnabled) return;
+    if (!mouseModeEnabled || !controllerActive) return;
     
     // Get current mouse position
     Vector2 mousePos = rl::getMousePosition();
