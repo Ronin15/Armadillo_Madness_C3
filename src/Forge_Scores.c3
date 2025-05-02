@@ -25,119 +25,154 @@ bool highScoresInitialized = false;
 // Initialize high scores from file or set default values
 // Reads from a text-based .dat file with format: AAA,1000 (one entry per line)
 fn void init_high_scores() {
-    // Initialize with default values
+    io::printfn("Starting init_high_scores()");
+    
+    // First initialize with default values
+    io::printfn("Calling init_defaults()");
     init_defaults();
+    io::printfn("Defaults initialized");
 
+    // Set high scores initialized flag early to prevent recursion if something fails
+    highScoresInitialized = true;
+    
     // Attempt to load high scores from file
     String highScoreFile = "resources/scores/highscores.dat";
-    char[] fileData = {};
-    bool loaded = load_file(highScoreFile, &fileData);
-
-    if (loaded && fileData.len > 0) {
-        // File exists, load high scores from text file
-        // Format: AAA,1000
-
-        // Create a string to parse
-        String content = (String)fileData;
-
-        // Parse each line
-        int scoreCount = 0;
-        usz lineStart = 0;
-
-        for (usz i = 0; i < content.len && scoreCount < MAX_HIGH_SCORES; i++) {
-            // Look for newline character
-            if (content[i] == '\n') {
-                // We found a line, parse it
-                String line = content[lineStart:i];
-
-                // Find the comma separator
-                usz commaPos = (usz)-1;
-                for (usz j = 0; j < line.len; j++) {
-                    if (line[j] == ',') {
-                        commaPos = j;
-                        break;
-                    }
-                }
-
-                // If we found a comma and it's at the expected position
-                if (commaPos == MAX_INITIALS_LENGTH) {
-                    // Extract initials
-                    for (int j = 0; j < MAX_INITIALS_LENGTH; j++) {
-                        highScores[scoreCount].initials[j] = line[j];
-                    }
-
-                    // Parse score
-                    int score = 0;
-                    for (usz j = commaPos + 1; j < line.len; j++) {
-                        if (line[j] >= '0' && line[j] <= '9') {
-                            score = score * 10 + (line[j] - '0');
-                        } else {
-                            // Invalid character in score
-                            break;
-                        }
-                    }
-
-                    highScores[scoreCount].score = score;
-                    scoreCount++;
-                }
-
-                // Move to next line
-                lineStart = i + 1;
-            }
+    io::printfn("High score file path: %s", highScoreFile);
+    
+    // Check if file actually exists before trying to load it
+    if (!rl::fileExists((ZString)highScoreFile)) {
+        io::printfn("High score file does not exist, using defaults");
+        return;
+    }
+    
+    io::printfn("High score file exists, attempting to load");
+    
+    // THE SAFEST APPROACH: Parse line by line instead of loading the entire file
+    // This completely avoids any buffer overflow issues with the file content
+    
+    // Open the file for reading manually
+    File? file_result = file::open(highScoreFile, "r");
+    if (catch err = file_result) {
+        io::eprintfn("Error: could not open file %s for reading: %s", highScoreFile, err);
+        return;
+    }
+    
+    File fh = file_result;
+    defer (void)fh.close();
+    
+    // Read and parse one line at a time
+    char[100] lineBuffer;
+    int scoreCount = 0;
+    
+    for (int i = 0; i < MAX_HIGH_SCORES; i++) {
+        // Clear the line buffer
+        for (int j = 0; j < 100; j++) {
+            lineBuffer[j] = 0;
         }
-
-        // Handle the last line if it doesn't end with a newline
-        if (lineStart < content.len && scoreCount < MAX_HIGH_SCORES) {
-            String line = content[lineStart:content.len];
-
-            // Find the comma separator
-            usz commaPos = (usz)-1;
-            for (usz j = 0; j < line.len; j++) {
-                if (line[j] == ',') {
-                    commaPos = j;
+        
+        // Read a line from the file
+        usz lineLength = 0;
+        bool endOfFile = false;
+        
+        // Read character by character
+        for (int j = 0; j < 99; j++) {
+            char[1] buffer;
+            usz? read_result = fh.read(buffer[0:1]);
+            
+            // Check for end of file or read error
+            if (catch err = read_result) {
+                endOfFile = true;
+                break;
+            }
+            
+            // Also check for zero bytes read (end of file) 
+            if (read_result == 0) {
+                endOfFile = true;
+                break;
+            }
+            
+            // Get the character
+            char c = buffer[0];
+            // If we hit a newline, end the line
+            if (c == '\n') {
+                break;
+            }
+            
+            // Otherwise add to the line buffer
+            lineBuffer[lineLength++] = c;
+        }
+        
+        // If we reached end of file and have no more data, exit the loop
+        if (endOfFile && lineLength == 0) {
+            break;
+        }
+        
+        // Now process the line
+        if (lineLength > 0) {
+            // Ensure null termination
+            lineBuffer[lineLength] = 0;
+            
+            io::printfn("Processing line: '%.*s'", (int)lineLength, (ZString)&lineBuffer[0]);
+            
+            // Find comma separator
+            int commaPos = -1;
+            for (usz j = 0; j < lineLength; j++) {
+                if (lineBuffer[j] == ',') {
+                    commaPos = (int)j;
                     break;
                 }
             }
-
-            // If we found a comma and it's at the expected position
-            if (commaPos == MAX_INITIALS_LENGTH) {
-                // Extract initials
+            
+            // Parse only if comma was found
+            if (commaPos > 0) {
+                // Copy initials (safely)
                 for (int j = 0; j < MAX_INITIALS_LENGTH; j++) {
-                    highScores[scoreCount].initials[j] = line[j];
-                }
-
-                // Parse score
-                int score = 0;
-                for (usz j = commaPos + 1; j < line.len; j++) {
-                    if (line[j] >= '0' && line[j] <= '9') {
-                        score = score * 10 + (line[j] - '0');
+                    if (j < commaPos) {
+                        highScores[scoreCount].initials[j] = lineBuffer[j];
                     } else {
-                        // Invalid character in score
-                        break;
+                        // Fill remaining with 'A'
+                        highScores[scoreCount].initials[j] = 'A';
                     }
                 }
-
-                highScores[scoreCount].score = score;
+                
+                // Parse score (safely)
+                if (commaPos + 1 < (int)lineLength) {
+                    // Reset score
+                    highScores[scoreCount].score = 0;
+                    
+                    for (usz j = (usz)(commaPos + 1); j < lineLength; j++) {
+                        if (lineBuffer[j] >= '0' && lineBuffer[j] <= '9') {
+                            highScores[scoreCount].score = highScores[scoreCount].score * 10 + (lineBuffer[j] - '0');
+                        }
+                    }
+                }
+                
+                io::printfn("Loaded score entry %d: %c%c%c = %d", 
+                          scoreCount + 1,
+                          highScores[scoreCount].initials[0],
+                          highScores[scoreCount].initials[1],
+                          highScores[scoreCount].initials[2],
+                          highScores[scoreCount].score);
+                
                 scoreCount++;
             }
         }
-
-        io::printfn("Loaded %d high scores from file", scoreCount);
-
-        // Clean up the loaded file data
-        if (fileData.ptr) mem::free(fileData.ptr);
-    } else {
-        // File doesn't exist or couldn't be loaded, keep defaults
-        io::printfn("No high scores file found, using defaults");
+        
+        // If we reached end of file, we're done
+        if (endOfFile) {
+            break;
+        }
     }
-
-    highScoresInitialized = true;
+    
+    io::printfn("Loaded %d high scores", scoreCount);
+    io::printfn("High scores initialized successfully");
 }
 
 // Save high scores to a text-based .dat file
 // Format: AAA,1000 (one entry per line)
 fn bool save_high_scores() {
-
+    io::printfn("save_high_scores() called");
+    
     // Create a text buffer to hold all the high scores data
     // Format: AAA,1000
     // We'll allocate enough space for all records
@@ -146,12 +181,17 @@ fn bool save_high_scores() {
     usz totalSize = MAX_HIGH_SCORES * LINE_SIZE;
 
     char[] buffer = mem::alloc_array(char, totalSize);
+    if (buffer.ptr == null) {
+        io::eprintfn("Failed to allocate memory for high scores buffer");
+        return false;
+    }
+    
     usz pos = 0;
     defer mem::free(buffer.ptr);
 
     // Format each high score as text
     for (int i = 0; i < MAX_HIGH_SCORES; i++) {
-        // Format the initials
+        // Format the initials (safely)
         for (int j = 0; j < MAX_INITIALS_LENGTH; j++) {
             buffer[pos++] = highScores[i].initials[j];
         }
@@ -159,32 +199,25 @@ fn bool save_high_scores() {
         // Add comma separator
         buffer[pos++] = ',';
 
-        // Format the score as text
-        // We'll convert the score to a string by repeatedly dividing by 10
+        // Format the score as a simple string
         int score = highScores[i].score;
-
+        char[16] scoreStr; // Buffer for score as string
+        int scoreLen = 0;
+        
         // Handle zero score specially
         if (score == 0) {
             buffer[pos++] = '0';
         } else {
-            // First count how many digits we need
-            int temp = score;
-            int digits = 0;
-            while (temp > 0) {
-                digits++;
-                temp /= 10;
+            // Convert score to string - simplest approach
+            int tempScore = score;
+            while (tempScore > 0) {
+                scoreStr[scoreLen++] = (char)('0' + (tempScore % 10));
+                tempScore /= 10;
             }
-
-            // Then add the digits from right to left
-            usz scoreStart = pos + digits - 1;
-            usz scoreEnd = pos;
-            pos += digits; // Advance pos past where the score will be
-
-            temp = score;
-            for (usz j = scoreStart; j >= scoreEnd && temp > 0; j--) {
-                buffer[j] = (char)('0' + (temp % 10));
-                temp /= 10;
-                if (j == scoreEnd) break; // Handle edge case for first digit
+            
+            // Reverse the digits (they're backwards)
+            for (int j = scoreLen - 1; j >= 0; j--) {
+                buffer[pos++] = scoreStr[j];
             }
         }
 
@@ -199,9 +232,10 @@ fn bool save_high_scores() {
     String highScoreFile = "resources/scores/highscores.dat";
 
     // Attempt to save to file
+    io::printfn("Saving high scores to %s", highScoreFile);
     bool result = save_file(highScoreFile, buffer);
     if (result) {
-        io::printfn("High scores saved to file");
+        io::printfn("High scores saved to file successfully");
     } else {
         io::printfn("Failed to save high scores to file");
     }
@@ -222,21 +256,34 @@ fn void init_defaults() {
 
 // Add a new score to the high scores list if it qualifies
 fn bool is_high_score(int score) {
-    if (!highScoresInitialized) init_high_scores();
+    io::printfn("is_high_score called with score: %d", score);
+    
+    if (!highScoresInitialized) {
+        io::printfn("High scores not initialized, initializing now");
+        init_high_scores();
+    }
 
     // Check if the score is higher than any existing score
     for (int i = 0; i < MAX_HIGH_SCORES; i++) {
         if (score > highScores[i].score) {
+            io::printfn("Score %d qualifies as high score (beats position %d with score %d)", 
+                      score, i+1, highScores[i].score);
             return true;
         }
     }
 
+    io::printfn("Score %d does not qualify as a high score", score);
     return false;
 }
 
 // Add a new score to the high scores list
 fn void add_high_score(char[MAX_INITIALS_LENGTH] initials, int score) {
-    if (!highScoresInitialized) init_high_scores();
+    io::printfn("add_high_score called with score: %d", score);
+    
+    if (!highScoresInitialized) {
+        io::printfn("High scores not initialized, initializing now");
+        init_high_scores();
+    }
 
     // Find the position to insert the new score
     int insertPos = -1;
@@ -248,6 +295,8 @@ fn void add_high_score(char[MAX_INITIALS_LENGTH] initials, int score) {
     }
 
     if (insertPos >= 0) {
+        io::printfn("Inserting score at position %d", insertPos);
+        
         // Shift lower scores down
         for (int i = MAX_HIGH_SCORES - 1; i > insertPos; i--) {
             highScores[i] = highScores[i - 1];
@@ -260,10 +309,13 @@ fn void add_high_score(char[MAX_INITIALS_LENGTH] initials, int score) {
         }
 
         // Save the updated high scores
+        io::printfn("Calling save_high_scores");
         bool saved = save_high_scores();
         if (!saved) {
             io::printfn("Warning: Failed to save high scores, but score was added to in-memory table");
         }
+    } else {
+        io::printfn("Score %d did not qualify for high scores list", score);
     }
 }
 
@@ -402,6 +454,18 @@ fn void draw_high_scores() {
 }
 
 fn bool load_file(String filename, char[]* out_data) {
+    // Safety check for null pointer
+    if (out_data == null) {
+        io::eprintfn("Error: output data pointer is null");
+        return false;
+    }
+    
+    // Initialize output to empty for safety
+    *out_data = {};
+    
+    // Log that we're attempting to open the file
+    io::printfn("Attempting to open file: %s", filename);
+    
     // Attempt to open the file for reading
     File? file_result = file::open(filename, "rb");
     if (catch err = file_result) {
@@ -412,12 +476,26 @@ fn bool load_file(String filename, char[]* out_data) {
     defer (void)fh.close();
 
     // Get file size
+    io::printfn("File opened, getting size");
     usz? size_result = fh.seek(0, END);
     if (catch err = size_result) {
         io::eprintfn("Error: could not determine file size: %s", err);
         return false;
     }
     usz filesize = size_result;
+    io::printfn("File size: %d bytes", (int)filesize);
+    
+    // If file is empty, return success but with empty data
+    if (filesize == 0) {
+        io::printfn("File %s is empty", filename);
+        return true;
+    }
+    
+    // Safety check for excessively large files
+    if (filesize > 1024 * 1024) { // 1MB limit for safety
+        io::eprintfn("Error: file %s is too large (%d bytes)", filename, (int)filesize);
+        return false;
+    }
 
     // Reset to beginning of file
     usz? seek_result = fh.seek(0, SET);
@@ -426,27 +504,92 @@ fn bool load_file(String filename, char[]* out_data) {
         return false;
     }
 
-    // Allocate memory for the data
-    char[] buffer = mem::alloc_array(char, filesize);
-    if (!buffer.ptr) {
+    // Allocate memory for the data with space for null terminator
+    io::printfn("Allocating buffer of size %d bytes", (int)(filesize + 1));
+    char[] buffer = mem::alloc_array(char, filesize + 1);
+    if (buffer.ptr == null) {
         io::eprintfn("Error: could not allocate memory for file data");
         return false;
     }
 
     // Read the file data
-    usz? read_result = fh.read(buffer);
+    io::printfn("Reading file data");
+    usz? read_result = fh.read(buffer[:filesize]);
     if (catch err = read_result) {
         io::eprintfn("Error: could not read file data: %s", err);
         mem::free(buffer.ptr);
         return false;
     }
 
+    usz actual_size = read_result;
+    io::printfn("Read %d bytes from file", (int)actual_size);
+    
+    // Add null terminator
+    buffer[actual_size] = '\0';
+    
     // Set the output data
     *out_data = buffer;
+    io::printfn("Successfully loaded file %s (%d bytes)", filename, (int)actual_size);
     return true;
 }
 
 fn bool save_file(String filename, char[] data) {
+    // Safety check for empty data
+    if (!data.ptr || data.len == 0) {
+        io::eprintfn("Error: Invalid or empty data for file %s", filename);
+        return false;
+    }
+    
+    io::printfn("Preparing to save %d bytes to %s", (int)data.len, filename);
+    
+    // Create a backup of the existing file if it exists
+    if (rl::fileExists((ZString)filename)) {
+        // Create a backup filename
+        char[256] backupNameBuffer;
+        usz backupNameLen = 0;
+        
+        // Copy the original filename
+        for (usz i = 0; i < filename.len && backupNameLen < 250; i++) {
+            backupNameBuffer[backupNameLen++] = filename[i];
+        }
+        
+        // Add .bak extension
+        backupNameBuffer[backupNameLen++] = '.';
+        backupNameBuffer[backupNameLen++] = 'b';
+        backupNameBuffer[backupNameLen++] = 'a';
+        backupNameBuffer[backupNameLen++] = 'k';
+        backupNameBuffer[backupNameLen] = '\0';
+        
+        String backupName = (String)backupNameBuffer[:backupNameLen];
+        io::printfn("Creating backup of existing file: %s", backupName);
+        
+        // Copy file content to backup
+        char[] fileContent = {};
+        if (load_file(filename, &fileContent)) {
+            bool backupSaved = false;
+            
+            // Try to save the backup
+            File? backup_result = file::open(backupName, "wb");
+            if (catch backup_err = backup_result) {
+                io::eprintfn("Warning: Could not create backup: %s", backup_err);
+            } else {
+                File backup = backup_result;
+                usz? backup_write = backup.write(fileContent);
+                if (catch write_err = backup_write) {
+                    io::eprintfn("Warning: Failed to write backup: %s", write_err);
+                } else {
+                    io::printfn("Backup created successfully");
+                    backupSaved = true;
+                }
+                (void)backup.close();
+            }
+            
+            if (fileContent.ptr) {
+                mem::free(fileContent.ptr);
+            }
+        }
+    }
+    
     // Attempt to open the file for writing
     File? file_result = file::open(filename, "wb");
     if (catch err = file_result) {
@@ -463,6 +606,13 @@ fn bool save_file(String filename, char[] data) {
         return false;
     }
 
-    io::printfn("Successfully saved file %s", filename);
+    // Verify the amount of data written
+    usz written = write_result;
+    if (written != data.len) {
+        io::eprintfn("Error: incomplete write to file %s (%d of %d bytes)", filename, (int)written, (int)data.len);
+        return false;
+    }
+
+    io::printfn("Successfully saved file %s (%d bytes)", filename, (int)written);
     return true;
 }
