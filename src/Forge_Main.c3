@@ -42,6 +42,8 @@ const Color FORGE_ORANGE = {186,65,14,255};
 
 // Flag to reset score processing state
 bool __force_reset_score_processed = false;
+// Flag to indicate we're only viewing high scores (not entering a new one)
+bool __high_score_viewing_only = false;
 
 //Entity Containers
 Construct[] constructs;
@@ -286,7 +288,7 @@ fn int main(String[] args) {
 
 					frameCounter += 1;
 
-					if (frameCounter > 800) { //800 for testing
+					if (frameCounter > 1000) { //1000 for testing
 					        state = DEMO;
 							frameCounter = 0;
 					}
@@ -1120,7 +1122,7 @@ fn int main(String[] args) {
 
 			case HIGH_SCORE:
 				// Debug print
-				io::printfn("Entered HIGH_SCORE state with score: %d", score);
+				io::printfn("Entered HIGH_SCORE state with score: %d, viewing only: %s", score, __high_score_viewing_only ? "true" : "false");
 
 				// Render the high scores
 				rl::showCursor();
@@ -1138,8 +1140,13 @@ fn int main(String[] args) {
 					io::printfn("Reset score processing state");
 				}
 
-				// First phase: Get player initials and add high score
-				if (!scoreProcessed) {
+				// If we're just viewing high scores, skip the score entry phase
+				if (__high_score_viewing_only) {
+					showingHighScores = true;
+				}
+
+				// First phase: Get player initials and add high score (only if not viewing-only)
+				if (!scoreProcessed && !__high_score_viewing_only) {
 					// Get player initials
 					char[forge_scores::MAX_INITIALS_LENGTH] initials = forge_scores::get_player_initials();
 					// Save the high score
@@ -1160,8 +1167,12 @@ fn int main(String[] args) {
 					forge_scores::draw_high_scores();
 					io::printfn("HIGH_SCORE state: High scores drawn");
 
-					// Show message to continue
-					rl::drawText("Congratulations on your high score!", (rl::getScreenWidth() / 2) - 400, 600, 30, rl::YELLOW);
+					// Show different message based on whether we're just viewing or entered a score
+					if (!__high_score_viewing_only) {
+						rl::drawText("Congratulations on your high score!", (rl::getScreenWidth() / 2) - 400, 600, 30, rl::YELLOW);
+					} else {
+						rl::drawText("HIGH SCORES", (rl::getScreenWidth() / 2) - 150, 600, 30, rl::YELLOW);
+					}
 
 					// Show controller prompt if a controller is detected and active
 					if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
@@ -1177,20 +1188,27 @@ fn int main(String[] args) {
 
 					// Check for button press to exit
 					if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)) {
-						// Determine where to go next based on game state
 						io::printfn("Exiting HIGH_SCORE state");
-						io::printfn("night=%s, player.isDead=%s, nightBoss.isDead=%s",
-						          night ? "true" : "false",
-						          player.isDead ? "true" : "false",
-						          nightBoss.isDead ? "true" : "false");
 
-						if (night && !player.isDead && nightBoss.isDead) {
-							io::printfn("Transitioning to GAME_WIN state");
-							state = GAME_WIN;
-							gameReset = true;
+						// If viewing only, go back to main menu
+						if (__high_score_viewing_only) {
+							state = MAIN;
+							__high_score_viewing_only = false; // Reset the flag
 						} else {
-							io::printfn("Transitioning to GAME_OVER state");
-							state = GAME_OVER;
+							// Determine where to go based on game state
+							io::printfn("night=%s, player.isDead=%s, nightBoss.isDead=%s",
+									  night ? "true" : "false",
+									  player.isDead ? "true" : "false",
+									  nightBoss.isDead ? "true" : "false");
+
+							if (night && !player.isDead && nightBoss.isDead) {
+								io::printfn("Transitioning to GAME_WIN state");
+								state = GAME_WIN;
+								gameReset = true;
+							} else {
+								io::printfn("Transitioning to GAME_OVER state");
+								state = GAME_OVER;
+							}
 						}
 					}
 				}

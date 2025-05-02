@@ -24,7 +24,7 @@ struct Button {
 fn Button createButton(TexMap* tMap, SoundMap* sMap, int count) {
 
     static int spacing = 0;
-    String[8] buttons = {"playButton","optionsButton","highScoreButton","quitButton","creditsButton","menuButton","restartButton","resumeButton"};
+    String[8] buttons = {"playButton","optionsButton","quitButton","creditsButton","highScoreButton","menuButton","restartButton","resumeButton"};
 
     Button b;
 
@@ -78,7 +78,7 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, bool gameR
 
     mousePos = rl::getMousePosition();
     b.bhover = rl::checkCollisionPointRec(mousePos, bRect);
-    
+
     // Process controller mouse simulation if active
     bool xButtonClick = forge_controller::is_simulating_mouse_click();
 
@@ -127,6 +127,10 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, bool gameR
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
                 state = HIGH_SCORE;
+                // Set the flag to indicate we're just viewing high scores
+                forge_main::__high_score_viewing_only = true;
+                // Make sure score processing state is reset
+                forge_main::__force_reset_score_processed = true;
             }else if (b.bhover) {
                 rl::playSound(sMap.get("button")!!);
                 b.currentFrame = 2;
