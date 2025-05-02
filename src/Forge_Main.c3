@@ -40,6 +40,9 @@ const float BOSS_TRANSITION_TIME = 6.0; // Time in seconds to display transition
 const Color FORGE_GRAY = {31,32,34,255};
 const Color FORGE_ORANGE = {186,65,14,255};
 
+// Flag to reset score processing state
+bool __force_reset_score_processed = false;
+
 //Entity Containers
 Construct[] constructs;
 Construct[] demoConstructs;
@@ -71,6 +74,9 @@ fn int main(String[] args) {
 	defer rl::closeAudioDevice();
 	rl::setTargetFPS(FPS_CAP);
 	forge_game::toggleFullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
+	
+	// Initialize high scores
+	forge_scores::init_high_scores();
 
 	//camera
 	Camera2D camera;
@@ -212,6 +218,8 @@ fn int main(String[] args) {
 						 constructs = forge_game::forgeConstructs(&tMap,"day");
        					 state = GAME;
                          gameReset = true;
+                         // Reset score at game start
+                         score = 0;
     				}
 
 					frameCounter += 1;
@@ -229,8 +237,9 @@ fn int main(String[] args) {
         				constructs = forge_game::forgeConstructs(&tMap,"night");
         				randSong = forge_game::getRandomSong();
         				song = mMap.get(randSong)!!;
+                        // Reset score for new game but don't reset high score state
+                        score = 0;
                         gameReset = false;
-                        //score = 0; need to zero score after its recorded
 					}
 
 			case GAME:
@@ -357,9 +366,17 @@ fn int main(String[] args) {
 				if (inTransition && player.isDead) {
 					bossTransitionTimer -= deltaTime;
 					if (bossTransitionTimer <= 0.0) {
-						state = GAME_OVER;
+						// Check if this is a high score before going to GAME_OVER
+						if (forge_scores::is_high_score(score)) {
+							state = HIGH_SCORE;
+							// Force reset of score processed state
+							__force_reset_score_processed = true;
+						} else {
+							state = GAME_OVER;
+						}
 						frameCounter = 0;
 						inTransition = false;
+						soundPlayed = false; // Reset so GAME_OVER sound will play
 					}
 				}
 
@@ -582,9 +599,17 @@ fn int main(String[] args) {
 				if (inTransition && player.isDead) {
 					bossTransitionTimer -= deltaTime;
 					if (bossTransitionTimer <= 0.0) {
-						state = GAME_OVER;
+						// Check if this is a high score before going to GAME_OVER
+						if (forge_scores::is_high_score(score)) {
+							state = HIGH_SCORE;
+							// Force reset of score processed state
+							__force_reset_score_processed = true;
+						} else {
+							state = GAME_OVER;
+						}
 						frameCounter = 0;
 						inTransition = false;
+						soundPlayed = false; // Reset so GAME_OVER sound will play
 					}
 				}
 
@@ -606,7 +631,16 @@ fn int main(String[] args) {
 							if (inTransition && nightBoss.isDead && !player.isDead) {
 								bossTransitionTimer -= deltaTime;
 								if (bossTransitionTimer <= 0.0) {
-									state = GAME_WIN;
+									// Check if this is a high score before going to GAME_WIN
+									if (forge_scores::is_high_score(score)) {
+										state = HIGH_SCORE;
+										gameReset = true; // So GAME_WIN knows to reset
+										// Force reset of score processed state
+										__force_reset_score_processed = true;
+									} else {
+										state = GAME_WIN;
+										gameReset = true; // Reset game for next play
+									}
 									frameCounter = 0;
 									inTransition = false;
 								}
@@ -884,17 +918,9 @@ fn int main(String[] args) {
 				rl::updateMusicStream(mMap.get("gameWin")!!);
 				rl::clearBackground(rl::BLACK);
 
-				// Check if this is a high score and we need to save it
-				if (gameReset && forge_scores::is_high_score(score)) {
-					// Get player initials
-					char[forge_scores::MAX_INITIALS_LENGTH] initials = forge_scores::get_player_initials();
-					// Save the high score
-					forge_scores::add_high_score(initials, score);
-					// Go to high score display
-					state = HIGH_SCORE;
-					gameReset = false;
-				}
-
+				// Note: high score check is now handled during transition
+				// from NIGHTLVL to GAME_WIN, not here, to ensure the player
+				// enters high scores before seeing the win screen
 
 				state = forge_ui::updateButton(&gameWinButton, &sMap, state, gameReset, {10,10});
 				forge_ui::drawButton(&gameWinButton);
@@ -929,19 +955,7 @@ fn int main(String[] args) {
 				//rl::playMusicStream(mMap.get("gameOver")!!);
 				//rl::updateMusicStream(mMap.get("gameOver")!!);
 				rl::clearBackground(rl::BLACK);
-				if(!soundPlayed){rl::playSound(sMap.get("gameOver")!!); soundPlayed = true;};
-
-				// Check if this is a high score and we need to save it
-				if (!gameReset && forge_scores::is_high_score(score)) {
-					// Get player initials
-					char[forge_scores::MAX_INITIALS_LENGTH] initials = forge_scores::get_player_initials();
-					// Save the high score
-					forge_scores::add_high_score(initials, score);
-					// Go to high score display
-					state = HIGH_SCORE;
-					gameReset = true;
-					soundPlayed = false;
-				}
+				if(!soundPlayed){rl::playSound(sMap.get("gameOver")!!); soundPlayed = true;}
 
 				// Background elements
 				rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
@@ -969,6 +983,8 @@ fn int main(String[] args) {
 					constructs = forge_game::forgeConstructs(&tMap,"night");
 					randSong = forge_game::getRandomSong();
 					song = mMap.get(randSong)!!;
+					// Don't reset high score state to avoid potential issues
+					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					state = MAIN;
 					soundPlayed = false;
 					gameReset = true;
@@ -1012,20 +1028,55 @@ fn int main(String[] args) {
 				rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
 				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.7f));
 
+				// Handle high score processing
+				{
+					// Use a static variable to track if we've already processed the score
+					// for this session
+					static bool scoreProcessed = false;
+
+					// Check if we need to force a reset of the scoreProcessed flag
+					if (__force_reset_score_processed) {
+						scoreProcessed = false;
+						__force_reset_score_processed = false; // Reset the flag
+						io::printfn("Score processed state reset");
+					}
+	
+					if (!scoreProcessed) {
+						io::printfn("Getting player initials for high score");
+						// Get player initials
+						char[forge_scores::MAX_INITIALS_LENGTH] initials = forge_scores::get_player_initials();
+						// Save the high score
+						forge_scores::add_high_score(initials, score);
+						scoreProcessed = true;
+					}
+				}
+
 				// Draw high scores
 				forge_scores::draw_high_scores();
 
+				// Show message to continue
+				rl::drawText("Congratulations on your high score!", (rl::getScreenWidth() / 2) - 400, 600, 30, rl::YELLOW);
+
 				// Show controller prompt if a controller is detected
 				if (forge_controller::controllersDetected) {
-					rl::drawText("PRESS ENTER OR A BUTTON TO CONTINUE", (rl::getScreenWidth() / 2) - 320, 700, 20, rl::LIGHTGRAY);
+					rl::drawText("PRESS A BUTTON TO CONTINUE", (rl::getScreenWidth() / 2) - 250, 650, 20, rl::LIGHTGRAY);
 				} else {
-					rl::drawText("PRESS ENTER TO RETURN TO MAIN MENU", (rl::getScreenWidth() / 2) - 300, 650, 20, rl::LIGHTGRAY);
+					rl::drawText("PRESS ENTER TO CONTINUE", (rl::getScreenWidth() / 2) - 200, 650, 20, rl::LIGHTGRAY);
 				}
 
 				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)) {
-					// Return to main menu
-					state = MAIN;
-					gameReset = true;
+					// Determine where to go next based on game state
+					// If we came from night level with a dead boss, go to GAME_WIN
+					// Otherwise go to GAME_OVER
+					if (night && !player.isDead && nightBoss.isDead) {
+						state = GAME_WIN;
+						gameReset = true;
+					} else {
+						state = GAME_OVER;
+					}
+
+					// Reset the score processing flag when changing state
+					// This is done by forcing the static variable out of scope and back in
 				}
 				break;
 
