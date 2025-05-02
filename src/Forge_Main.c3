@@ -74,7 +74,7 @@ fn int main(String[] args) {
 	defer rl::closeAudioDevice();
 	rl::setTargetFPS(FPS_CAP);
 	forge_game::toggleFullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
-	
+
 	// Initialize high scores
 	forge_scores::init_high_scores();
 
@@ -157,7 +157,7 @@ fn int main(String[] args) {
 	}
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
+	GameState state = MAIN;
 
 	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
 	  	float deltaTime = rl::getFrameTime();
@@ -1020,63 +1020,75 @@ fn int main(String[] args) {
 				forge_options::drawOptions();
 
 			case HIGH_SCORE:
+				// Debug print
+				io::printfn("Entered HIGH_SCORE state with score: %d", score);
+				
 				// Render the high scores
 				rl::showCursor();
 
-				// Draw background
-				rl::clearBackground(rl::BLACK);
-				rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
-				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.7f));
+				// Use a static variable to track if we've already processed the score
+				// and another to track if we're showing the high score table
+				static bool scoreProcessed = false;
+				static bool showingHighScores = false;
 
-				// Handle high score processing
-				{
-					// Use a static variable to track if we've already processed the score
-					// for this session
-					static bool scoreProcessed = false;
-
-					// Check if we need to force a reset of the scoreProcessed flag
-					if (__force_reset_score_processed) {
-						scoreProcessed = false;
-						__force_reset_score_processed = false; // Reset the flag
-						io::printfn("Score processed state reset");
-					}
-	
-					if (!scoreProcessed) {
-						io::printfn("Getting player initials for high score");
-						// Get player initials
-						char[forge_scores::MAX_INITIALS_LENGTH] initials = forge_scores::get_player_initials();
-						// Save the high score
-						forge_scores::add_high_score(initials, score);
-						scoreProcessed = true;
-					}
+				// Check if we need to force a reset of the state flags
+				if (__force_reset_score_processed) {
+					scoreProcessed = false;
+					showingHighScores = false;
+					__force_reset_score_processed = false; // Reset the flag
+					io::printfn("Reset score processing state");
 				}
 
-				// Draw high scores
-				forge_scores::draw_high_scores();
+				// First phase: Get player initials and add high score
+				if (!scoreProcessed) {
+					// Get player initials
+					char[forge_scores::MAX_INITIALS_LENGTH] initials = forge_scores::get_player_initials();
+					// Save the high score
+					forge_scores::add_high_score(initials, score);
+					scoreProcessed = true;
+					showingHighScores = true; // Now transition to showing high scores
+					io::printfn("HIGH_SCORE state: Score processed, now showing high scores");
+				} 
+				// Second phase: Show the high score table
+				else if (showingHighScores) {
+					// Draw background
+					rl::clearBackground(rl::BLACK);
+					rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
+					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.7f));
+					io::printfn("HIGH_SCORE state: Drawing high score table background");
 
-				// Show message to continue
-				rl::drawText("Congratulations on your high score!", (rl::getScreenWidth() / 2) - 400, 600, 30, rl::YELLOW);
+					// Draw the high scores
+					forge_scores::draw_high_scores();
+					io::printfn("HIGH_SCORE state: High scores drawn");
 
-				// Show controller prompt if a controller is detected
-				if (forge_controller::controllersDetected) {
-					rl::drawText("PRESS A BUTTON TO CONTINUE", (rl::getScreenWidth() / 2) - 250, 650, 20, rl::LIGHTGRAY);
-				} else {
-					rl::drawText("PRESS ENTER TO CONTINUE", (rl::getScreenWidth() / 2) - 200, 650, 20, rl::LIGHTGRAY);
-				}
+					// Show message to continue
+					rl::drawText("Congratulations on your high score!", (rl::getScreenWidth() / 2) - 400, 600, 30, rl::YELLOW);
 
-				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)) {
-					// Determine where to go next based on game state
-					// If we came from night level with a dead boss, go to GAME_WIN
-					// Otherwise go to GAME_OVER
-					if (night && !player.isDead && nightBoss.isDead) {
-						state = GAME_WIN;
-						gameReset = true;
+					// Show controller prompt if a controller is detected
+					if (forge_controller::controllersDetected) {
+						rl::drawText("PRESS A BUTTON TO CONTINUE", (rl::getScreenWidth() / 2) - 250, 650, 20, rl::LIGHTGRAY);
 					} else {
-						state = GAME_OVER;
+						rl::drawText("PRESS ENTER TO CONTINUE", (rl::getScreenWidth() / 2) - 200, 650, 20, rl::LIGHTGRAY);
 					}
 
-					// Reset the score processing flag when changing state
-					// This is done by forcing the static variable out of scope and back in
+					// Check for button press to exit
+					if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)) {
+						// Determine where to go next based on game state
+						io::printfn("Exiting HIGH_SCORE state");
+						io::printfn("night=%s, player.isDead=%s, nightBoss.isDead=%s", 
+						          night ? "true" : "false", 
+						          player.isDead ? "true" : "false", 
+						          nightBoss.isDead ? "true" : "false");
+						
+						if (night && !player.isDead && nightBoss.isDead) {
+							io::printfn("Transitioning to GAME_WIN state");
+							state = GAME_WIN;
+							gameReset = true;
+						} else {
+							io::printfn("Transitioning to GAME_OVER state");
+							state = GAME_OVER;
+						}
+					}
 				}
 				break;
 

@@ -25,95 +25,87 @@ bool highScoresInitialized = false;
 // Initialize high scores from file or set default values
 // Reads from a text-based .dat file with format: AAA,1000 (one entry per line)
 fn void init_high_scores() {
-    io::printfn("Starting init_high_scores()");
-    
     // First initialize with default values
-    io::printfn("Calling init_defaults()");
     init_defaults();
-    io::printfn("Defaults initialized");
 
     // Set high scores initialized flag early to prevent recursion if something fails
     highScoresInitialized = true;
-    
+
     // Attempt to load high scores from file
     String highScoreFile = "resources/scores/highscores.dat";
-    io::printfn("High score file path: %s", highScoreFile);
-    
+
     // Check if file actually exists before trying to load it
     if (!rl::fileExists((ZString)highScoreFile)) {
-        io::printfn("High score file does not exist, using defaults");
         return;
     }
-    
-    io::printfn("High score file exists, attempting to load");
-    
+
     // THE SAFEST APPROACH: Parse line by line instead of loading the entire file
     // This completely avoids any buffer overflow issues with the file content
-    
+
     // Open the file for reading manually
     File? file_result = file::open(highScoreFile, "r");
     if (catch err = file_result) {
         io::eprintfn("Error: could not open file %s for reading: %s", highScoreFile, err);
         return;
     }
-    
+
     File fh = file_result;
     defer (void)fh.close();
-    
+
     // Read and parse one line at a time
     char[100] lineBuffer;
     int scoreCount = 0;
-    
+
     for (int i = 0; i < MAX_HIGH_SCORES; i++) {
         // Clear the line buffer
         for (int j = 0; j < 100; j++) {
             lineBuffer[j] = 0;
         }
-        
+
         // Read a line from the file
         usz lineLength = 0;
         bool endOfFile = false;
-        
+
         // Read character by character
         for (int j = 0; j < 99; j++) {
             char[1] buffer;
             usz? read_result = fh.read(buffer[0:1]);
-            
+
             // Check for end of file or read error
             if (catch err = read_result) {
                 endOfFile = true;
                 break;
             }
-            
-            // Also check for zero bytes read (end of file) 
+
+            // Also check for zero bytes read (end of file)
             if (read_result == 0) {
                 endOfFile = true;
                 break;
             }
-            
+
             // Get the character
             char c = buffer[0];
             // If we hit a newline, end the line
             if (c == '\n') {
                 break;
             }
-            
+
             // Otherwise add to the line buffer
             lineBuffer[lineLength++] = c;
         }
-        
+
         // If we reached end of file and have no more data, exit the loop
         if (endOfFile && lineLength == 0) {
             break;
         }
-        
+
         // Now process the line
         if (lineLength > 0) {
             // Ensure null termination
             lineBuffer[lineLength] = 0;
-            
+
             io::printfn("Processing line: '%.*s'", (int)lineLength, (ZString)&lineBuffer[0]);
-            
+
             // Find comma separator
             int commaPos = -1;
             for (usz j = 0; j < lineLength; j++) {
@@ -122,7 +114,7 @@ fn void init_high_scores() {
                     break;
                 }
             }
-            
+
             // Parse only if comma was found
             if (commaPos > 0) {
                 // Copy initials (safely)
@@ -134,36 +126,36 @@ fn void init_high_scores() {
                         highScores[scoreCount].initials[j] = 'A';
                     }
                 }
-                
+
                 // Parse score (safely)
                 if (commaPos + 1 < (int)lineLength) {
                     // Reset score
                     highScores[scoreCount].score = 0;
-                    
+
                     for (usz j = (usz)(commaPos + 1); j < lineLength; j++) {
                         if (lineBuffer[j] >= '0' && lineBuffer[j] <= '9') {
                             highScores[scoreCount].score = highScores[scoreCount].score * 10 + (lineBuffer[j] - '0');
                         }
                     }
                 }
-                
-                io::printfn("Loaded score entry %d: %c%c%c = %d", 
+
+                io::printfn("Loaded score entry %d: %c%c%c = %d",
                           scoreCount + 1,
                           highScores[scoreCount].initials[0],
                           highScores[scoreCount].initials[1],
                           highScores[scoreCount].initials[2],
                           highScores[scoreCount].score);
-                
+
                 scoreCount++;
             }
         }
-        
+
         // If we reached end of file, we're done
         if (endOfFile) {
             break;
         }
     }
-    
+
     io::printfn("Loaded %d high scores", scoreCount);
     io::printfn("High scores initialized successfully");
 }
@@ -172,7 +164,7 @@ fn void init_high_scores() {
 // Format: AAA,1000 (one entry per line)
 fn bool save_high_scores() {
     io::printfn("save_high_scores() called");
-    
+
     // Create a text buffer to hold all the high scores data
     // Format: AAA,1000
     // We'll allocate enough space for all records
@@ -185,7 +177,7 @@ fn bool save_high_scores() {
         io::eprintfn("Failed to allocate memory for high scores buffer");
         return false;
     }
-    
+
     usz pos = 0;
     defer mem::free(buffer.ptr);
 
@@ -203,7 +195,7 @@ fn bool save_high_scores() {
         int score = highScores[i].score;
         char[16] scoreStr; // Buffer for score as string
         int scoreLen = 0;
-        
+
         // Handle zero score specially
         if (score == 0) {
             buffer[pos++] = '0';
@@ -214,7 +206,7 @@ fn bool save_high_scores() {
                 scoreStr[scoreLen++] = (char)('0' + (tempScore % 10));
                 tempScore /= 10;
             }
-            
+
             // Reverse the digits (they're backwards)
             for (int j = scoreLen - 1; j >= 0; j--) {
                 buffer[pos++] = scoreStr[j];
@@ -256,30 +248,30 @@ fn void init_defaults() {
 
 // Add a new score to the high scores list if it qualifies
 fn bool is_high_score(int score) {
-    io::printfn("is_high_score called with score: %d", score);
-    
+    io::printfn("Checking if %d is a high score", score);
+
     if (!highScoresInitialized) {
-        io::printfn("High scores not initialized, initializing now");
         init_high_scores();
     }
 
     // Check if the score is higher than any existing score
     for (int i = 0; i < MAX_HIGH_SCORES; i++) {
         if (score > highScores[i].score) {
-            io::printfn("Score %d qualifies as high score (beats position %d with score %d)", 
-                      score, i+1, highScores[i].score);
+            io::printfn("Score %d qualifies as high score (higher than %d at position %d)",
+                       score, highScores[i].score, i+1);
             return true;
         }
     }
 
-    io::printfn("Score %d does not qualify as a high score", score);
+    io::printfn("Score %d does not qualify as high score", score);
     return false;
 }
 
 // Add a new score to the high scores list
 fn void add_high_score(char[MAX_INITIALS_LENGTH] initials, int score) {
-    io::printfn("add_high_score called with score: %d", score);
-    
+    io::printfn("add_high_score called with initials %c%c%c and score %d",
+              initials[0], initials[1], initials[2], score);
+
     if (!highScoresInitialized) {
         io::printfn("High scores not initialized, initializing now");
         init_high_scores();
@@ -290,13 +282,13 @@ fn void add_high_score(char[MAX_INITIALS_LENGTH] initials, int score) {
     for (int i = 0; i < MAX_HIGH_SCORES; i++) {
         if (score > highScores[i].score) {
             insertPos = i;
+            io::printfn("Score %d will be inserted at position %d (replaces %d)",
+                       score, i+1, highScores[i].score);
             break;
         }
     }
 
     if (insertPos >= 0) {
-        io::printfn("Inserting score at position %d", insertPos);
-        
         // Shift lower scores down
         for (int i = MAX_HIGH_SCORES - 1; i > insertPos; i--) {
             highScores[i] = highScores[i - 1];
@@ -309,24 +301,38 @@ fn void add_high_score(char[MAX_INITIALS_LENGTH] initials, int score) {
         }
 
         // Save the updated high scores
-        io::printfn("Calling save_high_scores");
         bool saved = save_high_scores();
         if (!saved) {
             io::printfn("Warning: Failed to save high scores, but score was added to in-memory table");
         }
     } else {
-        io::printfn("Score %d did not qualify for high scores list", score);
+        io::printfn("Score %d did not qualify for high score list", score);
+    }
+
+    // Print the current high scores table for debugging
+    io::printfn("Current high scores table:");
+    for (int i = 0; i < MAX_HIGH_SCORES; i++) {
+        io::printfn("%d. %c%c%c = %d",
+                   i+1,
+                   highScores[i].initials[0],
+                   highScores[i].initials[1],
+                   highScores[i].initials[2],
+                   highScores[i].score);
     }
 }
 
 // Get player initials using raylib text input
 fn char[MAX_INITIALS_LENGTH] get_player_initials() {
+    io::printfn("Getting player initials for score");
     char[MAX_INITIALS_LENGTH] initials = {'A', 'A', 'A'};
     int currentInitial = 0;
     float letterChangeTimer = 0.0f;
     const float LETTER_CHANGE_DELAY = 0.15f;
+    
+    // Flag to know when input is complete
+    bool inputDone = false;
 
-    while (!rl::windowShouldClose()) {
+    while (!rl::windowShouldClose() && !inputDone) {
         float deltaTime = rl::getFrameTime();
         letterChangeTimer -= deltaTime;
 
@@ -334,6 +340,8 @@ fn char[MAX_INITIALS_LENGTH] get_player_initials() {
         if (rl::isKeyPressed(rl::KEY_ENTER) || rl::isKeyPressed(rl::KEY_SPACE) ||
             forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)) {
             // Confirm initials
+            io::printfn("Player entered initials: %c%c%c", initials[0], initials[1], initials[2]);
+            inputDone = true; // Mark as done so we exit the loop
             break;
         }
 
@@ -414,14 +422,21 @@ fn char[MAX_INITIALS_LENGTH] get_player_initials() {
         rl::endDrawing();
     }
 
+    io::printfn("Returning initials: %c%c%c", initials[0], initials[1], initials[2]);
     return initials;
 }
 
 // Draw high scores
 fn void draw_high_scores() {
-    if (!highScoresInitialized) init_high_scores();
+    io::printfn("Drawing high scores table");
+    
+    if (!highScoresInitialized) {
+        io::printfn("High scores not initialized, initializing");
+        init_high_scores();
+    }
 
-    rl::clearBackground(rl::BLACK);
+    // Important: Don't clear the background, as we want to keep what's already drawn
+    // rl::clearBackground(rl::BLACK);  // This line is commented out
 
     // Draw title
     rl::drawText("HIGH SCORES", (rl::getScreenWidth() / 2) - 150, 100, 40, rl::GOLD);
@@ -447,6 +462,10 @@ fn void draw_high_scores() {
 
         // Draw score
         rl::drawText(rl::textFormat("%08i", highScores[i].score), (rl::getScreenWidth() / 2) - 100, yPos, 30, rl::WHITE);
+        
+        // Debug log for this entry
+        io::printfn("Drawing high score %d: %c%c%c = %d", 
+                  i+1, initialsStr[0], initialsStr[1], initialsStr[2], highScores[i].score);
     }
 
     // Draw instructions
@@ -459,13 +478,13 @@ fn bool load_file(String filename, char[]* out_data) {
         io::eprintfn("Error: output data pointer is null");
         return false;
     }
-    
+
     // Initialize output to empty for safety
     *out_data = {};
-    
+
     // Log that we're attempting to open the file
     io::printfn("Attempting to open file: %s", filename);
-    
+
     // Attempt to open the file for reading
     File? file_result = file::open(filename, "rb");
     if (catch err = file_result) {
@@ -484,13 +503,13 @@ fn bool load_file(String filename, char[]* out_data) {
     }
     usz filesize = size_result;
     io::printfn("File size: %d bytes", (int)filesize);
-    
+
     // If file is empty, return success but with empty data
     if (filesize == 0) {
         io::printfn("File %s is empty", filename);
         return true;
     }
-    
+
     // Safety check for excessively large files
     if (filesize > 1024 * 1024) { // 1MB limit for safety
         io::eprintfn("Error: file %s is too large (%d bytes)", filename, (int)filesize);
@@ -523,10 +542,10 @@ fn bool load_file(String filename, char[]* out_data) {
 
     usz actual_size = read_result;
     io::printfn("Read %d bytes from file", (int)actual_size);
-    
+
     // Add null terminator
     buffer[actual_size] = '\0';
-    
+
     // Set the output data
     *out_data = buffer;
     io::printfn("Successfully loaded file %s (%d bytes)", filename, (int)actual_size);
@@ -539,35 +558,35 @@ fn bool save_file(String filename, char[] data) {
         io::eprintfn("Error: Invalid or empty data for file %s", filename);
         return false;
     }
-    
+
     io::printfn("Preparing to save %d bytes to %s", (int)data.len, filename);
-    
+
     // Create a backup of the existing file if it exists
     if (rl::fileExists((ZString)filename)) {
         // Create a backup filename
         char[256] backupNameBuffer;
         usz backupNameLen = 0;
-        
+
         // Copy the original filename
         for (usz i = 0; i < filename.len && backupNameLen < 250; i++) {
             backupNameBuffer[backupNameLen++] = filename[i];
         }
-        
+
         // Add .bak extension
         backupNameBuffer[backupNameLen++] = '.';
         backupNameBuffer[backupNameLen++] = 'b';
         backupNameBuffer[backupNameLen++] = 'a';
         backupNameBuffer[backupNameLen++] = 'k';
         backupNameBuffer[backupNameLen] = '\0';
-        
+
         String backupName = (String)backupNameBuffer[:backupNameLen];
         io::printfn("Creating backup of existing file: %s", backupName);
-        
+
         // Copy file content to backup
         char[] fileContent = {};
         if (load_file(filename, &fileContent)) {
             bool backupSaved = false;
-            
+
             // Try to save the backup
             File? backup_result = file::open(backupName, "wb");
             if (catch backup_err = backup_result) {
@@ -583,13 +602,13 @@ fn bool save_file(String filename, char[] data) {
                 }
                 (void)backup.close();
             }
-            
+
             if (fileContent.ptr) {
                 mem::free(fileContent.ptr);
             }
         }
     }
-    
+
     // Attempt to open the file for writing
     File? file_result = file::open(filename, "wb");
     if (catch err = file_result) {
