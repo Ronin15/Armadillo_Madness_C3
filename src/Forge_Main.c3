@@ -169,9 +169,13 @@ fn int main(String[] args) {
 	  	float updateTime = currentTime - lastTime;
 	  	lastTime = currentTime;
 	  	accumulator += updateTime;
-	  	
+
 	  	// Update controller activity tracking
 	  	forge_controller::update_controller_activity(deltaTime);
+		//check if controller plugged in hot plug! leaving this in in case its ever fixed or works
+		if (deltaTime % 300 == 0) {
+  		    forge_controller::check_for_new_controllers();
+  		}
 
 	  	//render and game states-----------------------------------------------
 		rl::beginDrawing();
@@ -209,20 +213,20 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("titlePage")!!, 0, 0, rl::WHITE);
                 rl::drawTextEx(customFont, GAME_NAME, {((WINDOW_WIDTH / 2) - 700), 200}, 105, 2, rl::BLACK);
-                
+
                 // Force enable mouse control if we have a controller and it's been used
                 if (forge_controller::controllersDetected && forge_controller::controllerUIShown && forge_controller::controllerActive) {
                     // Enable debug mode with F1
                     if (rl::isKeyPressed(rl::KEY_F1)) {
                         forge_controller::toggle_debug();
                     }
-                    
+
                     // Force toggle mouse mode with F3
                     if (rl::isKeyPressed(rl::KEY_F3)) {
                         forge_controller::toggle_mouse_mode();
                         io::printfn("Manual toggle of mouse mode");
                     }
-                    
+
                     // Always enable mouse mode in the main menu when controller is active
                     static bool forceEnabled = false;
                     if (!forceEnabled && forge_controller::controllerActive) {
@@ -232,22 +236,22 @@ fn int main(String[] args) {
                         }
                         forceEnabled = true;
                     }
-                    
+
                     // Debug message
                     if (forge_controller::debugEnabled) {
                         rl::drawText("DEBUG: Controller mouse mode", 400, 50, 20, rl::RED);
                     }
                 }
-                
+
                 // Update mouse control if enabled (for menu navigation)
                 forge_controller::update_mouse_control();
-                
+
                 // Show mouse control status if controller is detected and active
                 if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
-                    rl::drawRectangle(10, 10, 450, 70, rl::fade(FORGE_GRAY, 0.7f));
-                    rl::drawText("Controller detected: Use right stick for cursor", 20, 20, 20, rl::WHITE);
-                    rl::drawText("Press X button to click UI elements", 20, 50, 20, rl::WHITE);
-                    
+                    rl::drawRectangle(200, 10, 505, 70, rl::fade(FORGE_GRAY, 0.7f));
+                    rl::drawText("Controller detected: Use right stick for cursor", 205, 20, 20, rl::WHITE);
+                    rl::drawText("Press X or SQUARE button to click UI elements", 205, 50, 20, rl::WHITE);
+
                     // Debug display at bottom of screen
                     if (forge_controller::debugEnabled) {
                         rl::drawRectangle(10, WINDOW_HEIGHT - 70, 450, 60, rl::fade(FORGE_GRAY, 0.7f));
@@ -266,7 +270,7 @@ fn int main(String[] args) {
 				}
 				forge_fx::fireEffect(deltaTime);
 				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);
-                
+
                 // Draw custom cursor if using controller and it's active
                 if (forge_controller::controllersDetected && forge_controller::is_controller_active() && forge_controller::is_mouse_mode_enabled()) {
                     forge_controller::draw_custom_cursor();
@@ -327,6 +331,9 @@ fn int main(String[] args) {
 		  			state = PAUSE;
 		  			rl::playSound(sMap.get("pause")!!);
 		  		}
+
+				// Check for newly connected controllers every 5 seconds (300 frames at 60 FPS)
+
 				/* DEBUG
 		  		// Toggle controller debug with F1 key
 		  		if (rl::isKeyPressed(rl::KEY_F1)) {
@@ -497,10 +504,10 @@ fn int main(String[] args) {
                 if (rl::isKeyPressed(rl::KEY_F1)) {
                     forge_controller::toggle_debug();
                 }
-                
+
                 // Update mouse control if enabled (but don't show controls in gameplay)
                 forge_controller::update_mouse_control();
-                
+
                 // Show controller status only if active
                 if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
                     rl::drawText(rl::textFormat("Controller: %s", rl::getGamepadName(forge_controller::activeController)),
@@ -741,10 +748,10 @@ fn int main(String[] args) {
                 if (rl::isKeyPressed(rl::KEY_F1)) {
                     forge_controller::toggle_debug();
                 }
-                
+
                 // Update mouse control if enabled (but don't show controls in gameplay)
                 forge_controller::update_mouse_control();
-                
+
                 // Show controller status only if active
                 if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
                     rl::drawText(rl::textFormat("Controller: %s", rl::getGamepadName(forge_controller::activeController)),
@@ -894,7 +901,7 @@ fn int main(String[] args) {
                         rl::drawText("! * GAME PAUSED * ! [-> ESCAPE key to quit. P key to RESUME. ENTER key to restart <-]", 180, 380, 30, rl::RAYWHITE);
                         // Show controller info if available and active
                         if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
-                            rl::drawText("Controller: START to resume, B to restart", 530, 420, 30, rl::RAYWHITE);
+                            rl::drawText("Controller: START to resume, B or O to restart", 530, 420, 30, rl::RAYWHITE);
                         }
 
 						if(dayBoss.active){
@@ -979,15 +986,15 @@ fn int main(String[] args) {
 				rl::playMusicStream(mMap.get("gameWin")!!);
 				rl::updateMusicStream(mMap.get("gameWin")!!);
 				rl::clearBackground(rl::BLACK);
-				
+
 				// Update mouse control if enabled (for menu navigation)
                 forge_controller::update_mouse_control();
-                
+
                 // Show mouse control status if controller is detected and active
                 if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
-                    rl::drawRectangle(10, 10, 450, 70, rl::fade(FORGE_GRAY, 0.7f));
-                    rl::drawText("Controller detected: Use right stick for cursor", 20, 20, 20, rl::WHITE);
-                    rl::drawText("Press X button to click UI elements", 20, 50, 20, rl::WHITE);
+                    rl::drawRectangle(200, 10, 505, 70, rl::fade(FORGE_GRAY, 0.7f));
+                    rl::drawText("Controller detected: Use right stick for cursor", 205, 20, 20, rl::WHITE);
+                    rl::drawText("Press X or SQUARE button to click UI elements", 205, 50, 20, rl::WHITE);
                 }
 
 				// Note: high score check is now handled during transition
@@ -1005,7 +1012,7 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 700), 150, 105, {185,71,0,200});
 				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 350), 300, 60, rl::WHITE);
-                
+
                 // Draw custom cursor if using controller and it's active
                 if (forge_controller::controllersDetected && forge_controller::is_controller_active() && forge_controller::is_mouse_mode_enabled()) {
                     forge_controller::draw_custom_cursor();
@@ -1047,7 +1054,7 @@ fn int main(String[] args) {
 				//forge_ui::drawButton(&menuButton);
 
 				// Additional instructions
-				rl::drawText("Press ENTER (or A button) to try again!", ((WINDOW_WIDTH / 2) - 350), 450, 40, rl::WHITE);
+				rl::drawText("Press ENTER (A or X button) to try again!", ((WINDOW_WIDTH / 2) - 350), 450, 40, rl::WHITE);
 
 
 				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
@@ -1085,15 +1092,15 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
-                
+
                 // Update mouse control if enabled (for menu navigation)
                 forge_controller::update_mouse_control();
-                
+
                 // Show mouse control status if controller is detected and active
                 if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
-                    rl::drawRectangle(10, 10, 450, 70, rl::fade(FORGE_GRAY, 0.7f));
-                    rl::drawText("Controller detected: Use right stick for cursor", 20, 20, 20, rl::WHITE);
-                    rl::drawText("Press X button to click UI elements", 20, 50, 20, rl::WHITE);
+                    rl::drawRectangle(200, 10, 505, 70, rl::fade(FORGE_GRAY, 0.7f));
+                    rl::drawText("Controller detected: Use right stick for cursor", 205, 20, 20, rl::WHITE);
+                    rl::drawText("Press X or SQUARE button to click UI elements", 205, 50, 20, rl::WHITE);
                 }
 
 				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
@@ -1105,7 +1112,7 @@ fn int main(String[] args) {
 
 				//draw Options
 				forge_options::drawOptions();
-                
+
                 // Draw custom cursor if using controller
                 if (forge_controller::controllersDetected && forge_controller::is_mouse_mode_enabled()) {
                     forge_controller::draw_custom_cursor();
@@ -1114,7 +1121,7 @@ fn int main(String[] args) {
 			case HIGH_SCORE:
 				// Debug print
 				io::printfn("Entered HIGH_SCORE state with score: %d", score);
-				
+
 				// Render the high scores
 				rl::showCursor();
 
@@ -1140,7 +1147,7 @@ fn int main(String[] args) {
 					scoreProcessed = true;
 					showingHighScores = true; // Now transition to showing high scores
 					io::printfn("HIGH_SCORE state: Score processed, now showing high scores");
-				} 
+				}
 				// Second phase: Show the high score table
 				else if (showingHighScores) {
 					// Draw background
@@ -1158,8 +1165,8 @@ fn int main(String[] args) {
 
 					// Show controller prompt if a controller is detected and active
 					if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
-						rl::drawText("PRESS A BUTTON TO CONTINUE", (rl::getScreenWidth() / 2) - 250, 650, 20, rl::LIGHTGRAY);
-						
+						rl::drawText("PRESS A or X BUTTON TO CONTINUE", (rl::getScreenWidth() / 2) - 250, 650, 20, rl::LIGHTGRAY);
+
 						// Draw custom cursor if using controller
 						if (forge_controller::is_mouse_mode_enabled()) {
 							forge_controller::draw_custom_cursor();
@@ -1172,11 +1179,11 @@ fn int main(String[] args) {
 					if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)) {
 						// Determine where to go next based on game state
 						io::printfn("Exiting HIGH_SCORE state");
-						io::printfn("night=%s, player.isDead=%s, nightBoss.isDead=%s", 
-						          night ? "true" : "false", 
-						          player.isDead ? "true" : "false", 
+						io::printfn("night=%s, player.isDead=%s, nightBoss.isDead=%s",
+						          night ? "true" : "false",
+						          player.isDead ? "true" : "false",
 						          nightBoss.isDead ? "true" : "false");
-						
+
 						if (night && !player.isDead && nightBoss.isDead) {
 							io::printfn("Transitioning to GAME_WIN state");
 							state = GAME_WIN;
@@ -1206,7 +1213,7 @@ fn int main(String[] args) {
 				if(scrollClouds <= -WINDOW_WIDTH) {scrollClouds = 0;}
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
 
-				if (rl::isKeyPressed(rl::KEY_ENTER)){
+				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
 					state = MAIN;
 					player.pos = {400,500};
 					frameCounter = 0;
@@ -1293,15 +1300,15 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
-                
+
                 // Update mouse control if enabled (for menu navigation)
                 forge_controller::update_mouse_control();
-                
+
                 // Show mouse control status if controller is detected and active
                 if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
-                    rl::drawRectangle(10, 10, 450, 70, rl::fade(FORGE_GRAY, 0.7f));
-                    rl::drawText("Controller detected: Use right stick for cursor", 20, 20, 20, rl::WHITE);
-                    rl::drawText("Press X button to click UI elements", 20, 50, 20, rl::WHITE);
+                    rl::drawRectangle(200, 10, 505, 70, rl::fade(FORGE_GRAY, 0.7f));
+                    rl::drawText("Controller detected: Use right stick for cursor", 205, 20, 20, rl::WHITE);
+                    rl::drawText("Press X or SQUARE button to click UI elements", 205, 50, 20, rl::WHITE);
                 }
 
 				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
@@ -1311,14 +1318,14 @@ fn int main(String[] args) {
 
 
 					forge_ui::drawButton(&menuButton);
-            
+
 					            // Draw custom cursor if using controller and it's active
 					            if (forge_controller::controllersDetected && forge_controller::is_controller_active() && forge_controller::is_mouse_mode_enabled()) {
 					                forge_controller::draw_custom_cursor();
 					            }
    		}
    			//accumulator -= TIME_STEP;
-			
+
 		// Check if state has changed and update mouse mode accordingly
 		if (state != previousState) {
 			forge_controller::auto_enable_mouse_mode(state.ordinal);
