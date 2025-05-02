@@ -328,7 +328,7 @@ fn char[MAX_INITIALS_LENGTH] get_player_initials() {
     int currentInitial = 0;
     float letterChangeTimer = 0.0f;
     const float LETTER_CHANGE_DELAY = 0.15f;
-    
+
     // Flag to know when input is complete
     bool inputDone = false;
 
@@ -429,14 +429,11 @@ fn char[MAX_INITIALS_LENGTH] get_player_initials() {
 // Draw high scores
 fn void draw_high_scores() {
     io::printfn("Drawing high scores table");
-    
+
     if (!highScoresInitialized) {
         io::printfn("High scores not initialized, initializing");
         init_high_scores();
     }
-
-    // Important: Don't clear the background, as we want to keep what's already drawn
-    // rl::clearBackground(rl::BLACK);  // This line is commented out
 
     // Draw title
     rl::drawText("HIGH SCORES", (rl::getScreenWidth() / 2) - 150, 100, 40, rl::GOLD);
@@ -462,14 +459,11 @@ fn void draw_high_scores() {
 
         // Draw score
         rl::drawText(rl::textFormat("%08i", highScores[i].score), (rl::getScreenWidth() / 2) - 100, yPos, 30, rl::WHITE);
-        
+
         // Debug log for this entry
-        io::printfn("Drawing high score %d: %c%c%c = %d", 
+        io::printfn("Drawing high score %d: %c%c%c = %d",
                   i+1, initialsStr[0], initialsStr[1], initialsStr[2], highScores[i].score);
     }
-
-    // Draw instructions
-    rl::drawText("PRESS ENTER TO RETURN TO MAIN MENU", (rl::getScreenWidth() / 2) - 300, 650, 20, rl::LIGHTGRAY);
 }
 
 fn bool load_file(String filename, char[]* out_data) {

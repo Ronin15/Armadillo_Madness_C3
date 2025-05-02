@@ -1168,7 +1168,7 @@ fn int main(String[] args) {
 					// Draw background
 					rl::clearBackground(rl::BLACK);
 					rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
-					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.7f));
+					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.5f));
 					io::printfn("HIGH_SCORE state: Drawing high score table background");
 
 					// Draw the high scores
@@ -1191,7 +1191,7 @@ fn int main(String[] args) {
 							forge_controller::draw_custom_cursor();
 						}
 					} else {
-						rl::drawText("PRESS ENTER TO CONTINUE", (rl::getScreenWidth() / 2) - 200, 650, 20, rl::LIGHTGRAY);
+						rl::drawText("PRESS ENTER TO CONTINUE", (rl::getScreenWidth() / 2) - 220, 700, 20, rl::LIGHTGRAY);
 					}
 
 					// Check for button press to exit
