@@ -68,7 +68,7 @@ enum GameState {
 
 fn int main(String[] args) {
 
-	//init Game Systems
+    //init Game Systems
   	rl::setConfigFlags(rl::FLAG_VSYNC_HINT);//VSYNC not applicable with Raylib target FPS set below vsync capabilities. Need to address when doing the time step.
 	rl::initWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
 	defer rl::closeWindow();
@@ -159,7 +159,7 @@ fn int main(String[] args) {
 	}
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = LOGO;
 	// Auto-configure controller mouse control for initial state
 	forge_controller::auto_enable_mouse_mode(state.ordinal);
 	// Keep track of previous state to detect state changes
@@ -203,6 +203,7 @@ fn int main(String[] args) {
 							state = MAIN;
 							frameCounter = 0;
 							soundPlayed = false;
+							rl::playMusicStream(mMap.get("titleMusic")!!); //manual hack to get title music to play once
 					}
 					break;
 
@@ -210,8 +211,9 @@ fn int main(String[] args) {
 				//slicing out Main ui buttons
 				Button[] mainButtons = uiButtons[0..4];
 				rl::showCursor();
-				rl::playMusicStream(mMap.get("titleMusic")!!);
-				rl::updateMusicStream(mMap.get("titleMusic")!!);
+				if (frameCounter < 650) {
+					rl::updateMusicStream(mMap.get("titleMusic")!!); //manual hack to get title music to play once
+				}
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("titlePage")!!, 0, 0, rl::WHITE);
                 rl::drawTextEx(customFont, GAME_NAME, {((WINDOW_WIDTH / 2) - 700), 200}, 105, 2, rl::BLACK);
@@ -286,6 +288,7 @@ fn int main(String[] args) {
                          gameReset = true;
                          // Reset score at game start
                          score = 0;
+                         frameCounter = 0;
     				}
 
 					frameCounter += 1;
@@ -1301,7 +1304,7 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 300}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("ground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
-				rl::drawTextEx(demoFont, GAME_NAME, {((WINDOW_WIDTH / 2) - 500), 200}, 65, 2, FORGE_ORANGE); //Forge orange
+				rl::drawTextEx(demoFont, GAME_NAME, {((WINDOW_WIDTH / 2) - 500), 200}, 65, 2, rl::BLACK); //Forge orange
 				forge_fx::drawLight(1815, 105, 300, rl::fade(rl::YELLOW, 0.7));
 				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
 				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
