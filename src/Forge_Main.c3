@@ -439,11 +439,14 @@ fn int main(String[] args) {
 					bossTransitionTimer -= deltaTime;
 					if (bossTransitionTimer <= 0.0) {
 						// Check if this is a high score before going to GAME_OVER
+						io::printfn("Game over transition: Checking if score %d is a high score", score);
 						if (forge_scores::is_high_score(score)) {
+							io::printfn("HIGH SCORE detected! Transitioning to HIGH_SCORE state");
 							state = HIGH_SCORE;
 							// Force reset of score processed state
 							__force_reset_score_processed = true;
 						} else {
+							io::printfn("Not a high score, transitioning to GAME_OVER state");
 							state = GAME_OVER;
 						}
 						frameCounter = 0;
@@ -674,11 +677,14 @@ fn int main(String[] args) {
 					bossTransitionTimer -= deltaTime;
 					if (bossTransitionTimer <= 0.0) {
 						// Check if this is a high score before going to GAME_OVER
+						io::printfn("Night level transition: Checking if score %d is a high score", score);
 						if (forge_scores::is_high_score(score)) {
+							io::printfn("HIGH SCORE detected! Transitioning to HIGH_SCORE state");
 							state = HIGH_SCORE;
 							// Force reset of score processed state
 							__force_reset_score_processed = true;
 						} else {
+							io::printfn("Not a high score, transitioning to GAME_OVER state");
 							state = GAME_OVER;
 						}
 						frameCounter = 0;
@@ -706,12 +712,15 @@ fn int main(String[] args) {
 								bossTransitionTimer -= deltaTime;
 								if (bossTransitionTimer <= 0.0) {
 									// Check if this is a high score before going to GAME_WIN
+									io::printfn("Game win transition: Checking if score %d is a high score", score);
 									if (forge_scores::is_high_score(score)) {
+										io::printfn("HIGH SCORE detected! Transitioning to HIGH_SCORE state");
 										state = HIGH_SCORE;
 										gameReset = true; // So GAME_WIN knows to reset
 										// Force reset of score processed state
 										__force_reset_score_processed = true;
 									} else {
+										io::printfn("Not a high score, transitioning to GAME_WIN state");
 										state = GAME_WIN;
 										gameReset = true; // Reset game for next play
 									}
@@ -1143,12 +1152,19 @@ fn int main(String[] args) {
 				static bool scoreProcessed = false;
 				static bool showingHighScores = false;
 
+				io::printfn("Current state flags: scoreProcessed=%s, showingHighScores=%s, __force_reset_score_processed=%s", 
+						scoreProcessed ? "true" : "false", 
+						showingHighScores ? "true" : "false", 
+						__force_reset_score_processed ? "true" : "false");
+
 				// Check if we need to force a reset of the state flags
 				if (__force_reset_score_processed) {
 					scoreProcessed = false;
 					showingHighScores = false;
 					__force_reset_score_processed = false; // Reset the flag
-					io::printfn("Reset score processing state");
+					io::printfn("Reset score processing state: scoreProcessed=%s, showingHighScores=%s", 
+							scoreProcessed ? "true" : "false", 
+							showingHighScores ? "true" : "false");
 				}
 
 				// If we're just viewing high scores, skip the score entry phase

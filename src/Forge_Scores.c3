@@ -251,11 +251,14 @@ fn bool is_high_score(int score) {
     io::printfn("Checking if %d is a high score", score);
 
     if (!highScoresInitialized) {
+        io::printfn("High scores not initialized, initializing now");
         init_high_scores();
     }
 
     // Check if the score is higher than any existing score
     for (int i = 0; i < MAX_HIGH_SCORES; i++) {
+        io::printfn("Comparing score %d with high score at position %d: %d", 
+                  score, i+1, highScores[i].score);
         if (score > highScores[i].score) {
             io::printfn("Score %d qualifies as high score (higher than %d at position %d)",
                        score, highScores[i].score, i+1);
