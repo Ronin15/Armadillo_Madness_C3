@@ -510,6 +510,16 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             //powerup
             if (c.fHit){c.powerUpTimer += 500; poopPenatrate = true; c.fHit = false;}
             if (c.gHit){c.powerUpTimer += 500; c.gravity = 400.0; c.gHit = false;}
+            
+            // Skip input processing if player is dead
+            if (c.isDead) {
+                // Continue physics for death animation
+                c.vel.y += c.gravity * deltaTime;
+                c.pos.y += c.vel.y * deltaTime;
+                c.groundLevel = groundLevel - c.texture.height - 5;
+                return 0;
+            }
+            
             //movement
             bool movingLeft = false;
             bool movingRight = false;
