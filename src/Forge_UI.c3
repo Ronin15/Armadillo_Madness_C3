@@ -8,6 +8,7 @@ import forge_main;
 import forge_load;
 import raylib5::rl;
 import std::io;
+import forge_controller;
 
 struct Button {
     Vector2 pos;
@@ -77,12 +78,15 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, bool gameR
 
     mousePos = rl::getMousePosition();
     b.bhover = rl::checkCollisionPointRec(mousePos, bRect);
+    
+    // Process controller mouse simulation if active
+    bool xButtonClick = forge_controller::is_simulating_mouse_click();
 
     switch(b.name) {
 
         case "playButton":
 
-            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+            if ((b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) || (b.bhover && xButtonClick)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
@@ -102,7 +106,7 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, bool gameR
 
         case "optionsButton":
 
-            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+            if ((b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) || (b.bhover && xButtonClick)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
@@ -118,7 +122,7 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, bool gameR
 
         case "highScoreButton":
 
-            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+            if ((b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) || (b.bhover && xButtonClick)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
@@ -134,7 +138,7 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, bool gameR
 
         case "quitButton":
 
-            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+            if ((b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) || (b.bhover && xButtonClick)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
@@ -150,7 +154,7 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, bool gameR
 
         case "creditsButton":
 
-            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+            if ((b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) || (b.bhover && xButtonClick)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
@@ -166,7 +170,7 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, bool gameR
 
         case "menuButton":
 
-            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+            if ((b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) || (b.bhover && xButtonClick)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
@@ -183,7 +187,7 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, bool gameR
 
         case "restartButton":
 
-            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+            if ((b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) || (b.bhover && xButtonClick)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
@@ -199,7 +203,7 @@ fn GameState updateButton(Button* b, SoundMap* sMap, GameState state, bool gameR
              return state;
 
         case "resumeButton":
-            if (b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) {
+            if ((b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) || (b.bhover && xButtonClick)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);

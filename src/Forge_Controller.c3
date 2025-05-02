@@ -7,6 +7,7 @@ module forge_controller;
 import raylib5::rl;
 import std::io;
 import std::math;
+import forge_main;
 
 // Controller constants
 const int CONTROLLER_DEADZONE = 25; // Deadzone for analog sticks (0-100)
@@ -218,6 +219,181 @@ fn void force_controller_init() {
     }
 }
 
+// Mouse control variables
+const float MOUSE_SENSITIVITY = 25.0; // Balanced sensitivity for left stick
+bool mouseModeEnabled = false;        // Whether analog stick mouse mode is enabled
+
+// Enable/disable mouse control via right analog stick
+fn void toggle_mouse_mode() {
+    mouseModeEnabled = !mouseModeEnabled;
+    io::printfn("Analog stick mouse control %s", mouseModeEnabled ? "ENABLED" : "DISABLED");
+    
+    // Always show cursor when mouse mode is enabled
+    if (mouseModeEnabled) {
+        rl::showCursor();
+    }
+}
+
+// Auto-enable mouse control based on game state
+// Game state constants (matching Forge_Main.c3)
+const int STATE_LOGO = 0;
+const int STATE_MAIN = 1;
+const int STATE_OPTIONS = 2;
+const int STATE_GAME = 3;
+const int STATE_NIGHTLVL = 4;
+const int STATE_PAUSE = 5;
+const int STATE_GAME_WIN = 6;
+const int STATE_GAME_OVER = 7;
+const int STATE_CREDITS = 8;
+const int STATE_DEMO = 9;
+const int STATE_HIGH_SCORE = 10;
+
+fn void auto_enable_mouse_mode(int state) {
+    // Debug the current state
+    if (debugEnabled) {
+        io::printfn("auto_enable_mouse_mode called with state: %d", state);
+        io::printfn("Current mouseModeEnabled: %s", mouseModeEnabled ? "true" : "false");
+    }
+    
+    // Only enable for menu/UI states
+    if (state == STATE_MAIN || 
+        state == STATE_OPTIONS || 
+        state == STATE_CREDITS || 
+        state == STATE_HIGH_SCORE || 
+        state == STATE_GAME_WIN || 
+        state == STATE_GAME_OVER) {
+        // Auto-enable mouse control for menu states if controller is detected
+        if (controllersDetected && !mouseModeEnabled) {
+            mouseModeEnabled = true;
+            io::printfn("Mouse control auto-enabled for menu state %d", state);
+        }
+    } else if (state == STATE_GAME || 
+               state == STATE_NIGHTLVL || 
+               state == STATE_DEMO) {
+        // Auto-disable for gameplay states
+        if (mouseModeEnabled) {
+            mouseModeEnabled = false;
+            io::printfn("Mouse control auto-disabled for gameplay state %d", state);
+        }
+    }
+    // For other states, leave the current mouse mode setting
+    
+    if (debugEnabled) {
+        io::printfn("Final mouseModeEnabled: %s", mouseModeEnabled ? "true" : "false");
+    }
+}
+
+// Update mouse position based on right stick input only
+fn void update_mouse_position() {
+    if (!controllersDetected || !mouseModeEnabled) return;
+    
+    // Use right stick for mouse control (usually axes 2 and 3)
+    float xMove = get_axis(2); // Right stick X axis
+    float yMove = get_axis(3); // Right stick Y axis
+    
+    // Debug output for analog stick values
+    if (debugEnabled) {
+        for (int i = 0; i < 6; i++) {
+            float val = get_axis(i);
+            if (math::abs(val) > 0.01) {
+                io::printfn("Axis %d: %.3f", i, val);
+            }
+        }
+        io::printfn("Using RIGHT stick for mouse - X: %.3f, Y: %.3f", xMove, yMove);
+    }
+    
+    // Only move if the stick is actually being moved
+    if (math::abs(xMove) > 0.0 || math::abs(yMove) > 0.0) {
+        // Get current mouse position
+        Vector2 mousePos = rl::getMousePosition();
+        
+        // Calculate new position based on stick movement
+        // Note: Y axis is inverted because pushing up should move cursor up
+        float newX = mousePos.x + (xMove * MOUSE_SENSITIVITY);
+        float newY = mousePos.y + (yMove * MOUSE_SENSITIVITY);
+        
+        // Clamp to screen boundaries
+        int screenWidth = rl::getScreenWidth();
+        int screenHeight = rl::getScreenHeight();
+        
+        if (newX < 0) newX = 0;
+        if (newX > screenWidth) newX = screenWidth;
+        if (newY < 0) newY = 0;
+        if (newY > screenHeight) newY = screenHeight;
+        
+        // Set new mouse position
+        rl::setMousePosition((int)newX, (int)newY);
+        
+        if (debugEnabled) {
+            io::printfn("Mouse moved to: %.0f, %.0f", newX, newY);
+        }
+    }
+}
+
+// Check if X button is pressed and simulate a mouse click if it is
+fn void process_mouse_click() {
+    if (!controllersDetected || !mouseModeEnabled) return;
+    
+    // Debug output for button states
+    if (debugEnabled) {
+        // Check all buttons to see which ones are active
+        for (int i = 0; i < 18; i++) {
+            if (is_button_down(i)) {
+                io::printfn("Button %d is DOWN", i);
+            }
+        }
+    }
+    
+    // Use our enhanced detection for X button
+    if (is_simulating_mouse_click()) {
+        // Simulate a mouse left click at the current position
+        Vector2 mousePos = rl::getMousePosition();
+        io::printfn("X button PRESSED - simulating mouse click at position: %.0f, %.0f", 
+                  mousePos.x, mousePos.y);
+    }
+}
+
+// Check if the controller is trying to click with the X button
+fn bool is_simulating_mouse_click() {
+    if (!controllersDetected || !mouseModeEnabled) return false;
+    
+    // Try different button mappings that could represent the X button
+    // Common mappings for X button (varies by controller type and driver)
+    bool buttonPressed = false;
+    
+    // Standard Xbox mapping (RIGHT_FACE_LEFT is button index 8)
+    buttonPressed = is_button_pressed(rl::GamepadButton.RIGHT_FACE_LEFT.ordinal);
+    
+    // If not pressed, try alternative mappings (some controllers use different indices)
+    if (!buttonPressed) {
+        // Other common X button mappings (might vary by controller)
+        const int[] ALTERNATIVE_BUTTONS = {2, 3, 0, 6};
+        foreach (btnIdx : ALTERNATIVE_BUTTONS) {
+            if (is_button_pressed(btnIdx)) {
+                buttonPressed = true;
+                if (debugEnabled) io::printfn("Alternative X button detected on index: %d", btnIdx);
+                break;
+            }
+        }
+    }
+    
+    return buttonPressed;
+}
+
+// Main function to update all mouse control functionality
+fn void update_mouse_control() {
+    if (mouseModeEnabled) {
+        // Make sure cursor is visible
+        rl::showCursor();
+        
+        // Update mouse position based on stick input
+        update_mouse_position();
+        
+        // Process button clicks
+        process_mouse_click();
+    }
+}
+
 // Check if any controller button is pressed directly, bypassing Raylib's controller detection
 fn bool check_raw_buttons() {
     // Only run this check when debug is enabled
@@ -236,4 +412,26 @@ fn bool check_raw_buttons() {
     
     return found;
 }
+
+// Getter for mouseModeEnabled
+fn bool is_mouse_mode_enabled() {
+    return mouseModeEnabled;
+}
+
+// Draw a custom, more visible cursor if needed
+fn void draw_custom_cursor() {
+    if (!mouseModeEnabled) return;
+    
+    // Get current mouse position
+    Vector2 mousePos = rl::getMousePosition();
+    
+    // Draw an enhanced cursor at the mouse position
+    // Outer highlight (larger circle)
+    rl::drawCircleV(mousePos, 15, rl::fade(rl::BLACK, 0.3f)); 
+    // Main cursor (medium circle)
+    rl::drawCircleV(mousePos, 10, rl::fade(rl::WHITE, 0.7f));
+    // Center point (small circle)
+    rl::drawCircleV(mousePos, 3, rl::RED);
+}
+
 
