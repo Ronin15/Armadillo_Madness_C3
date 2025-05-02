@@ -265,7 +265,9 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 				foreach (&mainButton : mainButtons){
-					state = forge_ui::updateButton(mainButton, &sMap, state, gameReset);
+					forge_ui::ButtonResult result = forge_ui::updateButton(mainButton, &sMap, state, gameReset);
+					state = result.state;
+					gameReset = result.gameReset;
 				}
 				foreach (&mainButton : mainButtons){
 					forge_ui::drawButton(mainButton);
@@ -1003,7 +1005,9 @@ fn int main(String[] args) {
 				// from NIGHTLVL to GAME_WIN, not here, to ensure the player
 				// enters high scores before seeing the win screen
 
-				state = forge_ui::updateButton(&gameWinButton, &sMap, state, gameReset, {10,10});
+				forge_ui::ButtonResult result = forge_ui::updateButton(&gameWinButton, &sMap, state, gameReset, {10,10});
+				state = result.state;
+				gameReset = result.gameReset;
 				forge_ui::drawButton(&gameWinButton);
 
 				forge_fx::drawRainbow();
@@ -1036,7 +1040,7 @@ fn int main(String[] args) {
 				//io::printfn("Game_Over State");
 
 				// Just using menu button
-				//Button menuButton = uiButtons[4];
+				Button menuButton = uiButtons[5];
 				//rl::showCursor();
 				//rl::playMusicStream(mMap.get("gameOver")!!);
 				//rl::updateMusicStream(mMap.get("gameOver")!!);
@@ -1052,8 +1056,10 @@ fn int main(String[] args) {
 				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 350), 350, 60, rl::WHITE);
 
 				// Menu button handling
-				//state = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
-				//forge_ui::drawButton(&menuButton);
+				forge_ui::ButtonResult result = forge_ui::updateButton(&menuButton, &sMap, state, gameReset, {10,10});
+				state = result.state;
+				gameReset = result.gameReset;
+				forge_ui::drawButton(&menuButton);
 
 				// Additional instructions
 				rl::drawText("Press ENTER (A or X button) to try again!", ((WINDOW_WIDTH / 2) - 350), 450, 40, rl::WHITE);
@@ -1080,7 +1086,7 @@ fn int main(String[] args) {
 			case OPTIONS:
 
 				//just using menu button.
-				Button menuButton = uiButtons[4];
+				Button menuButton = uiButtons[5];
 				rl::showCursor();
 				if(rl::isMusicStreamPlaying(song) == false){
 						rl::playMusicStream(song);
@@ -1107,7 +1113,9 @@ fn int main(String[] args) {
 
 				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				//rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
-				state = forge_ui::updateButton(&menuButton, &sMap, state, gameReset, {10,10});
+				forge_ui::ButtonResult result = forge_ui::updateButton(&menuButton, &sMap, state, gameReset, {10,10});
+				state = result.state;
+				gameReset = result.gameReset;
 				forge_ui::drawButton(&menuButton);
 
 				//update master volume, music volume.
@@ -1311,7 +1319,7 @@ fn int main(String[] args) {
 
 				//io::printfn("Credits State");
 				//just using menu button.
-				Button menuButton = uiButtons[4];
+				Button menuButton = uiButtons[5];
 				rl::showCursor();
 				rl::playMusicStream(mMap.get(randSong)!!);
 				rl::updateMusicStream(mMap.get(randSong)!!);
@@ -1332,7 +1340,9 @@ fn int main(String[] args) {
 				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				//rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 
-					state = forge_ui::updateButton(&menuButton, &sMap, state, gameReset, {10,10});
+					forge_ui::ButtonResult result = forge_ui::updateButton(&menuButton, &sMap, state, gameReset, {10,10});
+					state = result.state;
+					gameReset = result.gameReset;
 
 
 					forge_ui::drawButton(&menuButton);
