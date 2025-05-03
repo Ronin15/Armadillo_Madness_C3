@@ -29,15 +29,15 @@ Option [NUM_OPTIONS] options = {
 
 fn void adjustUpdateOptions(Music song) {
     // Check keyboard input
-    if (rl::isKeyPressed(rl::KEY_UP) || forge_controller::is_button_pressed(1) || forge_controller::get_axis(1) < -0.5) {
+    if (rl::isKeyPressed(rl::KEY_UP) || forge_controller::is_button_pressed(1)){
         optionIndex = (optionIndex - 1 + NUM_OPTIONS) % NUM_OPTIONS;
     }
-    if (rl::isKeyPressed(rl::KEY_DOWN) || forge_controller::is_button_pressed(3) || forge_controller::get_axis(1) > 0.5) {
+    if (rl::isKeyPressed(rl::KEY_DOWN) || forge_controller::is_button_pressed(3)) {
         optionIndex = (optionIndex + 1) % NUM_OPTIONS;
     }
 
     // Handle left inputs (decrease value or toggle off)
-    if (rl::isKeyPressed(rl::KEY_LEFT) || forge_controller::is_button_pressed(4) || forge_controller::get_axis(0) < -0.5) {
+    if (rl::isKeyPressed(rl::KEY_LEFT) || forge_controller::is_button_pressed(4)) {
         if (optionIndex == 0) { // Decrease Master Volume
             if (options[optionIndex].value > 0.0) {
                 options[optionIndex].value -= 0.1;
@@ -56,7 +56,7 @@ fn void adjustUpdateOptions(Music song) {
     }
 
     // Handle right inputs (increase value or toggle on)
-    if (rl::isKeyPressed(rl::KEY_RIGHT) || forge_controller::is_button_pressed(2) || forge_controller::get_axis(0) > 0.5) {
+    if (rl::isKeyPressed(rl::KEY_RIGHT) || forge_controller::is_button_pressed(2)) {
         if (optionIndex == 0) { // Increase Master Volume
             if (options[optionIndex].value < 1.0) options[optionIndex].value += 0.1;
             rl::setMasterVolume((float)options[optionIndex].value / 1.0);
@@ -71,6 +71,7 @@ fn void adjustUpdateOptions(Music song) {
         }
     }
 
+    /*
     // Alternative: toggle with Enter/Space for boolean options or controller buttons
     if (options[optionIndex].isBool && 
         (rl::isKeyPressed(rl::KEY_ENTER) || 
@@ -80,6 +81,7 @@ fn void adjustUpdateOptions(Music song) {
         options[optionIndex].value = options[optionIndex].value > 0.0 ? 0.0 : 1.0; // Toggle between 0 and 1
         rl::toggleFullscreen();
     }
+    */
 }
 
 fn void drawOptions() {
@@ -88,16 +90,16 @@ fn void drawOptions() {
             // For boolean options, display as On/Off
             String state = options[i].value > 0.0 ? "On" : "Off";
             if (i == optionIndex) {
-                rl::drawText(rl::textFormat("> %s: %s", options[i].name, state), (forge_main::WINDOW_WIDTH / 2) - 150, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::YELLOW);
+                rl::drawText(rl::textFormat("> %s: %s", options[i].name, state), (forge_main::WINDOW_WIDTH / 2) - 200, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::YELLOW);
             } else {
-                rl::drawText(rl::textFormat("%s: %s", options[i].name, state), (forge_main::WINDOW_WIDTH / 2) - 150, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::BLACK);
+                rl::drawText(rl::textFormat("%s: %s", options[i].name, state), (forge_main::WINDOW_WIDTH / 2) - 200, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::BLACK);
             }
         } else {
             // For numeric options, display value
             if (i == optionIndex) {
-                rl::drawText(rl::textFormat("> %s: %.1f", options[i].name, options[i].value), (forge_main::WINDOW_WIDTH / 2) - 150, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::YELLOW);
+                rl::drawText(rl::textFormat("> %s: %.1f", options[i].name, options[i].value), (forge_main::WINDOW_WIDTH / 2) - 200, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::YELLOW);
             } else {
-                rl::drawText(rl::textFormat("%s: %.1f", options[i].name, options[i].value), (forge_main::WINDOW_WIDTH / 2) - 150, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::BLACK);
+                rl::drawText(rl::textFormat("%s: %.1f", options[i].name, options[i].value), (forge_main::WINDOW_WIDTH / 2) - 200, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::BLACK);
             }
         }
     }
