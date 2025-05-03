@@ -312,8 +312,9 @@ fn int main(String[] args) {
 					}
 
 			case GAME:
+
 				if (!constructs){
-			         io::printfn("init array");
+			         io::printfn("init_array -> Day");
 					//creating game entities
 					constructs = forge_game::forgeConstructs(&tMap,"day");
 				}
@@ -604,7 +605,7 @@ fn int main(String[] args) {
 			case NIGHTLVL:
 
     			if (!nightConstructs){
-    			         io::printfn("init array");
+    			         io::printfn("init_array -> Night");
     					//creating game entities
     					nightConstructs = forge_game::forgeConstructs(&tMap,"night");
     			}
@@ -1048,6 +1049,7 @@ fn int main(String[] args) {
                     //score = 0; need to zero score after its recorded
 				}
 				break;
+
 			case GAME_OVER:
 				//io::printfn("Game_Over State");
 
@@ -1255,7 +1257,7 @@ fn int main(String[] args) {
 			case DEMO:
 
 			     if (!demoConstructs){
-			         io::printfn("init array");
+			         io::printfn("init_array -> Demo");
 					//creating demo entities
 					demoConstructs = forge_game::forgeConstructs(&tMap,"demo");
 				}
