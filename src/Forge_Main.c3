@@ -285,11 +285,11 @@ fn int main(String[] args) {
 
 				 	if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
 						 constructs = forge_game::forgeConstructs(&tMap,"day");
-       					 state = GAME;
                          gameReset = true;
                          // Reset score at game start
                          score = 0;
                          frameCounter = 0;
+                         state = GAME;
     				}
 
 					frameCounter += 1;
