@@ -558,7 +558,7 @@ fn int main(String[] args) {
 					rl::drawText("MAD COUGAR", 20, 230, 35, rl::RED);
 					if (&dayBoss.lives == &dayBoss.lives){
 						for (int i = 0; i < dayBoss.lives; i++){
-							Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 325};
+							Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 330};
 							rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
 						}
 					}
@@ -808,7 +808,7 @@ fn int main(String[] args) {
 					rl::drawText("MAD Alien Visage", 20, 230, 35, rl::RED);
 					if (&nightBoss.lives == &nightBoss.lives){
 						for (int i = 0; i < nightBoss.lives; i++){
-							Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 325};
+							Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 330};
 							rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
 						}
 					}
@@ -936,6 +936,19 @@ fn int main(String[] args) {
 						}
                     }
                 if (night){
+
+                    if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_LEFT.ordinal)){
+    				    state = MAIN;
+    					//clean all assetes needed here to fully reset
+    					player = forge_game::forgeCronstructPlayer(&tMap);
+                    				dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
+                    				nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
+                    				constructs = forge_game::forgeConstructs(&tMap,"day", gameReset);
+                    				constructs = forge_game::forgeConstructs(&tMap,"night", gameReset);
+                    				randSong = forge_game::getRandomSong();
+                    				song = mMap.get(randSong)!!;
+                                    score = 0;
+    				}
 
         				//draw game elements------------------------------------------------------------------------------
         				rl::drawTexture(tMap.get("nightsky")!!, 0, 0, rl::WHITE);
@@ -1123,7 +1136,7 @@ fn int main(String[] args) {
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
 				rl::drawText("Use Controller D-Pad or Keyboard up, down, left, right.", ((WINDOW_WIDTH / 2) - 600), 400, 45, rl::BLACK);
-				
+
                 // Update mouse control if enabled (for menu navigation)
                 forge_controller::update_mouse_control();
 
