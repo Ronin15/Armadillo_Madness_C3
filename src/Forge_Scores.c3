@@ -249,7 +249,7 @@ fn void init_defaults() {
         io::printfn("High scores initialized with defaults!");
      }else{
         io::printfn("High scores already exists!");
-    }   
+    }
 }
 
 // Add a new score to the high scores list if it qualifies
@@ -263,7 +263,7 @@ fn bool is_high_score(int score) {
 
     // Check if the score is higher than any existing score
     for (int i = 0; i < MAX_HIGH_SCORES; i++) {
-        io::printfn("Comparing score %d with high score at position %d: %d", 
+        io::printfn("Comparing score %d with high score at position %d: %d",
                   score, i+1, highScores[i].score);
         if (score > highScores[i].score) {
             io::printfn("Score %d qualifies as high score (higher than %d at position %d)",
@@ -409,23 +409,23 @@ fn char[MAX_INITIALS_LENGTH] get_player_initials() {
 
         // Draw instruction
         rl::drawText("NEW HIGH SCORE!", (rl::getScreenWidth() / 2) - 200, 200, 40, rl::GOLD);
-        rl::drawText("ENTER YOUR INITIALS:", (rl::getScreenWidth() / 2) - 250, 300, 30, rl::WHITE);
+        rl::drawText("ENTER YOUR INITIALS:", (rl::getScreenWidth() / 2) - 190, 300, 30, rl::WHITE);
 
         // Draw initials with the current one highlighted
         for (int i = 0; i < MAX_INITIALS_LENGTH; i++) {
             rl::Color textColor = (i == currentInitial) ? rl::GOLD : rl::WHITE;
             // Create a null-terminated string for the letter
             char[2] letter = {initials[i], '\0'};
-            rl::drawText((ZString)&letter[0], (rl::getScreenWidth() / 2) - 50 + (i * 50), 400, 60, textColor);
+            rl::drawText((ZString)&letter[0], (rl::getScreenWidth() / 2) - 80 + (i * 50), 400, 60, textColor);
         }
 
         // Draw instructions for keyboard and controller (if detected)
         rl::drawText("UP/DOWN: Change Letter | LEFT/RIGHT: Select Letter | ENTER: Confirm",
-                    (rl::getScreenWidth() / 2) - 400, 500, 20, rl::LIGHTGRAY);
+                    (rl::getScreenWidth() / 2) - 350, 500, 20, rl::LIGHTGRAY);
 
         if (forge_controller::controllersDetected) {
             rl::drawText("CONTROLLER: D-PAD to navigate | A Button to Confirm",
-                         (rl::getScreenWidth() / 2) - 350, 530, 20, rl::LIGHTGRAY);
+                         (rl::getScreenWidth() / 2) - 250, 530, 20, rl::LIGHTGRAY);
         }
 
         rl::endDrawing();
@@ -445,7 +445,7 @@ fn void draw_high_scores() {
     }
 
     // Draw title
-    rl::drawText("HIGH SCORES", (rl::getScreenWidth() / 2) - 150, 100, 40, rl::GOLD);
+    rl::drawText("HIGH SCORES", (rl::getScreenWidth() / 2) - 170, 100, 40, rl::GOLD);
 
     // Draw scores
     for (int i = 0; i < MAX_HIGH_SCORES; i++) {
@@ -461,13 +461,13 @@ fn void draw_high_scores() {
         };
 
         // Draw rank
-        rl::drawText(rl::textFormat("%d.", i + 1), (rl::getScreenWidth() / 2) - 300, yPos, 30, rl::WHITE);
+        rl::drawText(rl::textFormat("%d.", i + 1), (rl::getScreenWidth() / 2) - 200, yPos, 30, rl::WHITE);
 
         // Draw initials
-        rl::drawText((ZString)&initialsStr[0], (rl::getScreenWidth() / 2) - 250, yPos, 30, rl::WHITE);
+        rl::drawText((ZString)&initialsStr[0], (rl::getScreenWidth() / 2) - 150, yPos, 30, rl::WHITE);
 
         // Draw score
-        rl::drawText(rl::textFormat("%08i", highScores[i].score), (rl::getScreenWidth() / 2) - 100, yPos, 30, rl::WHITE);
+        rl::drawText(rl::textFormat("%08i", highScores[i].score), (rl::getScreenWidth() / 2), yPos, 30, rl::WHITE);
 
         // Debug log for this entry
         // io::printfn("Drawing high score %d: %c%c%c = %d", i+1, initialsStr[0], initialsStr[1], initialsStr[2], highScores[i].score);
