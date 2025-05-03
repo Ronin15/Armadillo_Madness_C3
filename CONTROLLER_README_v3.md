@@ -1,4 +1,4 @@
-# Controller Support for Armadillo Madness
+`# Controller Support for Armadillo Madness
 
 ## Overview
 
