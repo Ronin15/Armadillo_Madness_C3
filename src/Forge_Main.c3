@@ -284,10 +284,6 @@ fn int main(String[] args) {
                 }
 
 				 	if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
-						 constructs = forge_game::forgeConstructs(&tMap,"day");
-                         gameReset = true;
-                         // Reset score at game start
-                         score = 0;
                          frameCounter = 0;
                          state = GAME;
     				}
@@ -297,21 +293,6 @@ fn int main(String[] args) {
 					if (frameCounter > 1000) { //1000 for testing
 					        state = DEMO;
 							frameCounter = 0;
-					}
-
-					if (gameReset){
-        				player = forge_game::forgeCronstructPlayer(&tMap);
-        				dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
-        				nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
-        				constructs = forge_game::forgeConstructs(&tMap,"day");
-        				constructs = forge_game::forgeConstructs(&tMap,"night");
-        				randSong = forge_game::getRandomSong();
-        				song = mMap.get(randSong)!!;
-                        // Reset power-up counters
-                        forge_game::resetPowerUpCounters();
-                        // Reset score for new game but don't reset high score state
-                        score = 0;
-                        gameReset = false;
 					}
 
 			case GAME:
@@ -864,20 +845,7 @@ fn int main(String[] args) {
 					if (night){state = NIGHTLVL;}
 					rl::playSound(sMap.get("unpause")!!);
 				}
-				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_LEFT.ordinal)){
-				    state = MAIN;
-					//clean all assetes needed here to fully reset
-					player = forge_game::forgeCronstructPlayer(&tMap);
-    				dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
-    				nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
-    				constructs = forge_game::forgeConstructs(&tMap,"day");
-    				constructs = forge_game::forgeConstructs(&tMap,"night");
-    				randSong = forge_game::getRandomSong();
-    				song = mMap.get(randSong)!!;
-                    // Reset power-up counters
-                    forge_game::resetPowerUpCounters();
-                    score = 0;
-				}
+
 				if (day){
 
         				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
@@ -890,8 +858,6 @@ fn int main(String[] args) {
         				forge_fx::drawLight(1815, 105, 300, rl::fade(rl::YELLOW, 0.7));
         				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
         				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
-        				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
-
 
         				forge_game::drawAnimatedConstruct(&player);
         				forge_game::drawPoopShot(&poopShot,&player);
@@ -908,18 +874,30 @@ fn int main(String[] args) {
        					forge_fx::forgeFXManager(&mMap, &sMap,"rain", deltaTime);
         				}
 
-        				//drawing pause stuff here so objects dont cover it up
-        				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
-        				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);
+                        rl::drawRectangle(5, 5, 400, 200, {0,0,0,150});
+        				rl::drawText(rl::textFormat("Score: %08i", score), 15, 20, 40, rl::RAYWHITE);
         				rl::drawText("Health", 16, 60, 35, rl::RAYWHITE);
+        				//life tracking updating
         				if (&player.lives == &player.lives){
        					for (int i = 0; i < player.lives; i++){
       						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
       						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
-       					    }
+       					}
         				}
+
+        				if(player.invlunerable){
+        				    rl::drawText(rl::textFormat("Invulnerable: %.1f", player.invulnTimer), 15, 150, 23, rl::RAYWHITE);
+        				}
+        				if(player.powerUpTimer >= 0){
+        				    rl::drawText(rl::textFormat("PowerUp: %.1f", player.powerUpTimer), 15, 175, 23, rl::RAYWHITE);
+        				}
+        				//end Hud
         				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
+
+
+
                         //button update stuff would go here
+
                         rl::drawText("! * GAME PAUSED * ! [-> ESCAPE key to quit. P key to RESUME. ENTER key to restart <-]", 180, 380, 30, rl::RAYWHITE);
                         // Show controller info if available and active
                         if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
@@ -940,21 +918,6 @@ fn int main(String[] args) {
 						}
                     }
                 if (night){
-
-                    if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_LEFT.ordinal)){
-    				    state = MAIN;
-    					//clean all assetes needed here to fully reset
-    					player = forge_game::forgeCronstructPlayer(&tMap);
-                    				dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
-                    				nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
-                    				constructs = forge_game::forgeConstructs(&tMap,"day");
-                    				constructs = forge_game::forgeConstructs(&tMap,"night");
-                    				randSong = forge_game::getRandomSong();
-                    				song = mMap.get(randSong)!!;
-                                    // Reset power-up counters
-                                    forge_game::resetPowerUpCounters();
-                                    score = 0;
-    				}
 
         				//draw game elements------------------------------------------------------------------------------
         				rl::drawTexture(tMap.get("nightsky")!!, 0, 0, rl::WHITE);
@@ -985,16 +948,24 @@ fn int main(String[] args) {
        					forge_fx::forgeFXManager(&mMap, &sMap,"rain", deltaTime);
         				}
 
-        				//drawing pause stuff here so objects dont cover it up
-        				rl::drawRectangle(5, 5, 400, 150, {0,0,0,150});
-        				rl::drawText(rl::textFormat("Score: %08i", score), 16, 25, 40, rl::RAYWHITE);
+                        rl::drawRectangle(5, 5, 400, 200, {0,0,0,150});
+        				rl::drawText(rl::textFormat("Score: %08i", score), 15, 20, 40, rl::RAYWHITE);
         				rl::drawText("Health", 16, 60, 35, rl::RAYWHITE);
+        				//life tracking updating
         				if (&player.lives == &player.lives){
-       					for (int i = 0; i < player.lives; i++){
-      						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
-      						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
-       					    }
+           					for (int i = 0; i < player.lives; i++){
+          						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
+          						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
+           					}
         				}
+
+        				if(player.invlunerable){
+        				    rl::drawText(rl::textFormat("Invulnerable: %.1f", player.invulnTimer), 15, 150, 23, rl::RAYWHITE);
+        				}
+        				if(player.powerUpTimer >= 0){
+        				    rl::drawText(rl::textFormat("PowerUp: %.1f", player.powerUpTimer), 15, 175, 23, rl::RAYWHITE);
+        				}
+        				//end Hud
         				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
 
 						//button update stuff here.
@@ -1124,7 +1095,6 @@ fn int main(String[] args) {
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					state = MAIN;
 					soundPlayed = false;
-					gameReset = true;
 				}
 				break;
 

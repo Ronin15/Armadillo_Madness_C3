@@ -202,7 +202,7 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
                 gameReset = false; // Explicitly don't reset game
-                state = MAIN;
+                state = GAME_OVER;
 
             }else if (b.bhover) {
                 rl::playSound(sMap.get("button")!!);
