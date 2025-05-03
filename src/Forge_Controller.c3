@@ -7,7 +7,6 @@ module forge_controller;
 import raylib5::rl;
 import std::io;
 import std::math;
-import forge_main;
 
 // Controller constants
 const int CONTROLLER_DEADZONE = 25; // Deadzone for analog sticks (0-100)

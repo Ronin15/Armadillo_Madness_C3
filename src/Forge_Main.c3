@@ -77,9 +77,6 @@ fn int main(String[] args) {
 	rl::setTargetFPS(FPS_CAP);
 	forge_game::toggleFullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
 
-	// Initialize high scores
-	forge_scores::init_high_scores();
-
 	//camera
 	Camera2D camera;
 	camera.zoom = 1.0;
@@ -148,6 +145,9 @@ fn int main(String[] args) {
 		uiButtons[i] = forge_ui::createButton(&tMap, &sMap, count);
 	}
 
+	// Initialize high scores, if they don't exist
+	forge_scores::init_high_scores();
+	
 	io::printfn("Initial Game Structures created");//DEBUG
 	io::printfn("Song selected: %s!", randSong);//DEBUG
 	// Initialize controller support
@@ -211,7 +211,7 @@ fn int main(String[] args) {
 				//slicing out Main ui buttons
 				Button[] mainButtons = uiButtons[0..4];
 				rl::showCursor();
-				if (frameCounter < 650) {
+				if (frameCounter < 800) {
 					rl::updateMusicStream(mMap.get("titleMusic")!!); //manual hack to get title music to play once
 				}
 				rl::clearBackground(rl::BLACK);
@@ -1155,7 +1155,7 @@ fn int main(String[] args) {
 
 			case HIGH_SCORE:
 				// Debug print
-				io::printfn("Entered HIGH_SCORE state with score: %d, viewing only: %s", score, __high_score_viewing_only ? "true" : "false");
+				//io::printfn("Entered HIGH_SCORE state with score: %d, viewing only: %s", score, __high_score_viewing_only ? "true" : "false");
 
 				// Render the high scores
 				rl::showCursor();
@@ -1165,19 +1165,14 @@ fn int main(String[] args) {
 				static bool scoreProcessed = false;
 				static bool showingHighScores = false;
 
-				io::printfn("Current state flags: scoreProcessed=%s, showingHighScores=%s, __force_reset_score_processed=%s",
-						scoreProcessed ? "true" : "false",
-						showingHighScores ? "true" : "false",
-						__force_reset_score_processed ? "true" : "false");
+				//io::printfn("Current state flags: scoreProcessed=%s, showingHighScores=%s, __force_reset_score_processed=%s", scoreProcessed ? "true" : "false", showingHighScores ? "true" : "false", __force_reset_score_processed ? "true" : "false");
 
 				// Check if we need to force a reset of the state flags
 				if (__force_reset_score_processed) {
 					scoreProcessed = false;
 					showingHighScores = false;
 					__force_reset_score_processed = false; // Reset the flag
-					io::printfn("Reset score processing state: scoreProcessed=%s, showingHighScores=%s",
-							scoreProcessed ? "true" : "false",
-							showingHighScores ? "true" : "false");
+					//io::printfn("Reset score processing state: scoreProcessed=%s, showingHighScores=%s", scoreProcessed ? "true" : "false", showingHighScores ? "true" : "false");
 				}
 
 				// If we're just viewing high scores, skip the score entry phase
@@ -1193,7 +1188,7 @@ fn int main(String[] args) {
 					forge_scores::add_high_score(initials, score);
 					scoreProcessed = true;
 					showingHighScores = true; // Now transition to showing high scores
-					io::printfn("HIGH_SCORE state: Score processed, now showing high scores");
+					//io::printfn("HIGH_SCORE state: Score processed, now showing high scores");
 				}
 				// Second phase: Show the high score table
 				else if (showingHighScores) {
@@ -1201,11 +1196,11 @@ fn int main(String[] args) {
 					rl::clearBackground(rl::BLACK);
 					rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
 					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.5f));
-					io::printfn("HIGH_SCORE state: Drawing high score table background");
+					//io::printfn("HIGH_SCORE state: Drawing high score table background");
 
 					// Draw the high scores
 					forge_scores::draw_high_scores();
-					io::printfn("HIGH_SCORE state: High scores drawn");
+					//io::printfn("HIGH_SCORE state: High scores drawn");
 
 					// Show different message based on whether we're just viewing or entered a score
 					if (!__high_score_viewing_only) {

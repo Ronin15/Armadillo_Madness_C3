@@ -237,13 +237,19 @@ fn bool save_high_scores() {
 
 // Initialize high scores with default values
 fn void init_defaults() {
-    for (int i = 0; i < MAX_HIGH_SCORES; i++) {
-        highScores[i].initials[0] = 'A';
-        highScores[i].initials[1] = 'A';
-        highScores[i].initials[2] = 'A';
-        highScores[i].score = 0;
-    }
-    io::printfn("High scores initialized with defaults");
+
+    if(!rl::fileExists("resources/scores/highscores.dat")){
+
+        for (int i = 0; i < MAX_HIGH_SCORES; i++) {
+            highScores[i].initials[0] = 'A';
+            highScores[i].initials[1] = 'A';
+            highScores[i].initials[2] = 'A';
+            highScores[i].score = 0;
+        }
+        io::printfn("High scores initialized with defaults!");
+     }else{
+        io::printfn("High scores already exists!");
+    }   
 }
 
 // Add a new score to the high scores list if it qualifies
@@ -431,7 +437,7 @@ fn char[MAX_INITIALS_LENGTH] get_player_initials() {
 
 // Draw high scores
 fn void draw_high_scores() {
-    io::printfn("Drawing high scores table");
+    //io::printfn("Drawing high scores table");
 
     if (!highScoresInitialized) {
         io::printfn("High scores not initialized, initializing");
@@ -464,8 +470,7 @@ fn void draw_high_scores() {
         rl::drawText(rl::textFormat("%08i", highScores[i].score), (rl::getScreenWidth() / 2) - 100, yPos, 30, rl::WHITE);
 
         // Debug log for this entry
-        io::printfn("Drawing high score %d: %c%c%c = %d",
-                  i+1, initialsStr[0], initialsStr[1], initialsStr[2], highScores[i].score);
+        // io::printfn("Drawing high score %d: %c%c%c = %d", i+1, initialsStr[0], initialsStr[1], initialsStr[2], highScores[i].score);
     }
 }
 
@@ -477,7 +482,7 @@ fn bool load_file(String filename, char[]* out_data) {
     }
 
     // Initialize output to empty for safety
-    *out_data = {};
+    *out_data; //c3 zero init by default
 
     // Log that we're attempting to open the file
     io::printfn("Attempting to open file: %s", filename);
