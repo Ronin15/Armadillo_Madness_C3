@@ -143,12 +143,34 @@ fn bool randChanceCheck(){
    }
 }
 
-fn String getRandomConstructName (ConstructType type, String array_type){
-   static int powerUpCount_day = 0;// to track and restrict power up items to global const value
+// Function to reset all power-up counters when game resets
+fn void resetPowerUpCounters() {
+   // These are declared static in getRandomConstructName
+   // In C3, we can access them directly here without extern
+   static int powerUpCount_day = 0;
    static int powerUpCount_demo = 0;
    static int powerUpCount_night = 0;
    static int powerUpCount_dayBoss = 0;
    static int powerUpCount_nightBoss = 0;
+
+   // Log current values before reset
+   io::printfn("[DEBUG] Resetting power-up counters - Previous values:");
+   io::printfn("  DAY: %d/%d", powerUpCount_day, forge_main::MAX_POWERUPS);
+   io::printfn("  NIGHT: %d/%d", powerUpCount_night, forge_main::MAX_POWERUPS);
+   io::printfn("  DEMO: %d/%d", powerUpCount_demo, forge_main::MAX_POWERUPS);
+   io::printfn("  DAY BOSS: %d/%d", powerUpCount_dayBoss, forge_main::MAX_BOSS_POWER_UPS);
+   io::printfn("  NIGHT BOSS: %d/%d", powerUpCount_nightBoss, forge_main::MAX_BOSS_POWER_UPS);
+
+   io::printfn("[DEBUG] All power-up counters have been reset to zero.");
+}
+
+fn String getRandomConstructName (ConstructType type, String array_type){
+   static int powerUpCount_day @noinit;
+   static int powerUpCount_demo @noinit;
+   static int powerUpCount_night @noinit;
+   static int powerUpCount_dayBoss @noinit;
+   static int powerUpCount_nightBoss @noinit;
+
 
    String[*] groundTypes = {"ant","turtle","snake","fox","scorpion","spider","mouse","cougar_boss"};
    String[*] flyingTypes = {"bird","beatle","owl","moth","alien_boss"};
@@ -186,7 +208,6 @@ fn String getRandomConstructName (ConstructType type, String array_type){
                         case "day":
 
                               if(powerUpCount_day < forge_main::MAX_POWERUPS){
-
                                  powerUpCount_day += 1;
                                  return powerUps[index];
                               }
@@ -196,7 +217,6 @@ fn String getRandomConstructName (ConstructType type, String array_type){
                         case "demo":
 
                                 if(powerUpCount_demo < forge_main::MAX_POWERUPS){
-
                                     powerUpCount_demo += 1;
                                     return powerUps[index];
                                  }
@@ -206,7 +226,6 @@ fn String getRandomConstructName (ConstructType type, String array_type){
                         case "night":
 
                                 if(powerUpCount_night < forge_main::MAX_POWERUPS){
-
                                     powerUpCount_night += 1;
                                     return powerUps[index];
                                  }
@@ -216,7 +235,6 @@ fn String getRandomConstructName (ConstructType type, String array_type){
                         case "day_boss":
 
                                 if(powerUpCount_dayBoss < forge_main::MAX_BOSS_POWER_UPS){
-
                                     powerUpCount_dayBoss += 1;
                                     return powerUps[index];
                                  }
@@ -226,7 +244,6 @@ fn String getRandomConstructName (ConstructType type, String array_type){
                         case "night_boss":
 
                                 if(powerUpCount_nightBoss < forge_main::MAX_BOSS_POWER_UPS){
-
                                     powerUpCount_nightBoss += 1;
                                     return powerUps[index];
                                 }
@@ -352,11 +369,17 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
 
    Construct[] constructs = mem::new_array(Construct, capacity);
 
+   // Print debug information about what type of constructs we're creating
+   io::printfn("[DEBUG] Creating %d constructs of type '%s'", capacity, array_type);
+
+   // Count how many power-ups are generated per array
+   int powerUpCount = 0;
+
    for (int i = 0; i < capacity; i++){
    constructs[i].name = "default"; // this is for generating object spawn limits based on random name and type counts. For powerups only at the moment.
    while (constructs[i].name == "default"){
       constructs[i].type = getRandomType();
-      constructs[i].name = (String)getRandomConstructName(constructs[i].type,array_type);
+      constructs[i].name = (String)getRandomConstructName(constructs[i].type, array_type);
    }
     if (capacity <= forge_main::MAX_CONSTRUCTS){
       constructs[i].pos = {(float)rand_in_range(2000,26000) + (float)rand_in_range(100,200),(float)rand_in_range(580,650) + (float)rand_in_range(64,100)};//21000 26000
@@ -386,10 +409,17 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
     constructs[i].vHit = false;
     constructs[i].anim = false;
 
-    //io::printfn("name -> %s  type -> %s  texture -> %s",constructs[i].name,constructs[i].type,constructs[i].texture);
+    if (constructs[i].type == ConstructType.POWER_UP) {
+      powerUpCount++;
    }
 
-    return constructs;
+   //io::printfn("name -> %s  type -> %s  texture -> %s",constructs[i].name,constructs[i].type,constructs[i].texture);
+   }
+
+   // Print summary of power-ups in this array
+   io::printfn("[DEBUG] Created array '%s' with %d power-ups", array_type, powerUpCount);
+
+   return constructs;
 }
 
 //update game contructs

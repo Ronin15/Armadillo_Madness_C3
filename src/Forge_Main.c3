@@ -25,7 +25,7 @@ const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const String GAME_NAME = "Armadillo Madness 0.9.5"; //ui update, options update, and almost all game states complete
+const String GAME_NAME = "Armadillo Madness 0.9.8"; //ui update, options update, and almost all game states complete
 const int MAX_CONSTRUCTS = 200;//100 - 200
 const int MAX_BOSS_CONSTRUCTS = 50;
 const int MAX_BOSS_POWER_UPS = 5;
@@ -307,6 +307,8 @@ fn int main(String[] args) {
         				constructs = forge_game::forgeConstructs(&tMap,"night");
         				randSong = forge_game::getRandomSong();
         				song = mMap.get(randSong)!!;
+                        // Reset power-up counters
+                        forge_game::resetPowerUpCounters();
                         // Reset score for new game but don't reset high score state
                         score = 0;
                         gameReset = false;
@@ -872,6 +874,8 @@ fn int main(String[] args) {
     				constructs = forge_game::forgeConstructs(&tMap,"night");
     				randSong = forge_game::getRandomSong();
     				song = mMap.get(randSong)!!;
+                    // Reset power-up counters
+                    forge_game::resetPowerUpCounters();
                     score = 0;
 				}
 				if (day){
@@ -943,10 +947,12 @@ fn int main(String[] args) {
     					player = forge_game::forgeCronstructPlayer(&tMap);
                     				dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
                     				nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
-                    				constructs = forge_game::forgeConstructs(&tMap,"day", gameReset);
-                    				constructs = forge_game::forgeConstructs(&tMap,"night", gameReset);
+                    				constructs = forge_game::forgeConstructs(&tMap,"day");
+                    				constructs = forge_game::forgeConstructs(&tMap,"night");
                     				randSong = forge_game::getRandomSong();
                     				song = mMap.get(randSong)!!;
+                                    // Reset power-up counters
+                                    forge_game::resetPowerUpCounters();
                                     score = 0;
     				}
 
@@ -1059,6 +1065,8 @@ fn int main(String[] args) {
     				constructs = forge_game::forgeConstructs(&tMap,"night");
     				randSong = forge_game::getRandomSong();
     				song = mMap.get(randSong)!!;
+                    // Reset power-up counters
+                    forge_game::resetPowerUpCounters();
                     gameReset = false;
                     //score = 0; need to zero score after its recorded
 				}
@@ -1110,6 +1118,8 @@ fn int main(String[] args) {
 					constructs = forge_game::forgeConstructs(&tMap,"night");
 					randSong = forge_game::getRandomSong();
 					song = mMap.get(randSong)!!;
+					// Reset power-up counters
+					forge_game::resetPowerUpCounters();
 					// Don't reset high score state to avoid potential issues
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					state = MAIN;
