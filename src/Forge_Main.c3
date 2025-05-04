@@ -1037,14 +1037,14 @@ fn int main(String[] args) {
 					// Reset player,Bosses, Entities
 					player = forge_game::forgeCronstructPlayer(&tMap);
 					score = 0;
+					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
 					dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
 					nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
 					constructs = forge_game::forgeConstructs(&tMap,"day");
-					constructs = forge_game::forgeConstructs(&tMap,"night");
+					nightConstructs = forge_game::forgeConstructs(&tMap,"night");
 					randSong = forge_game::getRandomSong();
 					song = mMap.get(randSong)!!;
 					// Reset power-up counters
-					forge_game::resetPowerUpCounters();
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					state = MAIN;
 				}
@@ -1082,14 +1082,14 @@ fn int main(String[] args) {
 					// Reset player,Bosses, Entities
 					player = forge_game::forgeCronstructPlayer(&tMap);
 					score = 0;
+					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
 					dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
 					nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
 					constructs = forge_game::forgeConstructs(&tMap,"day");
-					constructs = forge_game::forgeConstructs(&tMap,"night");
+					nightConstructs = forge_game::forgeConstructs(&tMap,"night");
 					randSong = forge_game::getRandomSong();
 					song = mMap.get(randSong)!!;
 					// Reset power-up counters
-					forge_game::resetPowerUpCounters();
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					state = MAIN;
 					soundPlayed = false;
@@ -1251,10 +1251,11 @@ fn int main(String[] args) {
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
 
 				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
-					state = MAIN;
-					player.pos = {400,500};
+    				demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
+    				forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
+    				demoConstructs = forge_game::forgeConstructs(&tMap,"demo");
 					frameCounter = 0;
-
+                    state = MAIN;
 					//clean all assetes needed here to fully reset. Use Diffrent Demo Array.
 				}
 
@@ -1263,14 +1264,14 @@ fn int main(String[] args) {
 				demoCounter1 += 1;
 				demoCounter2 += 1;
 
-				if(demoCounter1 < 500 ){forge_ai::moveRight(&demoPlayer, deltaTime);
+				if(demoCounter1 < 600 ){forge_ai::moveRight(&demoPlayer, deltaTime);
 
 					if (demoCounter1 % 100 == 0){
 
 					forge_ai::jump(&demoPlayer, deltaTime);
 					}
 				}
-				if(demoCounter1 > 500){
+				if(demoCounter1 > 600){
 					forge_ai::moveLeft(&demoPlayer, deltaTime);
 
 					if (demoCounter1 % 100 == 0){
@@ -1278,15 +1279,16 @@ fn int main(String[] args) {
 					forge_ai::jump(&demoPlayer, deltaTime);
 					}
 				}
-				if (demoCounter1 > 1000){
+				if (demoCounter1 > 1200){
 					demoCounter1 = 0;
 				}
 
 				if (demoCounter2 > 10000){//10000
 					demoCounter2 = 0;
-					state = MAIN;
+					demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
+					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
 					demoConstructs = forge_game::forgeConstructs(&tMap,"demo");
-					break;
+					state = MAIN;
 				}
 
 
