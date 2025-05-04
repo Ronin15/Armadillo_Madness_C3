@@ -88,9 +88,9 @@ fn int main(String[] args) {
 	MusicMap mMap = forge_load::loadMusicMap();
 
 	//Game play scrolling vars
-	float scrollGround = 0.0;
-	float scrollMid = 0.0;
-	float scrollClouds = 0.0;
+	float scrollGround;
+	float scrollMid;
+	float scrollClouds;
 	float lifeSpace = (float)tMap.get("lifeCount")!!.width + 5.0;
 
 	//soundfx managment
@@ -117,7 +117,7 @@ fn int main(String[] args) {
 	//game time step vars
 	float accumulator;
 	float frameCounter;
-	float lastTime = (float)rl::getTime();
+	float lastTime;
 
 	//load font
 	Font customFont = rl::loadFontEx("resources/fonts/west_test.ttf", 105, null, 250);
@@ -218,7 +218,7 @@ fn int main(String[] args) {
                 rl::drawTexture(tMap.get("titlePage")!!, 0, 0, rl::WHITE);
                 rl::drawTextEx(customFont, GAME_NAME, {((WINDOW_WIDTH / 2) - 700), 200}, 105, 2, rl::BLACK);
 
-                // Force enable mouse control if we have a controller and it's been used
+                // Force enable mouse control if we have a controller and it's being used
                 if (forge_controller::controllersDetected && forge_controller::controllerUIShown && forge_controller::controllerActive) {
                     // Enable debug mode with F1
                     if (rl::isKeyPressed(rl::KEY_F1)) {
