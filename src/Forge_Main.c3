@@ -1538,8 +1538,8 @@ fn int main(String[] args) {
 			previousState = state;
 		}
 
-		// Handle FPS display toggle with F3 key
-		if (rl::isKeyPressed(rl::KEY_F3)) {
+		// Handle FPS display toggle with F4 key
+		if (rl::isKeyPressed(rl::KEY_F4)) {
 			showFPS = !showFPS;
 			io::printfn("FPS display: %s", showFPS ? "ON" : "OFF");
 		}
