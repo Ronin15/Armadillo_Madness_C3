@@ -1054,7 +1054,7 @@ fn int main(String[] args) {
 
                         // Add restart button
                         Button restartButton = uiButtons[6]; // restartButton is index 6
-                        forge_ui::ButtonResult result = forge_ui::updateButton(&restartButton, &sMap, state, {(WINDOW_WIDTH / 2) - 112, 525});
+                        forge_ui::ButtonResult result = forge_ui::updateButton(&restartButton, &sMap, state, {(WINDOW_WIDTH / 2) - 70, 525});
                         state = result.state;
                         forge_ui::drawButton(&restartButton);
 
@@ -1066,7 +1066,7 @@ fn int main(String[] args) {
 
                         // Show controller info if available and active
                         if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
-                            rl::drawText("Controller: START to resume!", 650, 380, 30, rl::RAYWHITE);
+                            rl::drawText("Controller: START to resume!", 700, 380, 30, rl::RAYWHITE);
                         }else{
                             rl::drawText("! * GAME PAUSED * ! [-> ESCAPE key to quit. P key to RESUME. <-]", 400, 380, 30, rl::RAYWHITE);
                         }
@@ -1140,7 +1140,7 @@ fn int main(String[] args) {
 
                         // Add restart button
                         Button restartButton = uiButtons[6]; // restartButton is index 6
-                        forge_ui::ButtonResult result = forge_ui::updateButton(&restartButton, &sMap, state, {(WINDOW_WIDTH / 2) - 112, 525});
+                        forge_ui::ButtonResult result = forge_ui::updateButton(&restartButton, &sMap, state, {(WINDOW_WIDTH / 2) - 70, 525});
                         state = result.state;
                         forge_ui::drawButton(&restartButton);
 
@@ -1151,7 +1151,7 @@ fn int main(String[] args) {
                         }
                         // Show controller info if available and active
                         if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
-                            rl::drawText("Controller: START to resume! ", 650, 380, 30, rl::RAYWHITE);
+                            rl::drawText("Controller: START to resume! ", 700, 380, 30, rl::RAYWHITE);
                         }else{
                             rl::drawText("! * GAME PAUSED * ! [-> ESCAPE key to quit. P key to RESUME. <-]", 400, 380, 30, rl::RAYWHITE);
                         }
