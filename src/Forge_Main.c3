@@ -268,9 +268,8 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 				foreach (&mainButton : mainButtons){
-					forge_ui::ButtonResult result = forge_ui::updateButton(mainButton, &sMap, state, gameReset);
+					forge_ui::ButtonResult result = forge_ui::updateButton(mainButton, &sMap, state);
 					state = result.state;
-					gameReset = result.gameReset;
 				}
 				foreach (&mainButton : mainButtons){
 					forge_ui::drawButton(mainButton);
@@ -701,13 +700,11 @@ fn int main(String[] args) {
 									if (forge_scores::is_high_score(score)) {
 										io::printfn("HIGH SCORE detected! Transitioning to HIGH_SCORE state");
 										state = HIGH_SCORE;
-										gameReset = true; // So GAME_WIN knows to reset
 										// Force reset of score processed state
 										__force_reset_score_processed = true;
 									} else {
 										io::printfn("Not a high score, transitioning to GAME_WIN state");
 										state = GAME_WIN;
-										gameReset = true; // Reset game for next play
 									}
 									frameCounter = 0;
 									inTransition = false;
@@ -989,8 +986,8 @@ fn int main(String[] args) {
 			case GAME_WIN:
 				//TODO still needs more work but framework is there, needs art animations, music.
 				//io::printfn("Game_WIN State");
-				Button gameWinButton = uiButtons[3];
-				rl::showCursor();
+				//Button gameWinButton = uiButtons[3];
+				//rl::showCursor();
 				rl::playMusicStream(mMap.get("gameWin")!!);
 				rl::updateMusicStream(mMap.get("gameWin")!!);
 				rl::clearBackground(rl::BLACK);
@@ -1009,10 +1006,10 @@ fn int main(String[] args) {
 				// from NIGHTLVL to GAME_WIN, not here, to ensure the player
 				// enters high scores before seeing the win screen
 
-				forge_ui::ButtonResult result = forge_ui::updateButton(&gameWinButton, &sMap, state, gameReset, {10,10});
-				state = result.state;
-				gameReset = result.gameReset;
-				forge_ui::drawButton(&gameWinButton);
+				//forge_ui::ButtonResult result = forge_ui::updateButton(&gameWinButton, &sMap, state, gameReset, {10,10});
+				//state = result.state;
+				//gameReset = result.gameReset;
+				//forge_ui::drawButton(&gameWinButton);
 
 				forge_fx::drawRainbow();
 				forge_fx::forgeFXManager(&mMap, &sMap,"fireworks",deltaTime);
@@ -1028,18 +1025,21 @@ fn int main(String[] args) {
                     forge_controller::draw_custom_cursor();
                 }
 
-				if (gameReset){
-    				player = forge_game::forgeCronstructPlayer(&tMap);
-    				dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
-    				nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
-    				constructs = forge_game::forgeConstructs(&tMap,"day");
-    				constructs = forge_game::forgeConstructs(&tMap,"night");
-    				randSong = forge_game::getRandomSong();
-    				song = mMap.get(randSong)!!;
-                    // Reset power-up counters
-                    forge_game::resetPowerUpCounters();
-                    gameReset = false;
-                    //score = 0; need to zero score after its recorded
+                if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
+					// Reset player,Bosses, Entities
+					player = forge_game::forgeCronstructPlayer(&tMap);
+					score = 0;
+					dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
+					nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
+					constructs = forge_game::forgeConstructs(&tMap,"day");
+					constructs = forge_game::forgeConstructs(&tMap,"night");
+					randSong = forge_game::getRandomSong();
+					song = mMap.get(randSong)!!;
+					// Reset power-up counters
+					forge_game::resetPowerUpCounters();
+					// Don't reset high score state to avoid potential issues
+					__force_reset_score_processed = true; // Make sure score processed is reset for next game
+					state = MAIN;
 				}
 				break;
 
@@ -1130,9 +1130,8 @@ fn int main(String[] args) {
 
 				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				//rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
-				forge_ui::ButtonResult result = forge_ui::updateButton(&menuButton, &sMap, state, gameReset, {10,10});
+				forge_ui::ButtonResult result = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
 				state = result.state;
-				gameReset = result.gameReset;
 				forge_ui::drawButton(&menuButton);
 
 				//update master volume, music volume.
@@ -1227,7 +1226,6 @@ fn int main(String[] args) {
 							if (night && !player.isDead && nightBoss.isDead) {
 								io::printfn("Transitioning to GAME_WIN state");
 								state = GAME_WIN;
-								gameReset = true;
 							} else {
 								io::printfn("Transitioning to GAME_OVER state");
 								state = GAME_OVER;
@@ -1356,9 +1354,8 @@ fn int main(String[] args) {
 				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				//rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 
-					forge_ui::ButtonResult result = forge_ui::updateButton(&menuButton, &sMap, state, gameReset, {10,10});
+					forge_ui::ButtonResult result = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
 					state = result.state;
-					gameReset = result.gameReset;
 
 
 					forge_ui::drawButton(&menuButton);

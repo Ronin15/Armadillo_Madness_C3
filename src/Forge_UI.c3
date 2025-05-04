@@ -23,7 +23,6 @@ struct Button {
 
 struct ButtonResult {
     GameState state;
-    bool gameReset;
 }
 
 fn Button createButton(TexMap* tMap, SoundMap* sMap, int count) {
@@ -50,7 +49,7 @@ fn Button createButton(TexMap* tMap, SoundMap* sMap, int count) {
 }
 
 //customPos used for credits page buttom to move it out of the way.
-fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool gameReset = false, Vector2 customPos = {0.0,0.0} ) {
+fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, Vector2 customPos = {0.0,0.0} ) {
     Vector2 mousePos;
     Rectangle bRect;
 
@@ -92,7 +91,6 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
                 b.currentFrame = 2;
-                gameReset = true; // Only playButton should set this to true
                 state = GAME;
             }else if
                 (b.bhover) {
@@ -103,7 +101,7 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 b.currentFrame = 1;
                 b.bClicked = false;
             }
-             return {state, gameReset};
+             return {state};
 
         case "optionsButton":
 
@@ -111,7 +109,6 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
-                gameReset = false; // Explicitly don't reset game
                 state = OPTIONS;
             }else if (b.bhover) {
                 rl::playSound(sMap.get("button")!!);
@@ -120,7 +117,7 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 b.bClicked = false;
                 b.currentFrame = 1;
             }
-            return {state, gameReset};
+            return {state};
 
         case "highScoreButton":
 
@@ -128,7 +125,6 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
-                gameReset = false; // Explicitly don't reset game
                 state = HIGH_SCORE;
                 // Set the flag to indicate we're just viewing high scores
                 forge_main::__high_score_viewing_only = true;
@@ -141,7 +137,7 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 b.bClicked = false;
                 b.currentFrame = 1;
             }
-            return {state, gameReset};
+            return {state};
 
         case "quitButton":
 
@@ -149,7 +145,6 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
-                gameReset = false; // Explicitly don't reset game
 
             }else if (b.bhover) {
                 rl::playSound(sMap.get("button")!!);
@@ -158,7 +153,7 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 b.bClicked = false;
                 b.currentFrame = 1;
             }
-             return {state, gameReset};
+             return {state};
 
         case "creditsButton":
 
@@ -166,7 +161,6 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
-                gameReset = false; // Explicitly don't reset game
                 state = CREDITS;
             }else if (b.bhover) {
                 rl::playSound(sMap.get("button")!!);
@@ -175,7 +169,7 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 b.bClicked = false;
                 b.currentFrame = 1;
             }
-             return {state, gameReset};
+             return {state};
 
         case "menuButton":
 
@@ -183,7 +177,6 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
-                gameReset = false; // Explicitly don't reset game
                 state = MAIN;
             }else if
                 (b.bhover) {
@@ -193,7 +186,7 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 b.bClicked = false;
                 b.currentFrame = 1;
             }
-             return {state, gameReset};
+             return {state};
 
         case "restartButton":
 
@@ -201,7 +194,6 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
-                gameReset = false; // Explicitly don't reset game
                 state = GAME_OVER;
 
             }else if (b.bhover) {
@@ -211,14 +203,13 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 b.bClicked = false;
                 b.currentFrame = 1;
             }
-             return {state, gameReset};
+             return {state};
 
         case "resumeButton":
             if ((b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) || (b.bhover && xButtonClick)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
                 io::printfn("Button: %s -> Cicked! ",b.name);
-                gameReset = false; // Explicitly don't reset game
                 state = GAME;
             }else if (b.bhover) {
                 rl::playSound(sMap.get("button")!!);
@@ -227,10 +218,10 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, bool ga
                 b.bClicked = false;
                 b.currentFrame = 1;
             }
-            return {state, gameReset};
+            return {state};
     }
-     // Default return preserves the current gameReset state
-     return {state, gameReset};
+     // Default return 
+     return {state};
 }
 
 fn void drawButton(Button* b, float rotation = 0.0) {
