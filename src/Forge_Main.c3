@@ -836,6 +836,9 @@ fn int main(String[] args) {
 			}
 
 			case PAUSE:
+			    rl::showCursor();
+                // Auto enable controller mouse mode for this state
+                forge_controller::auto_enable_mouse_mode(forge_controller::STATE_PAUSE);
 
 				if (rl::isKeyPressed(rl::KEY_P) || forge_controller::is_button_pressed(rl::GamepadButton.MIDDLE_RIGHT.ordinal)){
 					if (day){state = GAME;}
@@ -891,14 +894,27 @@ fn int main(String[] args) {
         				//end Hud
         				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
 
+           	            // Update mouse control if enabled (for menu navigation)
+                        forge_controller::update_mouse_control();
 
 
-                        //button update stuff would go here
+                        // Add restart button
+                        Button restartButton = uiButtons[6]; // restartButton is index 6
+                        forge_ui::ButtonResult result = forge_ui::updateButton(&restartButton, &sMap, state, {(WINDOW_WIDTH / 2) - 112, 525});
+                        state = result.state;
+                        forge_ui::drawButton(&restartButton);
 
-                        rl::drawText("! * GAME PAUSED * ! [-> ESCAPE key to quit. P key to RESUME. ENTER key to restart <-]", 180, 380, 30, rl::RAYWHITE);
+                        // Draw custom cursor if controller is active and mouse mode is enabled
+                        if (forge_controller::controllersDetected && forge_controller::is_controller_active() && forge_controller::is_mouse_mode_enabled()) {
+                            forge_controller::draw_custom_cursor();
+                            rl::hideCursor();
+                        }
+
                         // Show controller info if available and active
                         if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
-                            rl::drawText("Controller: START to resume, B or O to restart", 530, 420, 30, rl::RAYWHITE);
+                            rl::drawText("Controller: START to resume!", 650, 380, 30, rl::RAYWHITE);
+                        }else{
+                            rl::drawText("! * GAME PAUSED * ! [-> ESCAPE key to quit. P key to RESUME. <-]", 400, 380, 30, rl::RAYWHITE);
                         }
 
 						if(dayBoss.active){
@@ -932,7 +948,6 @@ fn int main(String[] args) {
 						forge_game::drawAnimatedConstruct(&player);
         				forge_game::drawPoopShot(&poopShot,&player);
 
-
        					foreach ( &nightConstruct : nightConstructs){
         								forge_game::drawAnimatedConstruct(nightConstruct);
       						}
@@ -965,8 +980,27 @@ fn int main(String[] args) {
         				//end Hud
         				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
 
-						//button update stuff here.
-						rl::drawText("! * GAME PAUSED * ! [-> ESCAPE key to quit. P key to RESUME. ENTER key to restart <-]", 180, 380, 30, rl::RAYWHITE);
+           	            // Update mouse control if enabled (for menu navigation)
+                        forge_controller::update_mouse_control();
+
+
+                        // Add restart button
+                        Button restartButton = uiButtons[6]; // restartButton is index 6
+                        forge_ui::ButtonResult result = forge_ui::updateButton(&restartButton, &sMap, state, {(WINDOW_WIDTH / 2) - 112, 525});
+                        state = result.state;
+                        forge_ui::drawButton(&restartButton);
+
+                        // Draw custom cursor if controller is active and mouse mode is enabled
+                        if (forge_controller::controllersDetected && forge_controller::is_controller_active() && forge_controller::is_mouse_mode_enabled()) {
+                            forge_controller::draw_custom_cursor();
+                            rl::hideCursor();
+                        }
+                        // Show controller info if available and active
+                        if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
+                            rl::drawText("Controller: START to resume! ", 650, 380, 30, rl::RAYWHITE);
+                        }else{
+                            rl::drawText("! * GAME PAUSED * ! [-> ESCAPE key to quit. P key to RESUME. <-]", 400, 380, 30, rl::RAYWHITE);
+                        }
 
 						if(nightBoss.active){
        					    forge_game::drawAnimatedConstruct(&nightBoss);
@@ -986,30 +1020,9 @@ fn int main(String[] args) {
 			case GAME_WIN:
 				//TODO still needs more work but framework is there, needs art animations, music.
 				//io::printfn("Game_WIN State");
-				//Button gameWinButton = uiButtons[3];
-				//rl::showCursor();
 				rl::playMusicStream(mMap.get("gameWin")!!);
 				rl::updateMusicStream(mMap.get("gameWin")!!);
 				rl::clearBackground(rl::BLACK);
-
-				// Update mouse control if enabled (for menu navigation)
-                forge_controller::update_mouse_control();
-
-                // Show mouse control status if controller is detected and active
-                if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
-                    rl::drawRectangle(200, 10, 505, 70, rl::fade(FORGE_GRAY, 0.7f));
-                    rl::drawText("Controller detected: Use right stick for cursor", 205, 20, 20, rl::WHITE);
-                    rl::drawText("Press X or SQUARE button to click UI elements", 205, 50, 20, rl::WHITE);
-                }
-
-				// Note: high score check is now handled during transition
-				// from NIGHTLVL to GAME_WIN, not here, to ensure the player
-				// enters high scores before seeing the win screen
-
-				//forge_ui::ButtonResult result = forge_ui::updateButton(&gameWinButton, &sMap, state, gameReset, {10,10});
-				//state = result.state;
-				//gameReset = result.gameReset;
-				//forge_ui::drawButton(&gameWinButton);
 
 				forge_fx::drawRainbow();
 				forge_fx::forgeFXManager(&mMap, &sMap,"fireworks",deltaTime);
@@ -1019,11 +1032,6 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 700), 150, 105, {185,71,0,200});
 				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 300), 300, 60, rl::WHITE);
-
-                // Draw custom cursor if using controller and it's active
-                if (forge_controller::controllersDetected && forge_controller::is_controller_active() && forge_controller::is_mouse_mode_enabled()) {
-                    forge_controller::draw_custom_cursor();
-                }
 
                 if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
 					// Reset player,Bosses, Entities
@@ -1037,7 +1045,6 @@ fn int main(String[] args) {
 					song = mMap.get(randSong)!!;
 					// Reset power-up counters
 					forge_game::resetPowerUpCounters();
-					// Don't reset high score state to avoid potential issues
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					state = MAIN;
 				}
@@ -1046,8 +1053,6 @@ fn int main(String[] args) {
 			case GAME_OVER:
 				//io::printfn("Game_Over State");
 
-				// Just using menu button
-				//Button menuButton = uiButtons[5];
 				//rl::showCursor();
 				//rl::playMusicStream(mMap.get("gameOver")!!);
 				//rl::updateMusicStream(mMap.get("gameOver")!!);
@@ -1061,12 +1066,6 @@ fn int main(String[] args) {
 				// Game over text
 				rl::drawText("! * GAME OVER * !", ((WINDOW_WIDTH / 2) - 500), 200, 105, rl::RED);
 				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 350), 350, 60, rl::WHITE);
-
-				// Menu button handling
-				//forge_ui::ButtonResult result = forge_ui::updateButton(&menuButton, &sMap, state, gameReset, {10,10});
-				//state = result.state;
-				//gameReset = result.gameReset;
-				//forge_ui::drawButton(&menuButton);
 
 				// Additional instructions
 				rl::drawText("", ((WINDOW_WIDTH / 2) - 350), 450, 40, rl::WHITE);
@@ -1091,7 +1090,6 @@ fn int main(String[] args) {
 					song = mMap.get(randSong)!!;
 					// Reset power-up counters
 					forge_game::resetPowerUpCounters();
-					// Don't reset high score state to avoid potential issues
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					state = MAIN;
 					soundPlayed = false;
@@ -1139,8 +1137,8 @@ fn int main(String[] args) {
 				//draw Options
 				forge_options::drawOptions();
 
-                // Draw custom cursor if using controller
-                if (forge_controller::controllersDetected && forge_controller::is_mouse_mode_enabled()) {
+				// Draw custom cursor if using controller and it's active
+                if (forge_controller::controllersDetected && forge_controller::is_controller_active() && forge_controller::is_mouse_mode_enabled()) {
                     forge_controller::draw_custom_cursor();
                 }
 
@@ -1357,13 +1355,12 @@ fn int main(String[] args) {
 					forge_ui::ButtonResult result = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
 					state = result.state;
 
-
 					forge_ui::drawButton(&menuButton);
+					// Draw custom cursor if using controller and it's active
+                    if (forge_controller::controllersDetected && forge_controller::is_controller_active() && forge_controller::is_mouse_mode_enabled()) {
+                        forge_controller::draw_custom_cursor();
+                    }
 
-					            // Draw custom cursor if using controller and it's active
-					            if (forge_controller::controllersDetected && forge_controller::is_controller_active() && forge_controller::is_mouse_mode_enabled()) {
-					                forge_controller::draw_custom_cursor();
-					            }
    		}
    			//accumulator -= TIME_STEP;
 

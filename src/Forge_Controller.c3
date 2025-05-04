@@ -295,6 +295,7 @@ fn void auto_enable_mouse_mode(int state) {
         state == STATE_CREDITS || 
         state == STATE_HIGH_SCORE || 
         state == STATE_GAME_WIN || 
+        state == STATE_PAUSE || 
         state == STATE_GAME_OVER) {
         // Auto-enable mouse control for menu states if controller is detected and active
         if (controllersDetected && controllerUIShown && is_controller_active() && !mouseModeEnabled) {
