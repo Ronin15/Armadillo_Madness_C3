@@ -75,7 +75,6 @@ enum GameState {
 fn int main(String[] args) {
 
     //init Game Systems
-  	rl::setConfigFlags(rl::FLAG_VSYNC_HINT | rl::FLAG_WINDOW_RESIZABLE);
 	rl::initWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
 	defer rl::closeWindow();
  	rl::initAudioDevice();
