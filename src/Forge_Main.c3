@@ -25,14 +25,14 @@ const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.9.9"; //ui update, options update, and almost all game states complete
-const int MAX_CONSTRUCTS = 200;//100 - 200
+const int MAX_CONSTRUCTS = 250;//100 // 200//
 const int MAX_BOSS_CONSTRUCTS = 50;
 const int MAX_BOSS_POWER_UPS = 5;
 const int MAX_POWERUPS = 15;//6
 const int MAX_BUTTONS = 8;
 const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
-const int BOSS_TIMER = 13700;
+const int BOSS_TIMER = 12000;//13700
 const float BOSS_TRANSITION_TIME = 6.0; // Time in seconds to display transition after boss death
 const float ANIM_SPEED_MULTIPLIER = 0.58f; // Animation speed: 1.0 = normal, lower = slower
 

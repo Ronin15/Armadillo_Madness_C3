@@ -13,26 +13,26 @@ import std::io;
 import std::math;
 
 //Game globals and consts -------------------------------------------------
-const float GRAVITY = 650.0f;//200 for grav boots
+const float GRAVITY = 625.0f;//200 for grav boots //650
 const float MOVE_VELOCITY = -600.0f;
 const float SKY_LEVEL = 0.0f;
-const float ACCELERATION = 200.0f;
-const float FRICTION = 40.0f;
+const float ACCELERATION = 175.0f;
+const float FRICTION = 35.0f;
 const float NIGHTB_FREQUENCY = 0.01f;
-const float NIGHTB_AMPLITUDE = 400.0f;
+const float NIGHTB_AMPLITUDE = 300.0f;//
 const float AMPLITUDE = 200.0f;//300
 const float FREQUENCY = 0.03f;//0.05
 const int MAX_LIVES = 6;
-const float OBS_SOFFSET = 20.0f;
-const float ANT_SOFFSET = 50.0f;
-const float FOX_SOFFSET = 70.0f;
-const float SCORPION_SOFFSET = 30.0f;
-const float TURTLE_SOFFSET = 25.0f;
-const float SNAKE_SOFFSET = 30.0f;
-const float SPIDER_SOFFSET = 70.0f;
+const float OBS_SOFFSET = 15.0f;//20
+const float ANT_SOFFSET = 45.0f;//50
+const float FOX_SOFFSET = 65.0f;//70
+const float SCORPION_SOFFSET = 25.0f; //30
+const float TURTLE_SOFFSET = 20.0f;//25
+const float SNAKE_SOFFSET = 25.0f;//30
+const float SPIDER_SOFFSET = 60.0f;//70
 const float POWERUP_SOFFSET = 25.0f;
-const float MOUSE_SOFFSET = 40.0f;
-const float COUGAR_SOFFSET = 40.0f;
+const float MOUSE_SOFFSET = 35.0f;//40
+const float COUGAR_SOFFSET = 35.0f;//40
 const int ENTITY_HITBOX_WIDTH = 64;
 const int ENTITY_HITBOX_HEIGHT = 64;
 const int BOSS_HITBOX_WIDTH = 100;
@@ -383,9 +383,9 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
       constructs[i].name = (String)getRandomConstructName(constructs[i].type, array_type);
    }
     if (capacity <= forge_main::MAX_CONSTRUCTS){
-      constructs[i].pos = {(float)rand_in_range(2000,26000) + (float)rand_in_range(100,200),(float)rand_in_range(580,650) + (float)rand_in_range(64,100)};//21000 26000
+      constructs[i].pos = {(float)rand_in_range(2000,38000) + (float)rand_in_range(100,200),(float)rand_in_range(580,650) + (float)rand_in_range(64,100)};//21000 26000
    }else{
-      constructs[i].pos = {(float)rand_in_range(2000,15000) + (float)rand_in_range(100,200),(float)rand_in_range(580,650) + (float)rand_in_range(64,100)};//21000 26000
+      constructs[i].pos = {(float)rand_in_range(2000,38000) + (float)rand_in_range(100,200),(float)rand_in_range(580,650) + (float)rand_in_range(64,100)};//21000 26000
    }
 
     constructs[i].texture = tMap.get(constructs[i].name)!!;
@@ -488,7 +488,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
               if (c.gravity == 400.0) {c.gravity = GRAVITY;}
               if (c.invulnTimer <= 0.0) c.invlunerable = false;
-              if (c.acceleration == 400){c.acceleration = ACCELERATION;}//500
+              if (c.acceleration == 350){c.acceleration = ACCELERATION;}//500//400
               if (poopPenatrate){poopPenatrate = false;}
             }
 
@@ -507,7 +507,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                }
 
             //powerup
-            if (c.sHit){c.powerUpTimer += 500; c.invlunerable = true; c.invulnTimer += 800; c.acceleration = 400; c.sHit = false;}//500
+            if (c.sHit){c.powerUpTimer += 500; c.invlunerable = true; c.invulnTimer += 800; c.acceleration = 350; c.sHit = false;}//500//400
             //invuln
             if(c.hHit && c.invulnTimer <= 0){
                   c.hHit = false;
@@ -667,7 +667,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                c.groundLevel = groundLevel - c.texture.height + 80;
 
             if (c.pos.x > 1900) {c.expired = true; c.isProjectileActive = false;}
-               c.pos.x += (c.acceleration * 3.0f) * deltaTime;//3.5
+               c.pos.x += (c.acceleration * 3.5f) * deltaTime;//3.5
 
          break;
 
@@ -1023,7 +1023,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 				if(movingLeft) {
                    //left
                    c.pos.y -= NIGHTB_AMPLITUDE * math::sin(NIGHTB_FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
-                   c.pos.x -= 100 * deltaTime;//125
+                   c.pos.x -= 90 * deltaTime;//125//100
                    c.texFlip = false;
                       if(c.pos.x < 0.0) {movingLeft = false;}
 
