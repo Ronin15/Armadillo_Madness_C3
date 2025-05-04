@@ -40,6 +40,11 @@ const float BOSS_TRANSITION_TIME = 6.0; // Time in seconds to display transition
 const Color FORGE_GRAY = {31,32,34,255};
 const Color FORGE_ORANGE = {186,65,14,255};
 
+// FPS tracking variables
+int fpsCounter = 0;
+float fpsUpdateTimer = 0.0f;
+int currentFPS = 0;
+
 // Flag to reset score processing state
 bool __force_reset_score_processed = false;
 // Flag to indicate we're only viewing high scores (not entering a new one)
@@ -69,12 +74,12 @@ enum GameState {
 fn int main(String[] args) {
 
     //init Game Systems
-  	rl::setConfigFlags(rl::FLAG_VSYNC_HINT);//VSYNC not applicable with Raylib target FPS set below vsync capabilities. Need to address when doing the time step.
+  	rl::setConfigFlags(rl::FLAG_VSYNC_HINT | rl::FLAG_WINDOW_RESIZABLE);
 	rl::initWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);
 	defer rl::closeWindow();
  	rl::initAudioDevice();
 	defer rl::closeAudioDevice();
-	rl::setTargetFPS(FPS_CAP);
+	// We no longer use setTargetFPS, instead implementing our own timing
 	forge_game::toggleFullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
 
 	//camera
@@ -114,10 +119,11 @@ fn int main(String[] args) {
 	float demoCounter1;
 	float demoCounter2;
 
-	//game time step vars
-	float accumulator;
-	float frameCounter;
-	float lastTime;
+	// Initialize timing and debugging variables
+	float accumulator = 0.0;
+	float frameCounter = 0.0;
+	float lastTime = (float)rl::getTime(); // Initialize lastTime to current time
+	bool showFPS = false; // Toggle for FPS display
 
 	//load font
 	Font customFont = rl::loadFontEx("resources/fonts/west_test.ttf", 105, null, 250);
@@ -165,27 +171,175 @@ fn int main(String[] args) {
 	// Keep track of previous state to detect state changes
 	GameState previousState = state;
 
-	while (!rl::windowShouldClose()) { //|| accumulator >= TIME_STEP)
-	  	float deltaTime = rl::getFrameTime();
-		float currentTime = (float)rl::getTime();
-	  	float updateTime = currentTime - lastTime;
-	  	lastTime = currentTime;
-	  	accumulator += updateTime;
+	while (!rl::windowShouldClose()) {
+		// Timing calculations to achieve a fixed 60 FPS time step
+		float currentTime = (float)rl::getTime(); // Current time in seconds
+		float updateTime = currentTime - lastTime; // Time since last frame
+		
+		// Skip frame if we're too fast (frame limiting to 60 FPS)
+		// Target 1/60 of a second per frame (about 16.67ms)
+		const float FRAME_BUDGET = 1.0f / TARGET_FPS;
+		while (updateTime < FRAME_BUDGET) {
+			// Sleep a tiny bit to reduce CPU usage
+			// We'll use a small wait instead since sleep isn't available
+			// This active wait isn't ideal but will work for now
+			for (int i = 0; i < 100; i++) {} // Minimal delay
+			// Re-check the time
+			currentTime = (float)rl::getTime();
+			updateTime = currentTime - lastTime;
+		}
+		
+		lastTime = currentTime;
+		
+		// Cap the maximum update time to prevent large jumps after pauses/lag
+		if (updateTime > 0.25f) updateTime = 0.25f;
+		
+		// Add time to accumulator
+		accumulator += updateTime;
 
-	  	// Update controller activity tracking
-	  	forge_controller::update_controller_activity(deltaTime);
-		//check if controller plugged in hot plug! leaving this in in case its ever fixed or works
-		if (deltaTime % 300 == 0) {
-  		    forge_controller::check_for_new_controllers();
-  		}
+		// Track how many updates we've done this frame
+		int updatesThisFrame = 0;
+		const int MAX_UPDATES_PER_FRAME = 5; // Prevent spiral of death
+		
+		// Process inputs (should be done once per frame, outside the fixed timestep loop)
+		float renderDeltaTime = updateTime; // Use our controlled time delta
+		// Make deltaTime variable also available for compatibility with existing code
+		float deltaTime = renderDeltaTime;
 
-	  	//render and game states-----------------------------------------------
+		// -------------------- FIXED TIMESTEP UPDATES --------------------
+		// Use fixed timestep for game logic updates to ensure consistent gameplay
+		while (accumulator >= TIME_STEP && updatesThisFrame < MAX_UPDATES_PER_FRAME) {
+			// Use a fixed time step for game logic updates
+			float fixedDeltaTime = TIME_STEP;
+			
+			// Update controller activity tracking
+			forge_controller::update_controller_activity(fixedDeltaTime);
+			
+			// Check for new controllers occasionally
+			if (frameCounter % 300 == 0) {
+				forge_controller::check_for_new_controllers();
+			}
+			
+			// Update game logic with fixed timestep based on current state
+			switch (state) {
+				case GAME:
+					// Update player and game physics/logic
+					frameCounter += 1;
+					
+					// Update player
+					int playerUpdateResult = forge_game::updateConstruct(&player, &sMap, &tMap, raining, fixedDeltaTime);
+					
+					// Check for player death
+					if (playerUpdateResult == -1 && !inTransition) {
+						rl::playSound(sMap.get("playerDeath")!!);
+						inTransition = true;
+						bossTransitionTimer = BOSS_TRANSITION_TIME;
+					}
+					
+					// Process death transition
+					if (inTransition && player.isDead) {
+						bossTransitionTimer -= fixedDeltaTime;
+						// State change handled in the render section
+					}
+					
+					// Update projectile
+					forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, fixedDeltaTime);
+					
+					// Update constructs
+					foreach (&construct : constructs) {
+						score += forge_game::updateConstruct(construct, &sMap, &tMap, raining, fixedDeltaTime);
+					}
+					
+					// Update day boss
+					if(dayBoss.active) {
+						score += forge_game::updateConstruct(&dayBoss, &sMap, &tMap, raining, fixedDeltaTime);
+						
+						if (dayBoss.isDead && !inTransition) {
+							inTransition = true;
+							bossTransitionTimer = BOSS_TRANSITION_TIME;
+							rl::playSound(sMap.get("levelComplete")!!);
+						}
+						
+						if (inTransition && dayBoss.isDead && !player.isDead) {
+							bossTransitionTimer -= fixedDeltaTime;
+							// State change handled in the render section
+						}
+					}
+					break;
+					
+				case NIGHTLVL:
+					// Update player and game physics/logic for night level
+					frameCounter += 1;
+					
+					// Update player
+					int playerUpdateResult = forge_game::updateConstruct(&player, &sMap, &tMap, raining, fixedDeltaTime);
+					
+					// Check for player death
+					if (playerUpdateResult == -1 && !inTransition) {
+						rl::playSound(sMap.get("playerDeath")!!);
+						inTransition = true;
+						bossTransitionTimer = BOSS_TRANSITION_TIME;
+					}
+					
+					// Process death transition
+					if (inTransition && player.isDead) {
+						bossTransitionTimer -= fixedDeltaTime;
+						// State change handled in the render section
+					}
+					
+					// Update projectile
+					forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, fixedDeltaTime);
+					
+					// Update night constructs
+					foreach (&nightConstruct : nightConstructs) {
+						score += forge_game::updateConstruct(nightConstruct, &sMap, &tMap, raining, fixedDeltaTime);
+					}
+					
+					// Update night boss
+					if(nightBoss.active) {
+						score += forge_game::updateConstruct(&nightBoss, &sMap, &tMap, raining, fixedDeltaTime);
+						
+						if (nightBoss.isDead && !inTransition) {
+							inTransition = true;
+							bossTransitionTimer = BOSS_TRANSITION_TIME;
+							rl::playSound(sMap.get("levelComplete")!!);
+						}
+						
+						if (inTransition && nightBoss.isDead && !player.isDead) {
+							bossTransitionTimer -= fixedDeltaTime;
+							// State change handled in the render section
+						}
+					}
+					break;
+					
+				case DEMO:
+					// Update demo mode
+					forge_game::updateConstruct(&demoPlayer, &sMap, &tMap, raining, fixedDeltaTime);
+					
+					foreach (&demoConstruct : demoConstructs) {
+						forge_game::updateConstruct(demoConstruct, &sMap, &tMap, raining, fixedDeltaTime);
+					}
+					break;
+					
+				// Other states don't need fixed timestep physics updates
+				default:
+					break;
+			}
+			
+			// Consume time from the accumulator
+			accumulator -= TIME_STEP;
+			updatesThisFrame++;
+		}
+		
+		// -------------------- RENDERING (ONCE PER FRAME) --------------------
+		// Render at the current framerate, but game logic above is fixed timestep
 		rl::beginDrawing();
 		rl::beginMode2D(camera);
-		defer rl::endMode2D();
-		defer rl::endDrawing();
+		// We'll explicitly call endMode2D and endDrawing at the end instead of using defer
+		// This allows us to add the FPS display after the game state rendering
 		rl::clearBackground(rl::BLACK);
 
+		// Full game state machine for rendering and non-physics updates
 		switch (state) {
 
         	case LOGO:
@@ -274,7 +428,7 @@ fn int main(String[] args) {
 				foreach (&mainButton : mainButtons){
 					forge_ui::drawButton(mainButton);
 				}
-				forge_fx::fireEffect(deltaTime);
+				forge_fx::fireEffect(renderDeltaTime);
 				rl::drawTextureEx(tMap.get("firepit")!!, {975, 850}, 0.0, 2.5, rl::WHITE);
 
                 // Draw custom cursor if using controller and it's active
@@ -554,7 +708,7 @@ fn int main(String[] args) {
 					rl::drawText("VICTORY!", (WINDOW_WIDTH / 2) - 200, WINDOW_HEIGHT / 2 - 100, 80, FORGE_ORANGE);
 					rl::drawText("PREPARING NIGHT LEVEL...", (WINDOW_WIDTH / 2) - 400, WINDOW_HEIGHT / 2, 60, rl::WHITE);
 					rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
-					forge_fx::forgeFXManager(&mMap, &sMap,"explode", deltaTime);
+					forge_fx::forgeFXManager(&mMap, &sMap,"explode", renderDeltaTime);
 				}
 
     			// Draw game over transition effect
@@ -577,7 +731,7 @@ fn int main(String[] args) {
     			}
     			if (raining){
 
-    				forge_fx::forgeFXManager(&mMap, &sMap,"rain", deltaTime);
+    				forge_fx::forgeFXManager(&mMap, &sMap,"rain", renderDeltaTime);
     				weatherTimer -=1;
     				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer); //debug
     			}
@@ -726,7 +880,7 @@ fn int main(String[] args) {
 				rl::drawTexture(tMap.get("nightsky")!!, 0, 0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("nightmid")!!, {scrollMid, 380}, 0.0, 1.0, rl::WHITE);//340
 				rl::drawTextureEx(tMap.get("nightmid")!!, {WINDOW_WIDTH + scrollMid, 380}, 0.0, 1.0, rl::WHITE);
-				forge_fx::forgeFXManager(&mMap, &sMap,"starrySky", deltaTime);
+				forge_fx::forgeFXManager(&mMap, &sMap,"starrySky", renderDeltaTime);
 				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("nightground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
@@ -779,7 +933,7 @@ fn int main(String[] args) {
 								forge_game::drawAnimatedConstruct(nightConstruct);
 						}
 
-				forge_fx::forgeFXManager(&mMap, &sMap,"shootingStars", deltaTime);
+				forge_fx::forgeFXManager(&mMap, &sMap,"shootingStars", renderDeltaTime);
 
 					if(nightBoss.active){
 					forge_game::drawAnimatedConstruct(&nightBoss);
@@ -803,7 +957,7 @@ fn int main(String[] args) {
 					rl::drawText("FINAL VICTORY!", (WINDOW_WIDTH / 2) - 280, WINDOW_HEIGHT / 2 - 100, 80, FORGE_ORANGE);
 					rl::drawText("YOU HAVE CONQUERED THE NIGHT!", (WINDOW_WIDTH / 2) - 520, WINDOW_HEIGHT / 2, 60, rl::WHITE);
 					rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
-					forge_fx::forgeFXManager(&mMap, &sMap,"explode", deltaTime);
+					forge_fx::forgeFXManager(&mMap, &sMap,"explode", renderDeltaTime);
 				}
 
 				// Draw game over transition effect
@@ -827,7 +981,7 @@ fn int main(String[] args) {
 			}
 			if (raining){
 
-				forge_fx::forgeFXManager(&mMap, &sMap,"rain", deltaTime);
+				forge_fx::forgeFXManager(&mMap, &sMap,"rain", renderDeltaTime);
 				weatherTimer -=1;
 				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer);//debug
 			}
@@ -871,7 +1025,7 @@ fn int main(String[] args) {
 						}
         				//if raining it should be raining when paused.
         				if (raining){
-       					forge_fx::forgeFXManager(&mMap, &sMap,"rain", deltaTime);
+       					forge_fx::forgeFXManager(&mMap, &sMap,"rain", renderDeltaTime);
         				}
 
                         rl::drawRectangle(5, 5, 400, 200, {0,0,0,150});
@@ -940,7 +1094,7 @@ fn int main(String[] args) {
         				forge_fx::drawLight(1815, 105, 150, rl::fade(rl::YELLOW, 0.8));
 						forge_fx::drawLight(1815, 105, 351, rl::fade(rl::WHITE, 0.8));
 						//end/
-                        forge_fx::forgeFXManager(&mMap, &sMap,"starrySky", deltaTime);
+                        forge_fx::forgeFXManager(&mMap, &sMap,"starrySky", renderDeltaTime);
         				rl::drawTextureEx(tMap.get("clouds")!!, {scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("clouds")!!, {WINDOW_WIDTH + scrollClouds, 285}, 0.0, 1.0, rl::WHITE);
         				rl::drawTextureEx(tMap.get("nightground")!!, {scrollGround, 930}, 0.0, 1.0, rl::WHITE);
@@ -957,7 +1111,7 @@ fn int main(String[] args) {
 							}
         				//if raining it should be raining when paused.
         				if (raining){
-       					forge_fx::forgeFXManager(&mMap, &sMap,"rain", deltaTime);
+       					forge_fx::forgeFXManager(&mMap, &sMap,"rain", renderDeltaTime);
         				}
 
                         rl::drawRectangle(5, 5, 400, 200, {0,0,0,150});
@@ -1025,7 +1179,7 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
 
 				forge_fx::drawRainbow();
-				forge_fx::forgeFXManager(&mMap, &sMap,"fireworks",deltaTime);
+				forge_fx::forgeFXManager(&mMap, &sMap,"fireworks",renderDeltaTime);
 
 				rl::drawTextureEx(tMap.get("armadillo")!!, {750, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 815}, 0.0, 3.0, rl::WHITE);
@@ -1362,14 +1516,43 @@ fn int main(String[] args) {
                     if (forge_controller::controllersDetected && forge_controller::is_controller_active() && forge_controller::is_mouse_mode_enabled()) {
                         forge_controller::draw_custom_cursor();
                     }
-
    		}
-   			//accumulator -= TIME_STEP;
+
+		// End 2D camera mode
+		rl::endMode2D();
+		
+		// Render FPS display if enabled (must be done after 2D mode ends)
+		if (showFPS) {
+			// Draw FPS in top-right corner
+			rl::drawRectangle(WINDOW_WIDTH - 100, 10, 90, 30, rl::fade(FORGE_GRAY, 0.7f));
+			rl::drawText(rl::textFormat("FPS: %d", currentFPS), WINDOW_WIDTH - 90, 15, 20, rl::LIME);
+		}
+		
+		// End drawing mode for this frame
+		rl::endDrawing();
 
 		// Check if state has changed and update mouse mode accordingly
 		if (state != previousState) {
 			forge_controller::auto_enable_mouse_mode(state.ordinal);
 			previousState = state;
+		}
+
+		// Handle FPS display toggle with F3 key
+		if (rl::isKeyPressed(rl::KEY_F3)) {
+			showFPS = !showFPS;
+			io::printfn("FPS display: %s", showFPS ? "ON" : "OFF");
+		}
+
+		// Update FPS counter
+		fpsUpdateTimer += updateTime;
+		fpsCounter++;
+		
+		if (fpsUpdateTimer >= 0.5f) {
+			currentFPS = fpsCounter * 2; // multiply by 2 since we measure over half a second
+			fpsCounter = 0;
+			fpsUpdateTimer = 0.0f;
+		} else if (fpsUpdateTimer > 0) {
+			currentFPS = (int)(fpsCounter / fpsUpdateTimer);
 		}
 	}
 	return 0;
