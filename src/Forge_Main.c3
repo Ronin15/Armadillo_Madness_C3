@@ -20,7 +20,6 @@ import raylib5::rl;
 import std::io;
 
 //Game Consts---------------------------------
-const int FPS_CAP = 60; //FPS Cap
 const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
@@ -79,7 +78,6 @@ fn int main(String[] args) {
 	defer rl::closeWindow();
  	rl::initAudioDevice();
 	defer rl::closeAudioDevice();
-	// We no longer use setTargetFPS, instead implementing our own timing
 	forge_game::toggleFullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
 
 	//camera
@@ -118,7 +116,7 @@ fn int main(String[] args) {
 	//demo time counters
 	float demoCounter1;
 	float demoCounter2;
-	
+
 	// Boss spawn timers - separate counters for each boss
 	float dayBossCounter = 0.0;
 	float nightBossCounter = 0.0;
@@ -483,57 +481,6 @@ fn int main(String[] args) {
 		  			state = PAUSE;
 		  			rl::playSound(sMap.get("pause")!!);
 		  		}
-
-				// Check for newly connected controllers every 5 seconds (300 frames at 60 FPS)
-
-				/* DEBUG
-		  		// Toggle controller debug with F1 key
-		  		if (rl::isKeyPressed(rl::KEY_F1)) {
-		  		    forge_controller::toggle_debug();
-		  		}
-
-		  		// Toggle raw controller detection with F2 key
-		  		if (rl::isKeyPressed(rl::KEY_F2)) {
-		  		    forge_controller::check_raw_buttons();
-		  		}
-
-		  		// Check for newly connected controllers every 5 seconds (300 frames at 60 FPS)
-		  		if (frameCounter % 300 == 0) {
-		  		    forge_controller::check_for_new_controllers();
-		  		}
-
-		  		// DEBUG: Check for any controller button press if debugging enabled
-		  		if (forge_controller::any_button_pressed()) {
-		  		    // Print detailed controller state when any button is pressed
-		  		    forge_controller::debug_controller_state();
-		  		}
-
-		  		// DEBUG: Every 300 frames, print controller state if debugging enabled
-		  		if (frameCounter % 300 == 0 && forge_controller::debugEnabled) {
-		  		    forge_controller::debug_controller_state();
-		  		}
-
-		  		// Toggle controller debug with F1 key
-		  		if (rl::isKeyPressed(rl::KEY_F1)) {
-		  		    forge_controller::toggle_debug();
-		  		}
-
-		  		// DEBUG: Check for any controller button press if debugging enabled
-		  		if (forge_controller::any_button_pressed()) {
-		  		    // Print detailed controller state when any button is pressed
-		  		    forge_controller::debug_controller_state();
-		  		}
-
-		  		// DEBUG: Every 300 frames, print controller state if debugging enabled
-		  		if (frameCounter % 300 == 0 && forge_controller::debugEnabled) {
-		  		    forge_controller::debug_controller_state();
-		  		}
-
-		  		// DEBUG: Every 300 frames, print controller state if debugging enabled
-		  		if (frameCounter % 300 == 0 && forge_controller::debugEnabled) {
-		  		    forge_controller::debug_controller_state();
-		  		}
-				*/
 					//check Collisions
 
 					foreach ( &construct : constructs){
@@ -638,7 +585,7 @@ fn int main(String[] args) {
 							if (dayBossCounter >= BOSS_TIMER){
 								io::printfn("COUGAR_BOSS Triggered! Counter: %f", dayBossCounter);
 								// Don't reset the counter here, only reset when boss is re-created
-								
+
 								dayBoss.active = true;
 								constructs = forge_game::forgeConstructs(&tMap,"day_boss",MAX_BOSS_CONSTRUCTS);
 							}
@@ -658,8 +605,6 @@ fn int main(String[] args) {
 				forge_fx::drawLight(1815, 105, 200, rl::fade(rl::WHITE, 0.5));
 				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
 				//end sun
-
-				rl::drawFPS(15,205); //debug
 				//game hud
 				rl::drawRectangle(5, 5, 400, 200, {0,0,0,150});
 				rl::drawText(rl::textFormat("Score: %08i", score), 15, 20, 40, rl::RAYWHITE);
@@ -893,7 +838,7 @@ fn int main(String[] args) {
 							if (nightBossCounter >= BOSS_TIMER){
 								io::printfn("ALIEN_BOSS Triggered! Counter: %f", nightBossCounter);
 								// Don't reset the counter here, only reset when boss is re-created
-								
+
 								nightBoss.active = true;
 								nightConstructs = forge_game::forgeConstructs(&tMap,"night_boss",MAX_BOSS_CONSTRUCTS);
 							}
@@ -913,8 +858,6 @@ fn int main(String[] args) {
 				forge_fx::drawLight(1815, 105, 150, rl::fade(rl::YELLOW, 0.8));
 				forge_fx::drawLight(1815, 105, 351, rl::fade(rl::WHITE, 0.8));
 				//end moon
-
-				rl::drawFPS(15,205); //debug
 				//game hud
 				rl::drawRectangle(5, 5, 400, 200, {0,0,0,150});
 				rl::drawText(rl::textFormat("Score: %08i", score), 15, 20, 40, rl::RAYWHITE);
