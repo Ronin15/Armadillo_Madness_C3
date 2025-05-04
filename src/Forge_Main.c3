@@ -118,6 +118,10 @@ fn int main(String[] args) {
 	//demo time counters
 	float demoCounter1;
 	float demoCounter2;
+	
+	// Boss spawn timers - separate counters for each boss
+	float dayBossCounter = 0.0;
+	float nightBossCounter = 0.0;
 
 	// Initialize timing and debugging variables
 	float accumulator = 0.0;
@@ -438,6 +442,9 @@ fn int main(String[] args) {
 
 				 	if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
                          frameCounter = 0;
+                         // Reset boss counters when starting a new game
+                         dayBossCounter = 0;
+                         nightBossCounter = 0;
                          state = GAME;
     				}
 
@@ -613,19 +620,29 @@ fn int main(String[] args) {
 								if (bossTransitionTimer <= 0.0) {
 									state = NIGHTLVL;
 									frameCounter = 0;
+									// Reset boss counters for the new level
+									dayBossCounter = 0;
+									nightBossCounter = 0;
 									inTransition = false;
 								}
 							}
 					}
 
 					//io::printfn("Last enitity pos-x: %f",constructs[entIndex].pos.x);
-						if (frameCounter == BOSS_TIMER){
-						io::printfn("COUGAR_BOSS Triggered!");
-						frameCounter = 0;
-
-							dayBoss.active = true;
-							constructs = forge_game::forgeConstructs(&tMap,"day_boss",MAX_BOSS_CONSTRUCTS);
-					}
+						if (!dayBoss.active) {
+							dayBossCounter += 1;
+							// Log boss counter progress every 1000 frames
+							if ((int)dayBossCounter % 1000 == 0) {
+								io::printfn("Day Boss Counter: %f / %d", dayBossCounter, BOSS_TIMER);
+							}
+							if (dayBossCounter >= BOSS_TIMER){
+								io::printfn("COUGAR_BOSS Triggered! Counter: %f", dayBossCounter);
+								// Don't reset the counter here, only reset when boss is re-created
+								
+								dayBoss.active = true;
+								constructs = forge_game::forgeConstructs(&tMap,"day_boss",MAX_BOSS_CONSTRUCTS);
+							}
+						}
 
 
 				//draw game elements------------------------------------------------------------------------------
@@ -867,13 +884,20 @@ fn int main(String[] args) {
 						}
 
 						//io::printfn("Last enitity pos-x: %f",constructs[entIndex].pos.x);
-						if (frameCounter == BOSS_TIMER){
-						io::printfn("ALIEN_BOSS Triggered!");
-						frameCounter = 0;
-
-							nightBoss.active = true;
-							nightConstructs = forge_game::forgeConstructs(&tMap,"night_boss",MAX_BOSS_CONSTRUCTS);
-					}
+						if (!nightBoss.active) {
+							nightBossCounter += 1;
+							// Log boss counter progress every 1000 frames
+							if ((int)nightBossCounter % 1000 == 0) {
+								io::printfn("Night Boss Counter: %f / %d", nightBossCounter, BOSS_TIMER);
+							}
+							if (nightBossCounter >= BOSS_TIMER){
+								io::printfn("ALIEN_BOSS Triggered! Counter: %f", nightBossCounter);
+								// Don't reset the counter here, only reset when boss is re-created
+								
+								nightBoss.active = true;
+								nightConstructs = forge_game::forgeConstructs(&tMap,"night_boss",MAX_BOSS_CONSTRUCTS);
+							}
+						}
 
 
 				//draw game elements------------------------------------------------------------------------------
@@ -1191,6 +1215,9 @@ fn int main(String[] args) {
 					// Reset player,Bosses, Entities
 					player = forge_game::forgeCronstructPlayer(&tMap);
 					score = 0;
+					// Reset boss counters
+					dayBossCounter = 0;
+					nightBossCounter = 0;
 					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
 					dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
 					nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
@@ -1236,6 +1263,9 @@ fn int main(String[] args) {
 					// Reset player,Bosses, Entities
 					player = forge_game::forgeCronstructPlayer(&tMap);
 					score = 0;
+					// Reset boss counters
+					dayBossCounter = 0;
+					nightBossCounter = 0;
 					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
 					dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
 					nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
