@@ -13,25 +13,25 @@ import std::io;
 import std::math;
 
 //Game globals and consts -------------------------------------------------
-const float GRAVITY = 700.0f;//200 for grav boots
+const float GRAVITY = 650.0f;//200 for grav boots
 const float MOVE_VELOCITY = -600.0f;
 const float SKY_LEVEL = 0.0f;
-const float ACCELERATION = 250.0f;
+const float ACCELERATION = 200.0f;
 const float FRICTION = 40.0f;
 const float NIGHTB_FREQUENCY = 0.01f;
 const float NIGHTB_AMPLITUDE = 400.0f;
-const float AMPLITUDE = 300.0f;//300
+const float AMPLITUDE = 200.0f;//300
 const float FREQUENCY = 0.03f;//0.05
 const int MAX_LIVES = 6;
-const float OBS_SOFFSET = 30.0f;
-const float ANT_SOFFSET = 60.0f;
-const float FOX_SOFFSET = 80.0f;
-const float SCORPION_SOFFSET = 40.0f;
-const float TURTLE_SOFFSET = 35.0f;
-const float SNAKE_SOFFSET = 35.0f;
-const float SPIDER_SOFFSET = 80.0f;
-const float POWERUP_SOFFSET = 35.0f;
-const float MOUSE_SOFFSET = 50.0f;
+const float OBS_SOFFSET = 20.0f;
+const float ANT_SOFFSET = 50.0f;
+const float FOX_SOFFSET = 70.0f;
+const float SCORPION_SOFFSET = 30.0f;
+const float TURTLE_SOFFSET = 25.0f;
+const float SNAKE_SOFFSET = 30.0f;
+const float SPIDER_SOFFSET = 70.0f;
+const float POWERUP_SOFFSET = 25.0f;
+const float MOUSE_SOFFSET = 40.0f;
 const float COUGAR_SOFFSET = 40.0f;
 const int ENTITY_HITBOX_WIDTH = 64;
 const int ENTITY_HITBOX_HEIGHT = 64;
@@ -277,7 +277,7 @@ fn Construct forgeCronstructProjectile(TexMap *tMap) {
       c.groundLevel = groundLevel;
       c.acceleration = ACCELERATION;
       c.friction = FRICTION;
-      c.frameLength = 0.1;
+      c.frameLength = 0.1; // Slowed down from 0.1 to 0.25
       c.currentFrame = 1;
       c.texFlip = false;
       c.isDead = false;
@@ -301,14 +301,14 @@ fn Construct forgeCronstructPlayer(TexMap *tMap, int lives = 6) {
       c.hitBox = {c.pos.x,c.pos.y,PLAYER_HITBOX_WIDTH,PLAYER_HITBOX_HEIGHT};
       c.texture = tMap.get(c.name)!!;
      // c.sound = sMap.get(c.name)!!;
-      c.lives = 1;
+      c.lives = lives;
       c.maxFrames = 2;
       c.gravity = GRAVITY;
       c.jumpVelocity = MOVE_VELOCITY;
       c.groundLevel = groundLevel;
       c.acceleration = ACCELERATION;
       c.friction = FRICTION;
-      c.frameLength = 0.1;
+      c.frameLength = 0.1; // Slowed down from 0.1 to 0.25
       c.currentFrame = 1;
       c.texFlip = false;
       c.isDead = false;
@@ -350,7 +350,7 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
       c.groundLevel = groundLevel;
       c.acceleration = ACCELERATION;
       c.friction = 0;
-      c.frameLength = 0.1;
+      c.frameLength = 0.1; // Slowed down from 0.1 to 0.25
       c.currentFrame = 1;
       c.texFlip = false;
       c.isDead = false;
@@ -401,7 +401,7 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
     constructs[i].groundLevel = groundLevel;
     constructs[i].acceleration = ACCELERATION;
     constructs[i].friction = FRICTION;
-    constructs[i].frameLength = 0.1;
+    constructs[i].frameLength = 0.1; // Slowed down from 0.1 to 0.25
     constructs[i].currentFrame = 1;
     constructs[i].texFlip = false;
     constructs[i].isDead = false;
@@ -428,7 +428,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
        int score = 0;
       //all construct update info-------------------------------------------------
       //Frame updates
-      c.frameTimer += deltaTime;
+      // Apply global animation speed multiplier to slow down or speed up animations
+      c.frameTimer += deltaTime * forge_main::ANIM_SPEED_MULTIPLIER;
 
       if (c.frameTimer > c.frameLength) {
          c.currentFrame += 1;
@@ -467,8 +468,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                        PLAYER_HITBOX_HEIGHT};
 
 
-            if (raining){c.acceleration = 125;}
-            if (!raining && c.acceleration == 125){c.acceleration = ACCELERATION;}
+            if (raining){c.acceleration = 100;}//125
+            if (!raining && c.acceleration == 100){c.acceleration = ACCELERATION;}
 
             if(c.animTimer >= 0.0){
                c.animTimer -= 1.0;
@@ -487,7 +488,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
               if (c.gravity == 400.0) {c.gravity = GRAVITY;}
               if (c.invulnTimer <= 0.0) c.invlunerable = false;
-              if (c.acceleration == 500){c.acceleration = ACCELERATION;}
+              if (c.acceleration == 400){c.acceleration = ACCELERATION;}//500
               if (poopPenatrate){poopPenatrate = false;}
             }
 
@@ -506,7 +507,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                }
 
             //powerup
-            if (c.sHit){c.powerUpTimer += 500; c.invlunerable = true; c.invulnTimer += 800; c.acceleration = 500; c.sHit = false;}
+            if (c.sHit){c.powerUpTimer += 500; c.invlunerable = true; c.invulnTimer += 800; c.acceleration = 400; c.sHit = false;}//500
             //invuln
             if(c.hHit && c.invulnTimer <= 0){
                   c.hHit = false;
@@ -666,7 +667,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                c.groundLevel = groundLevel - c.texture.height + 80;
 
             if (c.pos.x > 1900) {c.expired = true; c.isProjectileActive = false;}
-               c.pos.x += (c.acceleration * 3.5) * deltaTime;
+               c.pos.x += (c.acceleration * 3.0f) * deltaTime;//3.5
 
          break;
 
@@ -764,9 +765,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                }
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
-               c.pos.x -= 125 * deltaTime;//15
+               c.pos.x -= 100 * deltaTime;//125
                c.texFlip = false;//15
-            //if (c.pos.x <= 0){c.pos.x += 15.0 * deltaTime;c.texFlip = true;}
             if (!c.isDead){
             c.pos.y += AMPLITUDE * math::sin(FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
             }else{
@@ -946,7 +946,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 				        }
                 }else{
                    //right
-                   c.pos.x += (c.acceleration * 4) * deltaTime;
+                   c.pos.x += (c.acceleration * 3) * deltaTime;
                    c.texFlip = true;
 				      if(c.pos.x >= forge_main::WINDOW_WIDTH + 300) {movingLeft = true;}
 
@@ -1023,7 +1023,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 				if(movingLeft) {
                    //left
                    c.pos.y -= NIGHTB_AMPLITUDE * math::sin(NIGHTB_FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
-                   c.pos.x -= 125 * deltaTime;
+                   c.pos.x -= 100 * deltaTime;//125
                    c.texFlip = false;
                       if(c.pos.x < 0.0) {movingLeft = false;}
 
@@ -1033,7 +1033,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                 }else{
                    //right
                    c.pos.y += NIGHTB_AMPLITUDE * math::sin(NIGHTB_FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
-                   c.pos.x += (125 * 4) * deltaTime;
+                   c.pos.x += (100 * 3) * deltaTime;//125 * 4
                    c.texFlip = true;
 				      if(c.pos.x >= forge_main::WINDOW_WIDTH + 300) {movingLeft = true;}
 

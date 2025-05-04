@@ -25,7 +25,7 @@ const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const String GAME_NAME = "Armadillo Madness 0.9.8"; //ui update, options update, and almost all game states complete
+const String GAME_NAME = "Armadillo Madness 0.9.9"; //ui update, options update, and almost all game states complete
 const int MAX_CONSTRUCTS = 200;//100 - 200
 const int MAX_BOSS_CONSTRUCTS = 50;
 const int MAX_BOSS_POWER_UPS = 5;
@@ -35,6 +35,7 @@ const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
 const int BOSS_TIMER = 13700;
 const float BOSS_TRANSITION_TIME = 6.0; // Time in seconds to display transition after boss death
+const float ANIM_SPEED_MULTIPLIER = 0.58f; // Animation speed: 1.0 = normal, lower = slower
 
 //Hammer Forge Colors RGB
 const Color FORGE_GRAY = {31,32,34,255};
@@ -175,7 +176,7 @@ fn int main(String[] args) {
 		// Timing calculations to achieve a fixed 60 FPS time step
 		float currentTime = (float)rl::getTime(); // Current time in seconds
 		float updateTime = currentTime - lastTime; // Time since last frame
-		
+
 		// Skip frame if we're too fast (frame limiting to 60 FPS)
 		// Target 1/60 of a second per frame (about 16.67ms)
 		const float FRAME_BUDGET = 1.0f / TARGET_FPS;
@@ -188,19 +189,19 @@ fn int main(String[] args) {
 			currentTime = (float)rl::getTime();
 			updateTime = currentTime - lastTime;
 		}
-		
+
 		lastTime = currentTime;
-		
+
 		// Cap the maximum update time to prevent large jumps after pauses/lag
 		if (updateTime > 0.25f) updateTime = 0.25f;
-		
+
 		// Add time to accumulator
 		accumulator += updateTime;
 
 		// Track how many updates we've done this frame
 		int updatesThisFrame = 0;
 		const int MAX_UPDATES_PER_FRAME = 5; // Prevent spiral of death
-		
+
 		// Process inputs (should be done once per frame, outside the fixed timestep loop)
 		float renderDeltaTime = updateTime; // Use our controlled time delta
 		// Make deltaTime variable also available for compatibility with existing code
@@ -211,126 +212,126 @@ fn int main(String[] args) {
 		while (accumulator >= TIME_STEP && updatesThisFrame < MAX_UPDATES_PER_FRAME) {
 			// Use a fixed time step for game logic updates
 			float fixedDeltaTime = TIME_STEP;
-			
+
 			// Update controller activity tracking
 			forge_controller::update_controller_activity(fixedDeltaTime);
-			
+
 			// Check for new controllers occasionally
 			if (frameCounter % 300 == 0) {
 				forge_controller::check_for_new_controllers();
 			}
-			
+
 			// Update game logic with fixed timestep based on current state
 			switch (state) {
 				case GAME:
 					// Update player and game physics/logic
 					frameCounter += 1;
-					
+
 					// Update player
 					int playerUpdateResult = forge_game::updateConstruct(&player, &sMap, &tMap, raining, fixedDeltaTime);
-					
+
 					// Check for player death
 					if (playerUpdateResult == -1 && !inTransition) {
 						rl::playSound(sMap.get("playerDeath")!!);
 						inTransition = true;
 						bossTransitionTimer = BOSS_TRANSITION_TIME;
 					}
-					
+
 					// Process death transition
 					if (inTransition && player.isDead) {
 						bossTransitionTimer -= fixedDeltaTime;
 						// State change handled in the render section
 					}
-					
+
 					// Update projectile
 					forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, fixedDeltaTime);
-					
+
 					// Update constructs
 					foreach (&construct : constructs) {
 						score += forge_game::updateConstruct(construct, &sMap, &tMap, raining, fixedDeltaTime);
 					}
-					
+
 					// Update day boss
 					if(dayBoss.active) {
 						score += forge_game::updateConstruct(&dayBoss, &sMap, &tMap, raining, fixedDeltaTime);
-						
+
 						if (dayBoss.isDead && !inTransition) {
 							inTransition = true;
 							bossTransitionTimer = BOSS_TRANSITION_TIME;
 							rl::playSound(sMap.get("levelComplete")!!);
 						}
-						
+
 						if (inTransition && dayBoss.isDead && !player.isDead) {
 							bossTransitionTimer -= fixedDeltaTime;
 							// State change handled in the render section
 						}
 					}
 					break;
-					
+
 				case NIGHTLVL:
 					// Update player and game physics/logic for night level
 					frameCounter += 1;
-					
+
 					// Update player
 					int playerUpdateResult = forge_game::updateConstruct(&player, &sMap, &tMap, raining, fixedDeltaTime);
-					
+
 					// Check for player death
 					if (playerUpdateResult == -1 && !inTransition) {
 						rl::playSound(sMap.get("playerDeath")!!);
 						inTransition = true;
 						bossTransitionTimer = BOSS_TRANSITION_TIME;
 					}
-					
+
 					// Process death transition
 					if (inTransition && player.isDead) {
 						bossTransitionTimer -= fixedDeltaTime;
 						// State change handled in the render section
 					}
-					
+
 					// Update projectile
 					forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, fixedDeltaTime);
-					
+
 					// Update night constructs
 					foreach (&nightConstruct : nightConstructs) {
 						score += forge_game::updateConstruct(nightConstruct, &sMap, &tMap, raining, fixedDeltaTime);
 					}
-					
+
 					// Update night boss
 					if(nightBoss.active) {
 						score += forge_game::updateConstruct(&nightBoss, &sMap, &tMap, raining, fixedDeltaTime);
-						
+
 						if (nightBoss.isDead && !inTransition) {
 							inTransition = true;
 							bossTransitionTimer = BOSS_TRANSITION_TIME;
 							rl::playSound(sMap.get("levelComplete")!!);
 						}
-						
+
 						if (inTransition && nightBoss.isDead && !player.isDead) {
 							bossTransitionTimer -= fixedDeltaTime;
 							// State change handled in the render section
 						}
 					}
 					break;
-					
+
 				case DEMO:
 					// Update demo mode
 					forge_game::updateConstruct(&demoPlayer, &sMap, &tMap, raining, fixedDeltaTime);
-					
+
 					foreach (&demoConstruct : demoConstructs) {
 						forge_game::updateConstruct(demoConstruct, &sMap, &tMap, raining, fixedDeltaTime);
 					}
 					break;
-					
+
 				// Other states don't need fixed timestep physics updates
 				default:
 					break;
 			}
-			
+
 			// Consume time from the accumulator
 			accumulator -= TIME_STEP;
 			updatesThisFrame++;
 		}
-		
+
 		// -------------------- RENDERING (ONCE PER FRAME) --------------------
 		// Render at the current framerate, but game logic above is fixed timestep
 		rl::beginDrawing();
@@ -1520,14 +1521,14 @@ fn int main(String[] args) {
 
 		// End 2D camera mode
 		rl::endMode2D();
-		
+
 		// Render FPS display if enabled (must be done after 2D mode ends)
 		if (showFPS) {
 			// Draw FPS in top-right corner
 			rl::drawRectangle(WINDOW_WIDTH - 100, 10, 90, 30, rl::fade(FORGE_GRAY, 0.7f));
 			rl::drawText(rl::textFormat("FPS: %d", currentFPS), WINDOW_WIDTH - 90, 15, 20, rl::LIME);
 		}
-		
+
 		// End drawing mode for this frame
 		rl::endDrawing();
 
@@ -1546,7 +1547,7 @@ fn int main(String[] args) {
 		// Update FPS counter
 		fpsUpdateTimer += updateTime;
 		fpsCounter++;
-		
+
 		if (fpsUpdateTimer >= 0.5f) {
 			currentFPS = fpsCounter * 2; // multiply by 2 since we measure over half a second
 			fpsCounter = 0;
