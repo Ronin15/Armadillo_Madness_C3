@@ -818,11 +818,13 @@ fn int main(String[] args) {
 										state = HIGH_SCORE;
 										// Force reset of score processed state
 										__force_reset_score_processed = true;
+										frameCounter = 0;
 									} else {
 										io::printfn("Not a high score, transitioning to GAME_WIN state");
 										state = GAME_WIN;
+										frameCounter = 0;
+										
 									}
-									frameCounter = 0;
 									inTransition = false;
 								}
 							}
@@ -1170,6 +1172,7 @@ fn int main(String[] args) {
 					song = mMap.get(randSong)!!;
 					// Reset power-up counters
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
+					frameCounter = 0;
 					state = MAIN;
 				}
 				break;
@@ -1220,6 +1223,7 @@ fn int main(String[] args) {
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					state = MAIN;
 					soundPlayed = false;
+					frameCounter = 0;
 				}
 				break;
 
@@ -1375,7 +1379,7 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
 	  			scrollGround -= 5.0;
 				scrollMid -= 0.6;
-				scrollClouds -= 0.3;
+				scrollClouds -= 0.4;
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollClouds <= -WINDOW_WIDTH) {scrollClouds = 0;}
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
@@ -1418,6 +1422,7 @@ fn int main(String[] args) {
 					demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
 					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
 					demoConstructs = forge_game::forgeConstructs(&tMap,"demo");
+					frameCounter = 0;
 					state = MAIN;
 				}
 

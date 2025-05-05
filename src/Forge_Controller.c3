@@ -247,7 +247,7 @@ fn void force_controller_init() {
 }
 
 // Mouse control variables
-const float MOUSE_SENSITIVITY = 20.0; // Balanced sensitivity for left stick
+const float MOUSE_SENSITIVITY = 35.5; // Balanced sensitivity for left stick
 bool mouseModeEnabled = false;        // Whether analog stick mouse mode is enabled
 
 // Enable/disable mouse control via right analog stick
