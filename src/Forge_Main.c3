@@ -822,8 +822,7 @@ fn int main(String[] args) {
 									} else {
 										io::printfn("Not a high score, transitioning to GAME_WIN state");
 										state = GAME_WIN;
-										frameCounter = 0;
-										
+										frameCounter = 0;	
 									}
 									inTransition = false;
 								}
