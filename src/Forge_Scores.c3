@@ -22,6 +22,9 @@ struct HighScore {
 HighScore[MAX_HIGH_SCORES] highScores;
 bool highScoresInitialized = false;
 
+// Track the index of the most recently added score (-1 means none)
+int lastAddedScoreIndex = -1;
+
 // Initialize high scores from file or set default values
 // Reads from a text-based .dat file with format: AAA,1000 (one entry per line)
 fn void init_high_scores() {
@@ -308,6 +311,9 @@ fn void add_high_score(char[MAX_INITIALS_LENGTH] initials, int score) {
         for (int i = 0; i < MAX_INITIALS_LENGTH; i++) {
             highScores[insertPos].initials[i] = initials[i];
         }
+        
+        // Set the last added score index for highlighting
+        lastAddedScoreIndex = insertPos;
 
         // Save the updated high scores
         bool saved = save_high_scores();
@@ -460,14 +466,22 @@ fn void draw_high_scores() {
             '\0'
         };
 
+        // Choose colors based on whether this is the last added score
+        rl::Color textColor = (i == lastAddedScoreIndex) ? rl::GOLD : rl::WHITE;
+        
+        // If this is the last added score, draw a highlight rectangle behind it
+        if (i == lastAddedScoreIndex) {
+            rl::drawRectangle((rl::getScreenWidth() / 2) - 220, yPos - 5, 440, 38, rl::fade(rl::SKYBLUE, 0.3f));
+        }
+
         // Draw rank
-        rl::drawText(rl::textFormat("%d.", i + 1), (rl::getScreenWidth() / 2) - 200, yPos, 30, rl::WHITE);
+        rl::drawText(rl::textFormat("%d.", i + 1), (rl::getScreenWidth() / 2) - 200, yPos, 30, textColor);
 
         // Draw initials
-        rl::drawText((ZString)&initialsStr[0], (rl::getScreenWidth() / 2) - 150, yPos, 30, rl::WHITE);
+        rl::drawText((ZString)&initialsStr[0], (rl::getScreenWidth() / 2) - 150, yPos, 30, textColor);
 
         // Draw score
-        rl::drawText(rl::textFormat("%08i", highScores[i].score), (rl::getScreenWidth() / 2), yPos, 30, rl::WHITE);
+        rl::drawText(rl::textFormat("%08i", highScores[i].score), (rl::getScreenWidth() / 2), yPos, 30, textColor);
 
         // Debug log for this entry
         // io::printfn("Drawing high score %d: %c%c%c = %d", i+1, initialsStr[0], initialsStr[1], initialsStr[2], highScores[i].score);

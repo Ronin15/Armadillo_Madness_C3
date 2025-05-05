@@ -1341,6 +1341,7 @@ fn int main(String[] args) {
 						if (__high_score_viewing_only) {
 							state = MAIN;
 							__high_score_viewing_only = false; // Reset the flag
+							forge_scores::lastAddedScoreIndex = -1; // Reset highlight
 						} else {
 							// Determine where to go based on game state
 							io::printfn("night=%s, player.isDead=%s, nightBoss.isDead=%s",
@@ -1351,9 +1352,11 @@ fn int main(String[] args) {
 							if (night && !player.isDead && nightBoss.isDead) {
 								io::printfn("Transitioning to GAME_WIN state");
 								state = GAME_WIN;
+								forge_scores::lastAddedScoreIndex = -1; // Reset highlight
 							} else {
 								io::printfn("Transitioning to GAME_OVER state");
 								state = GAME_OVER;
+								forge_scores::lastAddedScoreIndex = -1; // Reset highlight
 							}
 						}
 					}
