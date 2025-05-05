@@ -269,7 +269,7 @@ fn void toggle_mouse_mode() {
 }
 
 // Auto-enable mouse control based on game state
-// Game state constants (matching Forge_Main.c3)
+// Game state constants in main.
 const int STATE_LOGO = 0;
 const int STATE_MAIN = 1;
 const int STATE_OPTIONS = 2;
