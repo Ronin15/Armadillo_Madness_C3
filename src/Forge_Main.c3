@@ -615,14 +615,6 @@ fn int main(String[] args) {
                     forge_controller::toggle_debug();
                 }
 
-                // Update mouse control if enabled (but don't show controls in gameplay)
-                forge_controller::update_mouse_control();
-
-                // Show controller status only if active
-                //if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
-                //    rl::drawText(rl::textFormat("Controller: %s", rl::getGamepadName(forge_controller::activeController)),
-                //                  15, 300, 20, rl::GREEN);
-                //}
 
 				//life tracking updating
 				if (&player.lives == &player.lives){
@@ -733,24 +725,24 @@ fn int main(String[] args) {
 
 					foreach ( &nightConstruct : nightConstructs){
 
-							if (forge_physics::checkCollision(&player,nightConstruct) && nightConstruct.isDead == false){
-								forge_physics::resolveCollision(&player,nightConstruct, deltaTime);
+							if (forge_physics::checkCollision(&player, nightConstruct) && nightConstruct.isDead == false){
+								forge_physics::resolveCollision(&player, nightConstruct, deltaTime);
 							}
 
 							if (poopShot.isProjectileActive && poopShot.expired == false && nightConstruct.isDead == false){ //only check poopshot collsions if active
-								if(forge_physics::checkCollision(&poopShot,nightConstruct)){
-									forge_physics::resolveCollision(&poopShot,nightConstruct,deltaTime);
+								if(forge_physics::checkCollision(&poopShot, nightConstruct)){
+									forge_physics::resolveCollision(&poopShot, nightConstruct, deltaTime);
 							}
 						}
 					}
 					if(nightBoss.active){
 
-								if (forge_physics::checkCollision(&player,&nightBoss) && nightBoss.isDead == false) {
-									forge_physics::resolveCollision(&player,&nightBoss,deltaTime);}
+								if (forge_physics::checkCollision(&player, &nightBoss) && nightBoss.isDead == false) {
+									forge_physics::resolveCollision(&player, &nightBoss, deltaTime);}
 
 									if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
-										if (forge_physics::checkCollision(&poopShot,&nightBoss)) {
-											forge_physics::resolveCollision(&poopShot,&nightBoss,deltaTime);
+										if (forge_physics::checkCollision(&poopShot, &nightBoss)) {
+											forge_physics::resolveCollision(&poopShot, &nightBoss, deltaTime);
 										}
 									}
 								}
@@ -780,14 +772,15 @@ fn int main(String[] args) {
 						io::printfn("Night level transition: Checking if score %d is a high score", score);
 						if (forge_scores::is_high_score(score)) {
 							io::printfn("HIGH SCORE detected! Transitioning to HIGH_SCORE state");
+							frameCounter = 0;
 							state = HIGH_SCORE;
 							// Force reset of score processed state
 							__force_reset_score_processed = true;
 						} else {
 							io::printfn("Not a high score, transitioning to GAME_OVER state");
+							frameCounter = 0;
 							state = GAME_OVER;
-						}
-						frameCounter = 0;
+						}						
 						inTransition = false;
 						soundPlayed = false; // Reset so GAME_OVER sound will play
 					}
@@ -869,14 +862,6 @@ fn int main(String[] args) {
                     forge_controller::toggle_debug();
                 }
 
-                // Update mouse control if enabled (but don't show controls in gameplay)
-                forge_controller::update_mouse_control();
-
-                // Show controller status only if active
-                //if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
-                //    rl::drawText(rl::textFormat("Controller: %s", rl::getGamepadName(forge_controller::activeController)),
-                //                  15, 300, 20, rl::YELLOW);
-                //}
 
 				//life tracking updating
 				if (&player.lives == &player.lives){
@@ -949,7 +934,7 @@ fn int main(String[] args) {
 			}
 			if (raining){
 
-				forge_fx::forgeFXManager(&mMap, &sMap,"rain", renderDeltaTime);
+				forge_fx::forgeFXManager(&mMap, &sMap, "rain", renderDeltaTime);
 				weatherTimer -=1;
 				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer);//debug
 			}
@@ -982,7 +967,7 @@ fn int main(String[] args) {
         				forge_fx::drawLight(1815, 105, 100, rl::fade(rl::ORANGE, 0.3));
 
         				forge_game::drawAnimatedConstruct(&player);
-        				forge_game::drawPoopShot(&poopShot,&player);
+        				forge_game::drawPoopShot(&poopShot, &player);
 
        					foreach ( &construct : constructs){
         								forge_game::drawAnimatedConstruct(construct);
@@ -993,7 +978,7 @@ fn int main(String[] args) {
 						}
         				//if raining it should be raining when paused.
         				if (raining){
-       					forge_fx::forgeFXManager(&mMap, &sMap,"rain", renderDeltaTime);
+       					forge_fx::forgeFXManager(&mMap, &sMap, "rain", renderDeltaTime);
         				}
 
                         rl::drawRectangle(5, 5, 400, 200, {0,0,0,150});
@@ -1029,7 +1014,6 @@ fn int main(String[] args) {
                         // Draw custom cursor if controller is active and mouse mode is enabled
                         if (forge_controller::controllersDetected && forge_controller::is_controller_active() && forge_controller::is_mouse_mode_enabled()) {
                             forge_controller::draw_custom_cursor();
-                            rl::hideCursor();
                         }
 
                         // Show controller info if available and active
@@ -1079,7 +1063,7 @@ fn int main(String[] args) {
 							}
         				//if raining it should be raining when paused.
         				if (raining){
-       					forge_fx::forgeFXManager(&mMap, &sMap,"rain", renderDeltaTime);
+       					forge_fx::forgeFXManager(&mMap, &sMap, "rain", renderDeltaTime);
         				}
 
                         rl::drawRectangle(5, 5, 400, 200, {0,0,0,150});
@@ -1115,7 +1099,6 @@ fn int main(String[] args) {
                         // Draw custom cursor if controller is active and mouse mode is enabled
                         if (forge_controller::controllersDetected && forge_controller::is_controller_active() && forge_controller::is_mouse_mode_enabled()) {
                             forge_controller::draw_custom_cursor();
-                            rl::hideCursor();
                         }
                         // Show controller info if available and active
                         if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
@@ -1163,10 +1146,10 @@ fn int main(String[] args) {
 					dayBossCounter = 0;
 					nightBossCounter = 0;
 					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
-					dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
-					nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
-					constructs = forge_game::forgeConstructs(&tMap,"day");
-					nightConstructs = forge_game::forgeConstructs(&tMap,"night");
+					dayBoss = forge_game::forgeCronstructBoss(&tMap, "cougar_boss");
+					nightBoss = forge_game::forgeCronstructBoss(&tMap, "alien_boss");
+					constructs = forge_game::forgeConstructs(&tMap, "day");
+					nightConstructs = forge_game::forgeConstructs(&tMap, "night");
 					randSong = forge_game::getRandomSong();
 					song = mMap.get(randSong)!!;
 					// Reset power-up counters
@@ -1212,10 +1195,10 @@ fn int main(String[] args) {
 					dayBossCounter = 0;
 					nightBossCounter = 0;
 					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
-					dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
-					nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
-					constructs = forge_game::forgeConstructs(&tMap,"day");
-					nightConstructs = forge_game::forgeConstructs(&tMap,"night");
+					dayBoss = forge_game::forgeCronstructBoss(&tMap, "cougar_boss");
+					nightBoss = forge_game::forgeCronstructBoss(&tMap, "alien_boss");
+					constructs = forge_game::forgeConstructs(&tMap, "day");
+					nightConstructs = forge_game::forgeConstructs(&tMap, "night");
 					randSong = forge_game::getRandomSong();
 					song = mMap.get(randSong)!!;
 					// Reset power-up counters
@@ -1233,12 +1216,12 @@ fn int main(String[] args) {
 				rl::showCursor();
 				if(rl::isMusicStreamPlaying(song) == false){
 						rl::playMusicStream(song);
-						//std::io::printfn("music play");
+						//io::printfn("music play");
 
 					}else{
 						forge_options::adjustUpdateOptions(song);
 						rl::updateMusicStream(song);
-						//std::io::printfn("music update: %s",song);
+						//io::printfn("music update: %s",song);
 					}
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
@@ -1371,7 +1354,7 @@ fn int main(String[] args) {
 			     if (!demoConstructs){
 			         io::printfn("init_array -> Demo");
 					//creating demo entities
-					demoConstructs = forge_game::forgeConstructs(&tMap,"demo");
+					demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
 				}
 
 				rl::hideCursor();
@@ -1386,7 +1369,7 @@ fn int main(String[] args) {
 				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
     				demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
     				forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
-    				demoConstructs = forge_game::forgeConstructs(&tMap,"demo");
+    				demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
 					frameCounter = 0;
                     state = MAIN;
 					//clean all assetes needed here to fully reset. Use Diffrent Demo Array.
@@ -1397,14 +1380,14 @@ fn int main(String[] args) {
 				demoCounter1 += 1;
 				demoCounter2 += 1;
 
-				if(demoCounter1 < 600 ){forge_ai::moveRight(&demoPlayer, deltaTime);
+				if(demoCounter1 < 700 ){forge_ai::moveRight(&demoPlayer, deltaTime);
 
 					if (demoCounter1 % 100 == 0){
 
 					forge_ai::jump(&demoPlayer, deltaTime);
 					}
 				}
-				if(demoCounter1 > 600){
+				if(demoCounter1 > 900){
 					forge_ai::moveLeft(&demoPlayer, deltaTime);
 
 					if (demoCounter1 % 100 == 0){
@@ -1412,7 +1395,7 @@ fn int main(String[] args) {
 					forge_ai::jump(&demoPlayer, deltaTime);
 					}
 				}
-				if (demoCounter1 > 1200){
+				if (demoCounter1 > 1600){
 					demoCounter1 = 0;
 				}
 
@@ -1429,7 +1412,7 @@ fn int main(String[] args) {
 				foreach ( &demoConstruct : demoConstructs){
 
 							if (forge_physics::checkCollision(&demoPlayer,demoConstruct) && demoConstruct.isDead == false){
-								forge_physics::resolveCollision(&demoPlayer,demoConstruct, deltaTime);
+								forge_physics::resolveCollision(&demoPlayer, demoConstruct, deltaTime);
 								}
 						}
 
