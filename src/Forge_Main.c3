@@ -780,7 +780,7 @@ fn int main(String[] args) {
 							io::printfn("Not a high score, transitioning to GAME_OVER state");
 							frameCounter = 0;
 							state = GAME_OVER;
-						}						
+						}
 						inTransition = false;
 						soundPlayed = false; // Reset so GAME_OVER sound will play
 					}
@@ -815,7 +815,7 @@ fn int main(String[] args) {
 									} else {
 										io::printfn("Not a high score, transitioning to GAME_WIN state");
 										state = GAME_WIN;
-										frameCounter = 0;	
+										frameCounter = 0;
 									}
 									inTransition = false;
 								}
@@ -1260,8 +1260,7 @@ fn int main(String[] args) {
 				//io::printfn("Entered HIGH_SCORE state with score: %d, viewing only: %s", score, __high_score_viewing_only ? "true" : "false");
 
 				// Render the high scores
-				rl::showCursor();
-
+				rl::hideCursor();
 				// Use a static variable to track if we've already processed the score
 				// and another to track if we're showing the high score table
 				static bool scoreProcessed = false;
