@@ -182,10 +182,9 @@ fn int main(String[] args) {
 		// Target 1/60 of a second per frame (about 16.67ms)
 		const float FRAME_BUDGET = 1.0f / TARGET_FPS;
 		while (updateTime < FRAME_BUDGET) {
-			// Sleep a tiny bit to reduce CPU usage
-			// We'll use a small wait instead since sleep isn't available
-			// This active wait isn't ideal but will work for now
-			for (int i = 0; i < 100; i++) {} // Minimal delay
+		    float remainingTime = FRAME_BUDGET - updateTime;
+		    //io::printfn("Waiting...%f", remainingTime);
+			rl::waitTime((double)remainingTime);
 			// Re-check the time
 			currentTime = (float)rl::getTime();
 			updateTime = currentTime - lastTime;
