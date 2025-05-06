@@ -28,7 +28,7 @@ struct ButtonResult {
 fn Button createButton(TexMap* tMap, SoundMap* sMap, int count) {
 
     static int spacing = 0;
-    String[8] buttons = {"playButton","optionsButton","quitButton","creditsButton","highScoreButton","menuButton","restartButton","resumeButton"};
+    String[7] buttons = {"playButton","optionsButton","quitButton","creditsButton","highScoreButton","menuButton","restartButton"};
 
     Button b;
 
@@ -204,23 +204,8 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, Vector2
                 b.currentFrame = 1;
             }
              return {state};
-
-        case "resumeButton":
-            if ((b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) || (b.bhover && xButtonClick)) {
-                b.bClicked = true;
-                rl::playSound(sMap.get("button")!!);
-                io::printfn("Button: %s -> Cicked! ",b.name);
-                state = GAME;
-            }else if (b.bhover) {
-                rl::playSound(sMap.get("button")!!);
-                b.currentFrame = 2;
-            } else {
-                b.bClicked = false;
-                b.currentFrame = 1;
-            }
-            return {state};
     }
-     // Default return 
+     // Default return
      return {state};
 }
 

@@ -63,14 +63,13 @@ fn TexMap loadTexMap(){
     //Credits Page assets
     Texture2D creditsPageTex = rl::loadTexture("resources/images/credits_page.png");
     //buttons
-    Texture2D creditsButtonTex = rl::loadTexture("resources/images/creditsButton-sheet.png");
-    Texture2D menuButtonTex = rl::loadTexture("resources/images/menuButton-sheet.png");
-    Texture2D optionsButtonTex = rl::loadTexture("resources/images/optionsButton-sheet.png");
-    Texture2D quitButtonTex = rl::loadTexture("resources/images/quitButton-sheet.png");
-    Texture2D restartButtonTex = rl::loadTexture("resources/images/restartButton-sheet.png");
-    Texture2D playButtonTex = rl::loadTexture("resources/images/playButton-sheet.png");
-    Texture2D resumeButtonTex = rl::loadTexture("resources/images/resumeButton-sheet.png");
-    Texture2D highScoreButtonTex = rl::loadTexture("resources/images/creditsButton-sheet.png"); // Temporarily using credits button
+    Texture2D creditsButtonTex = rl::loadTexture("resources/images/credits_button-sheet.png");
+    Texture2D menuButtonTex = rl::loadTexture("resources/images/main_button-sheet.png");
+    Texture2D optionsButtonTex = rl::loadTexture("resources/images/options_button-sheet.png");
+    Texture2D quitButtonTex = rl::loadTexture("resources/images/quit_button-sheet.png");
+    Texture2D restartButtonTex = rl::loadTexture("resources/images/restart_button-sheet.png");
+    Texture2D playButtonTex = rl::loadTexture("resources/images/play_button-sheet.png");
+    Texture2D highScoreButtonTex = rl::loadTexture("resources/images/high_score_button-sheet.png");
     Texture2D desertNightTex = rl::loadTexture("resources/images/desert_night.png");
 
     map.set("sky",backGroundSky);
@@ -119,7 +118,6 @@ fn TexMap loadTexMap(){
     map.set("quitButton",quitButtonTex);
     map.set("restartButton",restartButtonTex);
     map.set("playButton",playButtonTex);
-    map.set("resumeButton", resumeButtonTex);
     map.set("highScoreButton", highScoreButtonTex);
     map.set("desertNight", desertNightTex);
 

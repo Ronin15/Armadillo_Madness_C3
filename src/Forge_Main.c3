@@ -29,7 +29,7 @@ const int MAX_CONSTRUCTS = 250;//100 // 200//
 const int MAX_BOSS_CONSTRUCTS = 50;
 const int MAX_BOSS_POWER_UPS = 5;
 const int MAX_POWERUPS = 15;//6
-const int MAX_BUTTONS = 8;
+const int MAX_BUTTONS = 7;
 const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
 const int BOSS_TIMER = 12000;//13700
@@ -1226,7 +1226,15 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
-				rl::drawText("Use Controller D-Pad or Keyboard up, down, left, right.", ((WINDOW_WIDTH / 2) - 600), 400, 45, rl::BLACK);
+
+                // Draw semi-transparent black box for text background
+                int boxWidth = 1350;
+                int boxHeight = 100;
+                int boxX = (WINDOW_WIDTH / 2) - 650;
+                int boxY = 390;
+                rl::drawRectangle(boxX, boxY, boxWidth, boxHeight, rl::fade(rl::BLACK, 0.5f));
+
+				rl::drawText("Use Controller D-Pad or Keyboard up, down, left, right.", ((WINDOW_WIDTH / 2) - 600), 400, 45, rl::GOLD);
 
                 // Update mouse control if enabled (for menu navigation)
                 forge_controller::update_mouse_control();
@@ -1455,6 +1463,38 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
+
+                // Draw semi-transparent black box for text background
+                int boxWidth = 1000;
+                int boxHeight = 625;
+                int boxX = 475;
+                int boxY = 310;
+                rl::drawRectangle(boxX, boxY, boxWidth, boxHeight, rl::fade(rl::BLACK, 0.5f));
+
+                // Display credits text content with yellow font
+                int yPos = 320; // Starting Y position for credits text
+                rl::drawText("Third-Party Music", 575, yPos, 30, rl::GOLD); yPos += 50;
+
+                rl::drawText("- Title: \"Fast Feel Banana Peel\" by Alexander Nakarada", 625, yPos, 20, rl::GOLD); yPos += 30;
+                rl::drawText("  Background music track in game", 625, yPos, 20, rl::GOLD); yPos += 25;
+                rl::drawText("  Creative Commons Attribution 4.0 International (CC BY 4.0)", 625, yPos, 20, rl::GOLD); yPos += 50;
+
+                rl::drawText("- Title: \"Banjos, Unite!\" by Alexander Nakarada", 625, yPos, 20, rl::GOLD); yPos += 30;
+                rl::drawText("  Background music track in game", 625, yPos, 20, rl::GOLD); yPos += 25;
+                rl::drawText("  Creative Commons Attribution 4.0 International (CC BY 4.0)", 625, yPos, 20, rl::GOLD); yPos += 50;
+
+                rl::drawText("- Title: \"Bicycle\" by Komiku", 625, yPos, 20, rl::GOLD); yPos += 30;
+                rl::drawText("  Background music track in game", 625, yPos, 20, rl::GOLD); yPos += 50;
+
+                rl::drawText("- Title: \"Travel to the Horizon\" by Komiku", 625, yPos, 20, rl::GOLD); yPos += 30;
+                rl::drawText("  Background music track in game", 625, yPos, 20, rl::GOLD); yPos += 50;
+
+                rl::drawText("Third-Party Sound Effects", 575, yPos, 30, rl::GOLD); yPos += 40;
+                rl::drawText("- All SFX are from Soundly SFX : Soundly - https://getsoundly.com/", 625, yPos, 20, rl::GOLD); yPos += 30;
+                rl::drawText("- explosions.wav - rFXGenerator - Raylib Technologies", 625, yPos, 20, rl::GOLD); yPos += 40;
+
+                rl::drawText("Complete Lincense Details", 575, yPos, 30, rl::GOLD); yPos += 50;
+                rl::drawText("- see \"custom-art-license.md\" and \"third-party-notice.md\" for complete license details.", 575, yPos, 20, rl::GOLD); yPos += 30;
 
                 // Update mouse control if enabled (for menu navigation)
                 forge_controller::update_mouse_control();
