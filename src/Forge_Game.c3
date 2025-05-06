@@ -1160,7 +1160,7 @@ fn void drawAlienLaser(Construct* c, Construct* b, float rotation = 270.0, float
    // Draw impact point at ground if laser reached bottom
    if (c.pos.y + 200 >= groundLevel) {
       // Draw explosion circle
-      float explosionRadius = 50.0f + math::sin(time * 8.0f) * 20.0f;
+      float explosionRadius = 60.0f + math::sin(time * 8.0f) * 20.0f;
       rl::drawCircle((int)c.pos.x, (int)groundLevel - 40, explosionRadius, rl::fade(rl::RED, 0.7f));
       rl::drawCircle((int)c.pos.x, (int)groundLevel - 40, explosionRadius * 0.7f, rl::fade(rl::YELLOW, 0.9f));
    }
