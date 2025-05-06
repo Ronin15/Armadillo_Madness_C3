@@ -121,15 +121,19 @@ fn void toggleFullScreen (int gsWidth, int gsHeight){
 	//rl::toggleFullscreen();
 }
 
-fn String getRandomSong(){
-   String[*] playList = {"bicycle","banjo","banana"};
-
-   int playListLength = playList.len -1;
-   int min = 0;
-   int max = playListLength;
-   int randSong = rand_in_range(min,max);
-
-   return playList[randSong];
+fn Music playRandomSong(MusicMap* mMap){
+    String[*] playList = {"bicycle","banjo","banana"};
+    int playListLength = playList.len -1;
+    int min = 0;
+    int max = playListLength;
+    int selectedSong = rand_in_range(min,max);
+    String randSong = playList[selectedSong];
+    io::printfn("Playing random song: %s", randSong);
+    Music song = mMap.get(randSong)!!;
+    rl::stopMusicStream(song); // Stop any currently playing instance
+    rl::playMusicStream(song); // Start playing the song
+    // Return the selected song name for reference
+   return song;
 }
 
 fn ConstructType getRandomType(){
