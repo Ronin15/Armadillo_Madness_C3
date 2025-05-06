@@ -64,7 +64,7 @@ bool movingLeft = true;
 //GAME Structures Types ---------------------------------------------------------
  enum ConstructType : int {
    PLAYER,
-   PROJECTILE_POOP,
+   PROJECTILE,
    ENEMY_GROUND,
    ENEMEY_FLY,
    POWER_UP,
@@ -264,14 +264,16 @@ fn String getRandomConstructName (ConstructType type, String array_type){
       return "default"; // TO DO ADD DEFAULT TEX
    }
 
-fn Construct forgeCronstructProjectile(TexMap *tMap) {
+fn Construct forgeCronstructProjectile(TexMap *tMap, String name) {
 
       Construct c;
 
-      c.type = PROJECTILE_POOP;
-      c.name = "poop";
+      c.type = PROJECTILE;
+      c.name = name;
       c.pos = {0,0};
-      c.texture = tMap.get(c.name)!!;
+      if (name == "poop"){
+        c.texture = tMap.get(c.name)!!;
+      }
       //c.sound = sMap.get(c.name)!!;
       c.lives = 1;
       c.hitBox = {c.pos.x,c.pos.y,ENTITY_HITBOX_WIDTH,ENTITY_HITBOX_HEIGHT};
@@ -430,6 +432,15 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
 //update game contructs
 fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining, float deltaTime) {
        int score = 0;
+
+      // SPECIAL HANDLING FOR ALIEN LASER - preserve X position
+      float savedLaserX = 0.0f;
+      bool isLaser = false;
+      if (c.name == "laser") {
+         isLaser = true;
+         savedLaserX = c.pos.x;
+      }
+
       //all construct update info-------------------------------------------------
       //Frame updates
       // Apply global animation speed multiplier to slow down or speed up animations
@@ -646,7 +657,24 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
          break;
 
-         case PROJECTILE_POOP:
+         case PROJECTILE:
+            // Special case for laser (using the projectile type but different behavior)
+            if (c.name == "laser") {
+               // Move laser downward at the same speed as in drawAlienLaser
+               c.pos.y += 900.0f * deltaTime; // Use same value as drawAlienLaser
+
+               // Update laser hitbox to match laser position
+               c.hitBox.x = c.pos.x - (c.hitBox.width / 2);
+               c.hitBox.y = c.pos.y;
+
+               // For laser, we only handle vertical movement and ground-level expiration
+               if (c.pos.y >= groundLevel) {
+                  c.expired = true;
+                  c.isProjectileActive = false;
+               }
+               break; // Skip the rest of poop shot logic
+            }
+
             //io::printfn("POOP Shot - Name: %s, Active: %d, Expired: %d", c.name, c.isProjectileActive ? 1 : 0, c.expired ? 1 : 0); //DEBUG
             //io::printfn("POOP Shot :) update reached");//debug
             // c.isProjectileActive = false;//debug
@@ -670,7 +698,11 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             // Controller input for shooting is already handled in the player section
                c.groundLevel = groundLevel - c.texture.height + 80;
 
-            if (c.pos.x > 1900) {c.expired = true; c.isProjectileActive = false;}
+            // Only expire poop shot at edge of screen, not laser
+            if (c.name != "laser" && c.pos.x > 1900) {
+               c.expired = true;
+               c.isProjectileActive = false;
+            }
                c.pos.x += (c.acceleration * 3.5f) * deltaTime;//3.5
 
          break;
@@ -1005,9 +1037,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                                  c.invlunerable = false;
                                  c.invulnTimer = 0.0;
                                  c.isDead = true;
-
                                  rl::playSound(sMap.get("enemyDie")!!);
-                                 jumpCounter = 0;
                               }
 
 
@@ -1019,7 +1049,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                               c.invlunerable = false;
                            }
 
-
+                // Original counter logic
                 shootCounter += 1;
 
                  //io::printfn("BOSS_POS name: %s x :%f : y :%f timer: %f lives: %d invuln: %s",c.name,c.pos.x,c.pos.y,c.invulnTimer,c.lives,c.invlunerable);//DEBUG
@@ -1031,9 +1061,15 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                    c.texFlip = false;
                       if(c.pos.x < 0.0) {movingLeft = false;}
 
-                        if (shootCounter % 100 == 0){
-                           //TODO add shoot logic
-				        }
+                        // Check if it's time to shoot
+                        if (shootCounter > 200){
+                           // Reset counter first so we don't miss the window
+                           shootCounter = 0;
+                           // Set flag for main loop to create laser beam
+                           c.isProjectileActive = true;
+                           c.expired = false;
+                           io::printfn("Alien boss SETTING SHOOT REQUEST!");
+				       }
                 }else{
                    //right
                    c.pos.y += NIGHTB_AMPLITUDE * math::sin(NIGHTB_FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
@@ -1041,15 +1077,38 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                    c.texFlip = true;
 				      if(c.pos.x >= forge_main::WINDOW_WIDTH + 300) {movingLeft = true;}
 
-					if (shootCounter % 100 == 0){
-
-                        //TODO add shoot Logic
-
-				        }
-                     }
+					// Check if it's time to shoot
+					if (shootCounter > 200){
+						// Reset counter first so we don't miss the window
+						shootCounter = 0;
+                        // Set flag for main loop to create laser beam
+                        c.isProjectileActive = true;
+                        c.expired = false;
+                        io::printfn("Alien boss SETTING SHOOT REQUEST!");
+				    }
+                }
 
                   break;
             }
+      }
+
+      // RESTORE LASER X POSITION - ensures laser moves straight down
+      if (isLaser && c.isProjectileActive) {
+         // Save current hitbox X position
+         float savedHitboxX = c.hitBox.x;
+
+         // Restore the X position
+         c.pos.x = savedLaserX;
+         c.vel.x = 0.0f;
+
+         // Update hitbox X position to match laser's center
+         c.hitBox.x = savedLaserX - (c.hitBox.width / 2);
+
+         // Force expiration when laser reaches ground level
+         if (c.pos.y >= groundLevel) {
+            c.expired = true;
+            c.isProjectileActive = false;
+         }
       }
 
       return score;
@@ -1068,6 +1127,56 @@ fn void drawPoopShot(Construct* c, Construct* b, float rotation = 90.0, float sc
       rl::drawTextureEx(c.texture, {c.pos.x,c.pos.y}, rotation, scale, rl::WHITE);
    }
 
+}
+
+// Draw alien boss laser beam
+fn void drawAlienLaser(Construct* c, Construct* b, float rotation = 270.0, float scale = 1.5) {
+   // b is the alien boss for laser location
+
+   if (!c.isProjectileActive || c.expired){
+      // When not active, just position the laser at the boss but don't draw it
+      c.pos.x = b.pos.x + ((float)b.texture.width / 2);
+      c.pos.y = b.pos.y + b.texture.height;
+      return; // Don't render anything
+   }
+
+   io::printfn("RENDERING ACTIVE LASER at x=%.1f, y=%.1f", c.pos.x, c.pos.y);
+
+   // Laser is active - draw it
+   // Make it EXTREMELY VISIBLE with massive width
+   float time = (float)rl::getTime();
+   float pulseWidth = 50.0f + math::sin(time * 10.0f) * 20.0f; // MASSIVE laser beam
+
+   // Draw outer glow
+   Color outerGlow = rl::fade(rl::RED, 0.7f);
+   rl::drawRectangle((int)c.pos.x - (int)(pulseWidth*3), (int)c.pos.y, (int)(pulseWidth*6), 1080, outerGlow);
+
+   // Draw main laser beam
+   rl::drawRectangle((int)c.pos.x - (int)(pulseWidth*1.5f), (int)c.pos.y, (int)(pulseWidth*3), 1080, rl::RED);
+
+   // Draw bright center
+   rl::drawRectangle((int)c.pos.x - 15, (int)c.pos.y, 30, 1080, rl::YELLOW);
+
+   // Draw impact point at ground if laser reached bottom
+   if (c.pos.y + 200 >= groundLevel) {
+      // Draw explosion circle
+      float explosionRadius = 50.0f + math::sin(time * 8.0f) * 20.0f;
+      rl::drawCircle((int)c.pos.x, (int)groundLevel - 40, explosionRadius, rl::fade(rl::RED, 0.7f));
+      rl::drawCircle((int)c.pos.x, (int)groundLevel - 40, explosionRadius * 0.7f, rl::fade(rl::YELLOW, 0.9f));
+   }
+
+   // Move the laser downward - ONLY Y DIRECTION
+   float savedX = c.pos.x; // Save X position
+   c.pos.y += 300.0f * 0.016f; // Slower downward movement to stay visible longer
+   c.pos.x = savedX; // FORCE X position to remain exactly the same
+
+   // Check if it's reached the ground level
+   if (c.pos.y > groundLevel) {
+      c.expired = true;
+      c.isProjectileActive = false;
+      io::printfn("Laser reached ground level - deactivating");
+      return; // Exit immediately after deactivation
+   }
 }
 
 //draw sprites without animation

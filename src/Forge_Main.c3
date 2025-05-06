@@ -142,7 +142,8 @@ fn int main(String[] args) {
 	//game objects init
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
 	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap,1000000); //hack for demo player to not die
-	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap);
+	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap,"poop");
+	Construct alienLaser = forge_game::forgeCronstructProjectile(&tMap,"laser"); // Alien boss laser
 	Construct dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
 	Construct nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
 
@@ -164,7 +165,7 @@ fn int main(String[] args) {
 	}
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = NIGHTLVL;
 	// Auto-configure controller mouse control for initial state
 	forge_controller::auto_enable_mouse_mode(state.ordinal);
 	// Keep track of previous state to detect state changes
@@ -288,6 +289,20 @@ fn int main(String[] args) {
 					// Update projectile
 					forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, fixedDeltaTime);
 
+					// Update alien laser if night boss is active
+					if (nightBoss.active) {
+						forge_game::updateConstruct(&alienLaser, &sMap, &tMap, raining, fixedDeltaTime);
+						
+						// Check for collision between laser and player
+						if (alienLaser.isProjectileActive && !alienLaser.expired) {
+							if (forge_physics::checkCollision(&player, &alienLaser)) {
+								forge_physics::resolveCollision(&player, &alienLaser, fixedDeltaTime);
+								// Don't expire the laser - it can pass through the player
+								io::printfn("Laser hit player!");
+							}
+						}
+					}
+
 					// Update night constructs
 					foreach (&nightConstruct : nightConstructs) {
 						score += forge_game::updateConstruct(nightConstruct, &sMap, &tMap, raining, fixedDeltaTime);
@@ -296,6 +311,19 @@ fn int main(String[] args) {
 					// Update night boss
 					if(nightBoss.active) {
 						score += forge_game::updateConstruct(&nightBoss, &sMap, &tMap, raining, fixedDeltaTime);
+
+						// Check if the night boss wants to fire its laser
+						if (nightBoss.isProjectileActive && !alienLaser.isProjectileActive) {
+							// Boss wants to fire - activate the laser
+							alienLaser.isProjectileActive = true;
+							alienLaser.expired = false;
+							alienLaser.pos.x = nightBoss.pos.x + ((float)nightBoss.texture.width / 2);
+							alienLaser.pos.y = nightBoss.pos.y + nightBoss.texture.height;
+							io::printfn("Alien laser activated at: %f, %f", alienLaser.pos.x, alienLaser.pos.y);
+							rl::playSound(sMap.get("laserShot")!!);
+							// Reset boss's fire request
+							nightBoss.isProjectileActive = false;
+						}
 
 						if (nightBoss.isDead && !inTransition) {
 							inTransition = true;
@@ -510,7 +538,6 @@ fn int main(String[] args) {
 				frameCounter +=1;
 				int playerUpdateResult = forge_game::updateConstruct(&player, &sMap, &tMap, raining, deltaTime);
 
-                // Check if player requested to shoot poop
                 if (player.shootRequested) {
                     poopShot.isProjectileActive = true;
                     poopShot.expired = false;
@@ -786,12 +813,39 @@ fn int main(String[] args) {
 
 				forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
 
+				// Update alien laser if night boss is active
+				if (nightBoss.active) {
+					forge_game::updateConstruct(&alienLaser, &sMap, &tMap, raining, deltaTime);
+					
+					// Check for collision between laser and player
+					if (alienLaser.isProjectileActive && !alienLaser.expired) {
+						if (forge_physics::checkCollision(&player, &alienLaser)) {
+							forge_physics::resolveCollision(&player, &alienLaser, deltaTime);
+							// Don't expire the laser - it can pass through the player
+							io::printfn("Laser hit player!");
+						}
+					}
+				}
+
 					foreach ( &nightConstruct : nightConstructs){
 								score += forge_game::updateConstruct(nightConstruct, &sMap, &tMap, raining, deltaTime);
 					}
 
 					if(nightBoss.active){
 						score += forge_game::updateConstruct(&nightBoss, &sMap, &tMap, raining, deltaTime);
+
+						// Check if the night boss wants to fire its laser
+						if (nightBoss.isProjectileActive && !alienLaser.isProjectileActive) {
+							// Boss wants to fire - activate the laser
+							alienLaser.isProjectileActive = true;
+							alienLaser.expired = false;
+							alienLaser.pos.x = nightBoss.pos.x + ((float)nightBoss.texture.width / 2);
+							alienLaser.pos.y = nightBoss.pos.y + nightBoss.texture.height;
+							io::printfn("Alien laser activated at: %f, %f", alienLaser.pos.x, alienLaser.pos.y);
+							rl::playSound(sMap.get("laserShot")!!);
+							// Reset boss's fire request
+							nightBoss.isProjectileActive = false;
+						}
 
 							if (nightBoss.isDead && !inTransition){
 									inTransition = true;
@@ -829,9 +883,8 @@ fn int main(String[] args) {
 							}
 							if (nightBossCounter >= BOSS_TIMER){
 								io::printfn("ALIEN_BOSS Triggered! Counter: %f", nightBossCounter);
-								// Don't reset the counter here, only reset when boss is re-created
-
 								nightBoss.active = true;
+								io::printfn("Setting initial shoot request for alien boss");
 								nightConstructs = forge_game::forgeConstructs(&tMap,"night_boss",MAX_BOSS_CONSTRUCTS);
 							}
 						}
@@ -879,6 +932,11 @@ fn int main(String[] args) {
 
 				forge_game::drawAnimatedConstruct(&player);
 				forge_game::drawPoopShot(&poopShot,&player);
+
+				// Only draw alien laser if night boss is active AND we're in night level
+				if (nightBoss.active && state == NIGHTLVL) {
+					forge_game::drawAlienLaser(&alienLaser, &nightBoss);
+				}
 
 					foreach ( &nightConstruct : nightConstructs){
 								forge_game::drawAnimatedConstruct(nightConstruct);
@@ -1051,6 +1109,11 @@ fn int main(String[] args) {
         				rl::drawTextureEx(tMap.get("nightground")!!,{WINDOW_WIDTH + scrollGround, 930},0.0,1.0,rl::WHITE);
 						forge_game::drawAnimatedConstruct(&player);
         				forge_game::drawPoopShot(&poopShot,&player);
+
+        				// Draw alien laser if night boss is active
+					    if (nightBoss.active) {
+									forge_game::drawAlienLaser(&alienLaser, &nightBoss);
+						}
 
        					foreach ( &nightConstruct : nightConstructs){
         								forge_game::drawAnimatedConstruct(nightConstruct);

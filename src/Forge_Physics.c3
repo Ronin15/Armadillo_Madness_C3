@@ -26,7 +26,7 @@ fn void resolveCollision(Construct* a, Construct* b, float deltaTime) {
             a.vHit = true;
             b.vHit = true;
             if(b.name == "beatle" || b.name == "moth"){a.bHit = true; b.lives = 0;}
-            if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.vHit = false; b.vHit = false;}
+            if(a.type == PROJECTILE && b.type == POWER_UP){a.vHit = false; b.vHit = false;}
             //if(b.name == "tree"){a.vHit = false;}
             if(a.type == PLAYER && b.type == POWER_UP){
             a.vHit = false;
@@ -57,7 +57,7 @@ fn void resolveCollision(Construct* a, Construct* b, float deltaTime) {
                     a.vHit = true;
                     b.vHit = true;
                     if(b.name == "beatle" || b.name == "moth"){a.bHit = true; b.lives = 0;}
-                    if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.vHit = false; b.vHit = false;}
+                    if(a.type == PROJECTILE && b.type == POWER_UP){a.vHit = false; b.vHit = false;}
                     //if(b.name == "tree"){a.vHit = false;}
                     if(a.type == PLAYER && b.type == POWER_UP){
                     a.vHit = false;
@@ -87,9 +87,9 @@ fn void resolveCollision(Construct* a, Construct* b, float deltaTime) {
             // Horizontal collision
             a.hHit = true;
             b.hHit = true;
-            if(a.type == PROJECTILE_POOP){b.hHit = true;}
+            if(a.type == PROJECTILE){b.hHit = true;}
             if(b.name == "beatle" || b.name == "moth"){a.bHit = true; b.lives = 0; a.hHit = false;} //handles hit tracking for giving hearts back.
-            if(a.type == PROJECTILE_POOP && b.type == POWER_UP){a.hHit = false; b.hHit = false; b.isDead = false;}
+            if(a.type == PROJECTILE && b.type == POWER_UP){a.hHit = false; b.hHit = false; b.isDead = false;}
             if(b.name == "tree"){a.hHit = false;}
             if(a.type == PLAYER && b.type == POWER_UP){
                  a.hHit = false;

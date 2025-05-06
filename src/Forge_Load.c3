@@ -150,6 +150,7 @@ fn SoundMap loadSoundMap(){
     Sound playerDeath = rl::loadSound("resources/sounds/death.wav");
     Sound gameOver = rl::loadSound("resources/sounds/game_over.wav");
     Sound levelComplete = rl::loadSound("resources/sounds/level_complete.wav");
+    Sound laserShot = rl::loadSound("resources/sounds/laser_shot.wav"); // Add laser sound
 
     map.set("jump",jump);
     map.set("moving",moving);
@@ -173,6 +174,7 @@ fn SoundMap loadSoundMap(){
     map.set("levelComplete",levelComplete);
     map.set("playerDeath",playerDeath);
     map.set("gameOver",gameOver);
+    map.set("laserShot",laserShot);  // Add the laser sound to the map
 
    return map;
 }
