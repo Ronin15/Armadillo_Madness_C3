@@ -165,7 +165,7 @@ fn int main(String[] args) {
 	}
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = NIGHTLVL;
+	GameState state = MAIN;
 	// Auto-configure controller mouse control for initial state
 	forge_controller::auto_enable_mouse_mode(state.ordinal);
 	// Keep track of previous state to detect state changes
@@ -292,7 +292,7 @@ fn int main(String[] args) {
 					// Update alien laser if night boss is active
 					if (nightBoss.active) {
 						forge_game::updateConstruct(&alienLaser, &sMap, &tMap, raining, fixedDeltaTime);
-						
+
 						// Check for collision between laser and player
 						if (alienLaser.isProjectileActive && !alienLaser.expired) {
 							if (forge_physics::checkCollision(&player, &alienLaser)) {
@@ -816,7 +816,7 @@ fn int main(String[] args) {
 				// Update alien laser if night boss is active
 				if (nightBoss.active) {
 					forge_game::updateConstruct(&alienLaser, &sMap, &tMap, raining, deltaTime);
-					
+
 					// Check for collision between laser and player
 					if (alienLaser.isProjectileActive && !alienLaser.expired) {
 						if (forge_physics::checkCollision(&player, &alienLaser)) {
@@ -1206,14 +1206,12 @@ fn int main(String[] args) {
 					// Reset boss counters
 					dayBossCounter = 0;
 					nightBossCounter = 0;
-					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
+					forge_game::resetPowerUpCounters();
 					dayBoss = forge_game::forgeCronstructBoss(&tMap, "cougar_boss");
 					nightBoss = forge_game::forgeCronstructBoss(&tMap, "alien_boss");
 					constructs = forge_game::forgeConstructs(&tMap, "day");
 					nightConstructs = forge_game::forgeConstructs(&tMap, "night");
-					// Play a random song
 					randSong = forge_game::playRandomSong(&mMap);
-					// Reset power-up counters
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					frameCounter = 0;
 					state = MAIN;
@@ -1245,14 +1243,13 @@ fn int main(String[] args) {
 					rl::drawText("Press ENTER (A or X button) to try again!", (rl::getScreenWidth() / 2) - 250, 450, 25, rl::YELLOW);
 
 				} else {
-					rl::drawText("PRESS ENTER TO CONTINUE", (rl::getScreenWidth() / 2) - 220, 450, 25, rl::YELLOW);
+					rl::drawText("PRESS ENTER TO CONTINUE", (rl::getScreenWidth() / 2) - 180, 450, 25, rl::YELLOW);
 				}
 
 				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
 					// Reset player,Bosses, Entities
 					player = forge_game::forgeCronstructPlayer(&tMap);
 					score = 0;
-					// Reset boss counters
 					dayBossCounter = 0;
 					nightBossCounter = 0;
 					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
@@ -1260,9 +1257,7 @@ fn int main(String[] args) {
 					nightBoss = forge_game::forgeCronstructBoss(&tMap, "alien_boss");
 					constructs = forge_game::forgeConstructs(&tMap, "day");
 					nightConstructs = forge_game::forgeConstructs(&tMap, "night");
-					// Play a random song
 					randSong = forge_game::playRandomSong(&mMap);
-					// Reset power-up counters
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					state = MAIN;
 					soundPlayed = false;
@@ -1398,10 +1393,7 @@ fn int main(String[] args) {
 							forge_scores::lastAddedScoreIndex = -1; // Reset highlight
 						} else {
 							// Determine where to go based on game state
-							io::printfn("night=%s, player.isDead=%s, nightBoss.isDead=%s",
-									  night ? "true" : "false",
-									  player.isDead ? "true" : "false",
-									  nightBoss.isDead ? "true" : "false");
+							io::printfn("night=%s, player.isDead=%s, nightBoss.isDead=%s", night ? "true" : "false", player.isDead ? "true" : "false", nightBoss.isDead ? "true" : "false");
 
 							if (night && !player.isDead && nightBoss.isDead) {
 								io::printfn("Transitioning to GAME_WIN state");
@@ -1448,7 +1440,7 @@ fn int main(String[] args) {
 				demoCounter1 += 1;
 				demoCounter2 += 1;
 
-				if(demoCounter1 < 700 ){forge_ai::moveRight(&demoPlayer, deltaTime);
+				if(demoCounter1 < 900 ){forge_ai::moveRight(&demoPlayer, deltaTime);
 
 					if (demoCounter1 % 100 == 0){
 
@@ -1463,7 +1455,7 @@ fn int main(String[] args) {
 					forge_ai::jump(&demoPlayer, deltaTime);
 					}
 				}
-				if (demoCounter1 > 1600){
+				if (demoCounter1 > 1800){
 					demoCounter1 = 0;
 				}
 
@@ -1523,17 +1515,17 @@ fn int main(String[] args) {
 				rl::updateMusicStream(randSong);
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
-                rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
+                rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 75, 105, rl::BLACK);
 
                 // Draw semi-transparent black box for text background
                 int boxWidth = 1000;
-                int boxHeight = 625;
+                int boxHeight = 775;
                 int boxX = 475;
-                int boxY = 310;
-                rl::drawRectangle(boxX, boxY, boxWidth, boxHeight, rl::fade(rl::BLACK, 0.5f));
+                int boxY = 205;
+                rl::drawRectangle(boxX, boxY, boxWidth, boxHeight, rl::fade(rl::BLACK, 0.7f));
 
                 // Display credits text content with yellow font
-                int yPos = 320; // Starting Y position for credits text
+                int yPos = 220; // Starting Y position for credits text
                 rl::drawText("Third-Party Music", 575, yPos, 30, rl::GOLD); yPos += 50;
 
                 rl::drawText("- Title: \"Fast Feel Banana Peel\" by Alexander Nakarada", 625, yPos, 20, rl::GOLD); yPos += 30;
@@ -1550,11 +1542,15 @@ fn int main(String[] args) {
                 rl::drawText("- Title: \"Travel to the Horizon\" by Komiku", 625, yPos, 20, rl::GOLD); yPos += 30;
                 rl::drawText("  Background music track in game", 625, yPos, 20, rl::GOLD); yPos += 50;
 
+                rl::drawText("- Title: \"Home\" by Komiku", 625, yPos, 20, rl::GOLD); yPos += 30;
+                rl::drawText("  Background music track in game", 625, yPos, 20, rl::GOLD); yPos += 50;
+
                 rl::drawText("Third-Party Sound Effects", 575, yPos, 30, rl::GOLD); yPos += 40;
                 rl::drawText("- All SFX are from Soundly SFX : Soundly - https://getsoundly.com/", 625, yPos, 20, rl::GOLD); yPos += 30;
                 rl::drawText("- explosions.wav - rFXGenerator - Raylib Technologies", 625, yPos, 20, rl::GOLD); yPos += 40;
+                rl::drawText("- laser_shot.wav - rFXGenerator - Raylib Technologies", 625, yPos, 20, rl::GOLD); yPos += 45;
 
-                rl::drawText("Complete Lincense Details", 575, yPos, 30, rl::GOLD); yPos += 50;
+                rl::drawText("Complete Lincense Details & Credit Information", 575, yPos, 30, rl::GOLD); yPos += 50;
                 rl::drawText("- see \"custom-art-license.md\" and \"third-party-notice.md\" for complete license details.", 575, yPos, 20, rl::GOLD); yPos += 30;
 
                 // Update mouse control if enabled (for menu navigation)
