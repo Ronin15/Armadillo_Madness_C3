@@ -292,7 +292,7 @@ fn int main(String[] args) {
 					// Update alien laser if night boss is active
 					if (nightBoss.active) {
 						forge_game::updateConstruct(&alienLaser, &sMap, &tMap, raining, fixedDeltaTime);
-						
+
 						// Check for collision between laser and player
 						if (alienLaser.isProjectileActive && !alienLaser.expired) {
 							if (forge_physics::checkCollision(&player, &alienLaser)) {
@@ -816,7 +816,7 @@ fn int main(String[] args) {
 				// Update alien laser if night boss is active
 				if (nightBoss.active) {
 					forge_game::updateConstruct(&alienLaser, &sMap, &tMap, raining, deltaTime);
-					
+
 					// Check for collision between laser and player
 					if (alienLaser.isProjectileActive && !alienLaser.expired) {
 						if (forge_physics::checkCollision(&player, &alienLaser)) {
@@ -884,7 +884,6 @@ fn int main(String[] args) {
 							if (nightBossCounter >= BOSS_TIMER){
 								io::printfn("ALIEN_BOSS Triggered! Counter: %f", nightBossCounter);
 								nightBoss.active = true;
-								io::printfn("Setting initial shoot request for alien boss");
 								nightConstructs = forge_game::forgeConstructs(&tMap,"night_boss",MAX_BOSS_CONSTRUCTS);
 							}
 						}

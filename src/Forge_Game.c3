@@ -1068,7 +1068,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                            // Set flag for main loop to create laser beam
                            c.isProjectileActive = true;
                            c.expired = false;
-                           io::printfn("Alien boss SETTING SHOOT REQUEST!");
+                           //io::printfn("Alien boss SETTING SHOOT REQUEST!");
 				       }
                 }else{
                    //right
@@ -1084,7 +1084,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                         // Set flag for main loop to create laser beam
                         c.isProjectileActive = true;
                         c.expired = false;
-                        io::printfn("Alien boss SETTING SHOOT REQUEST!");
+                        //io::printfn("Alien boss SETTING SHOOT REQUEST!");
 				    }
                 }
 
@@ -1140,7 +1140,7 @@ fn void drawAlienLaser(Construct* c, Construct* b, float rotation = 270.0, float
       return; // Don't render anything
    }
 
-   io::printfn("RENDERING ACTIVE LASER at x=%.1f, y=%.1f", c.pos.x, c.pos.y);
+   //io::printfn("RENDERING ACTIVE LASER at x=%.1f, y=%.1f", c.pos.x, c.pos.y);
 
    // Laser is active - draw it
    // Make it EXTREMELY VISIBLE with massive width
@@ -1174,7 +1174,7 @@ fn void drawAlienLaser(Construct* c, Construct* b, float rotation = 270.0, float
    if (c.pos.y > groundLevel) {
       c.expired = true;
       c.isProjectileActive = false;
-      io::printfn("Laser reached ground level - deactivating");
+      //io::printfn("Laser reached ground level - deactivating");
       return; // Exit immediately after deactivation
    }
 }
