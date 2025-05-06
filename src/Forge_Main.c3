@@ -136,15 +136,13 @@ fn int main(String[] args) {
 
 	//volume manager - need to addtional volume control in options menu.
 	rl::setMasterVolume(MASTER_VOLUME);
-	String randSong = forge_game::getRandomSong();
-	Music song = mMap.get(randSong)!!; // song needed for music volume
-	rl::setMusicVolume(song,MUSIC_VOLUME);
+	Music randSong = forge_game::playRandomSong(&mMap); // song needed for music volume
+	rl::setMusicVolume(randSong,MUSIC_VOLUME);
 
 	//game objects init
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
-	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap,10000); //hack for demo player to not die
+	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap,1000000); //hack for demo player to not die
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap);
-	//Boss init TODO reset BOSSES after fight
 	Construct dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
 	Construct nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
 
@@ -157,7 +155,6 @@ fn int main(String[] args) {
 	forge_scores::init_high_scores();
 
 	io::printfn("Initial Game Structures created");//DEBUG
-	io::printfn("Song selected: %s!", randSong);//DEBUG
 	// Initialize controller support
 	forge_controller::init_controllers();
 
@@ -383,7 +380,7 @@ fn int main(String[] args) {
                     // Force toggle mouse mode with F3
                     if (rl::isKeyPressed(rl::KEY_F3)) {
                         forge_controller::toggle_mouse_mode();
-                        io::printfn("Manual toggle of mouse mode");
+                        //io::printfn("Manual toggle of mouse mode");
                     }
 
                     // Always enable mouse mode in the main menu when controller is active
@@ -442,6 +439,8 @@ fn int main(String[] args) {
                          // Reset boss counters when starting a new game
                          dayBossCounter = 0;
                          nightBossCounter = 0;
+                         // Play a random song when starting the game
+                         randSong = forge_game::playRandomSong(&mMap);
                          state = GAME;
     				}
 
@@ -466,8 +465,8 @@ fn int main(String[] args) {
 				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
-				rl::playMusicStream(mMap.get(randSong)!!);
-	  			rl::updateMusicStream(mMap.get(randSong)!!);
+				rl::playMusicStream(randSong);
+	  			rl::updateMusicStream(randSong);
 	  			scrollGround -= 5.0;
 				scrollMid -= 0.6;
 				scrollClouds -= 0.2;
@@ -1149,8 +1148,8 @@ fn int main(String[] args) {
 					nightBoss = forge_game::forgeCronstructBoss(&tMap, "alien_boss");
 					constructs = forge_game::forgeConstructs(&tMap, "day");
 					nightConstructs = forge_game::forgeConstructs(&tMap, "night");
-					randSong = forge_game::getRandomSong();
-					song = mMap.get(randSong)!!;
+					// Play a random song
+					randSong = forge_game::playRandomSong(&mMap);
 					// Reset power-up counters
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					frameCounter = 0;
@@ -1198,8 +1197,8 @@ fn int main(String[] args) {
 					nightBoss = forge_game::forgeCronstructBoss(&tMap, "alien_boss");
 					constructs = forge_game::forgeConstructs(&tMap, "day");
 					nightConstructs = forge_game::forgeConstructs(&tMap, "night");
-					randSong = forge_game::getRandomSong();
-					song = mMap.get(randSong)!!;
+					// Play a random song
+					randSong = forge_game::playRandomSong(&mMap);
 					// Reset power-up counters
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					state = MAIN;
@@ -1213,14 +1212,14 @@ fn int main(String[] args) {
 				//just using menu button.
 				Button menuButton = uiButtons[5];
 				rl::showCursor();
-				if(rl::isMusicStreamPlaying(song) == false){
-						rl::playMusicStream(song);
+				if(rl::isMusicStreamPlaying(randSong) == false){
+						rl::playMusicStream(randSong);
 						//io::printfn("music play");
 
 					}else{
-						forge_options::adjustUpdateOptions(song);
-						rl::updateMusicStream(song);
-						//io::printfn("music update: %s",song);
+						forge_options::adjustUpdateOptions(randSong);
+						rl::updateMusicStream(randSong);
+						//io::printfn("music update: %s",randSong);
 					}
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
@@ -1449,8 +1448,8 @@ fn int main(String[] args) {
 				//just using menu button.
 				Button menuButton = uiButtons[5];
 				rl::showCursor();
-				rl::playMusicStream(mMap.get(randSong)!!);
-				rl::updateMusicStream(mMap.get(randSong)!!);
+				rl::playMusicStream(randSong);
+				rl::updateMusicStream(randSong);
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
                 rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
