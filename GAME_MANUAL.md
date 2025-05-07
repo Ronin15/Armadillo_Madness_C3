@@ -38,5 +38,6 @@
 
 # Adtional
  These will come later if there is support and interest.
+- Maybe a phone/tablet version.
 - Youtube channel
 - Twitch
