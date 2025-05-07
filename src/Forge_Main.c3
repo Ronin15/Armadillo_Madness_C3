@@ -498,7 +498,7 @@ fn int main(String[] args) {
 				rl::playMusicStream(randSong);
 	  			rl::updateMusicStream(randSong);
 	  			scrollGround -= 5.8;
-				scrollMid -= 0.7;
+				scrollMid -= 0.4;
 				scrollClouds -= 0.3;
 				if(scrollMid <= - WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
@@ -736,7 +736,7 @@ fn int main(String[] args) {
 				rl::playMusicStream(mMap.get("night")!!);
 	  			rl::updateMusicStream(mMap.get("night")!!);
 	  			scrollGround -= 5.8;
-				scrollMid -= 0.7;
+				scrollMid -= 0.4;
 				scrollClouds -= 0.3;
 				if(scrollMid <= - WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
@@ -1421,7 +1421,7 @@ fn int main(String[] args) {
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
 	  			scrollGround -= 5.8;
-				scrollMid -= 0.7;
+				scrollMid -= 0.4;
 				scrollClouds -= 0.3;
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollClouds <= -WINDOW_WIDTH) {scrollClouds = 0;}
