@@ -711,7 +711,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                c.expired = true;
                c.isProjectileActive = false;
             }
-               c.pos.x += (c.acceleration * 3.5f) * deltaTime;//3.5
+               c.pos.x += (c.acceleration * 2.5f) * deltaTime;//3.5
 
          break;
 
