@@ -18,6 +18,7 @@ import forge_controller;
 import raylib5::rl;
 //C3 standard modules--------------
 import std::io;
+import std::math;
 
 //Game Consts---------------------------------
 const float TARGET_FPS = 60.0; //target FPS
@@ -1437,27 +1438,118 @@ fn int main(String[] args) {
 
 				//Demo Loop------------------------------------------------------------------------------
 
-				demoCounter1 += 1;
 				demoCounter2 += 1;
 
-				if(demoCounter1 < 900 ){forge_ai::moveRight(&demoPlayer, deltaTime);
+                // Initialize a static variable to track direction
+                static bool demoMovingLeft = false;
 
-					if (demoCounter1 % 100 == 0){
+                // Calculate jump logic based on obstacles and occasional random jumps
+                bool shouldJump = false;
+                bool shouldShoot = false;
+                float jumpDetectionDistance = 200.0f;  // How far ahead to look for obstacles
+                float jumpThreshold = 150.0f;          // How close to get before jumping
+                float shootDetectionDistance = 400.0f; // How far ahead to look for enemies to shoot
+                float shootThreshold = 350.0f;         // Maximum distance to shoot at enemies
 
-					forge_ai::jump(&demoPlayer, deltaTime);
-					}
-				}
-				if(demoCounter1 > 900){
-					forge_ai::moveLeft(&demoPlayer, deltaTime);
+                // Look for obstacles and enemies in the player's path
+                foreach (&demoConstruct : demoConstructs) {
+                    float obstacleX = demoConstruct.pos.x;
+                    float playerX = demoPlayer.pos.x;
+                    float distance;
 
-					if (demoCounter1 % 100 == 0){
+                    // Check if construct is an obstacle that we should jump over
+                    if (!demoConstruct.isDead &&
+                        (demoConstruct.type == forge_game::ConstructType.OBS ||
+                         demoConstruct.type == forge_game::ConstructType.ENEMY_GROUND)) {
 
-					forge_ai::jump(&demoPlayer, deltaTime);
-					}
-				}
-				if (demoCounter1 > 1800){
-					demoCounter1 = 0;
-				}
+                        // Check if obstacle is in the path based on movement direction
+                        if (!demoMovingLeft && obstacleX > playerX && obstacleX - playerX < jumpDetectionDistance) {
+                            // Moving right, obstacle is ahead
+                            distance = obstacleX - playerX;
+                            if (distance < jumpThreshold && demoPlayer.isGrounded) {
+                                shouldJump = true;
+                            }
+                        } else if (demoMovingLeft && obstacleX < playerX && playerX - obstacleX < jumpDetectionDistance) {
+                            // Moving left, obstacle is ahead
+                            distance = playerX - obstacleX;
+                            if (distance < jumpThreshold && demoPlayer.isGrounded) {
+                                shouldJump = true;
+                            }
+                        }
+                    }
+
+                    // Check if construct is an enemy that we should shoot at
+                    if (!demoConstruct.isDead &&
+                        (demoConstruct.type == forge_game::ConstructType.ENEMY_GROUND ||
+                         demoConstruct.type == forge_game::ConstructType.ENEMEY_FLY)) {
+
+                        // Only shoot at enemies in front of us (in our movement direction)
+                        if (!demoMovingLeft && obstacleX > playerX && obstacleX - playerX < shootDetectionDistance) {
+                            // Moving right, enemy is ahead
+                            distance = obstacleX - playerX;
+                            if (distance < shootThreshold && !poopShot.isProjectileActive) {
+                                shouldShoot = true;
+                            }
+                        } else if (demoMovingLeft && obstacleX < playerX && playerX - obstacleX < shootDetectionDistance) {
+                            // Moving left, enemy is ahead
+                            distance = playerX - obstacleX;
+                            if (distance < shootThreshold && !poopShot.isProjectileActive) {
+                                shouldShoot = true;
+                            }
+                        }
+                    }
+                }
+
+                // Occasionally jump randomly (1% chance per frame when grounded) to make movement more natural
+                if (!shouldJump && demoPlayer.isGrounded && rand_in_range(1, 100) == 1) {
+                    shouldJump = true;
+                }
+
+                // Occasionally shoot randomly (0.5% chance per frame when no active projectile)
+                if (!shouldShoot && !poopShot.isProjectileActive && rand_in_range(1, 200) == 1) {
+                    shouldShoot = true;
+                }
+
+                if(demoMovingLeft) {
+                    // Move left
+                    forge_ai::moveLeft(&demoPlayer, deltaTime);
+                    demoPlayer.texFlip = true; // Texture faces left when moving left
+
+                    // Check if we've reached the left boundary
+                    if(demoPlayer.pos.x < 50.0) {
+                        demoMovingLeft = false;
+                    }
+                } else {
+                    // Move right
+                    forge_ai::moveRight(&demoPlayer, deltaTime);
+                    demoPlayer.texFlip = false; // Texture faces right when moving right
+
+                    // Check if we've reached the right boundary
+                    if(demoPlayer.pos.x >= WINDOW_WIDTH - 150) {
+                        demoMovingLeft = true;
+                    }
+                }
+
+                // Jump if we determined we should
+                if (shouldJump) {
+                    forge_ai::jump(&demoPlayer, deltaTime);
+                }
+
+                // Shoot if we determined we should
+                if (shouldShoot) {
+                    demoPlayer.shootRequested = true;
+                }
+
+                // Process shooting request (similar to the main game)
+                if (demoPlayer.shootRequested) {
+                    poopShot.isProjectileActive = true;
+                    poopShot.expired = false;
+                    rl::playSound(sMap.get("poop")!!);
+                    demoPlayer.shootRequested = false; // Reset the flag
+                }
+
+                // Update poop shot position
+                forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
 
 				if (demoCounter2 > 10000){//10000
 					demoCounter2 = 0;
@@ -1474,7 +1566,14 @@ fn int main(String[] args) {
 							if (forge_physics::checkCollision(&demoPlayer,demoConstruct) && demoConstruct.isDead == false){
 								forge_physics::resolveCollision(&demoPlayer, demoConstruct, deltaTime);
 								}
+
+						// Also check for poop shot collisions
+						if (poopShot.isProjectileActive && poopShot.expired == false && demoConstruct.isDead == false){
+							if(forge_physics::checkCollision(&poopShot, demoConstruct)){
+								forge_physics::resolveCollision(&poopShot, demoConstruct, deltaTime);
+							}
 						}
+					}
 
 				forge_game::updateConstruct(&demoPlayer, &sMap, &tMap, raining, deltaTime);
 				//forge_game::updateConstruct(&poopShot,&sMap);
@@ -1498,7 +1597,7 @@ fn int main(String[] args) {
 				//draw objects
 				forge_game::drawAnimatedConstruct(&demoPlayer);
 				//forge_game::drawHitBox(&demoPlayer);//debug
-				//forge_game::drawPoopShot(&poopShot,&demoPlayer);
+				forge_game::drawPoopShot(&poopShot,&demoPlayer);
 
 					foreach ( &demoConstruct : demoConstructs){
 								forge_game::drawAnimatedConstruct(demoConstruct);
