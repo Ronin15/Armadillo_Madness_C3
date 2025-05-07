@@ -22,7 +22,7 @@ const float NIGHTB_FREQUENCY = 0.01f;
 const float NIGHTB_AMPLITUDE = 300.0f;//
 const float AMPLITUDE = 200.0f;//300
 const float FREQUENCY = 0.03f;//0.05
-const int MAX_LIVES = 6;
+const int MAX_HEARTS = 6;
 const float OBS_SOFFSET = 15.0f;//20
 const float ANT_SOFFSET = 45.0f;//50
 const float FOX_SOFFSET = 65.0f;//70
@@ -297,17 +297,21 @@ fn Construct forgeCronstructProjectile(TexMap *tMap, String name) {
       return c;
 }
 
-fn Construct forgeCronstructPlayer(TexMap *tMap, int lives = 6) {
+fn Construct forgeCronstructPlayer(TexMap *tMap, String name = "player") {
 
       Construct c;
 
       c.type = PLAYER;
-      c.name = "player";
+      if (name == "demo"){
+          c.name = name;
+        }else{
+          c.name = name;
+        }
+      c.lives = MAX_HEARTS;
       c.pos = {100,950};
       c.hitBox = {c.pos.x,c.pos.y,PLAYER_HITBOX_WIDTH,PLAYER_HITBOX_HEIGHT};
-      c.texture = tMap.get(c.name)!!;
+      c.texture = tMap.get("player")!!;
      // c.sound = sMap.get(c.name)!!;
-      c.lives = lives;
       c.maxFrames = 2;
       c.gravity = GRAVITY;
       c.jumpVelocity = MOVE_VELOCITY;
@@ -509,10 +513,14 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
             if(c.vHit){
                   c.vHit = false;
+                  // Generate random pitch between 0 and .5
+                  float randomPitch = 0.5f + (float)rand_in_range(0, 5) / 100.0f; // 0.0 to .5
+                  randomPitch += 0.5f; // Shift to 0.5 to 1.5
+                  rl::setSoundPitch(sMap.get("boing")!!, randomPitch);
                   rl::playSound(sMap.get("boing")!!);
                }
 
-            if (c.bHit && c.lives < MAX_LIVES){ // beatle hit and moth hit
+            if (c.bHit && c.lives < MAX_HEARTS){ // beatle hit and moth hit
 
                   c.bHit = false;
                   rl::playSound(sMap.get("eatBug")!!);
@@ -524,7 +532,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             //powerup
             if (c.sHit){c.powerUpTimer += 500; c.invlunerable = true; c.invulnTimer += 800; c.acceleration = 350; c.sHit = false;}//500//400
             //invuln
-            if(c.hHit && c.invulnTimer <= 0){
+            if(c.hHit && c.invulnTimer <= 0 && c.name == "player"){
                   c.hHit = false;
                   c.invlunerable = true;
                   rl::playSound(sMap.get("playerHit")!!);

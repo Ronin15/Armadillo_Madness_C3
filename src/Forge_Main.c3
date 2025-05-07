@@ -33,8 +33,8 @@ const int MAX_POWERUPS = 15;//6
 const int MAX_BUTTONS = 7;
 const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
-const int BOSS_TIMER = 12000;//13700
-const float BOSS_TRANSITION_TIME = 6.0; // Time in seconds to display transition after boss death
+const int BOSS_TIMER = 13000;//13700
+const float BOSS_TRANSITION_TIME = 8.0; // Time in seconds to display transition after boss death
 const float ANIM_SPEED_MULTIPLIER = 0.58f; // Animation speed: 1.0 = normal, lower = slower
 
 //Hammer Forge Colors RGB
@@ -142,7 +142,7 @@ fn int main(String[] args) {
 
 	//game objects init
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
-	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap,1000000); //hack for demo player to not die
+	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap,"demo");
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap,"poop");
 	Construct alienLaser = forge_game::forgeCronstructProjectile(&tMap,"laser"); // Alien boss laser
 	Construct dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
@@ -1428,7 +1428,7 @@ fn int main(String[] args) {
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
 
 				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
-    				demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
+    				demoPlayer = forge_game::forgeCronstructPlayer(&tMap,"demo");
     				forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
     				demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
 					frameCounter = 0;
@@ -1514,13 +1514,13 @@ fn int main(String[] args) {
                     // Move left (with 1.5x speed multiplier)
                     // Temporarily increase acceleration
                     float originalAcceleration = demoPlayer.acceleration;
-                    demoPlayer.acceleration *= 1.5f; // 50% faster movement
+                    demoPlayer.acceleration *= 1.8f; // 50% faster movement
                     forge_ai::moveLeft(&demoPlayer, deltaTime);
                     demoPlayer.acceleration = originalAcceleration; // Restore original value
                     demoPlayer.texFlip = true; // Texture faces left when moving left
-    
+
                     // Check if we've reached the left boundary
-                    if(demoPlayer.pos.x < 50.0) {
+                    if(demoPlayer.pos.x < 10.0) {
                         demoMovingLeft = false;
                     }
                 } else {
@@ -1531,9 +1531,9 @@ fn int main(String[] args) {
                     forge_ai::moveRight(&demoPlayer, deltaTime);
                     demoPlayer.acceleration = originalAcceleration; // Restore original value
                     demoPlayer.texFlip = false; // Texture faces right when moving right
-    
+
                     // Check if we've reached the right boundary
-                    if(demoPlayer.pos.x >= WINDOW_WIDTH - 150) {
+                    if(demoPlayer.pos.x >= WINDOW_WIDTH - 200.0) {
                         demoMovingLeft = true;
                     }
                 }
@@ -1559,7 +1559,7 @@ fn int main(String[] args) {
                 // Update poop shot position
                 forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
 
-				if (demoCounter2 > 10000){//10000
+				if (demoCounter2 > 12000){//10000
 					demoCounter2 = 0;
 					demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
 					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
@@ -1622,17 +1622,17 @@ fn int main(String[] args) {
 				rl::updateMusicStream(randSong);
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
-                rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 75, 105, rl::BLACK);
+                rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 100, 105, rl::BLACK);
 
                 // Draw semi-transparent black box for text background
                 int boxWidth = 1000;
                 int boxHeight = 775;
                 int boxX = 475;
-                int boxY = 205;
+                int boxY = 250;
                 rl::drawRectangle(boxX, boxY, boxWidth, boxHeight, rl::fade(rl::BLACK, 0.7f));
 
                 // Display credits text content with yellow font
-                int yPos = 220; // Starting Y position for credits text
+                int yPos = 280; // Starting Y position for credits text
                 rl::drawText("Third-Party Music", 575, yPos, 30, rl::GOLD); yPos += 50;
 
                 rl::drawText("- Title: \"Fast Feel Banana Peel\" by Alexander Nakarada", 625, yPos, 20, rl::GOLD); yPos += 30;
