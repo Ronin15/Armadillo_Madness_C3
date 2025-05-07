@@ -369,7 +369,7 @@ fn int main(String[] args) {
 
 		// Full game state machine for rendering and non-physics updates
 		switch (state) {
-			case QUIT: 
+			case QUIT:
 				// Nothing to do in this case - the main loop will exit
 				break;
 
@@ -497,9 +497,9 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
 				rl::playMusicStream(randSong);
 	  			rl::updateMusicStream(randSong);
-	  			scrollGround -= 5.0;
-				scrollMid -= 0.6;
-				scrollClouds -= 0.2;
+	  			scrollGround -= 5.8;
+				scrollMid -= 0.7;
+				scrollClouds -= 0.3;
 				if(scrollMid <= - WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
 				if(scrollGround <= - WINDOW_WIDTH) {scrollGround = 0;}
@@ -735,8 +735,8 @@ fn int main(String[] args) {
 				rl::clearBackground(rl::BLACK);
 				rl::playMusicStream(mMap.get("night")!!);
 	  			rl::updateMusicStream(mMap.get("night")!!);
-	  			scrollGround -= 5.0;
-				scrollMid -= 0.6;
+	  			scrollGround -= 5.8;
+				scrollMid -= 0.7;
 				scrollClouds -= 0.3;
 				if(scrollMid <= - WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
@@ -1420,9 +1420,9 @@ fn int main(String[] args) {
 
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
-	  			scrollGround -= 5.0;
-				scrollMid -= 0.6;
-				scrollClouds -= 0.4;
+	  			scrollGround -= 5.8;
+				scrollMid -= 0.7;
+				scrollClouds -= 0.3;
 				if(scrollMid <= -WINDOW_WIDTH) {scrollMid = 0;}
 				if(scrollClouds <= -WINDOW_WIDTH) {scrollClouds = 0;}
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
@@ -1562,7 +1562,7 @@ fn int main(String[] args) {
 
 				if (demoCounter2 > 12000){//10000
 					demoCounter2 = 0;
-					demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
+					demoPlayer = forge_game::forgeCronstructPlayer(&tMap, "demo");
 					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
 					demoConstructs = forge_game::forgeConstructs(&tMap,"demo");
 					frameCounter = 0;
