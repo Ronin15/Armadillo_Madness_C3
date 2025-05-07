@@ -46,11 +46,11 @@ const int PLAYER_HITBOX_HEIGHT = 64;
 const float PLAYER_HITBOX_OFFSET = 55.0f;
 
 // Global power-up counters
-int powerUpCount_day = 0;
-int powerUpCount_demo = 0;
-int powerUpCount_night = 0;
-int powerUpCount_dayBoss = 0;
-int powerUpCount_nightBoss = 0;
+int powerUpCount_day;
+int powerUpCount_demo;
+int powerUpCount_night;
+int powerUpCount_dayBoss;
+int powerUpCount_nightBoss;
 
 float groundLevel = 1080.0f - 70.0f;//115
 bool poopPenatrate = false;
@@ -117,8 +117,8 @@ fn void toggleFullScreen (int gsWidth, int gsHeight){
 	//if screen size is 1920 X 1080 nativley then set full screen
 	int width = rl::getMonitorWidth(0);
 	int height = rl::getMonitorHeight(0);
-	if (width <= gsWidth || height <= gsHeight && rl::isWindowFullscreen() == false) {rl::toggleFullscreen();}
-	//rl::toggleFullscreen();
+	//if (width <= gsWidth || height <= gsHeight && rl::isWindowFullscreen() == false) {rl::toggleFullscreen();}
+	rl::toggleFullscreen();
 }
 
 fn Music playRandomSong(MusicMap* mMap){
