@@ -1511,19 +1511,27 @@ fn int main(String[] args) {
                 }
 
                 if(demoMovingLeft) {
-                    // Move left
+                    // Move left (with 1.5x speed multiplier)
+                    // Temporarily increase acceleration
+                    float originalAcceleration = demoPlayer.acceleration;
+                    demoPlayer.acceleration *= 1.5f; // 50% faster movement
                     forge_ai::moveLeft(&demoPlayer, deltaTime);
+                    demoPlayer.acceleration = originalAcceleration; // Restore original value
                     demoPlayer.texFlip = true; // Texture faces left when moving left
-
+    
                     // Check if we've reached the left boundary
                     if(demoPlayer.pos.x < 50.0) {
                         demoMovingLeft = false;
                     }
                 } else {
-                    // Move right
+                    // Move right (with 1.5x speed multiplier)
+                    // Temporarily increase acceleration
+                    float originalAcceleration = demoPlayer.acceleration;
+                    demoPlayer.acceleration *= 1.5f; // 50% faster movement
                     forge_ai::moveRight(&demoPlayer, deltaTime);
+                    demoPlayer.acceleration = originalAcceleration; // Restore original value
                     demoPlayer.texFlip = false; // Texture faces right when moving right
-
+    
                     // Check if we've reached the right boundary
                     if(demoPlayer.pos.x >= WINDOW_WIDTH - 150) {
                         demoMovingLeft = true;
