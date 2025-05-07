@@ -7,8 +7,10 @@
 ### General Game Intructions
 
 - You move and try to dodge Obstacles and shoot or jump on bad guys.
-- You can run under/through all Obstacles without being hurt, but watch out there might be baddies behind them !
+- You can run under/through all Obstacles without being hurt, but watch out there might be baddies behind them!
 - You can jump over obstacles but landing on them hurts you.
+- The Tree is the only obstacle that can be jumped on or landed on without taking damage.
+- If something is out of reach try bouncing off a tree then a bad guy to reach it!
 - Landing on bad guys reduces their health. 2 to 3 hits kills bad guys.
 - shooting badguys with poop hurts them.
 - Poop can't go through obstacles.
@@ -16,7 +18,7 @@
 - Shooting bad guys gives you more points than jumping on them.
 - There are two levels with two Bosses and jumping on or hiting up on them with the killing blow gives you the most points!
 
-### Power Ups
+### Power Upss
 
 - **Mushroom**: Makes you invincible for longer and gives you movement speed. This lets you pull off some crazy combos!
 - **Can 'o' Food**: Gives you super poops that shoot through all bad guys and obstacles.

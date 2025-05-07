@@ -281,6 +281,7 @@ const int STATE_GAME_OVER = 7;
 const int STATE_CREDITS = 8;
 const int STATE_DEMO = 9;
 const int STATE_HIGH_SCORE = 10;
+const int STATE_QUIT = 11;
 
 fn void auto_enable_mouse_mode(int state) {
     // Debug the current state
@@ -296,7 +297,8 @@ fn void auto_enable_mouse_mode(int state) {
         state == STATE_HIGH_SCORE ||
         state == STATE_GAME_WIN ||
         state == STATE_PAUSE ||
-        state == STATE_GAME_OVER) {
+        state == STATE_GAME_OVER ||
+        state == STATE_QUIT) {
         // Auto-enable mouse control for menu states if controller is detected and active
         if (controllersDetected && controllerUIShown && is_controller_active() && !mouseModeEnabled) {
             mouseModeEnabled = true;

@@ -46,11 +46,11 @@ const int PLAYER_HITBOX_HEIGHT = 64;
 const float PLAYER_HITBOX_OFFSET = 55.0f;
 
 // Global power-up counters
-int powerUpCount_day = 0;
-int powerUpCount_demo = 0;
-int powerUpCount_night = 0;
-int powerUpCount_dayBoss = 0;
-int powerUpCount_nightBoss = 0;
+int powerUpCount_day;
+int powerUpCount_demo;
+int powerUpCount_night;
+int powerUpCount_dayBoss;
+int powerUpCount_nightBoss;
 
 float groundLevel = 1080.0f - 70.0f;//115
 bool poopPenatrate = false;
@@ -1075,7 +1075,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                            // Set flag for main loop to create laser beam
                            c.isProjectileActive = true;
                            c.expired = false;
-                           io::printfn("Alien boss SETTING SHOOT REQUEST!");
+                           //io::printfn("Alien boss SETTING SHOOT REQUEST!");
 				       }
                 }else{
                    //right
@@ -1091,7 +1091,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                         // Set flag for main loop to create laser beam
                         c.isProjectileActive = true;
                         c.expired = false;
-                        io::printfn("Alien boss SETTING SHOOT REQUEST!");
+                        //io::printfn("Alien boss SETTING SHOOT REQUEST!");
 				    }
                 }
 
@@ -1147,7 +1147,7 @@ fn void drawAlienLaser(Construct* c, Construct* b, float rotation = 270.0, float
       return; // Don't render anything
    }
 
-   io::printfn("RENDERING ACTIVE LASER at x=%.1f, y=%.1f", c.pos.x, c.pos.y);
+   //io::printfn("RENDERING ACTIVE LASER at x=%.1f, y=%.1f", c.pos.x, c.pos.y);
 
    // Laser is active - draw it
    // Make it EXTREMELY VISIBLE with massive width
@@ -1167,7 +1167,7 @@ fn void drawAlienLaser(Construct* c, Construct* b, float rotation = 270.0, float
    // Draw impact point at ground if laser reached bottom
    if (c.pos.y + 200 >= groundLevel) {
       // Draw explosion circle
-      float explosionRadius = 50.0f + math::sin(time * 8.0f) * 20.0f;
+      float explosionRadius = 60.0f + math::sin(time * 8.0f) * 20.0f;
       rl::drawCircle((int)c.pos.x, (int)groundLevel - 40, explosionRadius, rl::fade(rl::RED, 0.7f));
       rl::drawCircle((int)c.pos.x, (int)groundLevel - 40, explosionRadius * 0.7f, rl::fade(rl::YELLOW, 0.9f));
    }
@@ -1181,7 +1181,7 @@ fn void drawAlienLaser(Construct* c, Construct* b, float rotation = 270.0, float
    if (c.pos.y > groundLevel) {
       c.expired = true;
       c.isProjectileActive = false;
-      io::printfn("Laser reached ground level - deactivating");
+      //io::printfn("Laser reached ground level - deactivating");
       return; // Exit immediately after deactivation
    }
 }
