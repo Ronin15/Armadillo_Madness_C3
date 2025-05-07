@@ -33,7 +33,7 @@ const int MAX_POWERUPS = 15;//6
 const int MAX_BUTTONS = 7;
 const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
-const int BOSS_TIMER = 13000;//13700
+const int BOSS_TIMER = 12500;//13700
 const float BOSS_TRANSITION_TIME = 8.0; // Time in seconds to display transition after boss death
 const float ANIM_SPEED_MULTIPLIER = 0.58f; // Animation speed: 1.0 = normal, lower = slower
 
