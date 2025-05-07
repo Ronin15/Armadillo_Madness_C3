@@ -14,7 +14,7 @@
 - Poop can't go through obstacles.
 - When you take damage, you can't take more for a short period, this lets you go mad allowing you to bounce all through bad guys!
 - Shooting bad guys gives you more points than jumping on them.
-- There are two levels with two Bosses and jump or hiting up on them with the killing blow gives you the most points!
+- There are two levels with two Bosses and jumping on or hiting up on them with the killing blow gives you the most points!
 
 ### Power Ups
 

@@ -955,7 +955,6 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                                  c.invlunerable = false;
                                  c.invulnTimer = 0.0;
                                  c.isDead = true;
-
                                  rl::playSound(sMap.get("enemyDie")!!);
                                  jumpCounter = 0;
                               }
@@ -981,11 +980,11 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                       if(c.pos.x < 0.0) {movingLeft = false;}
 
                         if (jumpCounter % 100 == 0){
-
                               if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
                                    if (c.isGrounded) {
                                        c.vel.y = c.jumpVelocity;
                                        c.isGrounded = false;
+                                       rl::playSound(sMap.get("jump")!!);
                               }
 				        }
                 }else{
@@ -995,11 +994,11 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 				      if(c.pos.x >= forge_main::WINDOW_WIDTH + 300) {movingLeft = true;}
 
 					if (jumpCounter % 100 == 0){
-
                         if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
                              if (c.isGrounded) {
                                  c.vel.y = c.jumpVelocity;
                                  c.isGrounded = false;
+                                 rl::playSound(sMap.get("jump")!!);
                               }
 					       }
 				        }

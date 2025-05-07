@@ -1541,6 +1541,7 @@ fn int main(String[] args) {
                 // Jump if we determined we should
                 if (shouldJump) {
                     forge_ai::jump(&demoPlayer, deltaTime);
+                    rl::playSound(sMap.get("jump")!!);
                 }
 
                 // Shoot if we determined we should
