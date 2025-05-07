@@ -70,6 +70,7 @@ enum GameState {
 	CREDITS,
 	DEMO,
 	HIGH_SCORE,
+	QUIT,
 }
 
 fn int main(String[] args) {
@@ -172,7 +173,7 @@ fn int main(String[] args) {
 	// Keep track of previous state to detect state changes
 	GameState previousState = state;
 
-	while (!rl::windowShouldClose()) {
+	while (!rl::windowShouldClose() && state != GameState.QUIT) {
 		// Timing calculations to achieve a fixed 60 FPS time step
 		float currentTime = (float)rl::getTime(); // Current time in seconds
 		float updateTime = currentTime - lastTime; // Time since last frame
@@ -368,6 +369,9 @@ fn int main(String[] args) {
 
 		// Full game state machine for rendering and non-physics updates
 		switch (state) {
+			case QUIT: 
+				// Nothing to do in this case - the main loop will exit
+				break;
 
         	case LOGO:
                 rl::hideCursor();
@@ -465,10 +469,8 @@ fn int main(String[] args) {
 
 				 	if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
                          frameCounter = 0;
-                         // Reset boss counters when starting a new game
                          dayBossCounter = 0;
                          nightBossCounter = 0;
-                         // Play a random song when starting the game
                          randSong = forge_game::playRandomSong(&mMap);
                          state = GAME;
     				}
@@ -483,8 +485,7 @@ fn int main(String[] args) {
 			case GAME:
 
 				if (!constructs){
-			         io::printfn("init_array -> Day");
-					//creating game entities
+			        io::printfn("init_array -> Day");
 					constructs = forge_game::forgeConstructs(&tMap,"day");
 				}
 
@@ -601,7 +602,7 @@ fn int main(String[] args) {
 							}
 					}
 
-					//io::printfn("Last enitity pos-x: %f",constructs[entIndex].pos.x);
+					    //io::printfn("Last enitity pos-x: %f",constructs[entIndex].pos.x);
 						if (!dayBoss.active) {
 							dayBossCounter += 1;
 							// Log boss counter progress every 1000 frames
