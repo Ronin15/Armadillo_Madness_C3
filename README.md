@@ -12,7 +12,7 @@ SPECS:
 
 GRAPHICS: any video device supports Open GL 3.0
 
-    CPU:1GHz Dual core or better
+    CPU:2GHz Dual core or better
 
     RAM: 4 GB or more
 
@@ -60,6 +60,7 @@ CREDITS:
     for individual accreditation see third-party-notice.md
 
 # Armadillo Madness Licensing
+
   - Dual Licensing Approach
   - Source Code: MIT License
   - You can use, modify, and distribute the code See LICENSE file in repo

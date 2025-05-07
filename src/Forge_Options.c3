@@ -73,10 +73,10 @@ fn void adjustUpdateOptions(Music song) {
 
     /*
     // Alternative: toggle with Enter/Space for boolean options or controller buttons
-    if (options[optionIndex].isBool && 
-        (rl::isKeyPressed(rl::KEY_ENTER) || 
-         rl::isKeyPressed(rl::KEY_SPACE) || 
-         forge_controller::is_button_pressed(6) || // RIGHT_FACE_DOWN (usually A button) 
+    if (options[optionIndex].isBool &&
+        (rl::isKeyPressed(rl::KEY_ENTER) ||
+         rl::isKeyPressed(rl::KEY_SPACE) ||
+         forge_controller::is_button_pressed(6) || // RIGHT_FACE_DOWN (usually A button)
          forge_controller::is_button_pressed(8))) { // RIGHT_FACE_LEFT (usually X button)
         options[optionIndex].value = options[optionIndex].value > 0.0 ? 0.0 : 1.0; // Toggle between 0 and 1
         rl::toggleFullscreen();

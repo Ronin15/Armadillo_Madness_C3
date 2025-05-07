@@ -40,8 +40,15 @@ The following assets are owned by third parties and are used in Armadillo Madnes
     -URL: http://freemusicarchive.org/music/Komiku/Poupis_incredible_adventures_/Komiku_-_Poupis_incredible_adventures__-_43_Travel_to_the_Horizon
     -Comments: http://freemusicarchive.org/
 
+- Title: "Home"
+    -Background music track in game location `resources/sounds/game_win.mp3`
+    -Author: Komiku
+    -URL: http://freemusicarchive.org/music/Komiku/Captain_Glouglous_Incredible_Week_Soundtrack/Home_1105
+    -Comments: http://freemusicarchive.org/
+
 ### Third-Party Sound Effects
   - All SFX are from Soundly SFX : Soundly - https://getsoundly.com/ except the below listed
+  - laser_shot.wav - rFXGenerator - Raylib Technologies https://raylibtech.itch.io/rfxgen
   - explosions.wav - rFXGenerator - Raylib Technologies https://raylibtech.itch.io/rfxgen
   - sfx are located in `resources/sounds/`
 

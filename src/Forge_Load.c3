@@ -22,7 +22,7 @@ fn TexMap loadTexMap(){
     Texture2D playerTex = rl::loadTexture("resources/images/armadillo_a2-sheet.png");
 	Texture2D playerHitTex = rl::loadTexture("resources/images/armadillo_hit-sheet.png");
     Texture2D sunTex = rl::loadTexture("resources/images/Sun.png");
-	  //obstacles // enemies
+	//obstacles // enemies
     Texture2D cactus1Tex = rl::loadTexture("resources/images/Cactus1.png");
     Texture2D bigBoulderTex = rl::loadTexture("resources/images/BoulderBig.png");
     Texture2D birdTex = rl::loadTexture("resources/images/bird-sheet.png");
@@ -34,20 +34,20 @@ fn TexMap loadTexMap(){
     Texture2D snakeTex = rl::loadTexture("resources/images/snake-sheet.png");
     Texture2D foxTex = rl::loadTexture("resources/images/fox-sheet.png");
     Texture2D treeTex = rl::loadTexture("resources/images/tree.png");
-	  //Boss Textures
+	//Boss Textures
     Texture2D cougarBossTex = rl::loadTexture("resources/images/cougar-sheet.png");
     Texture2D alienBossTex = rl::loadTexture("resources/images/alien_face-sheet.png");
     //powerups
     Texture2D gravBootsTex = rl::loadTexture("resources/images/grav_boots.png");
     Texture2D superTex = rl::loadTexture("resources/images/super_mushroom_sheet.png");
     Texture2D foodTex = rl::loadTexture("resources/images/food_sheet.png");
-	  //logo Page assets
+	//logo Page assets
     Texture2D raylibTex = rl::loadTexture("resources/images/raylib.png");
     Texture2D c3Tex = rl::loadTexture("resources/images/C3.png");
     Texture2D logoTex = rl::loadTexture("resources/images/HammerForge.png");
     Texture2D forgeTex = rl::loadTexture("resources/images/ForgeEngine.png");
-	  //Title Page assets
-	  Texture2D titlePageTex = rl::loadTexture("resources/images/Title_Page.png");
+	//Title Page assets
+	Texture2D titlePageTex = rl::loadTexture("resources/images/Title_Page.png");
     Texture2D firePitTex = rl::loadTexture("resources/images/fire_pit.png");
     Texture2D armadilloStill = rl::loadTexture("resources/images/Armadillo_still.png");
     Texture2D catStillleft = rl::loadTexture("resources/images/cat_still_left.png");
@@ -150,7 +150,7 @@ fn SoundMap loadSoundMap(){
     Sound playerDeath = rl::loadSound("resources/sounds/death.wav");
     Sound gameOver = rl::loadSound("resources/sounds/game_over.wav");
     Sound levelComplete = rl::loadSound("resources/sounds/level_complete.wav");
-    Sound laserShot = rl::loadSound("resources/sounds/laser_shot.wav"); // Add laser sound
+    Sound laserShot = rl::loadSound("resources/sounds/laser_shot.wav");
 
     map.set("jump",jump);
     map.set("moving",moving);
@@ -183,12 +183,12 @@ fn MusicMap loadMusicMap(){
 
   MusicMap map;
    //music
-	 Music titleMusic = rl::loadMusicStream("resources/sounds/Intro_song_z.mp3");//intro_tune.wav
-	 Music gameMusic1 = rl::loadMusicStream("resources/sounds/game_loop.mp3"); //game loop music
+   Music titleMusic = rl::loadMusicStream("resources/sounds/Intro_song_z.mp3");//intro_tune.wav
+   Music gameMusic1 = rl::loadMusicStream("resources/sounds/game_loop.mp3"); //game loop music
    Music gameMusic2 = rl::loadMusicStream("resources/sounds/banjos.mp3");
-	 Music gameMusic3 = rl::loadMusicStream("resources/sounds/night_lvl.mp3");
-	 Music gameMusic4 = rl::loadMusicStream("resources/sounds/bananaPeel.mp3");
-	 Music gameWinMusic = rl::loadMusicStream("resources/sounds/game_win.mp3");
+   Music gameMusic3 = rl::loadMusicStream("resources/sounds/night_lvl.mp3");
+   Music gameMusic4 = rl::loadMusicStream("resources/sounds/bananaPeel.mp3");
+   Music gameWinMusic = rl::loadMusicStream("resources/sounds/game_win.mp3");
    Music rain = rl::loadMusicStream("resources/sounds/rain.wav");//ambient rain noise
    Music fireworks = rl::loadMusicStream("resources/sounds/fireworks.mp3");//fireworks noise
 

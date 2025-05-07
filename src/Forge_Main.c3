@@ -18,6 +18,7 @@ import forge_controller;
 import raylib5::rl;
 //C3 standard modules--------------
 import std::io;
+import std::math;
 
 //Game Consts---------------------------------
 const float TARGET_FPS = 60.0; //target FPS
@@ -32,8 +33,8 @@ const int MAX_POWERUPS = 15;//6
 const int MAX_BUTTONS = 7;
 const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
-const int BOSS_TIMER = 12000;//13700
-const float BOSS_TRANSITION_TIME = 6.0; // Time in seconds to display transition after boss death
+const int BOSS_TIMER = 13000;//13700
+const float BOSS_TRANSITION_TIME = 8.0; // Time in seconds to display transition after boss death
 const float ANIM_SPEED_MULTIPLIER = 0.58f; // Animation speed: 1.0 = normal, lower = slower
 
 //Hammer Forge Colors RGB
@@ -141,7 +142,7 @@ fn int main(String[] args) {
 
 	//game objects init
 	Construct player = forge_game::forgeCronstructPlayer(&tMap);
-	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap,1000000); //hack for demo player to not die
+	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap,"demo");
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap,"poop");
 	Construct alienLaser = forge_game::forgeCronstructProjectile(&tMap,"laser"); // Alien boss laser
 	Construct dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
@@ -165,7 +166,7 @@ fn int main(String[] args) {
 	}
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = NIGHTLVL;
+	GameState state = LOGO;
 	// Auto-configure controller mouse control for initial state
 	forge_controller::auto_enable_mouse_mode(state.ordinal);
 	// Keep track of previous state to detect state changes
@@ -1195,8 +1196,8 @@ fn int main(String[] args) {
 				rl::drawTextureEx(tMap.get("armadillo")!!, {750, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 815}, 0.0, 3.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
-				rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 700), 150, 105, {185,71,0,200});
-				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 300), 300, 60, rl::WHITE);
+				rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 700), 150, 105, rl::ORANGE);
+				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 400), 90, 60, rl::WHITE);
 
                 if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
 					// Reset player,Bosses, Entities
@@ -1205,14 +1206,12 @@ fn int main(String[] args) {
 					// Reset boss counters
 					dayBossCounter = 0;
 					nightBossCounter = 0;
-					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
+					forge_game::resetPowerUpCounters();
 					dayBoss = forge_game::forgeCronstructBoss(&tMap, "cougar_boss");
 					nightBoss = forge_game::forgeCronstructBoss(&tMap, "alien_boss");
 					constructs = forge_game::forgeConstructs(&tMap, "day");
 					nightConstructs = forge_game::forgeConstructs(&tMap, "night");
-					// Play a random song
 					randSong = forge_game::playRandomSong(&mMap);
-					// Reset power-up counters
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					frameCounter = 0;
 					state = MAIN;
@@ -1244,14 +1243,13 @@ fn int main(String[] args) {
 					rl::drawText("Press ENTER (A or X button) to try again!", (rl::getScreenWidth() / 2) - 250, 450, 25, rl::YELLOW);
 
 				} else {
-					rl::drawText("PRESS ENTER TO CONTINUE", (rl::getScreenWidth() / 2) - 220, 450, 25, rl::YELLOW);
+					rl::drawText("PRESS ENTER TO CONTINUE", (rl::getScreenWidth() / 2) - 180, 450, 25, rl::YELLOW);
 				}
 
 				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
 					// Reset player,Bosses, Entities
 					player = forge_game::forgeCronstructPlayer(&tMap);
 					score = 0;
-					// Reset boss counters
 					dayBossCounter = 0;
 					nightBossCounter = 0;
 					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
@@ -1259,9 +1257,7 @@ fn int main(String[] args) {
 					nightBoss = forge_game::forgeCronstructBoss(&tMap, "alien_boss");
 					constructs = forge_game::forgeConstructs(&tMap, "day");
 					nightConstructs = forge_game::forgeConstructs(&tMap, "night");
-					// Play a random song
 					randSong = forge_game::playRandomSong(&mMap);
-					// Reset power-up counters
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					state = MAIN;
 					soundPlayed = false;
@@ -1383,7 +1379,7 @@ fn int main(String[] args) {
 						rl::drawText("PRESS A or X BUTTON TO CONTINUE", (rl::getScreenWidth() / 2) - 230, 700, 25, rl::YELLOW);
 
 					} else {
-						rl::drawText("PRESS ENTER TO CONTINUE", (rl::getScreenWidth() / 2) - 220, 700, 25, rl::YELLOW);
+						rl::drawText("PRESS ENTER TO CONTINUE", (rl::getScreenWidth() / 2) - 200, 700, 25, rl::YELLOW);
 					}
 
 					// Check for button press to exit
@@ -1397,10 +1393,7 @@ fn int main(String[] args) {
 							forge_scores::lastAddedScoreIndex = -1; // Reset highlight
 						} else {
 							// Determine where to go based on game state
-							io::printfn("night=%s, player.isDead=%s, nightBoss.isDead=%s",
-									  night ? "true" : "false",
-									  player.isDead ? "true" : "false",
-									  nightBoss.isDead ? "true" : "false");
+							io::printfn("night=%s, player.isDead=%s, nightBoss.isDead=%s", night ? "true" : "false", player.isDead ? "true" : "false", nightBoss.isDead ? "true" : "false");
 
 							if (night && !player.isDead && nightBoss.isDead) {
 								io::printfn("Transitioning to GAME_WIN state");
@@ -1434,7 +1427,7 @@ fn int main(String[] args) {
 				if(scrollGround <= -WINDOW_WIDTH) {scrollGround = 0;}
 
 				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
-    				demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
+    				demoPlayer = forge_game::forgeCronstructPlayer(&tMap,"demo");
     				forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
     				demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
 					frameCounter = 0;
@@ -1444,29 +1437,129 @@ fn int main(String[] args) {
 
 				//Demo Loop------------------------------------------------------------------------------
 
-				demoCounter1 += 1;
 				demoCounter2 += 1;
 
-				if(demoCounter1 < 700 ){forge_ai::moveRight(&demoPlayer, deltaTime);
+                // Initialize a static variable to track direction
+                static bool demoMovingLeft = false;
 
-					if (demoCounter1 % 100 == 0){
+                // Calculate jump logic based on obstacles and occasional random jumps
+                bool shouldJump = false;
+                bool shouldShoot = false;
+                float jumpDetectionDistance = 200.0f;  // How far ahead to look for obstacles
+                float jumpThreshold = 150.0f;          // How close to get before jumping
+                float shootDetectionDistance = 400.0f; // How far ahead to look for enemies to shoot
+                float shootThreshold = 350.0f;         // Maximum distance to shoot at enemies
 
-					forge_ai::jump(&demoPlayer, deltaTime);
-					}
-				}
-				if(demoCounter1 > 900){
-					forge_ai::moveLeft(&demoPlayer, deltaTime);
+                // Look for obstacles and enemies in the player's path
+                foreach (&demoConstruct : demoConstructs) {
+                    float obstacleX = demoConstruct.pos.x;
+                    float playerX = demoPlayer.pos.x;
+                    float distance;
 
-					if (demoCounter1 % 100 == 0){
+                    // Check if construct is an obstacle that we should jump over
+                    if (!demoConstruct.isDead &&
+                        (demoConstruct.type == forge_game::ConstructType.OBS ||
+                         demoConstruct.type == forge_game::ConstructType.ENEMY_GROUND)) {
 
-					forge_ai::jump(&demoPlayer, deltaTime);
-					}
-				}
-				if (demoCounter1 > 1600){
-					demoCounter1 = 0;
-				}
+                        // Check if obstacle is in the path based on movement direction
+                        if (!demoMovingLeft && obstacleX > playerX && obstacleX - playerX < jumpDetectionDistance) {
+                            // Moving right, obstacle is ahead
+                            distance = obstacleX - playerX;
+                            if (distance < jumpThreshold && demoPlayer.isGrounded) {
+                                shouldJump = true;
+                            }
+                        } else if (demoMovingLeft && obstacleX < playerX && playerX - obstacleX < jumpDetectionDistance) {
+                            // Moving left, obstacle is ahead
+                            distance = playerX - obstacleX;
+                            if (distance < jumpThreshold && demoPlayer.isGrounded) {
+                                shouldJump = true;
+                            }
+                        }
+                    }
 
-				if (demoCounter2 > 10000){//10000
+                    // Check if construct is an enemy that we should shoot at
+                    if (!demoConstruct.isDead &&
+                        (demoConstruct.type == forge_game::ConstructType.ENEMY_GROUND ||
+                         demoConstruct.type == forge_game::ConstructType.ENEMEY_FLY)) {
+
+                        // Only shoot at enemies in front of us (in our movement direction)
+                        if (!demoMovingLeft && obstacleX > playerX && obstacleX - playerX < shootDetectionDistance) {
+                            // Moving right, enemy is ahead
+                            distance = obstacleX - playerX;
+                            if (distance < shootThreshold && !poopShot.isProjectileActive) {
+                                shouldShoot = true;
+                            }
+                        } else if (demoMovingLeft && obstacleX < playerX && playerX - obstacleX < shootDetectionDistance) {
+                            // Moving left, enemy is ahead
+                            distance = playerX - obstacleX;
+                            if (distance < shootThreshold && !poopShot.isProjectileActive) {
+                                shouldShoot = true;
+                            }
+                        }
+                    }
+                }
+
+                // Occasionally jump randomly (1% chance per frame when grounded) to make movement more natural
+                if (!shouldJump && demoPlayer.isGrounded && rand_in_range(1, 100) == 1) {
+                    shouldJump = true;
+                }
+
+                // Occasionally shoot randomly (0.5% chance per frame when no active projectile)
+                if (!shouldShoot && !poopShot.isProjectileActive && rand_in_range(1, 200) == 1) {
+                    shouldShoot = true;
+                }
+
+                if(demoMovingLeft) {
+                    // Move left (with 1.5x speed multiplier)
+                    // Temporarily increase acceleration
+                    float originalAcceleration = demoPlayer.acceleration;
+                    demoPlayer.acceleration *= 1.8f; // 50% faster movement
+                    forge_ai::moveLeft(&demoPlayer, deltaTime);
+                    demoPlayer.acceleration = originalAcceleration; // Restore original value
+                    demoPlayer.texFlip = true; // Texture faces left when moving left
+
+                    // Check if we've reached the left boundary
+                    if(demoPlayer.pos.x < 10.0) {
+                        demoMovingLeft = false;
+                    }
+                } else {
+                    // Move right (with 1.5x speed multiplier)
+                    // Temporarily increase acceleration
+                    float originalAcceleration = demoPlayer.acceleration;
+                    demoPlayer.acceleration *= 1.5f; // 50% faster movement
+                    forge_ai::moveRight(&demoPlayer, deltaTime);
+                    demoPlayer.acceleration = originalAcceleration; // Restore original value
+                    demoPlayer.texFlip = false; // Texture faces right when moving right
+
+                    // Check if we've reached the right boundary
+                    if(demoPlayer.pos.x >= WINDOW_WIDTH - 200.0) {
+                        demoMovingLeft = true;
+                    }
+                }
+
+                // Jump if we determined we should
+                if (shouldJump) {
+                    forge_ai::jump(&demoPlayer, deltaTime);
+                    rl::playSound(sMap.get("jump")!!);
+                }
+
+                // Shoot if we determined we should
+                if (shouldShoot) {
+                    demoPlayer.shootRequested = true;
+                }
+
+                // Process shooting request (similar to the main game)
+                if (demoPlayer.shootRequested) {
+                    poopShot.isProjectileActive = true;
+                    poopShot.expired = false;
+                    rl::playSound(sMap.get("poop")!!);
+                    demoPlayer.shootRequested = false; // Reset the flag
+                }
+
+                // Update poop shot position
+                forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
+
+				if (demoCounter2 > 12000){//10000
 					demoCounter2 = 0;
 					demoPlayer = forge_game::forgeCronstructPlayer(&tMap);
 					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
@@ -1481,7 +1574,14 @@ fn int main(String[] args) {
 							if (forge_physics::checkCollision(&demoPlayer,demoConstruct) && demoConstruct.isDead == false){
 								forge_physics::resolveCollision(&demoPlayer, demoConstruct, deltaTime);
 								}
+
+						// Also check for poop shot collisions
+						if (poopShot.isProjectileActive && poopShot.expired == false && demoConstruct.isDead == false){
+							if(forge_physics::checkCollision(&poopShot, demoConstruct)){
+								forge_physics::resolveCollision(&poopShot, demoConstruct, deltaTime);
+							}
 						}
+					}
 
 				forge_game::updateConstruct(&demoPlayer, &sMap, &tMap, raining, deltaTime);
 				//forge_game::updateConstruct(&poopShot,&sMap);
@@ -1505,7 +1605,7 @@ fn int main(String[] args) {
 				//draw objects
 				forge_game::drawAnimatedConstruct(&demoPlayer);
 				//forge_game::drawHitBox(&demoPlayer);//debug
-				//forge_game::drawPoopShot(&poopShot,&demoPlayer);
+				forge_game::drawPoopShot(&poopShot,&demoPlayer);
 
 					foreach ( &demoConstruct : demoConstructs){
 								forge_game::drawAnimatedConstruct(demoConstruct);
@@ -1522,17 +1622,17 @@ fn int main(String[] args) {
 				rl::updateMusicStream(randSong);
 				rl::clearBackground(rl::BLACK);
                 rl::drawTexture(tMap.get("creditsPage")!!, 0, 0, rl::WHITE);
-                rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 200, 105, rl::BLACK);
+                rl::drawText(GAME_NAME, ((WINDOW_WIDTH / 2) - 600), 100, 105, rl::BLACK);
 
                 // Draw semi-transparent black box for text background
                 int boxWidth = 1000;
-                int boxHeight = 625;
+                int boxHeight = 775;
                 int boxX = 475;
-                int boxY = 310;
-                rl::drawRectangle(boxX, boxY, boxWidth, boxHeight, rl::fade(rl::BLACK, 0.5f));
+                int boxY = 250;
+                rl::drawRectangle(boxX, boxY, boxWidth, boxHeight, rl::fade(rl::BLACK, 0.7f));
 
                 // Display credits text content with yellow font
-                int yPos = 320; // Starting Y position for credits text
+                int yPos = 280; // Starting Y position for credits text
                 rl::drawText("Third-Party Music", 575, yPos, 30, rl::GOLD); yPos += 50;
 
                 rl::drawText("- Title: \"Fast Feel Banana Peel\" by Alexander Nakarada", 625, yPos, 20, rl::GOLD); yPos += 30;
@@ -1549,11 +1649,15 @@ fn int main(String[] args) {
                 rl::drawText("- Title: \"Travel to the Horizon\" by Komiku", 625, yPos, 20, rl::GOLD); yPos += 30;
                 rl::drawText("  Background music track in game", 625, yPos, 20, rl::GOLD); yPos += 50;
 
+                rl::drawText("- Title: \"Home\" by Komiku", 625, yPos, 20, rl::GOLD); yPos += 30;
+                rl::drawText("  Background music track in game", 625, yPos, 20, rl::GOLD); yPos += 50;
+
                 rl::drawText("Third-Party Sound Effects", 575, yPos, 30, rl::GOLD); yPos += 40;
                 rl::drawText("- All SFX are from Soundly SFX : Soundly - https://getsoundly.com/", 625, yPos, 20, rl::GOLD); yPos += 30;
                 rl::drawText("- explosions.wav - rFXGenerator - Raylib Technologies", 625, yPos, 20, rl::GOLD); yPos += 40;
+                rl::drawText("- laser_shot.wav - rFXGenerator - Raylib Technologies", 625, yPos, 20, rl::GOLD); yPos += 45;
 
-                rl::drawText("Complete Lincense Details", 575, yPos, 30, rl::GOLD); yPos += 50;
+                rl::drawText("Complete Lincense Details & Credit Information", 575, yPos, 30, rl::GOLD); yPos += 50;
                 rl::drawText("- see \"custom-art-license.md\" and \"third-party-notice.md\" for complete license details.", 575, yPos, 20, rl::GOLD); yPos += 30;
 
                 // Update mouse control if enabled (for menu navigation)
