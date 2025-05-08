@@ -60,6 +60,7 @@ fn TexMap loadTexMap(){
     Texture2D spiderTex = rl::loadTexture("resources/images/spider-sheet.png");
     Texture2D mothTex = rl::loadTexture("resources/images/moth-sheet.png");
     Texture2D mouseTex = rl::loadTexture("resources/images/mouse-sheet.png");
+    Texture2D racoonTex = rl::loadTexture("resources/images/racoon-sheet.png");
     //Credits Page assets
     Texture2D creditsPageTex = rl::loadTexture("resources/images/credits_page.png");
     //buttons
@@ -109,6 +110,7 @@ fn TexMap loadTexMap(){
     map.set("spider",spiderTex);
     map.set("moth",mothTex);
     map.set("mouse",mouseTex);
+    map.set("racoon",racoonTex);
     map.set("cougar_boss",cougarBossTex);
     map.set("alien_boss",alienBossTex);
     map.set("creditsPage",creditsPageTex);

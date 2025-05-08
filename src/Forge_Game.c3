@@ -33,6 +33,7 @@ const float SPIDER_SOFFSET = 70.0f;//70
 const float POWERUP_SOFFSET = 25.0f;
 const float MOUSE_SOFFSET = 40.0f;//40
 const float COUGAR_SOFFSET = 40.0f;//40
+const float RACOON_SOFFSET = 35.0f;//35
 const int ENTITY_HITBOX_WIDTH = 64;
 const int ENTITY_HITBOX_HEIGHT = 64;
 const int BOSS_HITBOX_WIDTH = 100;
@@ -175,14 +176,16 @@ fn void resetPowerUpCounters() {
 }
 
 fn String getRandomConstructName (ConstructType type, String array_type){
-   String[*] groundTypes = {"ant","turtle","snake","fox","scorpion","spider","mouse","cougar_boss"};
+   //String[*] nightGround = {"scorpion","spider","mouse","racoon"};
+   //String[*] nightFlying = {"owl","moth","alien_boss"};
+   String[*] groundTypes = {"ant","turtle","snake","fox","cougar_boss","scorpion","spider","mouse","racoon"};
    String[*] flyingTypes = {"bird","beatle","owl","moth","alien_boss"};
-   String[*] obsticlesTypes = {"cactus","boulder","tree"};
+   String[*] obstacleTypes = {"cactus","boulder","tree"};
    String[*] powerUps = {"grav","food","super"};
 
    int gLength = groundTypes.len - 1;
    int fLength = flyingTypes.len - 1;
-   int oLength = obsticlesTypes.len - 1;
+   int oLength = obstacleTypes.len - 1;
    int pLength = powerUps.len -1;
 
       if (type == ConstructType.ENEMY_GROUND){
@@ -200,7 +203,7 @@ fn String getRandomConstructName (ConstructType type, String array_type){
       if (type == ConstructType.OBS){
       int index = rand_in_range(0, oLength);
       //io::printfn("name -> %s  type -> %s  texture -> %s !",obsticlesTypes[index],type);
-      return obsticlesTypes[index];
+      return obstacleTypes[index];
       }
 
       if (type == ConstructType.POWER_UP) {
@@ -773,13 +776,17 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
                         c.pos.x -= (c.friction + MOUSE_SOFFSET)  * deltaTime;
                         c.groundLevel = groundLevel - 40;
-               //TODO move to boss case later after testing is done
-               case "cougar_boss" :
+                break;
+
+                case "racoon":
+                        c.pos.x -= (c.friction + RACOON_SOFFSET)  * deltaTime;
+                        c.groundLevel = groundLevel - 25;
+
+                case "cougar_boss" :
 
                         c.pos.x -= (c.friction + COUGAR_SOFFSET)  * deltaTime;
                         c.groundLevel = groundLevel - 50;
-
-               break;
+                break;
             }
 
             if(c.vHit){c.vHit = false;c.lives -= 1;}
@@ -958,7 +965,6 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                                  rl::playSound(sMap.get("enemyDie")!!);
                                  jumpCounter = 0;
                               }
-
 
                            if(c.invulnTimer >= 0.0){
                               c.invulnTimer -= 1.0;
