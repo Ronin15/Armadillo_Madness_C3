@@ -314,7 +314,6 @@ fn Construct forgeCronstructPlayer(TexMap *tMap, String name = "player") {
       c.pos = {100,950};
       c.hitBox = {c.pos.x,c.pos.y,PLAYER_HITBOX_WIDTH,PLAYER_HITBOX_HEIGHT};
       c.texture = tMap.get("player")!!;
-     // c.sound = sMap.get(c.name)!!;
       c.maxFrames = 2;
       c.gravity = GRAVITY;
       c.jumpVelocity = MOVE_VELOCITY;
@@ -396,10 +395,8 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
       constructs[i].name = (String)getRandomConstructName(constructs[i].type, array_type);
    }
     if (capacity <= forge_main::MAX_CONSTRUCTS){
-      constructs[i].pos = {(float)rand_in_range(2000,38000) + (float)rand_in_range(100,200),(float)rand_in_range(580,650) + (float)rand_in_range(64,100)};//21000 26000
-   }else{
-      constructs[i].pos = {(float)rand_in_range(2000,38000) + (float)rand_in_range(100,200),(float)rand_in_range(580,650) + (float)rand_in_range(64,100)};//21000 26000
-   }
+        constructs[i].pos = {(float)rand_in_range(2000,38000) + (float)rand_in_range(100,200),(float)rand_in_range(500,550) + (float)rand_in_range(64,100)};//21000 26000
+      }
 
     constructs[i].texture = tMap.get(constructs[i].name)!!;
    // c.sound = sMap.get(c.name)!!;  NEED TO ADD SOUNDS FOR ALL TYPES
