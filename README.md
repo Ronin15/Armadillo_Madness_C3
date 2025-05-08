@@ -32,7 +32,7 @@ Key Features:
     Weather interaction.
     Xbox and PS4 controller support.
 
-Join the adventure and experience the madness of Armadillo Madness!
+Join the adventure and experience the madness!
 
 Notes:
 
