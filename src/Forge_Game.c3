@@ -530,7 +530,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                }
 
             //powerup
-            if (c.sHit){c.powerUpTimer += 500; c.invlunerable = true; c.invulnTimer += 800; c.acceleration = 350; c.sHit = false;}//500//400
+            if (c.sHit){c.powerUpTimer += 600; c.invlunerable = true; c.invulnTimer += 800; c.acceleration = 350; c.sHit = false;}//500//400
             //invuln
             if(c.hHit && c.invulnTimer <= 0 && c.name == "player"){
                   c.hHit = false;
@@ -1211,6 +1211,11 @@ fn void drawAnimatedConstruct(Construct* c, float rotation = 0.0){
    float bossSize = 3.5;
    float super = 2.5; //2.5
    float scale @noinit;
+   rl::Color tint = rl::WHITE; // Default tint color
+   // Colors for player flash effect
+   rl::Color blueShade = {200, 200, 255, 255}; // Lighter blue with more transparency
+   rl::Color greenShade = {200, 255, 200, 255}; // Lighter green with more transparency
+   rl::Color purpleShade = {230, 200, 255, 255}; // Lighter purple with more transparency
 
    Rectangle srcRec = {
      srcRec.x = (float)c.currentFrame * c.texture.width / c.maxFrames,
@@ -1243,5 +1248,27 @@ fn void drawAnimatedConstruct(Construct* c, float rotation = 0.0){
          if(c.isDead) {c.texFlip = true; rotation = 180.0;}
          if (c.texFlip) {srcRec.width =- srcRec.width;}
 
-      rl::drawTexturePro(c.texture, srcRec, destRec, origin, rotation, rl::WHITE);
+      // Apply flashing effect when the entity is invulnerable after being hit
+      if(c.invlunerable) {
+         if(c.type == PLAYER) {
+            // Subtle multi-color flash effect for player
+            int colorIndex = (int)(c.invulnTimer / 15) % 3;
+            if(colorIndex == 0) {
+               tint = blueShade;
+            } else if(colorIndex == 1) {
+               tint = greenShade;
+            } else {
+               tint = purpleShade;
+            }
+         } else if(c.type == BOSS) {
+            // Standard red flash for bosses
+            if((int)(c.invulnTimer / 10) % 2 == 0) {
+               tint = rl::RED;
+            } else {
+               tint = rl::WHITE;
+            }
+         }
+      }
+
+      rl::drawTexturePro(c.texture, srcRec, destRec, origin, rotation, tint);
 }
