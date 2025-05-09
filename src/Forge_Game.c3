@@ -938,6 +938,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                               c.lives -= 1;
                               c.invulnTimer = 100.0;
                               c.invlunerable = true;
+                              rl::playSound(sMap.get("cougarHit")!!);
                            }
 
                            if(c.hHit && !c.invlunerable) {
@@ -945,6 +946,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                               c.lives -= 1;
                               c.invulnTimer = 100.0;
                               c.invlunerable = true;
+                              rl::playSound(sMap.get("cougarHit")!!);
                            }
 
                            if(c.lives <= 0){
@@ -1026,6 +1028,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                               c.lives -= 1;
                               c.invulnTimer = 100.0;
                               c.invlunerable = true;
+                              rl::playSound(sMap.get("alienHit")!!);
                            }
 
                            if(c.hHit && !c.invlunerable) {
@@ -1033,6 +1036,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                               c.lives -= 1;
                               c.invulnTimer = 100.0;
                               c.invlunerable = true;
+                              rl::playSound(sMap.get("alienHit")!!);
                            }
 
                            if(c.lives <= 0){

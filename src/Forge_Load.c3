@@ -153,6 +153,8 @@ fn SoundMap loadSoundMap(){
     Sound gameOver = rl::loadSound("resources/sounds/game_over.wav");
     Sound levelComplete = rl::loadSound("resources/sounds/level_complete.wav");
     Sound laserShot = rl::loadSound("resources/sounds/laser_shot.wav");
+    Sound cougarBossHit = rl::loadSound("resources/sounds/cougar_boss_hit.wav");
+    Sound alienBossHit = rl::loadSound("resources/sounds/alien_boss_hit.wav");
 
     map.set("jump",jump);
     map.set("moving",moving);
@@ -176,9 +178,11 @@ fn SoundMap loadSoundMap(){
     map.set("levelComplete",levelComplete);
     map.set("playerDeath",playerDeath);
     map.set("gameOver",gameOver);
-    map.set("laserShot",laserShot);  // Add the laser sound to the map
+    map.set("laserShot",laserShot);
+    map.set("cougarHit",cougarBossHit);
+    map.set("alienHit",alienBossHit);
 
-   return map;
+    return map;
 }
 
 fn MusicMap loadMusicMap(){
