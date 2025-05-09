@@ -4,12 +4,10 @@ SPECS:
 
     OS: Windows 10/11
 
-    MAC OS M series only
+    MAC OS: M series only
 
-    Linux
-
-    Ubuntu 20.04 LTS
-
+    Linux: Ubuntu 20.04 LTS
+    **Fullscreen on Linux not working do to raylib wayland openGL issue possibly**
 GRAPHICS: any video device supports Open GL 3.0
 
     CPU:2GHz Dual core or better
@@ -17,6 +15,8 @@ GRAPHICS: any video device supports Open GL 3.0
     RAM: 4 GB or more
 
     Hard Drive: SSD or better for optimal performance 100MB required.
+
+    Monitior: 1920x1080 lowest resolution supported. WideScreen not supported. 
 
     Mobile support will come later if demand is there.
 
