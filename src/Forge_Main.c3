@@ -179,7 +179,6 @@ fn int main(String[] args) {
 		float updateTime = currentTime - lastTime; // Time since last frame
 
 		// Skip frame if we're too fast (frame limiting to 60 FPS)
-		// Target 1/60 of a second per frame (about 16.67ms)
 		const float FRAME_BUDGET = 1.0f / TARGET_FPS;
 		while (updateTime < FRAME_BUDGET) {
 		    float remainingTime = FRAME_BUDGET - updateTime;
@@ -321,7 +320,7 @@ fn int main(String[] args) {
 							alienLaser.expired = false;
 							alienLaser.pos.x = nightBoss.pos.x + ((float)nightBoss.texture.width / 2);
 							alienLaser.pos.y = nightBoss.pos.y + nightBoss.texture.height;
-							io::printfn("Alien laser activated at: %f, %f", alienLaser.pos.x, alienLaser.pos.y);
+							//io::printfn("Alien laser activated at: %f, %f", alienLaser.pos.x, alienLaser.pos.y);
 							rl::playSound(sMap.get("laserShot")!!);
 							// Reset boss's fire request
 							nightBoss.isProjectileActive = false;
@@ -363,14 +362,12 @@ fn int main(String[] args) {
 		// Render at the current framerate, but game logic above is fixed timestep
 		rl::beginDrawing();
 		rl::beginMode2D(camera);
-		// We'll explicitly call endMode2D and endDrawing at the end instead of using defer
-		// This allows us to add the FPS display after the game state rendering
 		rl::clearBackground(rl::BLACK);
 
-		// Full game state machine for rendering and non-physics updates
+		// States for rendering and non-physics updates
 		switch (state) {
 			case QUIT:
-				// Nothing to do in this case - the main loop will exit
+				//This state exists to allow the quit button to return the should quit action for the main raylib loop.
 				break;
 
         	case LOGO:

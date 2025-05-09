@@ -42,9 +42,7 @@ fn Button createButton(TexMap* tMap, SoundMap* sMap, int count) {
     b.bClicked = false;
     b.bhover = false;
     spacing += 45;
-
-    io::printfn("Button: %s -> texture: %s -> X:%fxY:%f  -> tex width: %f height: %f -> maxFrames: %d",b.name,b.texture,b.pos.x,b.pos.y,b.texture.width,b.texture.height,b.maxFrames);
-
+    //io::printfn("Button: %s -> texture: %s -> X:%fxY:%f  -> tex width: %f height: %f -> maxFrames: %d",b.name,b.texture,b.pos.x,b.pos.y,b.texture.width,b.texture.height,b.maxFrames);
     return b;
 }
 
@@ -89,7 +87,7 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, Vector2
             if ((b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) || (b.bhover && xButtonClick)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
-                io::printfn("Button: %s -> Cicked! ",b.name);
+                //io::printfn("Button: %s -> Cicked! ",b.name);
                 b.currentFrame = 2;
                 state = GAME;
             }else if
@@ -108,7 +106,7 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, Vector2
             if ((b.bhover && rl::isMouseButtonPressed(rl::MouseButton.LEFT)) || (b.bhover && xButtonClick)) {
                 b.bClicked = true;
                 rl::playSound(sMap.get("button")!!);
-                io::printfn("Button: %s -> Cicked! ",b.name);
+                //io::printfn("Button: %s -> Cicked! ",b.name);
                 state = OPTIONS;
             }else if (b.bhover) {
                 rl::playSound(sMap.get("button")!!);

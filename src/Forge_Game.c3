@@ -553,7 +553,6 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
             //animation
             if (c.animTimer >= 0 ){
-
                 c.texture = tMap.get("playerHit")!!;
 
             }else{
@@ -643,13 +642,13 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                 c.pos.x += c.acceleration * deltaTime;
                 c.texFlip = false;
             } else {
-               c.vel.x = 0.0;
+                c.vel.x = 0.0;
             }
 
             c.vel.y += c.gravity * deltaTime;
 
             if (c.pos.y >= c.groundLevel) {
-               c.isGrounded = true;
+                c.isGrounded = true;
             }
 
             if (jumping) {
@@ -680,7 +679,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                   c.expired = true;
                   c.isProjectileActive = false;
                }
-               break; // Skip the rest of poop shot logic
+               break; // Skip the rest projectile logic
             }
 
             //io::printfn("POOP Shot - Name: %s, Active: %d, Expired: %d", c.name, c.isProjectileActive ? 1 : 0, c.expired ? 1 : 0); //DEBUG
