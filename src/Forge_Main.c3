@@ -1231,7 +1231,7 @@ fn int main(String[] args) {
 
 				// Draw one large transparent box for all game over text
 				rl::drawRectangle((WINDOW_WIDTH / 2) - 520, 180, 1040, 310, rl::fade(rl::BLACK, 0.8f));
-				
+
 				// Game over text
 				rl::drawText("! * GAME OVER * !", ((WINDOW_WIDTH / 2) - 500), 200, 105, rl::RED);
 				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 350), 350, 60, rl::WHITE);
@@ -1366,8 +1366,7 @@ fn int main(String[] args) {
 
 					// Draw the high scores
 					// Draw one large transparent box for high score content
-					rl::drawRectangle((rl::getScreenWidth() / 2) - 500, 150, 1000, 600, rl::fade(rl::BLACK, 0.8f));
-					
+					rl::drawRectangle((rl::getScreenWidth() / 2) - 500, 50, 1000, 725, rl::fade(rl::BLACK, 0.8f));
 					// Draw the high scores within the transparent box
 					forge_scores::draw_high_scores();
 					//io::printfn("HIGH_SCORE state: High scores drawn");
@@ -1375,13 +1374,11 @@ fn int main(String[] args) {
 					// Show different message based on whether we're just viewing or entered a score
 					if (!__high_score_viewing_only) {
 						rl::drawText("Congratulations on your high score!", (rl::getScreenWidth() / 2) - 280, 650, 30, rl::YELLOW);
-					} else {
-						rl::drawText("HIGH SCORES", (rl::getScreenWidth() / 2) - 130, 600, 35, rl::YELLOW);
 					}
 
 					// Show controller prompt if a controller is detected and active
 					if (forge_controller::controllersDetected && forge_controller::is_controller_active()) {
-						rl::drawText("PRESS A or X BUTTON TO CONTINUE", (rl::getScreenWidth() / 2) - 230, 700, 25, rl::YELLOW);
+						rl::drawText("PRESS A or X BUTTON TO CONTINUE", (rl::getScreenWidth() / 2) - 250, 700, 25, rl::YELLOW);
 
 					} else {
 						rl::drawText("PRESS ENTER TO CONTINUE", (rl::getScreenWidth() / 2) - 200, 700, 25, rl::YELLOW);
