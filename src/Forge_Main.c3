@@ -1229,6 +1229,9 @@ fn int main(String[] args) {
 				rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
 				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.5f));
 
+				// Draw one large transparent box for all game over text
+				rl::drawRectangle((WINDOW_WIDTH / 2) - 520, 180, 1040, 310, rl::fade(rl::BLACK, 0.8f));
+				
 				// Game over text
 				rl::drawText("! * GAME OVER * !", ((WINDOW_WIDTH / 2) - 500), 200, 105, rl::RED);
 				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 350), 350, 60, rl::WHITE);
@@ -1362,6 +1365,10 @@ fn int main(String[] args) {
 					//io::printfn("HIGH_SCORE state: Drawing high score table background");
 
 					// Draw the high scores
+					// Draw one large transparent box for high score content
+					rl::drawRectangle((rl::getScreenWidth() / 2) - 500, 150, 1000, 600, rl::fade(rl::BLACK, 0.8f));
+					
+					// Draw the high scores within the transparent box
 					forge_scores::draw_high_scores();
 					//io::printfn("HIGH_SCORE state: High scores drawn");
 
