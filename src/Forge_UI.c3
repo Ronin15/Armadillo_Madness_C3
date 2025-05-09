@@ -94,7 +94,6 @@ fn ButtonResult updateButton(Button* b, SoundMap* sMap, GameState state, Vector2
                 (b.bhover) {
                 rl::playSound(sMap.get("button")!!);
                 b.currentFrame = 2;
-
             } else {
                 b.currentFrame = 1;
                 b.bClicked = false;
