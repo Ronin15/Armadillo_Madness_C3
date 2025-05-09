@@ -1227,7 +1227,7 @@ fn int main(String[] args) {
 
 				// Background elements
 				rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
-				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.5f));
+				//rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.5f));
 
 				// Draw one large transparent box for all game over text
 				rl::drawRectangle((WINDOW_WIDTH / 2) - 520, 180, 1040, 310, rl::fade(rl::BLACK, 0.8f));
@@ -1361,7 +1361,7 @@ fn int main(String[] args) {
 					// Draw background
 					rl::clearBackground(rl::BLACK);
 					rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
-					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.5f));
+					//rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.5f));
 					//io::printfn("HIGH_SCORE state: Drawing high score table background");
 
 					// Draw the high scores
@@ -1395,7 +1395,7 @@ fn int main(String[] args) {
 							forge_scores::lastAddedScoreIndex = -1; // Reset highlight
 						} else {
 							// Determine where to go based on game state
-							io::printfn("night=%s, player.isDead=%s, nightBoss.isDead=%s", night ? "true" : "false", player.isDead ? "true" : "false", nightBoss.isDead ? "true" : "false");
+							//io::printfn("night=%s, player.isDead=%s, nightBoss.isDead=%s", night ? "true" : "false", player.isDead ? "true" : "false", nightBoss.isDead ? "true" : "false");
 
 							if (night && !player.isDead && nightBoss.isDead) {
 								io::printfn("Transitioning to GAME_WIN state");
