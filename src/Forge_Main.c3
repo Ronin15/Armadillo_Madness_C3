@@ -711,7 +711,7 @@ fn int main(String[] args) {
 
     				forge_fx::forgeFXManager(&mMap, &sMap,"rain", renderDeltaTime);
     				weatherTimer -=1;
-    				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer); //debugnnnn
+    				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer); //debug
     			}
     			if(weatherTimer <= 0.0){
     				raining = false;
