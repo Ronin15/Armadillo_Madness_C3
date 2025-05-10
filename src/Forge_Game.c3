@@ -23,12 +23,12 @@ const float NIGHTB_AMPLITUDE = 300.0f;//
 const float AMPLITUDE = 200.0f;//300
 const float FREQUENCY = 0.03f;//0.05
 const int MAX_HEARTS = 6;
-const float OBS_SOFFSET = 20.0f;//20
+const float OBS_SOFFSET = 30.0f;//20
 const float ANT_SOFFSET = 50.0f;//50
 const float FOX_SOFFSET = 70.0f;//70
-const float SCORPION_SOFFSET = 30.0f; //30
-const float TURTLE_SOFFSET = 25.0f;//25
-const float SNAKE_SOFFSET = 30.0f;//30
+const float SCORPION_SOFFSET = 40.0f; //30
+const float TURTLE_SOFFSET = 32.0f;//25
+const float SNAKE_SOFFSET = 35.0f;//30
 const float SPIDER_SOFFSET = 70.0f;//70
 const float POWERUP_SOFFSET = 25.0f;
 const float MOUSE_SOFFSET = 40.0f;//40
@@ -403,7 +403,13 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
     constructs[i].lives = 2;
     if (constructs[i].type == OBS ) {
         constructs[i].maxFrames = 1;
-    }else{
+        // Ensure consistent obstacle movement values for smoother animation
+        constructs[i].friction = 0.0f; // Remove friction for consistent motion
+    } else if (constructs[i].type == POWER_UP) {
+        constructs[i].maxFrames = 2;
+        // Ensure power-ups also move smoothly
+        constructs[i].friction = 0.0f; // Remove friction for consistent motion
+    } else {
         constructs[i].maxFrames = 2;
     }
     constructs[i].gravity = GRAVITY;
@@ -734,13 +740,13 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
                case "ant":
 
-                        c.pos.x -= (c.friction + ANT_SOFFSET) * deltaTime;
+                        c.pos.x -= ANT_SOFFSET * deltaTime;
                         c.groundLevel = groundLevel - 50;
                break;
 
                case "turtle":
 
-                        c.pos.x -= (c.friction + TURTLE_SOFFSET) * deltaTime;
+                        c.pos.x -= POWERUP_SOFFSET * deltaTime;
                         c.groundLevel = groundLevel - 40; //ground level hit box adjust
                break;
 
@@ -872,7 +878,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
           c.vel.y += c.gravity * deltaTime;
           c.pos.y += c.vel.y * deltaTime;
-          c.pos.x -= (c.friction + OBS_SOFFSET) * deltaTime;
+          // Use a fixed velocity instead of adding friction for smoother movement
+          c.pos.x -= OBS_SOFFSET * deltaTime;
 
          break;
 
@@ -909,7 +916,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
           if(c.hHit){c.hHit = false;}
           c.vel.y += c.gravity * deltaTime;
           c.pos.y += c.vel.y * deltaTime;
-          c.pos.x -= (c.friction + POWERUP_SOFFSET) * deltaTime;
+          // Use a consistent velocity for power-ups for smoother movement
+          c.pos.x -= POWERUP_SOFFSET * deltaTime;
           c.groundLevel = groundLevel - 40;
 
          break;

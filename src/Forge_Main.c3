@@ -81,11 +81,6 @@ fn int main(String[] args) {
 	defer rl::closeAudioDevice();
 	forge_game::toggleFullScreen(WINDOW_WIDTH,WINDOW_HEIGHT);
 
-	//camera
-	Camera2D camera;
-	camera.zoom = 1.0;
-	//camera.target = {WINDOW_WIDTH,WINDOW_HEIGHT};
-
 	//asset loading
 	TexMap tMap = forge_load::loadTexMap();
 	SoundMap sMap = forge_load::loadSoundMap();
@@ -360,7 +355,6 @@ fn int main(String[] args) {
 		// -------------------- RENDERING (ONCE PER FRAME) --------------------
 		// Render at the current framerate, but game logic above is fixed timestep
 		rl::beginDrawing();
-		rl::beginMode2D(camera);
 		rl::clearBackground(rl::BLACK);
 
 		// States for rendering and non-physics updates
@@ -1686,10 +1680,7 @@ fn int main(String[] args) {
                     }
    		}
 
-		// End 2D camera mode
-		rl::endMode2D();
-
-		// Render FPS display if enabled (must be done after 2D mode ends)
+		// Render FPS display if enabled
 		if (showFPS) {
 			// Draw FPS in top-right corner
 			rl::drawRectangle(WINDOW_WIDTH - 100, 10, 90, 30, rl::fade(FORGE_GRAY, 0.7f));
