@@ -416,7 +416,7 @@ fn int main(String[] args) {
                     // Always enable mouse mode in the main menu when controller is active
                     static bool forceEnabled = false;
                     if (!forceEnabled && forge_controller::controllerActive) {
-                        io::printfn("Forcing mouse mode ON in main menu");
+                        //io::printfn("Forcing mouse mode ON in main menu");
                         if (!forge_controller::is_mouse_mode_enabled()) {
                             forge_controller::toggle_mouse_mode();
                         }
@@ -571,7 +571,7 @@ fn int main(String[] args) {
 					}
 				}
 
-				forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
+				    forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
 
 					foreach ( &construct : constructs){
 								score += forge_game::updateConstruct(construct, &sMap, &tMap, raining, deltaTime);
@@ -597,7 +597,7 @@ fn int main(String[] args) {
 									inTransition = false;
 								}
 							}
-					}
+						}
 
 					    //io::printfn("Last enitity pos-x: %f",constructs[entIndex].pos.x);
 						if (!dayBoss.active) {
@@ -821,7 +821,7 @@ fn int main(String[] args) {
 						if (forge_physics::checkCollision(&player, &alienLaser)) {
 							forge_physics::resolveCollision(&player, &alienLaser, deltaTime);
 							// Don't expire the laser - it can pass through the player
-							io::printfn("Laser hit player!");
+							//io::printfn("Laser hit player!");
 						}
 					}
 				}
@@ -840,7 +840,7 @@ fn int main(String[] args) {
 							alienLaser.expired = false;
 							alienLaser.pos.x = nightBoss.pos.x + ((float)nightBoss.texture.width / 2);
 							alienLaser.pos.y = nightBoss.pos.y + nightBoss.texture.height;
-							io::printfn("Alien laser activated at: %f, %f", alienLaser.pos.x, alienLaser.pos.y);
+							//io::printfn("Alien laser activated at: %f, %f", alienLaser.pos.x, alienLaser.pos.y);
 							rl::playSound(sMap.get("laserShot")!!);
 							// Reset boss's fire request
 							nightBoss.isProjectileActive = false;

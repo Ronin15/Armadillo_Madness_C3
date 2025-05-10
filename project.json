@@ -13,6 +13,6 @@
     }
   },
   "cpu": "generic",
-  "opt": "O3",
+  "opt": "O0",
   "single-module": true
 }
