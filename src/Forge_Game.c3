@@ -80,7 +80,7 @@ bool movingLeft = true;
     Vector2 vel;
     Sound sound;
     String name;
-    Rectangle  hitBox;
+    Rectangle hitBox;
     ConstructType type;
     float gravity;
     float jumpVelocity;
@@ -129,7 +129,7 @@ fn Music playRandomSong(MusicMap* mMap){
     int max = playListLength;
     int selectedSong = rand_in_range(min,max);
     String randSong = playList[selectedSong];
-    io::printfn("Playing random song: %s", randSong);
+   //io::printfn("Playing random song: %s", randSong);
     Music song = mMap.get(randSong)!!;
     rl::stopMusicStream(song); // Stop any currently playing instance
     rl::playMusicStream(song); // Start playing the song
@@ -157,14 +157,14 @@ fn bool randChanceCheck(){
 
 // Function to reset all power-up counters when game resets
 fn void resetPowerUpCounters() {
-   // Log current values before reset
+  /* // Log current values before reset
    io::printfn("[DEBUG] Resetting power-up counters - Previous values:");
    io::printfn("  DAY: %d/%d", powerUpCount_day, forge_main::MAX_POWERUPS);
    io::printfn("  NIGHT: %d/%d", powerUpCount_night, forge_main::MAX_POWERUPS);
    io::printfn("  DEMO: %d/%d", powerUpCount_demo, forge_main::MAX_POWERUPS);
    io::printfn("  DAY BOSS: %d/%d", powerUpCount_dayBoss, forge_main::MAX_BOSS_POWER_UPS);
    io::printfn("  NIGHT BOSS: %d/%d", powerUpCount_nightBoss, forge_main::MAX_BOSS_POWER_UPS);
-
+   */
    // Reset all counters to zero
    powerUpCount_day = 0;
    powerUpCount_demo = 0;
@@ -172,7 +172,7 @@ fn void resetPowerUpCounters() {
    powerUpCount_dayBoss = 0;
    powerUpCount_nightBoss = 0;
 
-   io::printfn("[DEBUG] All power-up counters have been reset to zero.");
+   //io::printfn("[DEBUG] All power-up counters have been reset to zero.");
 }
 
 fn String getRandomConstructName (ConstructType type, String array_type){
@@ -296,7 +296,7 @@ fn Construct forgeCronstructProjectile(TexMap *tMap, String name) {
       c.hHit = false;
       c.vHit = false;
       c.anim = false;
-      io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
+      //io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
 }
 
@@ -337,7 +337,7 @@ fn Construct forgeCronstructPlayer(TexMap *tMap, String name = "player") {
       c.gHit = false;
       c.anim = false;
 
-      io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
+      //io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
 }
 fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
@@ -375,7 +375,7 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
       c.active = false;
       c.anim = false;
 
-      io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
+      //io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
 }
 
@@ -428,7 +428,7 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
    }
 
    // Print summary of power-ups in this array
-   io::printfn("[DEBUG] Created array '%s' with %d power-ups", array_type, powerUpCount);
+   //io::printfn("[DEBUG] Created array '%s' with %d power-ups", array_type, powerUpCount);
 
    return constructs;
 }
@@ -919,7 +919,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             c.hitBox = {((float)c.pos.x + (float)c.texture.width / 2.0f),
                        ((float)c.pos.y + (float)c.texture.height / 2.0f),
                        BOSS_HITBOX_WIDTH,
-                       BOSS_HITBOX_HEIGHT};
+                       BOSS_HITBOX_HEIGHT
+                       };
+
             switch (c.name) {
 
                   case "cougar_boss":

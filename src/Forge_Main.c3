@@ -682,7 +682,7 @@ fn int main(String[] args) {
 					// Add a transparent overlay
 					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.3f));
 					// Display transition message
-					rl::drawText("VICTORY!", (WINDOW_WIDTH / 2) - 200, WINDOW_HEIGHT / 2 - 100, 80, FORGE_ORANGE);
+					rl::drawText("VICTORY!", (WINDOW_WIDTH / 2) - 200, WINDOW_HEIGHT / 2 - 100, 80, rl::ORANGE);
 					rl::drawText("PREPARING NIGHT LEVEL...", (WINDOW_WIDTH / 2) - 400, WINDOW_HEIGHT / 2, 60, rl::WHITE);
 					rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
 					forge_fx::forgeFXManager(&mMap, &sMap,"explode", renderDeltaTime);
@@ -960,7 +960,7 @@ fn int main(String[] args) {
 					// Add a transparent overlay
 					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.3f));
 					// Display transition message
-					rl::drawText("FINAL VICTORY!", (WINDOW_WIDTH / 2) - 280, WINDOW_HEIGHT / 2 - 100, 80, FORGE_ORANGE);
+					rl::drawText("FINAL VICTORY!", (WINDOW_WIDTH / 2) - 280, WINDOW_HEIGHT / 2 - 100, 80, rl::ORANGE);
 					rl::drawText("YOU HAVE CONQUERED THE NIGHT!", (WINDOW_WIDTH / 2) - 520, WINDOW_HEIGHT / 2, 60, rl::WHITE);
 					rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
 					forge_fx::forgeFXManager(&mMap, &sMap,"explode", renderDeltaTime);
@@ -1525,8 +1525,9 @@ fn int main(String[] args) {
                     // Check if we've reached the left boundary
                     if(demoPlayer.pos.x < 10.0) {
                         demoMovingLeft = false;
+                        rl::playSound(sMap.get("moving")!!);
                     }
-                } else {
+                    }else{
                     // Move right (with 1.5x speed multiplier)
                     // Temporarily increase acceleration
                     float originalAcceleration = demoPlayer.acceleration;
@@ -1538,6 +1539,7 @@ fn int main(String[] args) {
                     // Check if we've reached the right boundary
                     if(demoPlayer.pos.x >= WINDOW_WIDTH - 200.0) {
                         demoMovingLeft = true;
+                        rl::playSound(sMap.get("moving")!!);
                     }
                 }
 
@@ -1571,7 +1573,6 @@ fn int main(String[] args) {
 					frameCounter = 0;
 					state = MAIN;
 				}
-
 
 				foreach ( &demoConstruct : demoConstructs){
 
