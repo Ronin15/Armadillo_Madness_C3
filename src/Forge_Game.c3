@@ -941,6 +941,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                               c.invulnTimer = 100.0;
                               c.invlunerable = true;
                               rl::playSound(sMap.get("cougarHit")!!);
+                              // Swap to hit texture when damaged
+                              c.texture = tMap.get("cougar_boss_hit")!!;
                            }
 
                            if(c.hHit && !c.invlunerable) {
@@ -949,6 +951,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                               c.invulnTimer = 100.0;
                               c.invlunerable = true;
                               rl::playSound(sMap.get("cougarHit")!!);
+                              // Swap to hit texture when damaged
+                              c.texture = tMap.get("cougar_boss_hit")!!;
                            }
 
                            if(c.lives <= 0){
@@ -971,6 +975,10 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                               c.hHit = false;
                               c.vHit = false;
                            }else{
+                              // Restore normal texture when invulnerability ends
+                              if (c.invlunerable) {
+                                 c.texture = tMap.get("cougar_boss")!!;
+                              }
                               c.invlunerable = false;
                            }
 
@@ -1031,6 +1039,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                               c.invulnTimer = 100.0;
                               c.invlunerable = true;
                               rl::playSound(sMap.get("alienHit")!!);
+                              // Swap to hit texture when damaged
+                              c.texture = tMap.get("alien_boss_hit")!!;
                            }
 
                            if(c.hHit && !c.invlunerable) {
@@ -1039,6 +1049,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                               c.invulnTimer = 100.0;
                               c.invlunerable = true;
                               rl::playSound(sMap.get("alienHit")!!);
+                              // Swap to hit texture when damaged
+                              c.texture = tMap.get("alien_boss_hit")!!;
                            }
 
                            if(c.lives <= 0){
@@ -1061,6 +1073,10 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                               c.hHit = false;
                               c.vHit = false;
                            }else{
+                              // Restore normal texture when invulnerability ends
+                              if (c.invlunerable) {
+                                 c.texture = tMap.get("alien_boss")!!;
+                              }
                               c.invlunerable = false;
                            }
 
