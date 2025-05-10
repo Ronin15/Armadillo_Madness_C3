@@ -167,7 +167,7 @@ fn int main(String[] args) {
 	}
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = LOGO;
+	GameState state = GAME_WIN;
 	// Auto-configure controller mouse control for initial state
 	forge_controller::auto_enable_mouse_mode(state.ordinal);
 	// Keep track of previous state to detect state changes
@@ -1188,12 +1188,15 @@ fn int main(String[] args) {
 				rl::updateMusicStream(mMap.get("gameWin")!!);
 				rl::clearBackground(rl::BLACK);
 
+				rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
 				forge_fx::drawRainbow();
+				// Draw a transparent block behind win text
+				rl::drawRectangle((WINDOW_WIDTH / 2) - 750, 75, 1500, 200, rl::fade(rl::BLACK, 0.7f));
 				forge_fx::forgeFXManager(&mMap, &sMap,"fireworks",renderDeltaTime);
+				rl::drawTextureEx(tMap.get("armadillo")!!, {750, 925}, 0.0, 2.0, rl::WHITE);
+				rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 925}, 0.0, 3.0, rl::WHITE);
+				//rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 
-				rl::drawTextureEx(tMap.get("armadillo")!!, {750, 825}, 0.0, 2.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 815}, 0.0, 3.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 				rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 700), 150, 105, rl::ORANGE);
 				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 400), 90, 60, rl::WHITE);
 

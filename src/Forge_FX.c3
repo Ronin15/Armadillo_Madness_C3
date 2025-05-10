@@ -574,7 +574,6 @@ fn void drawRainbow(){
         rl::drawCircleSector ({forge_main::WINDOW_WIDTH / 2, forge_main::WINDOW_HEIGHT },
                       (float)800 - (float)i * 20, 180.0, 360.0, 0, rainbowColors[i]);
         }
-
         // Draw a white circle at the center to cover the inner part of the rainbow
-        rl::drawCircle(forge_main::WINDOW_WIDTH / 2, forge_main::WINDOW_HEIGHT, 800 - 7 * 20, rl::RAYWHITE);
+        rl::drawCircle(forge_main::WINDOW_WIDTH / 2, forge_main::WINDOW_HEIGHT, 800 - 7 * 20, rl::BLACK);
 }
