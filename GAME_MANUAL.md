@@ -38,7 +38,7 @@
 - https://roninxv.itch.io - My games collection
 - https://github.com/Ronin15 - Game content and Game templates
 
-# Adtional
+# Aditional
  These will come later if there is support and interest.
 - Maybe a phone/tablet version.
 - Youtube channel
