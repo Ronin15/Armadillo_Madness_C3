@@ -163,6 +163,7 @@ fn SoundMap loadSoundMap(){
     map.set("logoSound",logoSound);
     map.set("eatBug",eatBug);
     map.set("cactus",cactus);
+    rl::setSoundVolume(boing, 0.5f);
     map.set("boing",boing);
     map.set("playerHit",playerHit);
     map.set("poopHit",poopHit);
@@ -177,6 +178,7 @@ fn SoundMap loadSoundMap(){
     map.set("playerDeath",playerDeath);
     map.set("gameOver",gameOver);
     map.set("laserShot",laserShot);
+    rl::setSoundVolume(cougarBossHit, 0.5f);
     map.set("cougarHit",cougarBossHit);
     map.set("alienHit",alienBossHit);
 
@@ -197,9 +199,13 @@ fn MusicMap loadMusicMap(){
    Music fireworks = rl::loadMusicStream("resources/sounds/fireworks.mp3");//fireworks noise
 
    map.set("titleMusic",titleMusic);
+   rl::setMusicVolume(gameMusic1, 0.7f);
    map.set("bicycle",gameMusic1);
+   rl::setMusicVolume(gameMusic2, 0.7f);
    map.set("banjo",gameMusic2);
+   rl::setMusicVolume(gameMusic3, 0.7f);
    map.set("night",gameMusic3);
+   rl::setMusicVolume(gameMusic4, 0.7f);
    map.set("banana",gameMusic4);
    map.set("gameWin",gameWinMusic);
    map.set("rain",rain);

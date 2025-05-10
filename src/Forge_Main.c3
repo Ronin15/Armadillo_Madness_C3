@@ -167,7 +167,7 @@ fn int main(String[] args) {
 	}
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = GAME_WIN;
+	GameState state = MAIN;
 	// Auto-configure controller mouse control for initial state
 	forge_controller::auto_enable_mouse_mode(state.ordinal);
 	// Keep track of previous state to detect state changes
@@ -695,7 +695,7 @@ fn int main(String[] args) {
     				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(rl::BLACK, 0.5f));
     				// Display transition message
     				rl::drawText("GAME OVER", (WINDOW_WIDTH / 2) - 250, WINDOW_HEIGHT / 2 - 100, 80, rl::RED);
-    				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 400, WINDOW_HEIGHT / 2, 60, rl::WHITE);
+    				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 350, WINDOW_HEIGHT / 2, 60, rl::WHITE);
     				rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
     			}
 
@@ -711,7 +711,7 @@ fn int main(String[] args) {
 
     				forge_fx::forgeFXManager(&mMap, &sMap,"rain", renderDeltaTime);
     				weatherTimer -=1;
-    				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer); //debug
+    				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer); //debugnnnn
     			}
     			if(weatherTimer <= 0.0){
     				raining = false;
@@ -973,7 +973,7 @@ fn int main(String[] args) {
 					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(rl::BLACK, 0.5f));
 					// Display transition message
 					rl::drawText("GAME OVER", (WINDOW_WIDTH / 2) - 250, WINDOW_HEIGHT / 2 - 100, 80, rl::RED);
-					rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 400, WINDOW_HEIGHT / 2, 60, rl::WHITE);
+					rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 350, WINDOW_HEIGHT / 2, 60, rl::WHITE);
 					rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
 				}
 
