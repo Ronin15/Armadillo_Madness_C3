@@ -2,7 +2,7 @@
 
 ## Overview
 
-- Armadillo Madness game manual.
+- Armadillo Madness game manual. General tips on how the game and game mechanics work.
 
 ### General Game Intructions
 
