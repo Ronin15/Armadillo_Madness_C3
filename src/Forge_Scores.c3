@@ -25,31 +25,98 @@ bool highScoresInitialized = false;
 // Track the index of the most recently added score (-1 means none)
 int lastAddedScoreIndex = -1;
 
-// Initialize high scores from file or set default values
-// Reads from a text-based .dat file with format: AAA,1000 (one entry per line)
-fn void init_high_scores() {
-    // First initialize with default values
-    init_defaults();
-
-    // Set high scores initialized flag early to prevent recursion if something fails
-    highScoresInitialized = true;
-
-    // Attempt to load high scores from file
-    String highScoreFile = "resources/scores/highscores.dat";
-
-    // Check if file actually exists before trying to load it
-    if (!rl::fileExists((ZString)highScoreFile)) {
-        return;
+// Check if a high score file is potentially corrupted
+fn bool is_high_score_file_corrupted(String filename) {
+    // Check if file exists
+    if (!rl::fileExists((ZString)filename)) {
+        return true; // Non-existent files are considered corrupted
     }
+    
+    // Check file size - files that are too small or too large are suspicious
+    int fileSize = rl::getFileLength((ZString)filename);
+    if (fileSize <= 0 || fileSize > 1024) {
+        io::eprintfn("File size check failed: %s (size: %d bytes)", filename, fileSize);
+        return true;
+    }
+    
+    // Try to open the file
+    File? file_result = file::open(filename, "r");
+    if (catch err = file_result) {
+        io::eprintfn("Cannot open file: %s", err);
+        return true;
+    }
+    
+    File fh = file_result;
+    defer (void)fh.close();
+    
+    // Read first few bytes to check format
+    char[10] header;
+    usz header_size = 0;
+    usz? read_result = fh.read(header[0:10]);
+    
+    if (catch err = read_result) {
+        io::eprintfn("Error reading file: %s", err);
+        return true;
+    }
+    
+    header_size = read_result;
+    
+    // A valid high score file should start with initials followed by comma
+    // Check for at least one valid entry format (e.g., "AAA,1000")
+    bool valid_format = false;
+    
+    // Check if we have at least 5 characters to examine
+    if (header_size >= 5) {
+        // Look for pattern: 3 letters followed by comma and at least one digit
+        bool has_valid_initials = true;
+        for (int i = 0; i < 3; i++) {
+            if (header[i] < 'A' || (header[i] > 'Z' && header[i] < 'a') || header[i] > 'z') {
+                has_valid_initials = false;
+                break;
+            }
+        }
+        
+        bool has_comma = header[3] == ',';
+        bool has_digit = header_size > 4 && header[4] >= '0' && header[4] <= '9';
+        
+        valid_format = has_valid_initials && has_comma && has_digit;
+    }
+    
+    return !valid_format;
+}
 
+// Tries to load high scores from a specific file
+// Returns true if successful, false if failed
+fn bool try_load_high_scores_from_file(String filename) {
+    io::printfn("Attempting to load high scores from: %s", filename);
+    
+    // Check if file actually exists before trying to load it
+    if (!rl::fileExists((ZString)filename)) {
+        io::printfn("File %s does not exist", filename);
+        return false;
+    }
+    
+    // Check if file is potentially corrupted
+    if (is_high_score_file_corrupted(filename)) {
+        io::eprintfn("File %s appears to be corrupted", filename);
+        return false;
+    }
+    
+    // Check file size to detect obviously corrupted files
+    int fileSize = rl::getFileLength((ZString)filename);
+    if (fileSize <= 0) {
+        io::eprintfn("Error: file %s appears to be empty or corrupted (size: %d)", filename, fileSize);
+        return false;
+    }
+    
     // THE SAFEST APPROACH: Parse line by line instead of loading the entire file
     // This completely avoids any buffer overflow issues with the file content
 
     // Open the file for reading manually
-    File? file_result = file::open(highScoreFile, "r");
+    File? file_result = file::open(filename, "r");
     if (catch err = file_result) {
-        io::eprintfn("Error: could not open file %s for reading: %s", highScoreFile, err);
-        return;
+        io::eprintfn("Error: could not open file %s for reading: %s", filename, err);
+        return false;
     }
 
     File fh = file_result;
@@ -143,12 +210,12 @@ fn void init_high_scores() {
                 }
 
                 io::printfn("Loaded score entry %d: %c%c%c = %d",
-                          scoreCount + 1,
-                          highScores[scoreCount].initials[0],
-                          highScores[scoreCount].initials[1],
-                          highScores[scoreCount].initials[2],
-                          highScores[scoreCount].score);
-
+                           scoreCount + 1,
+                           highScores[scoreCount].initials[0],
+                           highScores[scoreCount].initials[1],
+                           highScores[scoreCount].initials[2],
+                           highScores[scoreCount].score);
+                
                 scoreCount++;
             }
         }
@@ -158,9 +225,89 @@ fn void init_high_scores() {
             break;
         }
     }
+    
+    // Verify that we loaded at least some valid scores
+    if (scoreCount == 0) {
+        io::eprintfn("Warning: No valid scores loaded from %s, file may be corrupted", filename);
+        return false;
+    }
+    
+    // Check if scores are in descending order (a basic validation)
+    bool scoresValid = true;
+    for (int i = 1; i < scoreCount; i++) {
+        if (highScores[i-1].score < highScores[i].score) {
+            io::eprintfn("Warning: Scores not in descending order in %s, file may be corrupted", filename);
+            scoresValid = false;
+            break;
+        }
+    }
+    
+    io::printfn("Loaded %d high scores from %s", scoreCount, filename);
+    return scoreCount > 0 && scoresValid;
+}
 
-    io::printfn("Loaded %d high scores", scoreCount);
-    io::printfn("High scores initialized successfully");
+// Initialize high scores from file or set default values
+// Reads from a text-based .dat file with format: AAA,1000 (one entry per line)
+// Will attempt to recover from backup file if main file is corrupted
+fn void init_high_scores() {
+    // First initialize with default values
+    init_defaults();
+
+    // Set high scores initialized flag early to prevent recursion if something fails
+    highScoresInitialized = true;
+
+    // Attempt to load high scores from main file
+    String highScoreFile = "resources/scores/highscores.dat";
+    bool loaded = false;
+    
+    // Check if main file is corrupted before trying to load it
+    bool main_file_corrupted = is_high_score_file_corrupted(highScoreFile);
+    
+    // First try loading from the main file if it's not corrupted
+    if (!main_file_corrupted) {
+        io::printfn("Attempting to load high scores from main file");
+        loaded = try_load_high_scores_from_file(highScoreFile);
+    } else {
+        io::printfn("Main high score file appears to be corrupted, will try backup");
+    }
+    
+    // If main file is corrupted or load failed, try the backup
+    if (main_file_corrupted || !loaded) {
+        io::printfn("Failed to load main high scores file, attempting backup recovery");
+        
+        // Create backup filename
+        char[256] backupNameBuffer;
+        usz backupNameLen = 0;
+        
+        // Copy the original filename
+        for (usz i = 0; i < highScoreFile.len && backupNameLen < 250; i++) {
+            backupNameBuffer[backupNameLen++] = highScoreFile[i];
+        }
+        
+        // Add .bak extension
+        backupNameBuffer[backupNameLen++] = '.';
+        backupNameBuffer[backupNameLen++] = 'b';
+        backupNameBuffer[backupNameLen++] = 'a';
+        backupNameBuffer[backupNameLen++] = 'k';
+        backupNameBuffer[backupNameLen] = '\0';
+        
+        String backupFile = (String)backupNameBuffer[:backupNameLen];
+        loaded = try_load_high_scores_from_file(backupFile);
+        
+        if (loaded) {
+            io::printfn("Successfully recovered high scores from backup file");
+            // Save the recovered scores back to the main file
+            if (save_high_scores()) {
+                io::printfn("Restored main high score file from backup data");
+            } else {
+                io::eprintfn("Warning: Failed to restore main high score file from backup");
+            }
+        } else {
+            io::printfn("Could not recover high scores from backup, using defaults");
+        }
+    } else {
+        io::printfn("High scores initialized successfully from main file");
+    }
 }
 
 // Save high scores to a text-based .dat file
@@ -489,9 +636,14 @@ fn void draw_high_scores() {
 }
 
 fn bool load_file(String filename, char[]* out_data) {
-    // Safety check for null pointer
+    // Safety check for output pointer and filename
     if (out_data == null) {
-        io::eprintfn("Error: output data pointer is null");
+        io::eprintfn("Error: null output pointer");
+        return false;
+    }
+    
+    if (filename.len == 0) {
+        io::eprintfn("Error: empty filename provided");
         return false;
     }
 
@@ -569,16 +721,22 @@ fn bool load_file(String filename, char[]* out_data) {
 }
 
 fn bool save_file(String filename, char[] data) {
-    // Safety check for empty data
+    // Safety check for empty data or filename
     if (!data.ptr || data.len == 0) {
         io::eprintfn("Error: Invalid or empty data for file %s", filename);
+        return false;
+    }
+    
+    if (filename.len == 0) {
+        io::eprintfn("Error: empty filename provided");
         return false;
     }
 
     io::printfn("Preparing to save %d bytes to %s", (int)data.len, filename);
 
-    // Create a backup of the existing file if it exists
-    if (rl::fileExists((ZString)filename)) {
+    // Create a backup of the existing file if it exists and not corrupted
+    if (rl::fileExists((ZString)filename) && !is_high_score_file_corrupted(filename)) {
+        io::printfn("File exists and valid, creating backup before writing new data");
         // Create a backup filename
         char[256] backupNameBuffer;
         usz backupNameLen = 0;
@@ -646,6 +804,16 @@ fn bool save_file(String filename, char[] data) {
     if (written != data.len) {
         io::eprintfn("Error: incomplete write to file %s (%d of %d bytes)", filename, (int)written, (int)data.len);
         return false;
+    }
+
+    // Verify file was written correctly by checking its size
+    if (rl::fileExists((ZString)filename)) {
+        int fileSize = rl::getFileLength((ZString)filename);
+        if (fileSize != data.len) {
+            io::eprintfn("Error: File size verification failed for %s (expected %d, got %d)", 
+                         filename, (int)data.len, fileSize);
+            return false;
+        }
     }
 
     io::printfn("Successfully saved file %s (%d bytes)", filename, (int)written);
