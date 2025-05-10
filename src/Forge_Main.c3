@@ -39,7 +39,6 @@ const float ANIM_SPEED_MULTIPLIER = 0.58f; // Animation speed: 1.0 = normal, low
 
 //Hammer Forge Colors RGB
 const Color FORGE_GRAY = {31,32,34,255};
-const Color FORGE_ORANGE = {186,65,14,255};
 
 // FPS tracking variables
 int fpsCounter = 0;
@@ -299,7 +298,7 @@ fn int main(String[] args) {
 							if (forge_physics::checkCollision(&player, &alienLaser)) {
 								forge_physics::resolveCollision(&player, &alienLaser, fixedDeltaTime);
 								// Don't expire the laser - it can pass through the player
-								io::printfn("Laser hit player!");
+								//io::printfn("Laser hit player!");
 							}
 						}
 					}
@@ -446,7 +445,7 @@ fn int main(String[] args) {
                         rl::drawText("Press F1 for debug logs, F3 to toggle", 20, WINDOW_HEIGHT - 30, 20, rl::WHITE);
                     }
                 }
-                //rl::drawText("Press ENTER to Start !   or ESC to close :)", ((WINDOW_WIDTH / 2) - 250), 340, 40, rl::BLACK); //buttons working.
+
 				rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
 				rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 				foreach (&mainButton : mainButtons){
@@ -604,7 +603,7 @@ fn int main(String[] args) {
 							dayBossCounter += 1;
 							// Log boss counter progress every 1000 frames
 							if ((int)dayBossCounter % 1000 == 0) {
-								io::printfn("Day Boss Counter: %f / %d", dayBossCounter, BOSS_TIMER);
+								//io::printfn("Day Boss Counter: %f / %d", dayBossCounter, BOSS_TIMER);
 							}
 							if (dayBossCounter >= BOSS_TIMER){
 								io::printfn("COUGAR_BOSS Triggered! Counter: %f", dayBossCounter);
@@ -878,7 +877,7 @@ fn int main(String[] args) {
 							nightBossCounter += 1;
 							// Log boss counter progress every 1000 frames
 							if ((int)nightBossCounter % 1000 == 0) {
-								io::printfn("Night Boss Counter: %f / %d", nightBossCounter, BOSS_TIMER);
+								//io::printfn("Night Boss Counter: %f / %d", nightBossCounter, BOSS_TIMER);
 							}
 							if (nightBossCounter >= BOSS_TIMER){
 								io::printfn("ALIEN_BOSS Triggered! Counter: %f", nightBossCounter);
@@ -1568,7 +1567,7 @@ fn int main(String[] args) {
 					demoCounter2 = 0;
 					demoPlayer = forge_game::forgeCronstructPlayer(&tMap, "demo");
 					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
-					demoConstructs = forge_game::forgeConstructs(&tMap,"demo");
+					demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
 					frameCounter = 0;
 					state = MAIN;
 				}
@@ -1675,9 +1674,6 @@ fn int main(String[] args) {
                     rl::drawText("Press X or SQUARE button to click UI elements", 205, 50, 20, rl::WHITE);
                     rl::drawText(rl::textFormat("Controller: %s", rl::getGamepadName(forge_controller::activeController)), 205, 80, 18, rl::YELLOW);
                 }
-
-				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
-				//rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 
 					forge_ui::ButtonResult result = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
 					state = result.state;
