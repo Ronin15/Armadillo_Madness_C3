@@ -45,6 +45,16 @@ int fpsCounter = 0;
 float fpsUpdateTimer = 0.0f;
 int currentFPS = 0;
 
+// Frame pacing and delta time smoothing
+const int FRAME_TIME_HISTORY_SIZE = 10;
+float[FRAME_TIME_HISTORY_SIZE] frameTimeHistory;
+int frameTimeHistoryIndex = 0;
+bool frameTimeHistoryFilled = false;
+float smoothedDeltaTime = TIME_STEP; // Start with ideal time step
+const float SMOOTHING_FACTOR = 0.2f; // Lower = more smoothing, higher = more responsive
+const float BUSY_WAIT_THRESHOLD = 0.001f; // Threshold for busy waiting vs sleep
+const float SLEEP_TIME_SCALE = 0.95f; // Scale factor for sleep time to avoid oversleeping
+
 // Flag to reset score processing state
 bool __force_reset_score_processed = false;
 // Flag to indicate we're only viewing high scores (not entering a new one)
@@ -121,7 +131,13 @@ fn int main(String[] args) {
 	float accumulator = 0.0;
 	float frameCounter = 0.0;
 	float lastTime = (float)rl::getTime(); // Initialize lastTime to current time
+	float frameTimeBudget = 1.0f / TARGET_FPS;
 	bool showFPS = false; // Toggle for FPS display
+
+	// Initialize frame time history
+	for (int i = 0; i < FRAME_TIME_HISTORY_SIZE; i++) {
+	    frameTimeHistory[i] = frameTimeBudget;
+	}
 
 	//load font
 	Font customFont = rl::loadFontEx("resources/fonts/west_test.ttf", 105, null, 250);
@@ -169,34 +185,40 @@ fn int main(String[] args) {
 
 	while (!rl::windowShouldClose() && state != GameState.QUIT) {
 		// Timing calculations to achieve a fixed 60 FPS time step
-		float currentTime = (float)rl::getTime(); // Current time in seconds
-		float updateTime = currentTime - lastTime; // Time since last frame
+		float frameStartTime = (float)rl::getTime(); // Time at start of this frame
+		float actualDeltaTime = frameStartTime - lastTime; // Actual time since last frame
+		lastTime = frameStartTime;
 
-		// Skip frame if we're too fast (frame limiting to 60 FPS)
-		const float FRAME_BUDGET = 1.0f / TARGET_FPS;
-		while (updateTime < FRAME_BUDGET) {
-		    float remainingTime = FRAME_BUDGET - updateTime;
-		    //io::printfn("Waiting...%f", remainingTime);
-			rl::waitTime((double)remainingTime);
-			// Re-check the time
-			currentTime = (float)rl::getTime();
-			updateTime = currentTime - lastTime;
+		// Cap the maximum delta time to prevent large jumps after pauses/lag
+		if (actualDeltaTime > 0.25f) actualDeltaTime = 0.25f;
+
+		// Update the frame time history ring buffer for smoothing
+		frameTimeHistory[frameTimeHistoryIndex] = actualDeltaTime;
+		frameTimeHistoryIndex = (frameTimeHistoryIndex + 1) % FRAME_TIME_HISTORY_SIZE;
+		if (frameTimeHistoryIndex == 0) frameTimeHistoryFilled = true;
+
+		// Calculate smoothed delta time (moving average)
+		float totalTime = 0.0f;
+		int samples = frameTimeHistoryFilled ? FRAME_TIME_HISTORY_SIZE : frameTimeHistoryIndex;
+		if (samples > 0) {
+		    for (int i = 0; i < samples; i++) {
+		        totalTime += frameTimeHistory[i];
+		    }
+		    smoothedDeltaTime = totalTime / (float)samples;
 		}
 
-		lastTime = currentTime;
+		// Use exponential smoothing for even smoother results
+		smoothedDeltaTime = SMOOTHING_FACTOR * actualDeltaTime + (1.0f - SMOOTHING_FACTOR) * smoothedDeltaTime;
 
-		// Cap the maximum update time to prevent large jumps after pauses/lag
-		if (updateTime > 0.25f) updateTime = 0.25f;
-
-		// Add time to accumulator
-		accumulator += updateTime;
+		// Add time to accumulator for fixed timestep updates
+		accumulator += actualDeltaTime;
 
 		// Track how many updates we've done this frame
 		int updatesThisFrame = 0;
 		const int MAX_UPDATES_PER_FRAME = 5; // Prevent spiral of death
 
 		// Process inputs (should be done once per frame, outside the fixed timestep loop)
-		float renderDeltaTime = updateTime; // Use our controlled time delta
+		float renderDeltaTime = smoothedDeltaTime; // Use smoothed delta time for rendering
 		// Make deltaTime variable also available for compatibility with existing code
 		float deltaTime = renderDeltaTime;
 
@@ -1702,8 +1724,8 @@ fn int main(String[] args) {
 			io::printfn("FPS display: %s", showFPS ? "ON" : "OFF");
 		}
 
-		// Update FPS counter
-		fpsUpdateTimer += updateTime;
+		// Update FPS counter with smoothed values
+		fpsUpdateTimer += actualDeltaTime;
 		fpsCounter++;
 
 		if (fpsUpdateTimer >= 0.5f) {
@@ -1712,6 +1734,32 @@ fn int main(String[] args) {
 			fpsUpdateTimer = 0.0f;
 		} else if (fpsUpdateTimer > 0) {
 			currentFPS = (int)(fpsCounter / fpsUpdateTimer);
+		}
+
+		// Precise frame pacing - sleep for just the right amount of time
+		float frameEndTime = (float)rl::getTime();
+		float frameTime = frameEndTime - frameStartTime;
+
+		if (frameTime < frameTimeBudget) {
+		    // Calculate sleep time with a slight buffer to avoid overshooting
+		    float sleepTime = frameTimeBudget - frameTime;
+
+		    // For extremely small sleep times, use busy waiting instead
+		    if (sleepTime < BUSY_WAIT_THRESHOLD) {
+		        float busyWaitStart = (float)rl::getTime();
+		        while ((float)rl::getTime() - busyWaitStart < sleepTime) {
+		            // Busy wait for more precise timing
+		        }
+		    } else {
+		        rl::waitTime(sleepTime * SLEEP_TIME_SCALE); // Sleep for slightly less time than needed to avoid oversleeping
+
+		        // Fine-tune with busy waiting for the remainder
+		        float busyWaitStart = (float)rl::getTime();
+		        float remainingTime = frameTimeBudget - ((float)rl::getTime() - frameStartTime);
+		        while (remainingTime > 0.0f) {
+		            remainingTime = frameTimeBudget - ((float)rl::getTime() - frameStartTime);
+		        }
+		    }
 		}
 	}
 	return 0;
