@@ -1511,7 +1511,7 @@ fn int main(String[] args) {
                     // Move left (with 1.5x speed multiplier)
                     // Temporarily increase acceleration
                     float originalAcceleration = demoPlayer.acceleration;
-                    demoPlayer.acceleration *= 1.8f; // 50% faster movement
+                    demoPlayer.acceleration *= 2.0f;
                     forge_ai::moveLeft(&demoPlayer, deltaTime);
                     demoPlayer.acceleration = originalAcceleration; // Restore original value
                     demoPlayer.texFlip = true; // Texture faces left when moving left
@@ -1525,7 +1525,7 @@ fn int main(String[] args) {
                     // Move right (with 1.5x speed multiplier)
                     // Temporarily increase acceleration
                     float originalAcceleration = demoPlayer.acceleration;
-                    demoPlayer.acceleration *= 1.5f; // 50% faster movement
+                    demoPlayer.acceleration *= 1.8f; // 50% faster movement
                     forge_ai::moveRight(&demoPlayer, deltaTime);
                     demoPlayer.acceleration = originalAcceleration; // Restore original value
                     demoPlayer.texFlip = false; // Texture faces right when moving right
