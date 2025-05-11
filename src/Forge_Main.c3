@@ -689,7 +689,7 @@ fn int main(String[] args) {
     				// Display transition message
     				rl::drawText("GAME OVER", (WINDOW_WIDTH / 2) - 250, WINDOW_HEIGHT / 2 - 100, 80, rl::RED);
     				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 350, WINDOW_HEIGHT / 2, 60, rl::WHITE);
-    				rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
+    				rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2), WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
     			}
 
     			//weather
