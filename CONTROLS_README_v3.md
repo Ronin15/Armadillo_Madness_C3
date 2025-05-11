@@ -13,7 +13,7 @@
 - **P Key**: Pause game/un-pause game.
 
 ### Gameplay Controller Controls
-
+#### button or button means Xbox vs PS4 controllers
 - **Left Analog Stick or D-Pad**: Move the armadillo left/right
 - **A or X Button**: Jump/select/confirm or returns from demo mode.
 - **B or O Button**: Shoot poop projectile
