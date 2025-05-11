@@ -23,17 +23,17 @@ const float NIGHTB_AMPLITUDE = 300.0f;//
 const float AMPLITUDE = 200.0f;//300
 const float FREQUENCY = 0.03f;//0.05
 const int MAX_HEARTS = 6;
-const float OBS_SOFFSET = 35.0f;//20
-const float ANT_SOFFSET = 50.0f;//50
-const float FOX_SOFFSET = 60.0f;//70
+const float OBS_SOFFSET = 60.0f;//20
+const float ANT_SOFFSET = 55.0f;//50
+const float FOX_SOFFSET = 65.0f;//70
 const float SCORPION_SOFFSET = 40.0f; //30
 const float TURTLE_SOFFSET = 30.0f;//25
 const float SNAKE_SOFFSET = 40.0f;//30:
-const float SPIDER_SOFFSET = 55.0f;//70
+const float SPIDER_SOFFSET = 65.0f;//70
 const float POWERUP_SOFFSET = 40.0f;
 const float MOUSE_SOFFSET = 45.0f;//40
 const float COUGAR_SOFFSET = 45.0f;//40
-const float RACOON_SOFFSET = 35.0f;//35
+const float RACOON_SOFFSET = 40.0f;//35
 const int ENTITY_HITBOX_WIDTH = 64;
 const int ENTITY_HITBOX_HEIGHT = 64;
 const int BOSS_HITBOX_WIDTH = 100;
@@ -395,7 +395,7 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
       constructs[i].name = (String)getRandomConstructName(constructs[i].type, array_type);
    }
     if (capacity <= forge_main::MAX_CONSTRUCTS){
-        constructs[i].pos = {(float)rand_in_range(2000,38000) + (float)rand_in_range(100,200),(float)rand_in_range(500,550) + (float)rand_in_range(64,100)};//21000 26000
+        constructs[i].pos = {(float)rand_in_range(2000,40000) + (float)rand_in_range(100,200),(float)rand_in_range(500,550) + (float)rand_in_range(64,100)};//21000 26000
       }
 
     constructs[i].texture = tMap.get(constructs[i].name)!!;
