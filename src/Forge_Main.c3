@@ -23,6 +23,10 @@ import std::math;
 //Game Consts---------------------------------
 const float TARGET_FPS = 60.0; //target FPS
 const float TIME_STEP = 1.0 / TARGET_FPS;
+// High frame rate option
+const float HIGH_FPS_VALUE = 120.0;
+// Flag to track current frame rate setting (false = 60 FPS, true = 120 FPS)
+bool useHighFPS = false;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.9.9"; //ui update, options update, and almost all game states complete
@@ -33,7 +37,7 @@ const int MAX_POWERUPS = 18;//6
 const int MAX_BUTTONS = 7;
 const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
-const int BOSS_TIMER = 13000;//13700
+const int BOSS_TIMER = 12500;//13700
 const float BOSS_TRANSITION_TIME = 8.0; // Time in seconds to display transition after boss death
 const float ANIM_SPEED_MULTIPLIER = 0.58f; // Animation speed: 1.0 = normal, lower = slower
 
@@ -131,12 +135,12 @@ fn int main(String[] args) {
 	float accumulator = 0.0;
 	float frameCounter = 0.0;
 	float lastTime = (float)rl::getTime(); // Initialize lastTime to current time
-	float frameTimeBudget = 1.0f / TARGET_FPS;
 	bool showFPS = false; // Toggle for FPS display
 
 	// Initialize frame time history
+	float initialTimeStep = 1.0f / TARGET_FPS;
 	for (int i = 0; i < FRAME_TIME_HISTORY_SIZE; i++) {
-	    frameTimeHistory[i] = frameTimeBudget;
+	    frameTimeHistory[i] = initialTimeStep;
 	}
 
 	//load font
@@ -145,6 +149,9 @@ fn int main(String[] args) {
 	//windows window Icon
 	Image windowIcon = rl::loadImage("resources/images/ForgeEngine.png");
 	rl::setWindowIcon(windowIcon);
+
+	// Set initial FPS option state
+	io::printfn("Setting up initial frame rate: %.1f FPS", TARGET_FPS);
 
 	//volume manager - need to addtional volume control in options menu.
 	rl::setMasterVolume(MASTER_VOLUME);
@@ -184,7 +191,11 @@ fn int main(String[] args) {
 	GameState previousState = state;
 
 	while (!rl::windowShouldClose() && state != GameState.QUIT) {
-		// Timing calculations to achieve a fixed 60 FPS time step
+		// Calculate target frame time based on current frame rate setting
+		float currentTargetFPS = useHighFPS ? HIGH_FPS_VALUE : TARGET_FPS;
+		float currentTimeStep = 1.0f / currentTargetFPS;
+
+		// Timing calculations to achieve fixed frame rate
 		float frameStartTime = (float)rl::getTime(); // Time at start of this frame
 		float actualDeltaTime = frameStartTime - lastTime; // Actual time since last frame
 		lastTime = frameStartTime;
@@ -224,9 +235,9 @@ fn int main(String[] args) {
 
 		// -------------------- FIXED TIMESTEP UPDATES --------------------
 		// Use fixed timestep for game logic updates to ensure consistent gameplay
-		while (accumulator >= TIME_STEP && updatesThisFrame < MAX_UPDATES_PER_FRAME) {
+		while (accumulator >= currentTimeStep && updatesThisFrame < MAX_UPDATES_PER_FRAME) {
 			// Use a fixed time step for game logic updates
-			float fixedDeltaTime = TIME_STEP;
+			float fixedDeltaTime = currentTimeStep;
 
 			// Update controller activity tracking
 			forge_controller::update_controller_activity(fixedDeltaTime);
@@ -370,7 +381,7 @@ fn int main(String[] args) {
 			}
 
 			// Consume time from the accumulator
-			accumulator -= TIME_STEP;
+			accumulator -= currentTimeStep;
 			updatesThisFrame++;
 		}
 
@@ -1304,10 +1315,10 @@ fn int main(String[] args) {
 
                 // Draw semi-transparent black box for text background
                 int boxWidth = 1350;
-                int boxHeight = 100;
+                int boxHeight = 400;
                 int boxX = (WINDOW_WIDTH / 2) - 650;
                 int boxY = 390;
-                rl::drawRectangle(boxX, boxY, boxWidth, boxHeight, rl::fade(rl::BLACK, 0.5f));
+                rl::drawRectangle(boxX, boxY, boxWidth, boxHeight, rl::fade(rl::BLACK, 0.8f));
 
 				rl::drawText("Use Controller D-Pad or Keyboard up, down, left, right.", ((WINDOW_WIDTH / 2) - 600), 400, 45, rl::GOLD);
 
@@ -1740,9 +1751,9 @@ fn int main(String[] args) {
 		float frameEndTime = (float)rl::getTime();
 		float frameTime = frameEndTime - frameStartTime;
 
-		if (frameTime < frameTimeBudget) {
+		if (frameTime < currentTimeStep) {
 		    // Calculate sleep time with a slight buffer to avoid overshooting
-		    float sleepTime = frameTimeBudget - frameTime;
+		    float sleepTime = currentTimeStep - frameTime;
 
 		    // For extremely small sleep times, use busy waiting instead
 		    if (sleepTime < BUSY_WAIT_THRESHOLD) {
@@ -1755,9 +1766,9 @@ fn int main(String[] args) {
 
 		        // Fine-tune with busy waiting for the remainder
 		        float busyWaitStart = (float)rl::getTime();
-		        float remainingTime = frameTimeBudget - ((float)rl::getTime() - frameStartTime);
+		        float remainingTime = currentTimeStep - ((float)rl::getTime() - frameStartTime);
 		        while (remainingTime > 0.0f) {
-		            remainingTime = frameTimeBudget - ((float)rl::getTime() - frameStartTime);
+		            remainingTime = currentTimeStep - ((float)rl::getTime() - frameStartTime);
 		        }
 		    }
 		}

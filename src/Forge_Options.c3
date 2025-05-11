@@ -9,8 +9,8 @@ import raylib5::rl;
 import std::io;
 import forge_controller;
 
-// Increase number of options to include fullscreen
-const int NUM_OPTIONS = 3;
+// Options include volume, fullscreen, and frame rate
+const int NUM_OPTIONS = 4;
 
 int optionIndex = 0;
 int numOptions = NUM_OPTIONS;
@@ -24,7 +24,8 @@ struct Option {
 Option [NUM_OPTIONS] options = {
     {"Master Volume", forge_main::MASTER_VOLUME, false},
     {"Music Volume", forge_main::MUSIC_VOLUME, false},
-    {"Fullscreen", 0.0, true}  // 0.0 for off, 1.0 for on
+    {"Fullscreen", 0.0, true},  // 0.0 for off, 1.0 for on
+    {"High FPS (120)", 0.0, true}  // 0.0 for 60 FPS, 1.0 for 120 FPS
 };
 
 fn void adjustUpdateOptions(Music song) {
@@ -52,6 +53,10 @@ fn void adjustUpdateOptions(Music song) {
         } else if (optionIndex == 2) { // Toggle Fullscreen
             options[optionIndex].value = 0.0; // Turn off
             if (rl::isWindowFullscreen()) rl::toggleFullscreen();
+        } else if (optionIndex == 3) { // Toggle Frame Rate
+            options[optionIndex].value = 0.0; // Set to 60 FPS
+            forge_main::useHighFPS = false;
+            io::printfn("Frame rate set to 60 FPS");
         }
     }
 
@@ -68,6 +73,10 @@ fn void adjustUpdateOptions(Music song) {
         } else if (optionIndex == 2) { // Toggle Fullscreen
             options[optionIndex].value = 1.0; // Turn on
             if (!rl::isWindowFullscreen()) rl::toggleFullscreen();
+        } else if (optionIndex == 3) { // Toggle Frame Rate
+            options[optionIndex].value = 1.0; // Set to 120 FPS
+            forge_main::useHighFPS = true;
+            io::printfn("Frame rate set to 120 FPS");
         }
     }
 
@@ -85,21 +94,24 @@ fn void adjustUpdateOptions(Music song) {
 }
 
 fn void drawOptions() {
+    // Update the high FPS option to reflect the current state
+    options[3].value = forge_main::useHighFPS ? 1.0 : 0.0;
+
     for (int i = 0; i < numOptions; i++) {
         if (options[i].isBool) {
             // For boolean options, display as On/Off
             String state = options[i].value > 0.0 ? "On" : "Off";
             if (i == optionIndex) {
-                rl::drawText(rl::textFormat("> %s: %s", options[i].name, state), (forge_main::WINDOW_WIDTH / 2) - 200, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::YELLOW);
+                rl::drawText(rl::textFormat("> %s: %s", options[i].name, state), (forge_main::WINDOW_WIDTH / 2) - 200, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::WHITE);
             } else {
-                rl::drawText(rl::textFormat("%s: %s", options[i].name, state), (forge_main::WINDOW_WIDTH / 2) - 200, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::BLACK);
+                rl::drawText(rl::textFormat("%s: %s", options[i].name, state), (forge_main::WINDOW_WIDTH / 2) - 200, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::GOLD);
             }
         } else {
             // For numeric options, display value
             if (i == optionIndex) {
-                rl::drawText(rl::textFormat("> %s: %.1f", options[i].name, options[i].value), (forge_main::WINDOW_WIDTH / 2) - 200, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::YELLOW);
+                rl::drawText(rl::textFormat("> %s: %.1f", options[i].name, options[i].value), (forge_main::WINDOW_WIDTH / 2) - 200, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::WHITE);
             } else {
-                rl::drawText(rl::textFormat("%s: %.1f", options[i].name, options[i].value), (forge_main::WINDOW_WIDTH / 2) - 200, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::BLACK);
+                rl::drawText(rl::textFormat("%s: %.1f", options[i].name, options[i].value), (forge_main::WINDOW_WIDTH / 2) - 200, (forge_main::WINDOW_HEIGHT / 2) + i * 40, 40, rl::GOLD);
             }
         }
     }
