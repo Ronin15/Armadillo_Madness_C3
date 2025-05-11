@@ -32,6 +32,7 @@
 
 ## Debugging Features
 
+- Press **F1** if console is enabled will show contorller Axis Debug information.
 - Press **F4** at any time to show FPS counter in top right corner.
 
 ## Implementation Notes
