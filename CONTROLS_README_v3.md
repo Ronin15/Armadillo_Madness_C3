@@ -56,3 +56,6 @@ The game should work with most standard game controllers, including:
 - Xbox controllers
 - PlayStation controllers
 - Generic USB gamepads
+
+## Misc.
+- Normal 60 FPS and High 120 FPS toggle in Options screen
