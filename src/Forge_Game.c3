@@ -300,21 +300,28 @@ fn Construct forgeCronstructProjectile(TexMap *tMap, String name) {
       return c;
 }
 
-fn Construct forgeCronstructPlayer(TexMap *tMap, String name = "player") {
+fn Construct forgeCronstructPlayer(TexMap *tMap, String name) {
 
       Construct c;
-
+		
       c.type = PLAYER;
       if (name == "demo"){
           c.name = name;
-        }else{
+		  c.texture = tMap.get("player")!!;
+		  c.maxFrames = 2;
+		}else if (name == "player"){
           c.name = name;
-        }
+		  c.texture = tMap.get(c.name)!!;
+		  c.maxFrames = 2;
+        }else{
+		  c.name = name;
+		  c.texture = tMap.get(c.name)!!;
+		  c.maxFrames = 24;
+		}
+
       c.lives = MAX_HEARTS;
       c.pos = {100,950};
       c.hitBox = {c.pos.x,c.pos.y,PLAYER_HITBOX_WIDTH,PLAYER_HITBOX_HEIGHT};
-      c.texture = tMap.get("player")!!;
-      c.maxFrames = 2;
       c.gravity = GRAVITY;
       c.jumpVelocity = MOVE_VELOCITY;
       c.groundLevel = groundLevel;
@@ -337,7 +344,7 @@ fn Construct forgeCronstructPlayer(TexMap *tMap, String name = "player") {
       c.gHit = false;
       c.anim = false;
 
-      //io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
+      io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
 }
 fn Construct forgeCronstructBoss(TexMap *tMap, String name) {

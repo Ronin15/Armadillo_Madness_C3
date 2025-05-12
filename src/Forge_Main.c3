@@ -159,12 +159,18 @@ fn int main(String[] args) {
 	rl::setMusicVolume(randSong,MUSIC_VOLUME);
 
 	//game objects init
-	Construct player = forge_game::forgeCronstructPlayer(&tMap);
+	Construct player = forge_game::forgeCronstructPlayer(&tMap,"player");
 	Construct demoPlayer = forge_game::forgeCronstructPlayer(&tMap,"demo");
+	Construct endPlayer = forge_game::forgeCronstructPlayer(&tMap,"playerEndAnim");
+	Construct endCat = forge_game::forgeCronstructPlayer(&tMap,"catEndAnim");
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap,"poop");
 	Construct alienLaser = forge_game::forgeCronstructProjectile(&tMap,"laser"); // Alien boss laser
 	Construct dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
 	Construct nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
+
+	//set postion for end player and end cat
+	endPlayer.pos = {750, 925};
+	endCat.pos = {1020, 925};
 
 	for (int i = 0; i < MAX_BUTTONS; i++){
 		int count = i;
@@ -184,7 +190,7 @@ fn int main(String[] args) {
 	}
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = GAME_WIN;
 	// Auto-configure controller mouse control for initial state
 	forge_controller::auto_enable_mouse_mode(state.ordinal);
 	// Keep track of previous state to detect state changes
@@ -1219,8 +1225,12 @@ fn int main(String[] args) {
 				// Draw a transparent block behind win text
 				rl::drawRectangle((WINDOW_WIDTH / 2) - 750, 75, 1500, 200, rl::fade(rl::BLACK, 0.7f));
 				forge_fx::forgeFXManager(&mMap, &sMap,"fireworks",renderDeltaTime);
-				rl::drawTextureEx(tMap.get("armadillo")!!, {750, 925}, 0.0, 2.0, rl::WHITE);
-				rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 925}, 0.0, 3.0, rl::WHITE);
+				
+				forge_game::drawAnimatedConstruct(&endPlayer);
+				forge_game::drawAnimatedConstruct(&endCat);
+
+				//rl::drawTextureEx(tMap.get("armadillo")!!, {750, 925}, 0.0, 2.0, rl::WHITE);
+				//rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 925}, 0.0, 3.0, rl::WHITE);
 				//rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 
 				rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 700), 150, 105, rl::ORANGE);
@@ -1228,7 +1238,7 @@ fn int main(String[] args) {
 
                 if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
 					// Reset player,Bosses, Entities
-					player = forge_game::forgeCronstructPlayer(&tMap);
+					player = forge_game::forgeCronstructPlayer(&tMap,"player");
 					score = 0;
 					// Reset boss counters
 					dayBossCounter = 0;
@@ -1278,7 +1288,7 @@ fn int main(String[] args) {
 
 				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
 					// Reset player,Bosses, Entities
-					player = forge_game::forgeCronstructPlayer(&tMap);
+					player = forge_game::forgeCronstructPlayer(&tMap,"player");
 					score = 0;
 					dayBossCounter = 0;
 					nightBossCounter = 0;

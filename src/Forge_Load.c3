@@ -20,6 +20,8 @@ fn TexMap loadTexMap(){
     Texture2D backGroundGround = rl::loadTexture("resources/images/ground3.png");
     Texture2D clouds = rl::loadTexture("resources/images/close_clouds.png");
     Texture2D playerTex = rl::loadTexture("resources/images/armadillo_a2-sheet.png");
+	Texture2D playerEndAnimTex = rl::loadTexture("resources/images/armadillo_end_Anim.png");
+	Texture2D catEndAnimTex = rl::loadTexture("resources/images/cat_end_Anim.png");
 	Texture2D playerHitTex = rl::loadTexture("resources/images/armadillo_hit-sheet.png");
     Texture2D sunTex = rl::loadTexture("resources/images/Sun.png");
 	//obstacles // enemies
@@ -81,6 +83,7 @@ fn TexMap loadTexMap(){
     map.set("clouds",clouds);
     map.set("player",playerTex);
 	map.set("playerHit",playerHitTex);
+	map.set("playerEndAnim",playerEndAnimTex);
     map.set("sun",sunTex);
     map.set("cactus",cactus1Tex);
     map.set("boulder",bigBoulderTex);
@@ -104,6 +107,7 @@ fn TexMap loadTexMap(){
     map.set("firepit",firePitTex);
     map.set("armadillo",armadilloStill);
     map.set("catLeft",catStillleft);
+	map.set("catEndAnim",catEndAnimTex);
     map.set("nightsky",nightSky);
     map.set("nightmid",nightMid);
     map.set("nightground",nightGround);
