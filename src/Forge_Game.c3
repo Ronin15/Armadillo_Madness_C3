@@ -13,15 +13,15 @@ import std::io;
 import std::math;
 
 //Game globals and consts -------------------------------------------------
-const float GRAVITY = 625.0f;//200 for grav boots //650
-const float MOVE_VELOCITY = -600.0f;
+const float GRAVITY = 1200.0f;//200 for grav boots //650
+const float MOVE_VELOCITY = -900.0f;
 const float SKY_LEVEL = 0.0f;
-const float ACCELERATION = 175.0f;
+const float ACCELERATION = 300.0f; //175
 const float FRICTION = 35.0f;
 const float NIGHTB_FREQUENCY = 0.01f;
 const float NIGHTB_AMPLITUDE = 300.0f;//
-const float AMPLITUDE = 200.0f;//300
-const float FREQUENCY = 0.03f;//0.05
+const float AMPLITUDE = 300.0f;//300
+const float FREQUENCY = 0.05f;//0.05
 const int MAX_HEARTS = 6;
 const float OBS_SOFFSET = 60.0f;//20
 const float ANT_SOFFSET = 55.0f;//50
@@ -303,7 +303,7 @@ fn Construct forgeCronstructProjectile(TexMap *tMap, String name) {
 fn Construct forgeCronstructPlayer(TexMap *tMap, String name) {
 
       Construct c;
-		
+
       c.type = PLAYER;
       if (name == "demo"){
           c.name = name;
@@ -444,13 +444,13 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
 fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining, float deltaTime) {
        int score = 0;
 
-      // SPECIAL HANDLING FOR ALIEN LASER - preserve X position
-      float savedLaserX = 0.0f;
-      bool isLaser = false;
-      if (c.name == "laser") {
-         isLaser = true;
-         savedLaserX = c.pos.x;
-      }
+      // SPECIAL HANDLING FOR ALIEN LASER - preserve X position and apply proper velocity
+            float savedLaserX = 0.0f;
+            bool isLaser = false;
+            if (c.name == "laser") {
+               isLaser = true;
+               savedLaserX = c.pos.x;
+            }
 
       //all construct update info-------------------------------------------------
       //Frame updates
@@ -1141,6 +1141,11 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
          c.pos.x = savedLaserX;
          c.vel.x = 0.0f;
 
+         // Apply laser's downward movement - 900 units per second
+         if (c.name == "laser") {
+            c.pos.y += 900.0f * deltaTime;
+         }
+
          // Update hitbox X position to match laser's center
          c.hitBox.x = savedLaserX - (c.hitBox.width / 2);
 
@@ -1205,17 +1210,13 @@ fn void drawAlienLaser(Construct* c, Construct* b, float rotation = 270.0, float
       rl::drawCircle((int)c.pos.x, (int)groundLevel - 40, explosionRadius * 0.7f, rl::fade(rl::YELLOW, 0.9f));
    }
 
-   // Move the laser downward - ONLY Y DIRECTION
-   float savedX = c.pos.x; // Save X position
-   c.pos.y += 300.0f * 0.016f; // Slower downward movement to stay visible longer
-   c.pos.x = savedX; // FORCE X position to remain exactly the same
+   // NOTE: We no longer update the position here since physics is handled in fixed timestep
+   // Visual effects only - no physics updates in drawing functions
 
-   // Check if it's reached the ground level
+   // Check if it's reached the ground level (visual indicator only)
    if (c.pos.y > groundLevel) {
-      c.expired = true;
-      c.isProjectileActive = false;
-      //io::printfn("Laser reached ground level - deactivating");
-      return; // Exit immediately after deactivation
+      // Laser has hit ground (should have been marked as expired in physics update)
+      //io::printfn("Laser reached ground level");
    }
 }
 

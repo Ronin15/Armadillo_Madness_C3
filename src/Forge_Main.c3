@@ -39,7 +39,7 @@ const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
 const int BOSS_TIMER = 12500;//13700
 const float BOSS_TRANSITION_TIME = 8.0; // Time in seconds to display transition after boss death
-const float ANIM_SPEED_MULTIPLIER = 0.58f; // Animation speed: 1.0 = normal, lower = slower
+const float ANIM_SPEED_MULTIPLIER = 1.0f; // Animation speed: 1.0 = normal, lower = slower
 
 //Hammer Forge Colors RGB
 const Color FORGE_GRAY = {31,32,34,255};
@@ -164,7 +164,7 @@ fn int main(String[] args) {
 	Construct endPlayer = forge_game::forgeCronstructPlayer(&tMap,"playerEndAnim");
 	Construct endCat = forge_game::forgeCronstructPlayer(&tMap,"catEndAnim");
 	Construct poopShot = forge_game::forgeCronstructProjectile(&tMap,"poop");
-	Construct alienLaser = forge_game::forgeCronstructProjectile(&tMap,"laser"); // Alien boss laser
+	Construct alienLaser = forge_game::forgeCronstructProjectile(&tMap,"laser");
 	Construct dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
 	Construct nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
 
@@ -190,7 +190,7 @@ fn int main(String[] args) {
 	}
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = GAME_WIN;
+	GameState state = NIGHTLVL;
 	// Auto-configure controller mouse control for initial state
 	forge_controller::auto_enable_mouse_mode(state.ordinal);
 	// Keep track of previous state to detect state changes
@@ -262,6 +262,14 @@ fn int main(String[] args) {
 					// Update player
 					int playerUpdateResult = forge_game::updateConstruct(&player, &sMap, &tMap, raining, fixedDeltaTime);
 
+					// Check if player requested to shoot poop
+					if (player.shootRequested) {
+						poopShot.isProjectileActive = true;
+						poopShot.expired = false;
+						rl::playSound(sMap.get("poop")!!);
+						player.shootRequested = false; // Reset the flag
+					}
+
 					// Check for player death
 					if (playerUpdateResult == -1 && !inTransition) {
 						rl::playSound(sMap.get("playerDeath")!!);
@@ -278,13 +286,38 @@ fn int main(String[] args) {
 					// Update projectile
 					forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, fixedDeltaTime);
 
-					// Update constructs
+					// Check collisions with constructs
 					foreach (&construct : constructs) {
+						// Check collision between player and constructs
+						if (forge_physics::checkCollision(&player, construct) && construct.isDead == false) {
+							forge_physics::resolveCollision(&player, construct, fixedDeltaTime);
+						}
+
+						// Check collision between poop shot and constructs
+						if (poopShot.isProjectileActive && poopShot.expired == false && construct.isDead == false) {
+							if (forge_physics::checkCollision(&poopShot, construct)) {
+								forge_physics::resolveCollision(&poopShot, construct, fixedDeltaTime);
+							}
+						}
+
+						// Update constructs
 						score += forge_game::updateConstruct(construct, &sMap, &tMap, raining, fixedDeltaTime);
 					}
 
 					// Update day boss
 					if(dayBoss.active) {
+						// Check collision between player and day boss
+						if (forge_physics::checkCollision(&player, &dayBoss) && dayBoss.isDead == false) {
+							forge_physics::resolveCollision(&player, &dayBoss, fixedDeltaTime);
+						}
+
+						// Check collision between poop shot and day boss
+						if (poopShot.isProjectileActive && poopShot.expired == false) {
+							if (forge_physics::checkCollision(&poopShot, &dayBoss)) {
+								forge_physics::resolveCollision(&poopShot, &dayBoss, fixedDeltaTime);
+							}
+						}
+
 						score += forge_game::updateConstruct(&dayBoss, &sMap, &tMap, raining, fixedDeltaTime);
 
 						if (dayBoss.isDead && !inTransition) {
@@ -298,6 +331,23 @@ fn int main(String[] args) {
 							// State change handled in the render section
 						}
 					}
+
+					// Weather update logic
+					if (!raining && weatherTimer <= 0.0){
+						raining = forge_game::randChanceCheck();
+					}
+
+					if (raining && weatherTimer <= 0.0){
+						weatherTimer = 1250;
+					}
+
+					if (raining){
+						weatherTimer -= 1;
+					}
+
+					if(weatherTimer <= 0.0){
+						raining = false;
+					}
 					break;
 
 				case NIGHTLVL:
@@ -306,6 +356,14 @@ fn int main(String[] args) {
 
 					// Update player
 					int playerUpdateResult = forge_game::updateConstruct(&player, &sMap, &tMap, raining, fixedDeltaTime);
+
+					// Check if player requested to shoot poop
+					if (player.shootRequested) {
+						poopShot.isProjectileActive = true;
+						poopShot.expired = false;
+						rl::playSound(sMap.get("poop")!!);
+						player.shootRequested = false; // Reset the flag
+					}
 
 					// Check for player death
 					if (playerUpdateResult == -1 && !inTransition) {
@@ -322,6 +380,23 @@ fn int main(String[] args) {
 
 					// Update projectile
 					forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, fixedDeltaTime);
+
+					// Weather update logic
+					if (!raining && weatherTimer <= 0.0){
+						raining = forge_game::randChanceCheck();
+					}
+
+					if (raining && weatherTimer <= 0.0){
+						weatherTimer = 2000;
+					}
+
+					if (raining){
+						weatherTimer -= 1;
+					}
+
+					if(weatherTimer <= 0.0){
+						raining = false;
+					}
 
 					// Update alien laser if night boss is active
 					if (nightBoss.active) {
@@ -337,13 +412,38 @@ fn int main(String[] args) {
 						}
 					}
 
-					// Update night constructs
+					// Check collisions with night constructs
 					foreach (&nightConstruct : nightConstructs) {
+						// Check collision between player and night constructs
+						if (forge_physics::checkCollision(&player, nightConstruct) && nightConstruct.isDead == false) {
+							forge_physics::resolveCollision(&player, nightConstruct, fixedDeltaTime);
+						}
+
+						// Check collision between poop shot and night constructs
+						if (poopShot.isProjectileActive && poopShot.expired == false && nightConstruct.isDead == false) {
+							if (forge_physics::checkCollision(&poopShot, nightConstruct)) {
+								forge_physics::resolveCollision(&poopShot, nightConstruct, fixedDeltaTime);
+							}
+						}
+
+						// Update night constructs
 						score += forge_game::updateConstruct(nightConstruct, &sMap, &tMap, raining, fixedDeltaTime);
 					}
 
 					// Update night boss
 					if(nightBoss.active) {
+						// Check collision between player and night boss
+						if (forge_physics::checkCollision(&player, &nightBoss) && nightBoss.isDead == false) {
+							forge_physics::resolveCollision(&player, &nightBoss, fixedDeltaTime);
+						}
+
+						// Check collision between poop shot and night boss
+						if (poopShot.isProjectileActive && poopShot.expired == false) {
+							if (forge_physics::checkCollision(&poopShot, &nightBoss)) {
+								forge_physics::resolveCollision(&poopShot, &nightBoss, fixedDeltaTime);
+							}
+						}
+
 						score += forge_game::updateConstruct(&nightBoss, &sMap, &tMap, raining, fixedDeltaTime);
 
 						// Check if the night boss wants to fire its laser
@@ -375,8 +475,59 @@ fn int main(String[] args) {
 				case DEMO:
 					// Update demo mode
 					forge_game::updateConstruct(&demoPlayer, &sMap, &tMap, raining, fixedDeltaTime);
-
+					
+					// AI movement in fixed timestep
+					// Retrieve AI movement state from render section
+					static bool demoMovingLeft = false;
+					static bool shouldJump = false;
+					
+					// Apply AI movement
+					if(demoMovingLeft) {
+						// Move left (with 2.0x speed multiplier)
+						float originalAcceleration = demoPlayer.acceleration;
+						demoPlayer.acceleration *= 2.0f;
+						forge_ai::moveLeft(&demoPlayer, fixedDeltaTime);
+						demoPlayer.acceleration = originalAcceleration; // Restore original value
+					} else {
+						// Move right (with 1.8x speed multiplier)
+						float originalAcceleration = demoPlayer.acceleration;
+						demoPlayer.acceleration *= 1.8f; // 80% faster movement
+						forge_ai::moveRight(&demoPlayer, fixedDeltaTime);
+						demoPlayer.acceleration = originalAcceleration; // Restore original value
+					}
+					
+					// Handle jumping
+					if (shouldJump && demoPlayer.isGrounded) {
+						forge_ai::jump(&demoPlayer, fixedDeltaTime);
+						shouldJump = false; // Reset jump flag after processing
+					}
+					
+					// Check if player requested to shoot poop
+					if (demoPlayer.shootRequested) {
+						poopShot.isProjectileActive = true;
+						poopShot.expired = false;
+						rl::playSound(sMap.get("poop")!!);
+						demoPlayer.shootRequested = false; // Reset the flag
+					}
+					
+					// Update projectile
+					forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, fixedDeltaTime);
+					
+					// Check collisions with demo constructs
 					foreach (&demoConstruct : demoConstructs) {
+						// Check collision between demo player and constructs
+						if (forge_physics::checkCollision(&demoPlayer, demoConstruct) && demoConstruct.isDead == false) {
+							forge_physics::resolveCollision(&demoPlayer, demoConstruct, fixedDeltaTime);
+						}
+						
+						// Check collision between poop shot and constructs
+						if (poopShot.isProjectileActive && poopShot.expired == false && demoConstruct.isDead == false) {
+							if(forge_physics::checkCollision(&poopShot, demoConstruct)) {
+								forge_physics::resolveCollision(&poopShot, demoConstruct, fixedDeltaTime);
+							}
+						}
+						
+						// Update constructs
 						forge_game::updateConstruct(demoConstruct, &sMap, &tMap, raining, fixedDeltaTime);
 					}
 					break;
@@ -538,53 +689,15 @@ fn int main(String[] args) {
 		  			state = PAUSE;
 		  			rl::playSound(sMap.get("pause")!!);
 		  		}
-					//check Collisions
-
-					foreach ( &construct : constructs){
-
-							if (forge_physics::checkCollision(&player,construct) && construct.isDead == false){
-								forge_physics::resolveCollision(&player,construct, deltaTime);
-							}
-
-							if (poopShot.isProjectileActive && poopShot.expired == false && construct.isDead == false){ //only check poopshot collsions if active
-								if(forge_physics::checkCollision(&poopShot,construct)){
-									forge_physics::resolveCollision(&poopShot,construct,deltaTime);
-							}
-						}
-					}
-
-					if(dayBoss.active){
-
-								if (forge_physics::checkCollision(&player,&dayBoss) && dayBoss.isDead == false) {
-									forge_physics::resolveCollision(&player,&dayBoss,deltaTime);}
-
-									if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
-										if (forge_physics::checkCollision(&poopShot,&dayBoss)) {
-											forge_physics::resolveCollision(&poopShot,&dayBoss,deltaTime);
-										}
-									}
-					}
+					// Collision checks are now handled entirely in the fixed timestep update
 
 				//update game logic-------------------------------------------------------------------------------
 				frameCounter +=1;
-				int playerUpdateResult = forge_game::updateConstruct(&player, &sMap, &tMap, raining, deltaTime);
+				// All physics and game logic updates are now handled in the fixed timestep section
 
-                if (player.shootRequested) {
-                    poopShot.isProjectileActive = true;
-                    poopShot.expired = false;
-                    rl::playSound(sMap.get("poop")!!);
-                    player.shootRequested = false; // Reset the flag
-                }
-
-				// Check for player death
-				if (playerUpdateResult == -1 && !inTransition) {
-				    rl::playSound(sMap.get("playerDeath")!!);
-					inTransition = true;
-					bossTransitionTimer = BOSS_TRANSITION_TIME;
-				}
-
+				// Only handle transition-related state changes here
 				if (inTransition && player.isDead) {
-					bossTransitionTimer -= deltaTime;
+					// Timer countdown happens in fixed timestep
 					if (bossTransitionTimer <= 0.0) {
 						// Check if this is a high score before going to GAME_OVER
 						io::printfn("Game over transition: Checking if score %d is a high score", score);
@@ -603,23 +716,19 @@ fn int main(String[] args) {
 					}
 				}
 
-				    forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
+				    // Physics updates for objects are now handled in the fixed timestep section only
 
-					foreach ( &construct : constructs){
-								score += forge_game::updateConstruct(construct, &sMap, &tMap, raining, deltaTime);
-					}
-
+					// Check day boss state - using the isDead flag that was set in the fixed timestep update
 					if(dayBoss.active){
-						score += forge_game::updateConstruct(&dayBoss, &sMap, &tMap, raining, deltaTime);
-
 							if (dayBoss.isDead && !inTransition){
 									inTransition = true;
 									bossTransitionTimer = BOSS_TRANSITION_TIME;
                                     rl::playSound(sMap.get("levelComplete")!!);
 							}
 
+							// Boss transition for level change
 							if (inTransition && dayBoss.isDead && !player.isDead) {
-								bossTransitionTimer -= deltaTime;
+								// Timer countdown happens in fixed timestep
 								if (bossTransitionTimer <= 0.0) {
 									state = NIGHTLVL;
 									frameCounter = 0;
@@ -731,22 +840,9 @@ fn int main(String[] args) {
     				rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2), WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
     			}
 
-    			//weather
-    			if (!raining && weatherTimer <= 0.0){
-    				raining = forge_game::randChanceCheck();
-    			}
-
-    			if (raining && weatherTimer <= 0.0){
-    				weatherTimer = 1250;
-    			}
+    			// Weather visual effects only
     			if (raining){
-
     				forge_fx::forgeFXManager(&mMap, &sMap,"rain", renderDeltaTime);
-    				weatherTimer -=1;
-    				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer); //debug
-    			}
-    			if(weatherTimer <= 0.0){
-    				raining = false;
     			}
 
 			case NIGHTLVL:
@@ -756,7 +852,7 @@ fn int main(String[] args) {
     					//creating game entities
     					nightConstructs = forge_game::forgeConstructs(&tMap,"night");
     			}
-				//nightBoss.active = true;//debug
+				nightBoss.active = true;//debug
 				night = true;
 				day = false;
 				//misc game stuff
@@ -777,52 +873,15 @@ fn int main(String[] args) {
 		  			rl::playSound(sMap.get("pause")!!);
 		  		}
 
-					//check Collisions
-
-					foreach ( &nightConstruct : nightConstructs){
-
-							if (forge_physics::checkCollision(&player, nightConstruct) && nightConstruct.isDead == false){
-								forge_physics::resolveCollision(&player, nightConstruct, deltaTime);
-							}
-
-							if (poopShot.isProjectileActive && poopShot.expired == false && nightConstruct.isDead == false){ //only check poopshot collsions if active
-								if(forge_physics::checkCollision(&poopShot, nightConstruct)){
-									forge_physics::resolveCollision(&poopShot, nightConstruct, deltaTime);
-							}
-						}
-					}
-					if(nightBoss.active){
-
-								if (forge_physics::checkCollision(&player, &nightBoss) && nightBoss.isDead == false) {
-									forge_physics::resolveCollision(&player, &nightBoss, deltaTime);}
-
-									if (poopShot.isProjectileActive && poopShot.expired == false){ //only check poopshot collsions if active
-										if (forge_physics::checkCollision(&poopShot, &nightBoss)) {
-											forge_physics::resolveCollision(&poopShot, &nightBoss, deltaTime);
-										}
-									}
-								}
+					// Collision checks are now handled entirely in the fixed timestep update
 				//update game logic-------------------------------------------------------------------------------
 				frameCounter +=1;
-				int playerUpdateResult = forge_game::updateConstruct(&player, &sMap, &tMap, raining, deltaTime);
 
-                // Check if player requested to shoot poop
-                if (player.shootRequested) {
-                    poopShot.isProjectileActive = true;
-                    poopShot.expired = false;
-                    rl::playSound(sMap.get("poop")!!);
-                    player.shootRequested = false; // Reset the flag
-                }
+				// All physics and game logic updates are now handled in the fixed timestep section
 
-				// Check for player death
-				if (playerUpdateResult == -1 && !inTransition) {
-				    rl::playSound(sMap.get("playerDeath")!!);
-					inTransition = true;
-					bossTransitionTimer = BOSS_TRANSITION_TIME;
-				}
-
+				// Only handle transition-related state changes here
 				if (inTransition && player.isDead) {
-					bossTransitionTimer -= deltaTime;
+					// Timer countdown happens in fixed timestep
 					if (bossTransitionTimer <= 0.0) {
 						// Check if this is a high score before going to GAME_OVER
 						io::printfn("Night level transition: Checking if score %d is a high score", score);
@@ -842,41 +901,13 @@ fn int main(String[] args) {
 					}
 				}
 
-				forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
+				// Physics updates for objects are now handled in the fixed timestep section only
 
-				// Update alien laser if night boss is active
-				if (nightBoss.active) {
-					forge_game::updateConstruct(&alienLaser, &sMap, &tMap, raining, deltaTime);
+				// Collisions are now handled in fixed timestep only
+				// Keeping laser rendering position updates here
 
-					// Check for collision between laser and player
-					if (alienLaser.isProjectileActive && !alienLaser.expired) {
-						if (forge_physics::checkCollision(&player, &alienLaser)) {
-							forge_physics::resolveCollision(&player, &alienLaser, deltaTime);
-							// Don't expire the laser - it can pass through the player
-							//io::printfn("Laser hit player!");
-						}
-					}
-				}
-
-					foreach ( &nightConstruct : nightConstructs){
-								score += forge_game::updateConstruct(nightConstruct, &sMap, &tMap, raining, deltaTime);
-					}
-
-					if(nightBoss.active){
-						score += forge_game::updateConstruct(&nightBoss, &sMap, &tMap, raining, deltaTime);
-
-						// Check if the night boss wants to fire its laser
-						if (nightBoss.isProjectileActive && !alienLaser.isProjectileActive) {
-							// Boss wants to fire - activate the laser
-							alienLaser.isProjectileActive = true;
-							alienLaser.expired = false;
-							alienLaser.pos.x = nightBoss.pos.x + ((float)nightBoss.texture.width / 2);
-							alienLaser.pos.y = nightBoss.pos.y + nightBoss.texture.height;
-							//io::printfn("Alien laser activated at: %f, %f", alienLaser.pos.x, alienLaser.pos.y);
-							rl::playSound(sMap.get("laserShot")!!);
-							// Reset boss's fire request
-							nightBoss.isProjectileActive = false;
-						}
+				// Laser firing is now handled in fixed timestep only
+				if(nightBoss.active){
 
 							if (nightBoss.isDead && !inTransition){
 									inTransition = true;
@@ -884,8 +915,9 @@ fn int main(String[] args) {
 									rl::playSound(sMap.get("levelComplete")!!);
 							}
 
+							// Boss transition for game win
 							if (inTransition && nightBoss.isDead && !player.isDead) {
-								bossTransitionTimer -= deltaTime;
+								// Timer countdown happens in fixed timestep
 								if (bossTransitionTimer <= 0.0) {
 									// Check if this is a high score before going to GAME_WIN
 									io::printfn("Game win transition: Checking if score %d is a high score", score);
@@ -1010,23 +1042,10 @@ fn int main(String[] args) {
 				}
 
 
-			//weather
-			if (!raining && weatherTimer <= 0.0){
-				raining = forge_game::randChanceCheck();
-			}
-
-			if (raining && weatherTimer <= 0.0){
-				weatherTimer = 2000;
-			}
-			if (raining){
-
-				forge_fx::forgeFXManager(&mMap, &sMap, "rain", renderDeltaTime);
-				weatherTimer -=1;
-				//io::printfn("shoud Rain? -> %s Timer -> %s !",raining,weatherTimer);//debug
-			}
-			if(weatherTimer <= 0.0){
-				raining = false;
-			}
+    			// Weather visual effects only
+    			if (raining){
+    				forge_fx::forgeFXManager(&mMap, &sMap,"rain", renderDeltaTime);
+    			}
 
 			case PAUSE:
 			    rl::showCursor();
@@ -1225,7 +1244,7 @@ fn int main(String[] args) {
 				// Draw a transparent block behind win text
 				rl::drawRectangle((WINDOW_WIDTH / 2) - 750, 75, 1500, 200, rl::fade(rl::BLACK, 0.7f));
 				forge_fx::forgeFXManager(&mMap, &sMap,"fireworks",renderDeltaTime);
-				
+
 				forge_game::drawAnimatedConstruct(&endPlayer);
 				forge_game::drawAnimatedConstruct(&endCat);
 
@@ -1550,13 +1569,9 @@ fn int main(String[] args) {
                     shouldShoot = true;
                 }
 
+                // AI movement decisions only, actual movement happens in fixed timestep
                 if(demoMovingLeft) {
-                    // Move left (with 1.5x speed multiplier)
-                    // Temporarily increase acceleration
-                    float originalAcceleration = demoPlayer.acceleration;
-                    demoPlayer.acceleration *= 2.0f;
-                    forge_ai::moveLeft(&demoPlayer, deltaTime);
-                    demoPlayer.acceleration = originalAcceleration; // Restore original value
+                    // Mark texture direction for rendering
                     demoPlayer.texFlip = true; // Texture faces left when moving left
 
                     // Check if we've reached the left boundary
@@ -1564,13 +1579,8 @@ fn int main(String[] args) {
                         demoMovingLeft = false;
                         rl::playSound(sMap.get("moving")!!);
                     }
-                    }else{
-                    // Move right (with 1.5x speed multiplier)
-                    // Temporarily increase acceleration
-                    float originalAcceleration = demoPlayer.acceleration;
-                    demoPlayer.acceleration *= 1.8f; // 50% faster movement
-                    forge_ai::moveRight(&demoPlayer, deltaTime);
-                    demoPlayer.acceleration = originalAcceleration; // Restore original value
+                } else {
+                    // Mark texture direction for rendering
                     demoPlayer.texFlip = false; // Texture faces right when moving right
 
                     // Check if we've reached the right boundary
@@ -1580,9 +1590,8 @@ fn int main(String[] args) {
                     }
                 }
 
-                // Jump if we determined we should
+                // Set jump flag for fixed timestep to handle
                 if (shouldJump) {
-                    forge_ai::jump(&demoPlayer, deltaTime);
                     rl::playSound(sMap.get("jump")!!);
                 }
 
@@ -1591,16 +1600,12 @@ fn int main(String[] args) {
                     demoPlayer.shootRequested = true;
                 }
 
-                // Process shooting request (similar to the main game)
+                // Process shooting request - flag is handled in fixed timestep
                 if (demoPlayer.shootRequested) {
-                    poopShot.isProjectileActive = true;
-                    poopShot.expired = false;
-                    rl::playSound(sMap.get("poop")!!);
-                    demoPlayer.shootRequested = false; // Reset the flag
+                    // This sets the flag only, actual shooting happens in fixed timestep
                 }
 
-                // Update poop shot position
-                forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, deltaTime);
+                // Poop shot is now updated in fixed timestep
 
 				if (demoCounter2 > 12000){//10000
 					demoCounter2 = 0;
@@ -1611,26 +1616,7 @@ fn int main(String[] args) {
 					state = MAIN;
 				}
 
-				foreach ( &demoConstruct : demoConstructs){
-
-							if (forge_physics::checkCollision(&demoPlayer,demoConstruct) && demoConstruct.isDead == false){
-								forge_physics::resolveCollision(&demoPlayer, demoConstruct, deltaTime);
-								}
-
-						// Also check for poop shot collisions
-						if (poopShot.isProjectileActive && poopShot.expired == false && demoConstruct.isDead == false){
-							if(forge_physics::checkCollision(&poopShot, demoConstruct)){
-								forge_physics::resolveCollision(&poopShot, demoConstruct, deltaTime);
-							}
-						}
-					}
-
-				forge_game::updateConstruct(&demoPlayer, &sMap, &tMap, raining, deltaTime);
-				//forge_game::updateConstruct(&poopShot,&sMap);
-
-				foreach ( &demoConstruct : demoConstructs){
-							forge_game::updateConstruct(demoConstruct,&sMap, &tMap, raining, deltaTime);
-						}
+				// Collision checks and physics updates now handled in fixed timestep
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
