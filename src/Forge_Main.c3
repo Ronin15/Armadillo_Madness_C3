@@ -485,13 +485,13 @@ fn int main(String[] args) {
 					if(demoMovingLeft) {
 						// Move left (with 2.0x speed multiplier)
 						float originalAcceleration = demoPlayer.acceleration;
-						demoPlayer.acceleration *= 2.0f;
+						demoPlayer.acceleration;
 						forge_ai::moveLeft(&demoPlayer, fixedDeltaTime);
 						demoPlayer.acceleration = originalAcceleration; // Restore original value
 					} else {
 						// Move right (with 1.8x speed multiplier)
 						float originalAcceleration = demoPlayer.acceleration;
-						demoPlayer.acceleration *= 1.8f; // 80% faster movement
+						demoPlayer.acceleration; // 80% faster movement
 						forge_ai::moveRight(&demoPlayer, fixedDeltaTime);
 						demoPlayer.acceleration = originalAcceleration; // Restore original value
 					}
