@@ -6,6 +6,7 @@
 module forge_ai;
 import forge_game;
 
+
 bool poopPenatrate = false;
 
 fn void moveRight(Construct* c, float deltaTime){
@@ -34,7 +35,7 @@ fn void moveRight(Construct* c, float deltaTime){
                c.powerUpTimer -= 1.0;
             }else{
 
-              if (c.gravity == 400.0) {c.gravity = 700.0;}
+              if (c.gravity == 400.0) {c.gravity = c.gravity;}
               if (c.invulnTimer <= 0.0) c.invlunerable = false;
               if (poopPenatrate){poopPenatrate = false;}
             }
@@ -60,7 +61,7 @@ fn void moveRight(Construct* c, float deltaTime){
          c.texFlip = false;
 
          c.vel.y += c.gravity * deltaTime;
-         c.pos.y += c.vel.y * deltaTime;
+         c.pos.y += c.vel.y * forge_game::ACCEL_MOD * deltaTime;
          c.groundLevel = forge_game::groundLevel - c.texture.height - 5;
 	}
 
@@ -89,7 +90,7 @@ fn void moveLeft(Construct* c, float deltaTime){
                c.powerUpTimer -= 1.0;
             }else{
 
-              if (c.gravity == 400.0) {c.gravity = 700.0;}
+              if (c.gravity == 400.0) {c.gravity = c.gravity;}
               if (c.invulnTimer <= 0.0) c.invlunerable = false;
               if (poopPenatrate){poopPenatrate = false;}
             }
@@ -113,7 +114,7 @@ fn void moveLeft(Construct* c, float deltaTime){
         c.pos.x -= c.acceleration * deltaTime;
         c.texFlip = true;
         c.vel.y += c.gravity * deltaTime;
-        c.pos.y += c.vel.y * deltaTime;
+        c.pos.y += c.vel.y * forge_game::ACCEL_MOD * deltaTime;
 }
 
 fn void jump(Construct* c, float deltaTime){
@@ -138,7 +139,7 @@ fn void jump(Construct* c, float deltaTime){
                c.powerUpTimer -= 1.0;
             }else{
 
-              if (c.gravity == 400.0) {c.gravity = 700.0;}
+              if (c.gravity == 400.0) {c.gravity = c.gravity;}
               if (c.invulnTimer <= 0.0) c.invlunerable = false;
               if (poopPenatrate){poopPenatrate = false;}
             }
@@ -149,7 +150,6 @@ fn void jump(Construct* c, float deltaTime){
             if(c.hHit && c.invulnTimer <= 0){
                   c.hHit = false;
                   c.invlunerable = true;
-                  c.lives -= 1;
                   c.invulnTimer = 600.0;
             }else{
                   c.hHit = false;
@@ -160,5 +160,5 @@ fn void jump(Construct* c, float deltaTime){
             if (c.gHit){c.powerUpTimer += 400; c.gravity = 400.0; c.gHit = false;}
 
             c.vel.y += c.gravity * deltaTime;
-            c.pos.y += c.vel.y * deltaTime;
+            c.pos.y += c.vel.y * forge_game::ACCEL_MOD * deltaTime;
 }

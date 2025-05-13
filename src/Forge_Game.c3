@@ -13,8 +13,8 @@ import std::io;
 import std::math;
 
 //Game globals and consts -------------------------------------------------
-const float GRAVITY = 925.0f;//200 for grav boots //650
-const float MOVE_VELOCITY = -400.0f;
+const float GRAVITY = 750.0f;//200 for grav boots //650
+const float MOVE_VELOCITY = -325.0f;
 const float SKY_LEVEL = 0.0f;
 const float ACCELERATION = 300.0f; //175
 const float FRICTION = 35.0f;
@@ -23,7 +23,7 @@ const float NIGHTB_AMPLITUDE = 300.0f;//
 const float AMPLITUDE = 300.0f;//300
 const float FREQUENCY = 0.05f;//0.05
 const int MAX_HEARTS = 6;
-const float OBS_SOFFSET = 45.2f;//20
+const float OBS_SOFFSET = 30.0f;//20
 const float ANT_SOFFSET = 50.0f;//50
 const float FOX_SOFFSET = 55.0f;//70
 const float SCORPION_SOFFSET = 35.0f; //30

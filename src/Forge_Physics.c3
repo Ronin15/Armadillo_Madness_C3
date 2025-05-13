@@ -19,8 +19,8 @@ fn bool checkCollision(Construct* a, Construct* b) {
 fn void resolveCollision(Construct* a, Construct* b, float deltaTime) {
         float playerBounce = 1.1f;
         float enemyBounce = 1.3f;
-        bool wasAbove = (a.hitBox.y + a.hitBox.height) <= b.hitBox.y + 20.0f;
-        bool wasBelow = a.hitBox.y >= (b.hitBox.y + b.hitBox.height - 20.0f);
+        bool wasAbove = (a.hitBox.y + a.hitBox.height) <= b.hitBox.y + 22.0f;
+        bool wasBelow = a.hitBox.y >= (b.hitBox.y + b.hitBox.height - 22.0f);
 
         if (wasAbove && a.vel.y > 0) {
             a.vHit = true;
