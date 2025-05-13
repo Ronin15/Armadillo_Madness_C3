@@ -13,28 +13,28 @@ import std::io;
 import std::math;
 
 //Game globals and consts -------------------------------------------------
-const float GRAVITY = 750.0f;//200 for grav boots //650
-const float MOVE_VELOCITY = -325.0f;
+const float GRAVITY = 760.0f;//200 for grav boots //650
+const float MOVE_VELOCITY = -330.0f;
 const float SKY_LEVEL = 0.0f;
 const float ACCELERATION = 300.0f; //175
-const float FRICTION = 35.0f;
-const float NIGHTB_FREQUENCY = 0.01f;
-const float NIGHTB_AMPLITUDE = 300.0f;//
+const float FRICTION = 34.0f;
+const float NIGHTB_FREQUENCY = 0.02f;
+const float NIGHTB_AMPLITUDE = 315.0f;//
 const float AMPLITUDE = 300.0f;//300
-const float FREQUENCY = 0.05f;//0.05
+const float FREQUENCY = 0.03f;//0.05
 const int MAX_HEARTS = 6;
-const float OBS_SOFFSET = 30.0f;//20
+const float OBS_SOFFSET = 40.0f;//20
 const float ANT_SOFFSET = 50.0f;//50
 const float FOX_SOFFSET = 55.0f;//70
-const float SCORPION_SOFFSET = 35.0f; //30
-const float TURTLE_SOFFSET = 25.0f;//25
-const float SNAKE_SOFFSET = 30.0f;//30:
-const float SPIDER_SOFFSET = 45.0f;//70
-const float POWERUP_SOFFSET = 40.0f;
-const float MOUSE_SOFFSET = 40.0f;//40
+const float SCORPION_SOFFSET = 45.0f; //30
+const float TURTLE_SOFFSET = 40.0f;//25
+const float SNAKE_SOFFSET = 47.0f;//30:
+const float SPIDER_SOFFSET = 46.0f;//70
+const float POWERUP_SOFFSET = 43.0f;
+const float MOUSE_SOFFSET = 44.0f;//40
 const float COUGAR_SOFFSET = 45.0f;//40
-const float RACOON_SOFFSET = 40.0f;//35
-const float ACCEL_MOD = 3.5; //entity movement speed mod
+const float RACOON_SOFFSET = 44.0f;//35
+const float ACCEL_MOD = 3.8; //entity movement speed mod//3.7 good
 const int ENTITY_HITBOX_WIDTH = 64;
 const int ENTITY_HITBOX_HEIGHT = 64;
 const int BOSS_HITBOX_WIDTH = 100;
@@ -711,7 +711,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                c.expired = true;
                c.isProjectileActive = false;
             }
-               c.pos.x += (c.acceleration * 2.5f) * deltaTime;//3.5
+               c.pos.x += (c.acceleration * 3.5f) * deltaTime;//3.5
 
          break;
 

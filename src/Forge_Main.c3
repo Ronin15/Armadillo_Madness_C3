@@ -30,7 +30,7 @@ bool useHighFPS = false;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.9.9"; //ui update, options update, and almost all game states complete
-const int MAX_CONSTRUCTS = 275;//100 // 200//
+const int MAX_CONSTRUCTS = 225;//100 // 200//
 const int MAX_BOSS_CONSTRUCTS = 50;
 const int MAX_BOSS_POWER_UPS = 5;
 const int MAX_POWERUPS = 18;//6
@@ -973,7 +973,7 @@ fn int main(String[] args) {
     					//creating game entities
     					nightConstructs = forge_game::forgeConstructs(&tMap,"night");
     			}
-				nightBoss.active = true;//debug
+				//nightBoss.active = true;//debug
 				night = true;
 				day = false;
 				//misc game stuff
