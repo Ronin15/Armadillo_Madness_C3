@@ -742,7 +742,8 @@ fn int main(String[] args) {
 
 					    //io::printfn("Last enitity pos-x: %f",constructs[entIndex].pos.x);
 						if (!dayBoss.active) {
-							dayBossCounter += 1;
+							// Half the boss counter increment when High FPS is enabled to make bosses spawn in double the time
+							dayBossCounter += useHighFPS ? 0.5 : 1;
 							// Log boss counter progress every 1000 frames
 							if ((int)dayBossCounter % 1000 == 0) {
 								//io::printfn("Day Boss Counter: %f / %d", dayBossCounter, BOSS_TIMER);
@@ -939,7 +940,8 @@ fn int main(String[] args) {
 
 						//io::printfn("Last enitity pos-x: %f",constructs[entIndex].pos.x);
 						if (!nightBoss.active) {
-							nightBossCounter += 1;
+							// Half the boss counter increment when High FPS is enabled to make bosses spawn in double the time
+							nightBossCounter += useHighFPS ? 0.5 : 1;
 							// Log boss counter progress every 1000 frames
 							if ((int)nightBossCounter % 1000 == 0) {
 								//io::printfn("Night Boss Counter: %f / %d", nightBossCounter, BOSS_TIMER);
