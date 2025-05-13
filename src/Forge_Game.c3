@@ -540,13 +540,13 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
             //powerup
             if (c.sHit){
-				c.powerUpTimer += 600; 
+				c.powerUpTimer += 600;
 				c.invlunerable = true;
 				c.invulnTimer += 800;
-				if (c.acceleration < (ACCELERATION * 4)){c.acceleration *= 2;} 
+				if (c.acceleration < (ACCELERATION * 4)){c.acceleration *= 2;}
 				c.sHit = false;
 			}//500//400
-            
+
 			//invuln
             if(c.hHit && c.invulnTimer <= 0 && c.name == "player"){
                   c.hHit = false;
@@ -1268,6 +1268,10 @@ fn void drawAnimatedConstruct(Construct* c, float rotation = 0.0){
       }
          if(c.type == BOSS){
             scale = bossSize;
+         }
+
+         if(c.name == "catEndAnim"){
+            scale = 3.0;
          }
 
    Rectangle destRec = {

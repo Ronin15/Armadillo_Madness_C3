@@ -169,8 +169,17 @@ fn int main(String[] args) {
 	Construct nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
 
 	//set postion for end player and end cat
-	endPlayer.pos = {750, 925};
-	endCat.pos = {1020, 925};
+	endPlayer.pos = {750, 600};
+	endCat.pos = {1020, 700};
+
+	//set animation properties for end player and cat
+	endPlayer.maxFrames = 24;
+	endPlayer.frameLength = 0.1;
+	endPlayer.anim = true;
+
+	endCat.maxFrames = 24;
+	endCat.frameLength = 0.1;
+	endCat.anim = true;
 
 	for (int i = 0; i < MAX_BUTTONS; i++){
 		int count = i;
@@ -190,7 +199,7 @@ fn int main(String[] args) {
 	}
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = GAME_WIN;
 	// Auto-configure controller mouse control for initial state
 	forge_controller::auto_enable_mouse_mode(state.ordinal);
 	// Keep track of previous state to detect state changes
@@ -1366,6 +1375,25 @@ fn int main(String[] args) {
 				// Draw a transparent block behind win text
 				rl::drawRectangle((WINDOW_WIDTH / 2) - 750, 75, 1500, 200, rl::fade(rl::BLACK, 0.7f));
 				forge_fx::forgeFXManager(&mMap, &sMap,"fireworks",renderDeltaTime);
+
+				// Update animation frames
+				endPlayer.frameTimer += renderDeltaTime * ANIM_SPEED_MULTIPLIER;
+				if (endPlayer.frameTimer > endPlayer.frameLength) {
+					endPlayer.currentFrame += 1;
+					endPlayer.frameTimer = 0.0;
+					if (endPlayer.currentFrame == endPlayer.maxFrames) {
+						endPlayer.currentFrame = 0;
+					}
+				}
+
+				endCat.frameTimer += renderDeltaTime * ANIM_SPEED_MULTIPLIER;
+				if (endCat.frameTimer > endCat.frameLength) {
+					endCat.currentFrame += 1;
+					endCat.frameTimer = 0.0;
+					if (endCat.currentFrame == endCat.maxFrames) {
+						endCat.currentFrame = 0;
+					}
+				}
 
 				forge_game::drawAnimatedConstruct(&endPlayer);
 				forge_game::drawAnimatedConstruct(&endCat);
