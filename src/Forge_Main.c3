@@ -55,7 +55,7 @@ float[FRAME_TIME_HISTORY_SIZE] frameTimeHistory;
 int frameTimeHistoryIndex = 0;
 bool frameTimeHistoryFilled = false;
 float smoothedDeltaTime = TIME_STEP; // Start with ideal time step
-const float SMOOTHING_FACTOR = 0.5f; // Lower = more smoothing, higher = more responsive .3
+const float SMOOTHING_FACTOR = 0.8f; // Lower = more smoothing, higher = more responsive .3
 const float BUSY_WAIT_THRESHOLD = 0.001f; // Threshold for busy waiting vs sleep
 const float SLEEP_TIME_SCALE = 0.95f; // Scale factor for sleep time to avoid oversleeping
 
