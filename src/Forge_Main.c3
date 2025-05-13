@@ -39,7 +39,7 @@ const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
 const int BOSS_TIMER = 12500;//13700
 const float BOSS_TRANSITION_TIME = 6.0; // Time in seconds to display transition after boss death
-const float ANIM_SPEED_MULTIPLIER = 0.8f; // Animation speed: 1.0 = normal, lower = slower
+const float ANIM_SPEED_MULTIPLIER = 1.0f; // Animation speed: 1.0 = normal, lower = slower
 
 //Hammer Forge Colors RGB
 const Color FORGE_GRAY = {31,32,34,255};
@@ -50,12 +50,12 @@ float fpsUpdateTimer = 0.0f;
 int currentFPS = 0;
 
 // Frame pacing and delta time smoothing
-const int FRAME_TIME_HISTORY_SIZE = 10;
+const int FRAME_TIME_HISTORY_SIZE = 3;
 float[FRAME_TIME_HISTORY_SIZE] frameTimeHistory;
 int frameTimeHistoryIndex = 0;
 bool frameTimeHistoryFilled = false;
 float smoothedDeltaTime = TIME_STEP; // Start with ideal time step
-const float SMOOTHING_FACTOR = 0.2f; // Lower = more smoothing, higher = more responsive .3
+const float SMOOTHING_FACTOR = 0.3f; // Lower = more smoothing, higher = more responsive .3
 const float BUSY_WAIT_THRESHOLD = 0.001f; // Threshold for busy waiting vs sleep
 const float SLEEP_TIME_SCALE = 0.95f; // Scale factor for sleep time to avoid oversleeping
 

@@ -13,10 +13,10 @@ import std::io;
 import std::math;
 
 //Game globals and consts -------------------------------------------------
-const float GRAVITY = 675.0f;//200 for grav boots //650
-const float MOVE_VELOCITY = -600.0f;
+const float GRAVITY = 925.0f;//200 for grav boots //650
+const float MOVE_VELOCITY = -400.0f;
 const float SKY_LEVEL = 0.0f;
-const float ACCELERATION = 200.0f; //175
+const float ACCELERATION = 300.0f; //175
 const float FRICTION = 35.0f;
 const float NIGHTB_FREQUENCY = 0.01f;
 const float NIGHTB_AMPLITUDE = 300.0f;//
@@ -34,8 +34,7 @@ const float POWERUP_SOFFSET = 40.0f;
 const float MOUSE_SOFFSET = 40.0f;//40
 const float COUGAR_SOFFSET = 45.0f;//40
 const float RACOON_SOFFSET = 40.0f;//35
-const float SPEED_MOD = 1.6f; //delta time mod
-const float ACCEL_MOD = 1.9; //entity movement speed mod
+const float ACCEL_MOD = 3.8; //entity movement speed mod
 const int ENTITY_HITBOX_WIDTH = 64;
 const int ENTITY_HITBOX_HEIGHT = 64;
 const int BOSS_HITBOX_WIDTH = 100;
@@ -445,7 +444,7 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
 //update game contructs
 fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining, float deltaTime) {
        int score = 0;
-       deltaTime = deltaTime * SPEED_MOD;
+      // deltaTime = deltaTime * SPEED_MOD;
 
       // SPECIAL HANDLING FOR ALIEN LASER - preserve X position and apply proper velocity
             float savedLaserX = 0.0f;
@@ -578,7 +577,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             if (c.isDead) {
                 // Continue physics for death animation
                 c.vel.y += c.gravity * deltaTime;
-                c.pos.y += c.vel.y * deltaTime;
+                c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
                 c.groundLevel = groundLevel - c.texture.height - 5;
                 return 0;
             }
@@ -662,7 +661,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                c.isGrounded = false;
             }
 
-            c.pos.y += c.vel.y * deltaTime;
+            c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
             c.groundLevel = groundLevel - c.texture.height - 5;
 
          break;
@@ -790,7 +789,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
 
-            c.pos.y += c.vel.y * deltaTime;
+            c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
             c.vel.y += c.gravity * deltaTime;
 
          break;
@@ -819,7 +818,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             if (!c.isDead){
             c.pos.y += AMPLITUDE * math::sin(FREQUENCY * (c.pos.x + c.acceleration * ACCEL_MOD)) * deltaTime;
             }else{
-               c.pos.y += c.vel.y * deltaTime;
+               c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
                c.vel.y += c.gravity * deltaTime;
             }
          break;
@@ -873,7 +872,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
           if(c.hHit){c.hHit = false;}
 
           c.vel.y += c.gravity * deltaTime;
-          c.pos.y += c.vel.y * deltaTime;
+          c.pos.y += c.vel.y * ACCEL_MOD *  deltaTime;
           // Use a fixed velocity instead of adding friction for smoother movement
           c.pos.x -=  (OBS_SOFFSET * ACCEL_MOD) * deltaTime;
 
@@ -911,7 +910,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
           if(c.vHit){c.vHit = false;}
           if(c.hHit){c.hHit = false;}
           c.vel.y += c.gravity * deltaTime;
-          c.pos.y += c.vel.y * deltaTime;
+          c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
           c.pos.x -= (POWERUP_SOFFSET * ACCEL_MOD) * deltaTime;
           c.groundLevel = groundLevel - 40;
 
@@ -931,7 +930,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
                               if(c.isDead){
                               //Stops AI movement when dead.
-                              c.pos.y += c.vel.y * deltaTime;
+                              c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
                               c.vel.y += c.gravity * deltaTime;
                               c.groundLevel = groundLevel - 140;
                               break;
@@ -1020,7 +1019,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 					       }
 				        }
 
-                         c.pos.y += c.vel.y * deltaTime;
+                         c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
                          c.vel.y += c.gravity * deltaTime;
                          c.groundLevel = groundLevel - 140;
                   break;
@@ -1029,7 +1028,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
                          if(c.isDead){
                               //Stops AI movement when dead.
-                              c.pos.y += c.vel.y * deltaTime;
+                              c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
                               c.vel.y += c.gravity * deltaTime;
                               c.groundLevel = groundLevel - 140;
                               break;
@@ -1090,8 +1089,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
 				if(movingLeft) {
                    //left
-                   c.pos.y -= NIGHTB_AMPLITUDE * math::sin(NIGHTB_FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
-                   c.pos.x -= 90 * deltaTime;//125//100
+                   c.pos.y -= NIGHTB_AMPLITUDE * math::sin(NIGHTB_FREQUENCY * (c.pos.x + c.acceleration)) * ACCEL_MOD * deltaTime;
+                   c.pos.x -= 125 * deltaTime;//125//100
                    c.texFlip = false;
                       if(c.pos.x < 0.0) {movingLeft = false;}
 
@@ -1107,7 +1106,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                 }else{
                    //right
                    c.pos.y += NIGHTB_AMPLITUDE * math::sin(NIGHTB_FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
-                   c.pos.x += (100 * 3) * deltaTime;//125 * 4
+                   c.pos.x += (125 * 3) * deltaTime;//125 * 4
                    c.texFlip = true;
 				      if(c.pos.x >= forge_main::WINDOW_WIDTH + 300) {movingLeft = true;}
 
