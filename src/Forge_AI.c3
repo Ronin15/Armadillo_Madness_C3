@@ -61,7 +61,7 @@ fn void moveRight(Construct* c, float deltaTime){
          c.texFlip = false;
 
          c.vel.y += c.gravity * deltaTime;
-         c.pos.y += c.vel.y * forge_game::ACCEL_MOD * deltaTime;
+         c.pos.y += c.vel.y  * deltaTime;
          c.groundLevel = forge_game::groundLevel - c.texture.height - 5;
 	}
 
@@ -114,14 +114,14 @@ fn void moveLeft(Construct* c, float deltaTime){
         c.pos.x -= c.acceleration * deltaTime;
         c.texFlip = true;
         c.vel.y += c.gravity * deltaTime;
-        c.pos.y += c.vel.y * forge_game::ACCEL_MOD * deltaTime;
+        c.pos.y += c.vel.y * deltaTime;
 }
 
 fn void jump(Construct* c, float deltaTime){
 
         if (c.pos.y >= c.groundLevel){c.isGrounded = true;}
         if (c.isGrounded) {
-               c.vel.y = c.jumpVelocity;
+               c.vel.y = c.jumpVelocity * 1.2f;
                c.isGrounded = false;
             }
 
@@ -160,5 +160,5 @@ fn void jump(Construct* c, float deltaTime){
             if (c.gHit){c.powerUpTimer += 400; c.gravity = 400.0; c.gHit = false;}
 
             c.vel.y += c.gravity * deltaTime;
-            c.pos.y += c.vel.y * forge_game::ACCEL_MOD * deltaTime;
+            c.pos.y += c.vel.y * deltaTime;
 }

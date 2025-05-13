@@ -55,7 +55,7 @@ float[FRAME_TIME_HISTORY_SIZE] frameTimeHistory;
 int frameTimeHistoryIndex = 0;
 bool frameTimeHistoryFilled = false;
 float smoothedDeltaTime = TIME_STEP; // Start with ideal time step
-const float SMOOTHING_FACTOR = 0.5f; // Lower = more smoothing, higher = more responsive .3
+const float SMOOTHING_FACTOR = 1.0f; // Lower = more smoothing, higher = more responsive .3
 const float BUSY_WAIT_THRESHOLD = 0.001f; // Threshold for busy waiting vs sleep
 const float SLEEP_TIME_SCALE = 0.95f; // Scale factor for sleep time to avoid oversleeping
 
@@ -190,7 +190,7 @@ fn int main(String[] args) {
 	}
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = NIGHTLVL;
+	GameState state = MAIN;
 	// Auto-configure controller mouse control for initial state
 	forge_controller::auto_enable_mouse_mode(state.ordinal);
 	// Keep track of previous state to detect state changes
@@ -487,8 +487,8 @@ fn int main(String[] args) {
                 bool shouldShoot = false;
                 float jumpDetectionDistance = 200.0f;  // How far ahead to look for obstacles
                 float jumpThreshold = 150.0f;          // How close to get before jumping
-                float shootDetectionDistance = 400.0f; // How far ahead to look for enemies to shoot
-                float shootThreshold = 350.0f;         // Maximum distance to shoot at enemies
+                float shootDetectionDistance = 350.0f; // How far ahead to look for enemies to shoot
+                float shootThreshold = 250.0f;         // Maximum distance to shoot at enemies
 
                 // Look for obstacles and enemies in the player's path
                 foreach (&demoConstruct : demoConstructs) {
