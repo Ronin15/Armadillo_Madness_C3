@@ -627,14 +627,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
             // Poop shoot with controller (using B button)
             if (forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_RIGHT.ordinal)) {
-                //io::printfn("B button pressed! Trying to shoot poop...");
-                // The projectile is accessed globally, not as the current construct
-                if(c.type == PLAYER) {
-                    //io::printfn("Player detected, should shoot poop now");
-                    // We need to set poopShot active in the main game loop
-                    // This is just a flag to indicate intent
-                    c.shootRequested = true;
-                }
+                c.shootRequested = true;
             }
 
             // Handle movement based on inputs
