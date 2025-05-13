@@ -13,28 +13,29 @@ import std::io;
 import std::math;
 
 //Game globals and consts -------------------------------------------------
-const float GRAVITY = 1000.0f;//200 for grav boots //650
-const float MOVE_VELOCITY = -700.0f;
+const float GRAVITY = 675.0f;//200 for grav boots //650
+const float MOVE_VELOCITY = -600.0f;
 const float SKY_LEVEL = 0.0f;
-const float ACCELERATION = 300.0f; //175
+const float ACCELERATION = 200.0f; //175
 const float FRICTION = 35.0f;
 const float NIGHTB_FREQUENCY = 0.01f;
 const float NIGHTB_AMPLITUDE = 300.0f;//
 const float AMPLITUDE = 300.0f;//300
 const float FREQUENCY = 0.05f;//0.05
 const int MAX_HEARTS = 6;
-const float OBS_SOFFSET = 60.0f;//20
-const float ANT_SOFFSET = 55.0f;//50
-const float FOX_SOFFSET = 65.0f;//70
-const float SCORPION_SOFFSET = 40.0f; //30
-const float TURTLE_SOFFSET = 30.0f;//25
-const float SNAKE_SOFFSET = 40.0f;//30:
-const float SPIDER_SOFFSET = 65.0f;//70
+const float OBS_SOFFSET = 45.2f;//20
+const float ANT_SOFFSET = 50.0f;//50
+const float FOX_SOFFSET = 55.0f;//70
+const float SCORPION_SOFFSET = 35.0f; //30
+const float TURTLE_SOFFSET = 25.0f;//25
+const float SNAKE_SOFFSET = 30.0f;//30:
+const float SPIDER_SOFFSET = 45.0f;//70
 const float POWERUP_SOFFSET = 40.0f;
-const float MOUSE_SOFFSET = 45.0f;//40
+const float MOUSE_SOFFSET = 40.0f;//40
 const float COUGAR_SOFFSET = 45.0f;//40
 const float RACOON_SOFFSET = 40.0f;//35
-const float SPEED_MOD = 1.3f;
+const float SPEED_MOD = 1.6f; //delta time mod
+const float ACCEL_MOD = 1.9; //entity movement speed mod
 const int ENTITY_HITBOX_WIDTH = 64;
 const int ENTITY_HITBOX_HEIGHT = 64;
 const int BOSS_HITBOX_WIDTH = 100;
@@ -704,7 +705,6 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                c.hHit = false;
              }
 
-            // Controller input for shooting is already handled in the player section
                c.groundLevel = groundLevel - c.texture.height + 80;
 
             // Only expire poop shot at edge of screen, not laser
@@ -736,53 +736,53 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
                case "ant":
 
-                        c.pos.x -= ANT_SOFFSET * deltaTime;
+                        c.pos.x -= (ANT_SOFFSET * ACCEL_MOD) * deltaTime;
                         c.groundLevel = groundLevel - 50;
                break;
 
                case "turtle":
 
-                        c.pos.x -= POWERUP_SOFFSET * deltaTime;
+                        c.pos.x -= (POWERUP_SOFFSET * ACCEL_MOD) * deltaTime;
                         c.groundLevel = groundLevel - 40; //ground level hit box adjust
                break;
 
                case "fox":
 
-                        c.pos.x -= (c.friction + FOX_SOFFSET)  * deltaTime;
+                        c.pos.x -= (FOX_SOFFSET * ACCEL_MOD) * deltaTime;
                         c.groundLevel = groundLevel - 40; //ground level hit box adjust
                break;
 
                case "snake":
 
-                        c.pos.x -= (c.friction + SNAKE_SOFFSET) * deltaTime;
+                        c.pos.x -= (SNAKE_SOFFSET * ACCEL_MOD) * deltaTime;
                         c.groundLevel = groundLevel - 50;
                break;
 
                case "scorpion":
 
-                        c.pos.x -= (c.friction + SCORPION_SOFFSET)  * deltaTime;
+                        c.pos.x -= (SCORPION_SOFFSET * ACCEL_MOD) * deltaTime;
                         c.groundLevel = groundLevel - 40;
                break;
 
                case "spider":
 
-                        c.pos.x -= (c.friction + SPIDER_SOFFSET)  * deltaTime;
+                        c.pos.x -= (SPIDER_SOFFSET * ACCEL_MOD) * deltaTime;
                         c.groundLevel = groundLevel - 40;
                break;
 
                case "mouse":
 
-                        c.pos.x -= (c.friction + MOUSE_SOFFSET)  * deltaTime;
+                        c.pos.x -= (MOUSE_SOFFSET * ACCEL_MOD) * deltaTime;
                         c.groundLevel = groundLevel - 40;
                 break;
 
                 case "racoon":
-                        c.pos.x -= (c.friction + RACOON_SOFFSET)  * deltaTime;
+                        c.pos.x -= (RACOON_SOFFSET * ACCEL_MOD) * deltaTime;
                         c.groundLevel = groundLevel - 25;
 
                 case "cougar_boss" :
 
-                        c.pos.x -= (c.friction + COUGAR_SOFFSET)  * deltaTime;
+                        c.pos.x -= (COUGAR_SOFFSET * ACCEL_MOD) * deltaTime;
                         c.groundLevel = groundLevel - 50;
                 break;
             }
@@ -814,10 +814,10 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                }
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
-               c.pos.x -= 100 * deltaTime;//125
+               c.pos.x -= (50 * ACCEL_MOD) * deltaTime;//125
                c.texFlip = false;//15
             if (!c.isDead){
-            c.pos.y += AMPLITUDE * math::sin(FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
+            c.pos.y += AMPLITUDE * math::sin(FREQUENCY * (c.pos.x + c.acceleration * ACCEL_MOD)) * deltaTime;
             }else{
                c.pos.y += c.vel.y * deltaTime;
                c.vel.y += c.gravity * deltaTime;
@@ -875,7 +875,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
           c.vel.y += c.gravity * deltaTime;
           c.pos.y += c.vel.y * deltaTime;
           // Use a fixed velocity instead of adding friction for smoother movement
-          c.pos.x -= OBS_SOFFSET * deltaTime;
+          c.pos.x -=  (OBS_SOFFSET * ACCEL_MOD) * deltaTime;
 
          break;
 
@@ -912,8 +912,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
           if(c.hHit){c.hHit = false;}
           c.vel.y += c.gravity * deltaTime;
           c.pos.y += c.vel.y * deltaTime;
-          // Use a consistent velocity for power-ups for smoother movement
-          c.pos.x -= POWERUP_SOFFSET * deltaTime;
+          c.pos.x -= (POWERUP_SOFFSET * ACCEL_MOD) * deltaTime;
           c.groundLevel = groundLevel - 40;
 
          break;
