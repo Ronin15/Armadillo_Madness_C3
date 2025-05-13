@@ -55,7 +55,7 @@ float[FRAME_TIME_HISTORY_SIZE] frameTimeHistory;
 int frameTimeHistoryIndex = 0;
 bool frameTimeHistoryFilled = false;
 float smoothedDeltaTime = TIME_STEP; // Start with ideal time step
-const float SMOOTHING_FACTOR = 0.2f; // Lower = more smoothing, higher = more responsive .3
+const float SMOOTHING_FACTOR = 0.5f; // Lower = more smoothing, higher = more responsive .3
 const float BUSY_WAIT_THRESHOLD = 0.001f; // Threshold for busy waiting vs sleep
 const float SLEEP_TIME_SCALE = 0.95f; // Scale factor for sleep time to avoid oversleeping
 
@@ -387,7 +387,7 @@ fn int main(String[] args) {
 					}
 
 					if (raining && weatherTimer <= 0.0){
-						weatherTimer = 2000;
+						weatherTimer = 1250;
 					}
 
 					if (raining){
@@ -475,11 +475,131 @@ fn int main(String[] args) {
 				case DEMO:
 					// Update demo mode
 					forge_game::updateConstruct(&demoPlayer, &sMap, &tMap, raining, fixedDeltaTime);
+					//Demo Loop------------------------------------------------------------------------------
+
+					demoCounter2 += 1;
+
+                // Initialize a static variable to track direction
+                static bool demoMovingLeft = false;
+
+                // Calculate jump logic based on obstacles and occasional random jumps
+                bool shouldJump = false;
+                bool shouldShoot = false;
+                float jumpDetectionDistance = 200.0f;  // How far ahead to look for obstacles
+                float jumpThreshold = 150.0f;          // How close to get before jumping
+                float shootDetectionDistance = 400.0f; // How far ahead to look for enemies to shoot
+                float shootThreshold = 350.0f;         // Maximum distance to shoot at enemies
+
+                // Look for obstacles and enemies in the player's path
+                foreach (&demoConstruct : demoConstructs) {
+                    float obstacleX = demoConstruct.pos.x;
+                    float playerX = demoPlayer.pos.x;
+                    float distance;
+
+                    // Check if construct is an obstacle that we should jump over
+                    if (!demoConstruct.isDead &&
+                        (demoConstruct.type == forge_game::ConstructType.OBS ||
+                         demoConstruct.type == forge_game::ConstructType.ENEMY_GROUND)) {
+
+                        // Check if obstacle is in the path based on movement direction
+                        if (!demoMovingLeft && obstacleX > playerX && obstacleX - playerX < jumpDetectionDistance) {
+                            // Moving right, obstacle is ahead
+                            distance = obstacleX - playerX;
+                            if (distance < jumpThreshold && demoPlayer.isGrounded) {
+                                shouldJump = true;
+                            }
+                        } else if (demoMovingLeft && obstacleX < playerX && playerX - obstacleX < jumpDetectionDistance) {
+                            // Moving left, obstacle is ahead
+                            distance = playerX - obstacleX;
+                            if (distance < jumpThreshold && demoPlayer.isGrounded) {
+                                shouldJump = true;
+                            }
+                        }
+                    }
+
+                    // Check if construct is an enemy that we should shoot at
+                    if (!demoConstruct.isDead &&
+                        (demoConstruct.type == forge_game::ConstructType.ENEMY_GROUND ||
+                         demoConstruct.type == forge_game::ConstructType.ENEMEY_FLY)) {
+
+                        // Only shoot at enemies in front of us (in our movement direction)
+                        if (!demoMovingLeft && obstacleX > playerX && obstacleX - playerX < shootDetectionDistance) {
+                            // Moving right, enemy is ahead
+                            distance = obstacleX - playerX;
+                            if (distance < shootThreshold && !poopShot.isProjectileActive) {
+                                shouldShoot = true;
+                            }
+                        } else if (demoMovingLeft && obstacleX < playerX && playerX - obstacleX < shootDetectionDistance) {
+                            // Moving left, enemy is ahead
+                            distance = playerX - obstacleX;
+                            if (distance < shootThreshold && !poopShot.isProjectileActive) {
+                                shouldShoot = true;
+                            }
+                        }
+                    }
+                }
+
+                // Occasionally jump randomly (1% chance per frame when grounded) to make movement more natural
+                if (!shouldJump && demoPlayer.isGrounded && rand_in_range(1, 100) == 1) {
+                    shouldJump = true;
+                }
+
+                // Occasionally shoot randomly (0.5% chance per frame when no active projectile)
+                if (!shouldShoot && !poopShot.isProjectileActive && rand_in_range(1, 200) == 1) {
+                    shouldShoot = true;
+                }
+
+                // AI movement decisions only, actual movement happens in fixed timestep
+                if(demoMovingLeft) {
+                    // Mark texture direction for rendering
+                    demoPlayer.texFlip = true; // Texture faces left when moving left
+
+                    // Check if we've reached the left boundary
+                    if(demoPlayer.pos.x < 10.0) {
+                        demoMovingLeft = false;
+                        rl::playSound(sMap.get("moving")!!);
+                    }
+                } else {
+                    // Mark texture direction for rendering
+                    demoPlayer.texFlip = false; // Texture faces right when moving right
+
+                    // Check if we've reached the right boundary
+                    if(demoPlayer.pos.x >= WINDOW_WIDTH - 200.0) {
+                        demoMovingLeft = true;
+                        rl::playSound(sMap.get("moving")!!);
+                    }
+                }
+
+                // Set jump flag for fixed timestep to handle
+                if (shouldJump) {
+                    rl::playSound(sMap.get("jump")!!);
+                }
+
+                // Shoot if we determined we should
+                if (shouldShoot) {
+                    demoPlayer.shootRequested = true;
+                }
+
+                // Process shooting request - flag is handled in fixed timestep
+                if (demoPlayer.shootRequested) {
+                    // This sets the flag only, actual shooting happens in fixed timestep
+                }
+
+                // Poop shot is now updated in fixed timestep
+
+					if (demoCounter2 > 12000){//10000
+						demoCounter2 = 0;
+						demoPlayer = forge_game::forgeCronstructPlayer(&tMap, "demo");
+						forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
+						demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
+						frameCounter = 0;
+						state = MAIN;
+					}
 
 					// AI movement in fixed timestep
 					// Retrieve AI movement state from render section
-					static bool demoMovingLeft = false;
-					static bool shouldJump = false;
+					//static bool demoMovingLeft = false;
+					//static bool shouldJump = false;
 
 					// Apply AI movement
 					if(demoMovingLeft) {
@@ -1497,126 +1617,6 @@ fn int main(String[] args) {
 					//clean all assetes needed here to fully reset. Use Diffrent Demo Array.
 				}
 
-				//Demo Loop------------------------------------------------------------------------------
-
-				demoCounter2 += 1;
-
-                // Initialize a static variable to track direction
-                static bool demoMovingLeft = false;
-
-                // Calculate jump logic based on obstacles and occasional random jumps
-                bool shouldJump = false;
-                bool shouldShoot = false;
-                float jumpDetectionDistance = 200.0f;  // How far ahead to look for obstacles
-                float jumpThreshold = 150.0f;          // How close to get before jumping
-                float shootDetectionDistance = 400.0f; // How far ahead to look for enemies to shoot
-                float shootThreshold = 350.0f;         // Maximum distance to shoot at enemies
-
-                // Look for obstacles and enemies in the player's path
-                foreach (&demoConstruct : demoConstructs) {
-                    float obstacleX = demoConstruct.pos.x;
-                    float playerX = demoPlayer.pos.x;
-                    float distance;
-
-                    // Check if construct is an obstacle that we should jump over
-                    if (!demoConstruct.isDead &&
-                        (demoConstruct.type == forge_game::ConstructType.OBS ||
-                         demoConstruct.type == forge_game::ConstructType.ENEMY_GROUND)) {
-
-                        // Check if obstacle is in the path based on movement direction
-                        if (!demoMovingLeft && obstacleX > playerX && obstacleX - playerX < jumpDetectionDistance) {
-                            // Moving right, obstacle is ahead
-                            distance = obstacleX - playerX;
-                            if (distance < jumpThreshold && demoPlayer.isGrounded) {
-                                shouldJump = true;
-                            }
-                        } else if (demoMovingLeft && obstacleX < playerX && playerX - obstacleX < jumpDetectionDistance) {
-                            // Moving left, obstacle is ahead
-                            distance = playerX - obstacleX;
-                            if (distance < jumpThreshold && demoPlayer.isGrounded) {
-                                shouldJump = true;
-                            }
-                        }
-                    }
-
-                    // Check if construct is an enemy that we should shoot at
-                    if (!demoConstruct.isDead &&
-                        (demoConstruct.type == forge_game::ConstructType.ENEMY_GROUND ||
-                         demoConstruct.type == forge_game::ConstructType.ENEMEY_FLY)) {
-
-                        // Only shoot at enemies in front of us (in our movement direction)
-                        if (!demoMovingLeft && obstacleX > playerX && obstacleX - playerX < shootDetectionDistance) {
-                            // Moving right, enemy is ahead
-                            distance = obstacleX - playerX;
-                            if (distance < shootThreshold && !poopShot.isProjectileActive) {
-                                shouldShoot = true;
-                            }
-                        } else if (demoMovingLeft && obstacleX < playerX && playerX - obstacleX < shootDetectionDistance) {
-                            // Moving left, enemy is ahead
-                            distance = playerX - obstacleX;
-                            if (distance < shootThreshold && !poopShot.isProjectileActive) {
-                                shouldShoot = true;
-                            }
-                        }
-                    }
-                }
-
-                // Occasionally jump randomly (1% chance per frame when grounded) to make movement more natural
-                if (!shouldJump && demoPlayer.isGrounded && rand_in_range(1, 100) == 1) {
-                    shouldJump = true;
-                }
-
-                // Occasionally shoot randomly (0.5% chance per frame when no active projectile)
-                if (!shouldShoot && !poopShot.isProjectileActive && rand_in_range(1, 200) == 1) {
-                    shouldShoot = true;
-                }
-
-                // AI movement decisions only, actual movement happens in fixed timestep
-                if(demoMovingLeft) {
-                    // Mark texture direction for rendering
-                    demoPlayer.texFlip = true; // Texture faces left when moving left
-
-                    // Check if we've reached the left boundary
-                    if(demoPlayer.pos.x < 10.0) {
-                        demoMovingLeft = false;
-                        rl::playSound(sMap.get("moving")!!);
-                    }
-                } else {
-                    // Mark texture direction for rendering
-                    demoPlayer.texFlip = false; // Texture faces right when moving right
-
-                    // Check if we've reached the right boundary
-                    if(demoPlayer.pos.x >= WINDOW_WIDTH - 200.0) {
-                        demoMovingLeft = true;
-                        rl::playSound(sMap.get("moving")!!);
-                    }
-                }
-
-                // Set jump flag for fixed timestep to handle
-                if (shouldJump) {
-                    rl::playSound(sMap.get("jump")!!);
-                }
-
-                // Shoot if we determined we should
-                if (shouldShoot) {
-                    demoPlayer.shootRequested = true;
-                }
-
-                // Process shooting request - flag is handled in fixed timestep
-                if (demoPlayer.shootRequested) {
-                    // This sets the flag only, actual shooting happens in fixed timestep
-                }
-
-                // Poop shot is now updated in fixed timestep
-
-				if (demoCounter2 > 12000){//10000
-					demoCounter2 = 0;
-					demoPlayer = forge_game::forgeCronstructPlayer(&tMap, "demo");
-					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
-					demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
-					frameCounter = 0;
-					state = MAIN;
-				}
 
 				// Collision checks and physics updates now handled in fixed timestep
 
