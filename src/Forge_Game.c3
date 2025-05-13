@@ -516,7 +516,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
               if (c.gravity == 400.0) {c.gravity = GRAVITY;}
               if (c.invulnTimer <= 0.0) c.invlunerable = false;
-              if (c.acceleration == 350){c.acceleration = ACCELERATION;}//500//400
+              if (c.acceleration > ACCELERATION && c.powerUpTimer <= 0){c.acceleration = ACCELERATION;}//500//400
               if (poopPenatrate){poopPenatrate = false;}
             }
 
@@ -539,8 +539,15 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                }
 
             //powerup
-            if (c.sHit){c.powerUpTimer += 600; c.invlunerable = true; c.invulnTimer += 800; c.acceleration = 350; c.sHit = false;}//500//400
-            //invuln
+            if (c.sHit){
+				c.powerUpTimer += 600; 
+				c.invlunerable = true;
+				c.invulnTimer += 800;
+				if (c.acceleration < (ACCELERATION * 4)){c.acceleration *= 2;} 
+				c.sHit = false;
+			}//500//400
+            
+			//invuln
             if(c.hHit && c.invulnTimer <= 0 && c.name == "player"){
                   c.hHit = false;
                   c.invlunerable = true;

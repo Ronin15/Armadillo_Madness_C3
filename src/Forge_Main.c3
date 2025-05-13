@@ -32,13 +32,13 @@ const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.9.9"; //ui update, options update, and almost all game states complete
 const int MAX_CONSTRUCTS = 225;//100 // 200//
 const int MAX_BOSS_CONSTRUCTS = 50;
-const int MAX_BOSS_POWER_UPS = 5;
-const int MAX_POWERUPS = 18;//6
+const int MAX_BOSS_POWER_UPS = 6;
+const int MAX_POWERUPS = 16;//6
 const int MAX_BUTTONS = 7;
 const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
 const int BOSS_TIMER = 12500;//13700
-const float BOSS_TRANSITION_TIME = 6.0; // Time in seconds to display transition after boss death
+const float BOSS_TRANSITION_TIME = 4.5f; // Time in seconds to display transition after boss death
 const float ANIM_SPEED_MULTIPLIER = 1.2f; // Animation speed: 1.0 = normal, lower = slower
 
 //Hammer Forge Colors RGB
@@ -55,7 +55,7 @@ float[FRAME_TIME_HISTORY_SIZE] frameTimeHistory;
 int frameTimeHistoryIndex = 0;
 bool frameTimeHistoryFilled = false;
 float smoothedDeltaTime = TIME_STEP; // Start with ideal time step
-const float SMOOTHING_FACTOR = 0.3f; // Lower = more smoothing, higher = more responsive .3
+const float SMOOTHING_FACTOR = 0.5f; // Lower = more smoothing, higher = more responsive .3
 const float BUSY_WAIT_THRESHOLD = 0.001f; // Threshold for busy waiting vs sleep
 const float SLEEP_TIME_SCALE = 0.95f; // Scale factor for sleep time to avoid oversleeping
 
