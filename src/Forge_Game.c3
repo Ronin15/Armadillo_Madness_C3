@@ -1271,7 +1271,7 @@ fn void drawAnimatedConstruct(Construct* c, float rotation = 0.0){
          }
 
          if(c.name == "catEndAnim"){
-            scale = 3.0;
+            scale = 3.5;
          }
 
    Rectangle destRec = {

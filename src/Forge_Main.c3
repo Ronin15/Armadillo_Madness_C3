@@ -170,16 +170,7 @@ fn int main(String[] args) {
 
 	//set postion for end player and end cat
 	endPlayer.pos = {750, 600};
-	endCat.pos = {1020, 700};
-
-	//set animation properties for end player and cat
-	endPlayer.maxFrames = 24;
-	endPlayer.frameLength = 0.1;
-	endPlayer.anim = true;
-
-	endCat.maxFrames = 24;
-	endCat.frameLength = 0.1;
-	endCat.anim = true;
+	endCat.pos = {1020, 660};
 
 	for (int i = 0; i < MAX_BUTTONS; i++){
 		int count = i;
@@ -199,7 +190,7 @@ fn int main(String[] args) {
 	}
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = GAME_WIN;
+	GameState state = MAIN;
 	// Auto-configure controller mouse control for initial state
 	forge_controller::auto_enable_mouse_mode(state.ordinal);
 	// Keep track of previous state to detect state changes
