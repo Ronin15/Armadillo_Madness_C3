@@ -13,8 +13,8 @@ import std::io;
 import std::math;
 
 //Game globals and consts -------------------------------------------------
-const float GRAVITY = 1200.0f;//200 for grav boots //650
-const float MOVE_VELOCITY = -900.0f;
+const float GRAVITY = 1000.0f;//200 for grav boots //650
+const float MOVE_VELOCITY = -700.0f;
 const float SKY_LEVEL = 0.0f;
 const float ACCELERATION = 300.0f; //175
 const float FRICTION = 35.0f;
@@ -34,6 +34,7 @@ const float POWERUP_SOFFSET = 40.0f;
 const float MOUSE_SOFFSET = 45.0f;//40
 const float COUGAR_SOFFSET = 45.0f;//40
 const float RACOON_SOFFSET = 40.0f;//35
+const float SPEED_MOD = 1.3f;
 const int ENTITY_HITBOX_WIDTH = 64;
 const int ENTITY_HITBOX_HEIGHT = 64;
 const int BOSS_HITBOX_WIDTH = 100;
@@ -443,6 +444,7 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
 //update game contructs
 fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining, float deltaTime) {
        int score = 0;
+       deltaTime = deltaTime * SPEED_MOD;
 
       // SPECIAL HANDLING FOR ALIEN LASER - preserve X position and apply proper velocity
             float savedLaserX = 0.0f;
