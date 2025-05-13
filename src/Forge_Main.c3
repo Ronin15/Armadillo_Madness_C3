@@ -38,7 +38,7 @@ const int MAX_BUTTONS = 7;
 const float MASTER_VOLUME = 0.8;
 const float MUSIC_VOLUME = 0.5;
 const int BOSS_TIMER = 12500;//13700
-const float BOSS_TRANSITION_TIME = 8.0; // Time in seconds to display transition after boss death
+const float BOSS_TRANSITION_TIME = 6.0; // Time in seconds to display transition after boss death
 const float ANIM_SPEED_MULTIPLIER = 1.0f; // Animation speed: 1.0 = normal, lower = slower
 
 //Hammer Forge Colors RGB
@@ -475,12 +475,12 @@ fn int main(String[] args) {
 				case DEMO:
 					// Update demo mode
 					forge_game::updateConstruct(&demoPlayer, &sMap, &tMap, raining, fixedDeltaTime);
-					
+
 					// AI movement in fixed timestep
 					// Retrieve AI movement state from render section
 					static bool demoMovingLeft = false;
 					static bool shouldJump = false;
-					
+
 					// Apply AI movement
 					if(demoMovingLeft) {
 						// Move left (with 2.0x speed multiplier)
@@ -495,13 +495,13 @@ fn int main(String[] args) {
 						forge_ai::moveRight(&demoPlayer, fixedDeltaTime);
 						demoPlayer.acceleration = originalAcceleration; // Restore original value
 					}
-					
+
 					// Handle jumping
 					if (shouldJump && demoPlayer.isGrounded) {
 						forge_ai::jump(&demoPlayer, fixedDeltaTime);
 						shouldJump = false; // Reset jump flag after processing
 					}
-					
+
 					// Check if player requested to shoot poop
 					if (demoPlayer.shootRequested) {
 						poopShot.isProjectileActive = true;
@@ -509,24 +509,24 @@ fn int main(String[] args) {
 						rl::playSound(sMap.get("poop")!!);
 						demoPlayer.shootRequested = false; // Reset the flag
 					}
-					
+
 					// Update projectile
 					forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, fixedDeltaTime);
-					
+
 					// Check collisions with demo constructs
 					foreach (&demoConstruct : demoConstructs) {
 						// Check collision between demo player and constructs
 						if (forge_physics::checkCollision(&demoPlayer, demoConstruct) && demoConstruct.isDead == false) {
 							forge_physics::resolveCollision(&demoPlayer, demoConstruct, fixedDeltaTime);
 						}
-						
+
 						// Check collision between poop shot and constructs
 						if (poopShot.isProjectileActive && poopShot.expired == false && demoConstruct.isDead == false) {
 							if(forge_physics::checkCollision(&poopShot, demoConstruct)) {
 								forge_physics::resolveCollision(&poopShot, demoConstruct, fixedDeltaTime);
 							}
 						}
-						
+
 						// Update constructs
 						forge_game::updateConstruct(demoConstruct, &sMap, &tMap, raining, fixedDeltaTime);
 					}
