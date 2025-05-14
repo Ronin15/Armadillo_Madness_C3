@@ -16,7 +16,7 @@ import std::math;
 const float GRAVITY = 760.0f;//200 for grav boots //650
 const float MOVE_VELOCITY = -330.0f;
 const float SKY_LEVEL = 0.0f;
-const float ACCELERATION = 300.0f; //175
+const float ACCELERATION = 325.0f; //175
 const float FRICTION = 34.0f;
 const float NIGHTB_FREQUENCY = 0.02f;
 const float NIGHTB_AMPLITUDE = 315.0f;//
@@ -34,7 +34,7 @@ const float POWERUP_SOFFSET = 43.0f;
 const float MOUSE_SOFFSET = 44.0f;//40
 const float COUGAR_SOFFSET = 45.0f;//40
 const float RACOON_SOFFSET = 44.0f;//35
-const float ACCEL_MOD = 3.8; //entity movement speed mod//3.7 good
+const float ACCEL_MOD = 3.9; //entity movement speed mod//3.7 good
 const int ENTITY_HITBOX_WIDTH = 64;
 const int ENTITY_HITBOX_HEIGHT = 64;
 const int BOSS_HITBOX_WIDTH = 100;
