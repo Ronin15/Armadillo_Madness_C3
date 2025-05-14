@@ -75,19 +75,18 @@ bool movingLeft = true;
 }
 
  struct Construct {
-
-    Texture2D texture;
+    // Core positioning and rendering (kept at top for likely cache alignment)
     Vector2 pos;
     Vector2 vel;
-    Sound sound;
-    String name;
+    Texture2D texture;
     Rectangle hitBox;
-    ConstructType type;
+    // Movement/physics parameters
     float gravity;
     float jumpVelocity;
     float groundLevel;
     float acceleration;
     float friction;
+    // Animation and timing parameters
     float frameTimer;
     float frameLength;
     float invulnTimer;
@@ -96,13 +95,21 @@ bool movingLeft = true;
     int currentFrame;
     int maxFrames;
     int lives;
+    // Type information (references don't consume much memory)
+    String name;
+    Sound sound;
+    ConstructType type;
+    // Group 1 - core gameplay flags
     bool isProjectileActive;
     bool expired;
     bool invlunerable;
     bool isGrounded;
+    // Group 2 - visual and state flags
     bool texFlip;
     bool isDead;
     bool active;
+    bool anim;
+    // Group 3 - collision flags
     bool hHit; //horizontal hit
     bool vHit; //vertical hit
     bool bHit; //beatle hit
@@ -110,7 +117,6 @@ bool movingLeft = true;
     bool fHit; //food hit
     bool gHit; //grav boot hit
     bool shootRequested; // Flag to request a poop shoot
-    bool anim;
 }
 
 //GAME Functions ------------------------------------------------------------
