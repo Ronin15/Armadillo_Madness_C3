@@ -385,7 +385,7 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
       c.texFlip = false;
       c.isDead = false;
       c.isProjectileActive = false;
-      c.expired = true;
+      c.expired = false;
       c.invlunerable = false;
       c.invulnTimer = 0.0;
       c.hHit = false;
@@ -436,7 +436,7 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
     constructs[i].currentFrame = 1;
     constructs[i].texFlip = false;
     constructs[i].isDead = false;
-    constructs[i].expired = false; // Set to false so entities are active from the start
+    constructs[i].expired = false;
     constructs[i].hHit = false;
     constructs[i].vHit = false;
     constructs[i].anim = false;
@@ -517,7 +517,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                        PLAYER_HITBOX_HEIGHT};
 
 
-            if (raining){c.acceleration = 100;}//125
+            if (raining && c.name != "demo"){c.acceleration = 100;}//125
             if (!raining && c.acceleration == 100){c.acceleration = ACCELERATION;}
 
             if(c.animTimer >= 0.0){
@@ -666,7 +666,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             // Handle movement based on inputs
             if (movingLeft) {
                if (rl::isKeyPressed(rl::KEY_LEFT) || forge_controller::is_button_pressed(rl::GamepadButton.LEFT_FACE_LEFT.ordinal)) {
-                  rl::playSound(sMap.get("moving")!!);
+                   rl::playSound(sMap.get("moving")!!);
                }
                 c.pos.x -= c.acceleration * deltaTime;
                 c.texFlip = true;

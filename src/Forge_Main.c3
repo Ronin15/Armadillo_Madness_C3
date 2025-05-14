@@ -50,12 +50,12 @@ float fpsUpdateTimer = 0.0f;
 int currentFPS = 0;
 
 // Frame pacing and delta time smoothing
-const int FRAME_TIME_HISTORY_SIZE = 10;
+const int FRAME_TIME_HISTORY_SIZE = 7;//10
 float[FRAME_TIME_HISTORY_SIZE] frameTimeHistory;
 int frameTimeHistoryIndex = 0;
 bool frameTimeHistoryFilled = false;
 float smoothedDeltaTime = TIME_STEP; // Start with ideal time step
-const float SMOOTHING_FACTOR = 0.8f; // Lower = more smoothing, higher = more responsive .3
+const float SMOOTHING_FACTOR = 0.95f; // Lower = more smoothing, higher = more responsive .8 is good
 const float BUSY_WAIT_THRESHOLD = 0.001f; // Threshold for busy waiting vs sleep
 const float SLEEP_TIME_SCALE = 0.95f; // Scale factor for sleep time to avoid oversleeping
 
@@ -809,8 +809,10 @@ fn int main(String[] args) {
 					frameCounter += 1;
 
 					if (frameCounter > 1000) { //1000 for testing
-					        state = DEMO;
+							weatherTimer = 0; //trying to find and fix movement bug tied to pauseing when raining then restarting and going to demo.
 							frameCounter = 0;
+							demoPlayer.acceleration = forge_game::ACCELERATION;// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+							state = DEMO;
 					}
 
 			case GAME:
@@ -1450,6 +1452,7 @@ fn int main(String[] args) {
 					randSong = forge_game::playRandomSong(&mMap);
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					frameCounter = 0;
+					weatherTimer = 0; //reseting weather
 					state = MAIN;
 				}
 				break;
@@ -1496,6 +1499,7 @@ fn int main(String[] args) {
 					state = MAIN;
 					soundPlayed = false;
 					frameCounter = 0;
+					weatherTimer = 0;
 				}
 				break;
 
@@ -1658,6 +1662,7 @@ fn int main(String[] args) {
     				forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
     				demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
 					frameCounter = 0;
+					weatherTimer = 0;
                     state = MAIN;
 					//clean all assetes needed here to fully reset. Use Diffrent Demo Array.
 				}
@@ -1668,6 +1673,7 @@ fn int main(String[] args) {
 					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
 					demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
 					frameCounter = 0;
+					weatherTimer = 0;
 					state = MAIN;
 				}
 
