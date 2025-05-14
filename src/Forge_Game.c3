@@ -42,6 +42,10 @@ const int BOSS_HITBOX_HEIGHT = 120;
 const float ENTITY_HITBOX_OFFSET = 30.0f;
 const float OBS_HITBOX_OFFSET = 25.0f;
 const float ROCK_HITBOX_OFFSET = 55.0f;
+// One minute of time - 3600 frames at 60 FPS, 7200 frames at 120 FPS
+// This will be adjusted based on the current frame rate in the updateConstruct function
+const float MAX_POWERUP_TIME_60FPS = 3600.0f; // 1 minute at 60 FPS
+const float MAX_POWERUP_TIME_120FPS = 7200.0f; // 1 minute at 120 FPS
 const float ROCK_HITBOX_HEIGHT_OFFSET = 35.0f;
 const int PLAYER_HITBOX_WIDTH = 100;
 const int PLAYER_HITBOX_HEIGHT = 64;
@@ -557,7 +561,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
             //powerup
             if (c.sHit){
-				c.powerUpTimer += 600;
+				// Add power-up time, but cap at MAX_POWERUP_TIME based on current FPS
+				float maxTimer = forge_main::useHighFPS ? MAX_POWERUP_TIME_120FPS : MAX_POWERUP_TIME_60FPS;
+				c.powerUpTimer = math::min(c.powerUpTimer + 600, maxTimer);
 				c.invlunerable = true;
 				c.invulnTimer += 800;
 				if (c.acceleration < (ACCELERATION * 4)){c.acceleration *= 2;}
@@ -594,8 +600,10 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             }
 
             //powerup
-            if (c.fHit){c.powerUpTimer += 500; poopPenatrate = true; c.fHit = false;}
-            if (c.gHit){c.powerUpTimer += 500; c.gravity = 400.0; c.gHit = false;}
+            // Use the appropriate max timer based on current FPS setting
+            float maxTimer = forge_main::useHighFPS ? MAX_POWERUP_TIME_120FPS : MAX_POWERUP_TIME_60FPS;
+            if (c.fHit){c.powerUpTimer = math::min(c.powerUpTimer + 500, maxTimer); poopPenatrate = true; c.fHit = false;}
+            if (c.gHit){c.powerUpTimer = math::min(c.powerUpTimer + 500, maxTimer); c.gravity = 400.0; c.gHit = false;}
 
             // Skip input processing if player is dead
             if (c.isDead) {

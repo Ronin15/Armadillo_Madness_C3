@@ -5,6 +5,8 @@
 
 module forge_ai;
 import forge_game;
+import forge_main;
+import std::math;
 
 
 bool poopPenatrate = false;
@@ -41,7 +43,8 @@ fn void moveRight(Construct* c, float deltaTime){
             }
 
             //powerup
-            if (c.sHit){c.powerUpTimer += 400; c.invlunerable = true; c.sHit = false;}
+            float maxTimer = forge_main::useHighFPS ? forge_game::MAX_POWERUP_TIME_120FPS : forge_game::MAX_POWERUP_TIME_60FPS;
+            if (c.sHit){c.powerUpTimer = math::min(c.powerUpTimer + 400, maxTimer); c.invlunerable = true; c.sHit = false;}
 
             if(c.hHit && c.invulnTimer <= 0){
                   c.hHit = false;
@@ -53,8 +56,8 @@ fn void moveRight(Construct* c, float deltaTime){
             }
 
             //powerup
-            if (c.fHit){c.powerUpTimer += 400; poopPenatrate = true; c.fHit = false;}
-            if (c.gHit){c.powerUpTimer += 400; c.gravity = 400.0; c.gHit = false;}
+            if (c.fHit){c.powerUpTimer = math::min(c.powerUpTimer + 400, maxTimer); poopPenatrate = true; c.fHit = false;}
+            if (c.gHit){c.powerUpTimer = math::min(c.powerUpTimer + 400, maxTimer); c.gravity = 400.0; c.gHit = false;}
 
 
 	     c.pos.x += c.acceleration * deltaTime;
@@ -96,7 +99,8 @@ fn void moveLeft(Construct* c, float deltaTime){
             }
 
             //powerup
-            if (c.sHit){c.powerUpTimer += 400; c.invlunerable = true; c.sHit = false;}
+            float maxTimer = forge_main::useHighFPS ? forge_game::MAX_POWERUP_TIME_120FPS : forge_game::MAX_POWERUP_TIME_60FPS;
+            if (c.sHit){c.powerUpTimer = math::min(c.powerUpTimer + 400, maxTimer); c.invlunerable = true; c.sHit = false;}
 
             if(c.hHit && c.invulnTimer <= 0){
                   c.hHit = false;
@@ -108,8 +112,8 @@ fn void moveLeft(Construct* c, float deltaTime){
             }
 
             //powerup
-            if (c.fHit){c.powerUpTimer += 400; poopPenatrate = true; c.fHit = false;}
-            if (c.gHit){c.powerUpTimer += 400; c.gravity = 400.0; c.gHit = false;}
+            if (c.fHit){c.powerUpTimer = math::min(c.powerUpTimer + 400, maxTimer); poopPenatrate = true; c.fHit = false;}
+            if (c.gHit){c.powerUpTimer = math::min(c.powerUpTimer + 400, maxTimer); c.gravity = 400.0; c.gHit = false;}
 
         c.pos.x -= c.acceleration * deltaTime;
         c.texFlip = true;
@@ -145,7 +149,8 @@ fn void jump(Construct* c, float deltaTime){
             }
 
             //powerup
-            if (c.sHit){c.powerUpTimer += 400; c.invlunerable = true; c.sHit = false;}
+            float maxTimer = forge_main::useHighFPS ? forge_game::MAX_POWERUP_TIME_120FPS : forge_game::MAX_POWERUP_TIME_60FPS;
+            if (c.sHit){c.powerUpTimer = math::min(c.powerUpTimer + 400, maxTimer); c.invlunerable = true; c.sHit = false;}
 
             if(c.hHit && c.invulnTimer <= 0){
                   c.hHit = false;
@@ -156,8 +161,8 @@ fn void jump(Construct* c, float deltaTime){
             }
 
             //powerup
-            if (c.fHit){c.powerUpTimer += 400; poopPenatrate = true; c.fHit = false;}
-            if (c.gHit){c.powerUpTimer += 400; c.gravity = 400.0; c.gHit = false;}
+            if (c.fHit){c.powerUpTimer = math::min(c.powerUpTimer + 400, maxTimer); poopPenatrate = true; c.fHit = false;}
+            if (c.gHit){c.powerUpTimer = math::min(c.powerUpTimer + 400, maxTimer); c.gravity = 400.0; c.gHit = false;}
 
             c.vel.y += c.gravity * deltaTime;
             c.pos.y += c.vel.y * deltaTime;

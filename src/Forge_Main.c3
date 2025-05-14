@@ -949,7 +949,12 @@ fn int main(String[] args) {
 				    rl::drawText(rl::textFormat("Invulnerable: %.1f", player.invulnTimer), 15, 150, 23, rl::RAYWHITE);
 				}
 				if(player.powerUpTimer >= 0){
-				    rl::drawText(rl::textFormat("PowerUp: %.1f", player.powerUpTimer), 15, 175, 23, rl::RAYWHITE);
+					float maxTimer = useHighFPS ? forge_game::MAX_POWERUP_TIME_120FPS : forge_game::MAX_POWERUP_TIME_60FPS;
+					if(player.powerUpTimer >= maxTimer){
+				    	rl::drawText("PowerUp: MAX", 15, 175, 23, rl::YELLOW);
+					} else {
+				    	rl::drawText(rl::textFormat("PowerUp: %.1f", player.powerUpTimer), 15, 175, 23, rl::RAYWHITE);
+					}
 				}
 				//end Hud
 
@@ -1145,7 +1150,12 @@ fn int main(String[] args) {
 				    rl::drawText(rl::textFormat("Invulnerable: %.1f", player.invulnTimer), 15, 150, 23, rl::RAYWHITE);
 				}
 				if(player.powerUpTimer >= 0){
-				    rl::drawText(rl::textFormat("PowerUp: %.1f", player.powerUpTimer), 15, 175, 23, rl::RAYWHITE);
+					float maxTimer = useHighFPS ? forge_game::MAX_POWERUP_TIME_120FPS : forge_game::MAX_POWERUP_TIME_60FPS;
+					if(player.powerUpTimer >= maxTimer){
+				    	rl::drawText("PowerUp: MAX", 15, 175, 23, rl::YELLOW);
+					} else {
+				    	rl::drawText(rl::textFormat("PowerUp: %.1f", player.powerUpTimer), 15, 175, 23, rl::RAYWHITE);
+					}
 				}
 				//end Hud
 
@@ -1258,7 +1268,12 @@ fn int main(String[] args) {
         				    rl::drawText(rl::textFormat("Invulnerable: %.1f", player.invulnTimer), 15, 150, 23, rl::RAYWHITE);
         				}
         				if(player.powerUpTimer >= 0){
-        				    rl::drawText(rl::textFormat("PowerUp: %.1f", player.powerUpTimer), 15, 175, 23, rl::RAYWHITE);
+        					float maxTimer = useHighFPS ? forge_game::MAX_POWERUP_TIME_120FPS : forge_game::MAX_POWERUP_TIME_60FPS;
+        					if(player.powerUpTimer >= maxTimer){
+        				    	rl::drawText("PowerUp: MAX", 15, 175, 23, rl::YELLOW);
+        					} else {
+        				    	rl::drawText(rl::textFormat("PowerUp: %.1f", player.powerUpTimer), 15, 175, 23, rl::RAYWHITE);
+        					}
         				}
         				//end Hud
         				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
@@ -1348,7 +1363,12 @@ fn int main(String[] args) {
         				    rl::drawText(rl::textFormat("Invulnerable: %.1f", player.invulnTimer), 15, 150, 23, rl::RAYWHITE);
         				}
         				if(player.powerUpTimer >= 0){
-        				    rl::drawText(rl::textFormat("PowerUp: %.1f", player.powerUpTimer), 15, 175, 23, rl::RAYWHITE);
+        					float maxTimer = useHighFPS ? forge_game::MAX_POWERUP_TIME_120FPS : forge_game::MAX_POWERUP_TIME_60FPS;
+        					if(player.powerUpTimer >= maxTimer){
+        				    	rl::drawText("PowerUp: MAX", 15, 175, 23, rl::YELLOW);
+        					} else {
+        				    	rl::drawText(rl::textFormat("PowerUp: %.1f", player.powerUpTimer), 15, 175, 23, rl::RAYWHITE);
+        					}
         				}
         				//end Hud
         				rl::drawRectangle(0, 300, 1920, 200, rl::BLACK);
