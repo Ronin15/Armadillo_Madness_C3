@@ -29,7 +29,7 @@ const float HIGH_FPS_VALUE = 120.0;
 bool useHighFPS = false;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const String GAME_NAME = "Armadillo Madness 0.9.9"; //ui update, options update, and almost all game states complete
+const String GAME_NAME = "Armadillo Madness 1.0.0"; //ui update, options update, and almost all game states complete
 const int MAX_CONSTRUCTS = 275;//100 // 200//
 const int MAX_BOSS_CONSTRUCTS = 50;
 const int MAX_BOSS_POWER_UPS = 6;
@@ -55,7 +55,7 @@ float[FRAME_TIME_HISTORY_SIZE] frameTimeHistory;
 int frameTimeHistoryIndex = 0;
 bool frameTimeHistoryFilled = false;
 float smoothedDeltaTime = TIME_STEP; // Start with ideal time step
-const float SMOOTHING_FACTOR = 0.6f; // Lower = more smoothing, higher = more responsive .3
+const float SMOOTHING_FACTOR = 0.8f; // Lower = more smoothing, higher = more responsive .3
 const float BUSY_WAIT_THRESHOLD = 0.001f; // Threshold for busy waiting vs sleep
 const float SLEEP_TIME_SCALE = 0.95f; // Scale factor for sleep time to avoid oversleeping
 
@@ -232,7 +232,7 @@ fn int main(String[] args) {
 
 		// Track how many updates we've done this frame
 		int updatesThisFrame = 0;
-		const int MAX_UPDATES_PER_FRAME = 3; // Prevent spiral of death
+		const int MAX_UPDATES_PER_FRAME = 5; // Prevent spiral of death
 
 		// Process inputs (should be done once per frame, outside the fixed timestep loop)
 		float renderDeltaTime = smoothedDeltaTime; // Use smoothed delta time for rendering
@@ -611,7 +611,7 @@ fn int main(String[] args) {
 
                 // Poop shot is now updated in fixed timestep
 
-					if (demoCounter2 > 12000){//10000
+				/*	if (demoCounter2 > 12000){//10000
 						demoCounter2 = 0;
 						demoPlayer = forge_game::forgeCronstructPlayer(&tMap, "demo");
 						forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
@@ -619,12 +619,8 @@ fn int main(String[] args) {
 						frameCounter = 0;
 						state = MAIN;
 					}
-
+				*/
 					// AI movement in fixed timestep
-					// Retrieve AI movement state from render section
-					//static bool demoMovingLeft = false;
-					//static bool shouldJump = false;
-
 					// Apply AI movement
 					if(demoMovingLeft) {
 						// Move left (with 2.0x speed multiplier)
@@ -899,10 +895,11 @@ fn int main(String[] args) {
 						if (!dayBoss.active) {
 							// Half the boss counter increment when High FPS is enabled to make bosses spawn in double the time
 							dayBossCounter += useHighFPS ? 0.5 : 1;
+							
 							// Log boss counter progress every 1000 frames
-							if ((int)dayBossCounter % 1000 == 0) {
+							//if ((int)dayBossCounter % 1000 == 0) {
 								//io::printfn("Day Boss Counter: %f / %d", dayBossCounter, BOSS_TIMER);
-							}
+							//}
 							if (dayBossCounter >= BOSS_TIMER){
 								io::printfn("COUGAR_BOSS Triggered! Counter: %f", dayBossCounter);
 								// Don't reset the counter here, only reset when boss is re-created
@@ -911,7 +908,6 @@ fn int main(String[] args) {
 								constructs = forge_game::forgeConstructs(&tMap,"day_boss",MAX_BOSS_CONSTRUCTS);
 							}
 						}
-
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
@@ -935,7 +931,6 @@ fn int main(String[] args) {
                 if (rl::isKeyPressed(rl::KEY_F1)) {
                     forge_controller::toggle_debug();
                 }
-
 
 				//life tracking updating
 				if (&player.lives == &player.lives){
@@ -1034,11 +1029,9 @@ fn int main(String[] args) {
 		  			rl::playSound(sMap.get("pause")!!);
 		  		}
 
-					// Collision checks are now handled entirely in the fixed timestep update
+				// Collision checks are now handled entirely in the fixed timestep update
 				//update game logic-------------------------------------------------------------------------------
 				frameCounter +=1;
-
-				// All physics and game logic updates are now handled in the fixed timestep section
 
 				// Only handle transition-related state changes here
 				if (inTransition && player.isDead) {
@@ -1062,12 +1055,6 @@ fn int main(String[] args) {
 					}
 				}
 
-				// Physics updates for objects are now handled in the fixed timestep section only
-
-				// Collisions are now handled in fixed timestep only
-				// Keeping laser rendering position updates here
-
-				// Laser firing is now handled in fixed timestep only
 				if(nightBoss.active){
 
 							if (nightBoss.isDead && !inTransition){
@@ -1102,10 +1089,11 @@ fn int main(String[] args) {
 						if (!nightBoss.active) {
 							// Half the boss counter increment when High FPS is enabled to make bosses spawn in double the time
 							nightBossCounter += useHighFPS ? 0.5 : 1;
+							
 							// Log boss counter progress every 1000 frames
-							if ((int)nightBossCounter % 1000 == 0) {
+							//if ((int)nightBossCounter % 1000 == 0) {
 								//io::printfn("Night Boss Counter: %f / %d", nightBossCounter, BOSS_TIMER);
-							}
+							//}
 							if (nightBossCounter >= BOSS_TIMER){
 								io::printfn("ALIEN_BOSS Triggered! Counter: %f", nightBossCounter);
 								nightBoss.active = true;
@@ -1136,7 +1124,6 @@ fn int main(String[] args) {
                 if (rl::isKeyPressed(rl::KEY_F1)) {
                     forge_controller::toggle_debug();
                 }
-
 
 				//life tracking updating
 				if (&player.lives == &player.lives){
@@ -1281,7 +1268,6 @@ fn int main(String[] args) {
            	            // Update mouse control if enabled (for menu navigation)
                         forge_controller::update_mouse_control();
 
-
                         // Add restart button
                         Button restartButton = uiButtons[6]; // restartButton is index 6
                         forge_ui::ButtonResult result = forge_ui::updateButton(&restartButton, &sMap, state, {(WINDOW_WIDTH / 2) - 70, 525});
@@ -1376,7 +1362,6 @@ fn int main(String[] args) {
            	            // Update mouse control if enabled (for menu navigation)
                         forge_controller::update_mouse_control();
 
-
                         // Add restart button
                         Button restartButton = uiButtons[6]; // restartButton is index 6
                         forge_ui::ButtonResult result = forge_ui::updateButton(&restartButton, &sMap, state, {(WINDOW_WIDTH / 2) - 70, 525});
@@ -1410,14 +1395,13 @@ fn int main(String[] args) {
                 }
 
 			case GAME_WIN:
-				//TODO still needs more work but framework is there, needs art animations, music.
 				//io::printfn("Game_WIN State");
 				rl::playMusicStream(mMap.get("gameWin")!!);
 				rl::updateMusicStream(mMap.get("gameWin")!!);
 				rl::clearBackground(rl::BLACK);
-
 				rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
 				forge_fx::drawRainbow();
+
 				// Draw a transparent block behind win text
 				rl::drawRectangle((WINDOW_WIDTH / 2) - 750, 75, 1500, 200, rl::fade(rl::BLACK, 0.7f));
 				forge_fx::forgeFXManager(&mMap, &sMap,"fireworks",renderDeltaTime);
@@ -1471,17 +1455,12 @@ fn int main(String[] args) {
 				break;
 
 			case GAME_OVER:
-				//io::printfn("Game_Over State");
-
 				//rl::showCursor();
-				//rl::playMusicStream(mMap.get("gameOver")!!);
-				//rl::updateMusicStream(mMap.get("gameOver")!!);
 				rl::clearBackground(rl::BLACK);
 				if(!soundPlayed){rl::playSound(sMap.get("gameOver")!!); soundPlayed = true;}
 
 				// Background elements
 				rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
-				//rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.5f));
 
 				// Draw one large transparent box for all game over text
 				rl::drawRectangle((WINDOW_WIDTH / 2) - 520, 180, 1040, 310, rl::fade(rl::BLACK, 0.8f));
@@ -1544,7 +1523,6 @@ fn int main(String[] args) {
                 int boxX = (WINDOW_WIDTH / 2) - 650;
                 int boxY = 390;
                 rl::drawRectangle(boxX, boxY, boxWidth, boxHeight, rl::fade(rl::BLACK, 0.8f));
-
 				rl::drawText("Use Controller D-Pad or Keyboard up, down, left, right.", ((WINDOW_WIDTH / 2) - 600), 400, 45, rl::GOLD);
 
                 // Update mouse control if enabled (for menu navigation)
@@ -1558,13 +1536,9 @@ fn int main(String[] args) {
                     rl::drawText(rl::textFormat("Controller: %s", rl::getGamepadName(forge_controller::activeController)), 205, 80, 18, rl::YELLOW);
                 }
 
-				//rl::drawTextureEx(tMap.get("armadillo")!!, {850, 825}, 0.0, 2.0, rl::WHITE);
-				//rl::drawTextureEx(tMap.get("catLeft")!!, {1120, 815}, 0.0, 3.0, rl::WHITE);
 				forge_ui::ButtonResult result = forge_ui::updateButton(&menuButton, &sMap, state, {10,10});
 				state = result.state;
 				forge_ui::drawButton(&menuButton);
-
-				//update master volume, music volume.
 
 				//draw Options
 				forge_options::drawOptions();
@@ -1615,10 +1589,7 @@ fn int main(String[] args) {
 					// Draw background
 					rl::clearBackground(rl::BLACK);
 					rl::drawTexture(tMap.get("desertNight")!!, 0, 0, rl::WHITE);
-					//rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.5f));
-					//io::printfn("HIGH_SCORE state: Drawing high score table background");
 
-					// Draw the high scores
 					// Draw one large transparent box for high score content
 					rl::drawRectangle((rl::getScreenWidth() / 2) - 500, 50, 1000, 725, rl::fade(rl::BLACK, 0.8f));
 					// Draw the high scores within the transparent box
@@ -1669,8 +1640,8 @@ fn int main(String[] args) {
 
 			     if (!demoConstructs){
 			         io::printfn("init_array -> Demo");
-					//creating demo entities
-					demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
+					 //creating demo entities
+					 demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
 				}
 
 				rl::hideCursor();
@@ -1689,6 +1660,15 @@ fn int main(String[] args) {
 					frameCounter = 0;
                     state = MAIN;
 					//clean all assetes needed here to fully reset. Use Diffrent Demo Array.
+				}
+				
+				if (demoCounter2 > 12000){//10000
+					demoCounter2 = 0;
+					demoPlayer = forge_game::forgeCronstructPlayer(&tMap, "demo");
+					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
+					demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
+					frameCounter = 0;
+					state = MAIN;
 				}
 
 
@@ -1789,7 +1769,7 @@ fn int main(String[] args) {
 		if (showFPS) {
 			// Draw FPS in top-right corner
 			rl::drawRectangle(WINDOW_WIDTH - 100, 10, 90, 30, rl::fade(FORGE_GRAY, 0.7f));
-			rl::drawText(rl::textFormat("FPS: %d", currentFPS), WINDOW_WIDTH - 90, 15, 20, rl::LIME);
+			rl::drawText(rl::textFormat("FPS: %d", currentFPS), WINDOW_WIDTH - 90, 15, 20, rl::YELLOW);
 		}
 
 		// End drawing mode for this frame

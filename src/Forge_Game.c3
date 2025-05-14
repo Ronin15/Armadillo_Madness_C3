@@ -462,7 +462,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
       // Optimize performance by skipping entities that are far off the left side of the screen
       // Keep processing all other entities, including those off-screen to the right
       // For dead entities, continue processing until they fall off the bottom of the screen
-      if (c.type != PLAYER && !c.name.contains("boss") && c.pos.x < -300.0f &&
+      if (c.type != PLAYER && !c.name.contains("boss") && c.type != PROJECTILE && c.pos.x < -300.0f &&
           (!c.isDead || (c.isDead && c.pos.y > forge_main::WINDOW_HEIGHT + 100))) {
          return 0;
       }
