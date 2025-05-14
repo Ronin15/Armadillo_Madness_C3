@@ -50,12 +50,12 @@ float fpsUpdateTimer = 0.0f;
 int currentFPS = 0;
 
 // Frame pacing and delta time smoothing
-const int FRAME_TIME_HISTORY_SIZE = 3;
+const int FRAME_TIME_HISTORY_SIZE = 10;
 float[FRAME_TIME_HISTORY_SIZE] frameTimeHistory;
 int frameTimeHistoryIndex = 0;
 bool frameTimeHistoryFilled = false;
 float smoothedDeltaTime = TIME_STEP; // Start with ideal time step
-const float SMOOTHING_FACTOR = 1.0f; // Lower = more smoothing, higher = more responsive .3
+const float SMOOTHING_FACTOR = 0.6f; // Lower = more smoothing, higher = more responsive .3
 const float BUSY_WAIT_THRESHOLD = 0.001f; // Threshold for busy waiting vs sleep
 const float SLEEP_TIME_SCALE = 0.95f; // Scale factor for sleep time to avoid oversleeping
 
