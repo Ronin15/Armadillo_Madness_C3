@@ -16,7 +16,7 @@ import std::math;
 const float GRAVITY = 760.0f;//200 for grav boots //650
 const float MOVE_VELOCITY = -330.0f;
 const float SKY_LEVEL = 0.0f;
-const float ACCELERATION = 325.0f; //175
+const float ACCELERATION = 350.0f; //175
 const float FRICTION = 34.0f;
 const float NIGHTB_FREQUENCY = 0.02f;
 const float NIGHTB_AMPLITUDE = 315.0f;//
@@ -402,6 +402,9 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
       constructs[i].type = getRandomType();
       constructs[i].name = (String)getRandomConstructName(constructs[i].type, array_type);
    }
+
+   // Set active state to true by default
+   constructs[i].active = true;
     if (capacity <= forge_main::MAX_CONSTRUCTS){
         constructs[i].pos = {(float)rand_in_range(2000,40000) + (float)rand_in_range(100,200),(float)rand_in_range(500,550) + (float)rand_in_range(64,100)};//21000 26000
       }
@@ -423,7 +426,7 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
     constructs[i].currentFrame = 1;
     constructs[i].texFlip = false;
     constructs[i].isDead = false;
-    constructs[i].expired = true;
+    constructs[i].expired = false; // Set to false so entities are active from the start
     constructs[i].hHit = false;
     constructs[i].vHit = false;
     constructs[i].anim = false;
@@ -445,6 +448,14 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
 fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining, float deltaTime) {
        int score = 0;
       // deltaTime = deltaTime * SPEED_MOD;
+
+      // Optimize performance by skipping entities that are far off the left side of the screen
+      // Keep processing all other entities, including those off-screen to the right
+      // For dead entities, continue processing until they fall off the bottom of the screen
+      if (c.type != PLAYER && !c.name.contains("boss") && c.pos.x < -300.0f &&
+          (!c.isDead || (c.isDead && c.pos.y > forge_main::WINDOW_HEIGHT + 100))) {
+         return 0;
+      }
 
       // SPECIAL HANDLING FOR ALIEN LASER - preserve X position and apply proper velocity
             float savedLaserX = 0.0f;
@@ -586,7 +597,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                 c.vel.y += c.gravity * deltaTime;
                 c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
                 c.groundLevel = groundLevel - c.texture.height - 5;
-                return 0;
+                // Don't return early so dead entities keep moving until they're off-screen
+                return score;
             }
 
             //movement

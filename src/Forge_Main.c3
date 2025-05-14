@@ -288,19 +288,30 @@ fn int main(String[] args) {
 
 					// Check collisions with constructs
 					foreach (&construct : constructs) {
+						// Skip already expired entities
+							if (construct.expired) continue;
+						
+							// Dead entities need to be processed until they fall off the bottom of screen
+							// but we skip collision checks for them
+							if (construct.isDead) {
+								// Just update dead entity (physics, falling, etc)
+								score += forge_game::updateConstruct(construct, &sMap, &tMap, raining, fixedDeltaTime);
+								continue;
+							}
+						
 						// Check collision between player and constructs
-						if (forge_physics::checkCollision(&player, construct) && construct.isDead == false) {
+						if (forge_physics::checkCollision(&player, construct)) {
 							forge_physics::resolveCollision(&player, construct, fixedDeltaTime);
 						}
 
 						// Check collision between poop shot and constructs
-						if (poopShot.isProjectileActive && poopShot.expired == false && construct.isDead == false) {
+						if (poopShot.isProjectileActive && !poopShot.expired) {
 							if (forge_physics::checkCollision(&poopShot, construct)) {
 								forge_physics::resolveCollision(&poopShot, construct, fixedDeltaTime);
 							}
 						}
 
-						// Update constructs
+						// Update constructs - will early return if off-screen
 						score += forge_game::updateConstruct(construct, &sMap, &tMap, raining, fixedDeltaTime);
 					}
 
@@ -416,19 +427,30 @@ fn int main(String[] args) {
 
 					// Check collisions with night constructs
 					foreach (&nightConstruct : nightConstructs) {
+						// Skip already expired entities
+							if (nightConstruct.expired) continue;
+						
+							// Dead entities need to be processed until they fall off the bottom of screen
+							// but we skip collision checks for them
+							if (nightConstruct.isDead) {
+								// Just update dead entity (physics, falling, etc)
+								score += forge_game::updateConstruct(nightConstruct, &sMap, &tMap, raining, fixedDeltaTime);
+								continue;
+							}
+						
 						// Check collision between player and night constructs
-						if (forge_physics::checkCollision(&player, nightConstruct) && nightConstruct.isDead == false) {
+						if (forge_physics::checkCollision(&player, nightConstruct)) {
 							forge_physics::resolveCollision(&player, nightConstruct, fixedDeltaTime);
 						}
 
 						// Check collision between poop shot and night constructs
-						if (poopShot.isProjectileActive && poopShot.expired == false && nightConstruct.isDead == false) {
+						if (poopShot.isProjectileActive && !poopShot.expired) {
 							if (forge_physics::checkCollision(&poopShot, nightConstruct)) {
 								forge_physics::resolveCollision(&poopShot, nightConstruct, fixedDeltaTime);
 							}
 						}
 
-						// Update night constructs
+						// Update night constructs - will early return if off-screen
 						score += forge_game::updateConstruct(nightConstruct, &sMap, &tMap, raining, fixedDeltaTime);
 					}
 
@@ -637,19 +659,30 @@ fn int main(String[] args) {
 
 					// Check collisions with demo constructs
 					foreach (&demoConstruct : demoConstructs) {
-						// Check collision between demo player and constructs
-						if (forge_physics::checkCollision(&demoPlayer, demoConstruct) && demoConstruct.isDead == false) {
+						// Skip already expired entities
+							if (demoConstruct.expired) continue;
+						
+							// Dead entities need to be processed until they fall off the bottom of screen
+							// but we skip collision checks for them
+							if (demoConstruct.isDead) {
+								// Just update dead entity (physics, falling, etc)
+								forge_game::updateConstruct(demoConstruct, &sMap, &tMap, raining, fixedDeltaTime);
+								continue;
+							}
+						
+						// Check collision between demo player and demo constructs
+						if (forge_physics::checkCollision(&demoPlayer, demoConstruct)) {
 							forge_physics::resolveCollision(&demoPlayer, demoConstruct, fixedDeltaTime);
 						}
 
-						// Check collision between poop shot and constructs
-						if (poopShot.isProjectileActive && poopShot.expired == false && demoConstruct.isDead == false) {
-							if(forge_physics::checkCollision(&poopShot, demoConstruct)) {
+						// Check collision between poop shot and demo constructs
+						if (poopShot.isProjectileActive && !poopShot.expired) {
+							if (forge_physics::checkCollision(&poopShot, demoConstruct)) {
 								forge_physics::resolveCollision(&poopShot, demoConstruct, fixedDeltaTime);
 							}
 						}
 
-						// Update constructs
+						// Update constructs - will early return if off-screen
 						forge_game::updateConstruct(demoConstruct, &sMap, &tMap, raining, fixedDeltaTime);
 					}
 					break;
