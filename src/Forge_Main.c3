@@ -30,7 +30,7 @@ bool useHighFPS = false;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
 const String GAME_NAME = "Armadillo Madness 0.9.9"; //ui update, options update, and almost all game states complete
-const int MAX_CONSTRUCTS = 225;//100 // 200//
+const int MAX_CONSTRUCTS = 275;//100 // 200//
 const int MAX_BOSS_CONSTRUCTS = 50;
 const int MAX_BOSS_POWER_UPS = 6;
 const int MAX_POWERUPS = 16;//6
@@ -347,7 +347,7 @@ fn int main(String[] args) {
 
 					if(weatherTimer <= 0.0){
 						raining = false;
-						weatherTimer = 0.0;
+						weatherTimer = 0;
 					}
 					break;
 
@@ -397,7 +397,7 @@ fn int main(String[] args) {
 
 					if(weatherTimer <= 0.0){
 						raining = false;
-						weatherTimer = 0.0;
+						weatherTimer = 0;
 					}
 
 					// Update alien laser if night boss is active

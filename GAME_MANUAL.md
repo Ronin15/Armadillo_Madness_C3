@@ -20,7 +20,7 @@
 
 ### Power Upss
 
-- **Mushroom**: Makes you invincible for longer and gives you movement speed. This lets you pull off some crazy combos!
+- **Mushroom**: Makes you invincible for longer and gives you movement speed. This lets you pull off some crazy combos! Also, the speed boost stacks up to 3 times!
 - **Can 'o' Food**: Gives you super poops that shoot through all bad guys and obstacles.
 - **Grav-Boots**: lets you jump higher and stay in the air longer.
 - All power up timers stack and chain meaning you can have all of them at the same time and getting one power up while all are active extends the time on them all.
