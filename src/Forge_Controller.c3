@@ -499,9 +499,6 @@ fn void update_controller_activity(float delta_time) {
         controllerActive = true;
         lastControllerActivityTime = rl::getTime();
 
-        if (debugEnabled) {
-            io::printfn("Controller input detected, marking as active");
-        }
     } else {
         // Check if the controller has been inactive for a while
         double current_time = rl::getTime();

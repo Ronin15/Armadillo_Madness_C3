@@ -32,7 +32,8 @@
 
 ## Debugging Features
 
-- Press **F1** if console is enabled will show contorller Axis Debug information.
+- Press **F1** if console is enabled will show contorller Debug information.
+- Press **F3** to toggle mouse cursor on/off. When controller is detected.
 - Press **F4** at any time to show FPS counter in top right corner.
 
 ## Implementation Notes
@@ -50,6 +51,7 @@ If your controller is not working as expected:
 1. Check the PC to see if the controller is detected. (Wireless preffered)
 2. If the game detects a controller, a detection box will appear in the top left of the Main Menu.
 3. Xbox series X and PS4 controllers tested to work, but any generic of those types should be fine.
+4. Pressing F1 will enable some debug information to show the controller info in the game terminal.
 
 ## Compatibility
 

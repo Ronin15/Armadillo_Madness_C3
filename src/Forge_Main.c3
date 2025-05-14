@@ -347,6 +347,7 @@ fn int main(String[] args) {
 
 					if(weatherTimer <= 0.0){
 						raining = false;
+						weatherTimer = 0.0;
 					}
 					break;
 
@@ -396,6 +397,7 @@ fn int main(String[] args) {
 
 					if(weatherTimer <= 0.0){
 						raining = false;
+						weatherTimer = 0.0;
 					}
 
 					// Update alien laser if night boss is active
