@@ -493,6 +493,18 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
          return 0;
       }
 
+      // Apply screen boundaries for player
+      if (c.type == PLAYER && c.name != "demo") {
+          // Left boundary
+          if (c.pos.x < 0) {
+              c.pos.x = 0;
+          }
+          // Right boundary (taking into account player texture width)
+          if (c.pos.x > (float)forge_main::WINDOW_WIDTH - c.texture.width) {
+              c.pos.x = (float)forge_main::WINDOW_WIDTH - c.texture.width;
+          }
+      }
+
       // SPECIAL HANDLING FOR ALIEN LASER - preserve X position and apply proper velocity
             float savedLaserX = 0.0f;
             bool isLaser = false;
