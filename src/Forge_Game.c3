@@ -197,10 +197,10 @@ fn void resetPowerUpCounters() {
 }
 
 fn String getRandomConstructName (ConstructType type, String array_type){
-   //String[*] nightGround = {"scorpion","spider","mouse","racoon"};
-   //String[*] nightFlying = {"owl","moth","alien_boss"};
-   String[*] groundTypes = {"ant","turtle","snake","fox","cougar_boss","scorpion","spider","mouse","racoon"};
-   String[*] flyingTypes = {"bird","beatle","owl","moth","alien_boss"};
+   String[*] nightGround = {"scorpion","spider","mouse","racoon"};
+   String[*] nightFlying = {"owl","moth","alien_boss"};
+   String[*] groundTypes = {"ant","turtle","snake","fox","cougar_boss"};
+   String[*] flyingTypes = {"bird","beatle"};
    String[*] obstacleTypes = {"cactus","boulder","tree"};
    String[*] powerUps = {"grav","food","super"};
 
@@ -208,18 +208,32 @@ fn String getRandomConstructName (ConstructType type, String array_type){
    int fLength = flyingTypes.len - 1;
    int oLength = obstacleTypes.len - 1;
    int pLength = powerUps.len -1;
+   int ngLength = nightGround.len -1;
+   int nfLength = nightFlying.len -1;
 
-      if (type == ConstructType.ENEMY_GROUND){
-      int index = rand_in_range(0, gLength);
-     // io::printfn("name -> %s  type -> %s  texture -> %s !",groundTypes[index],type);
-      return groundTypes[index];
-      }
+    if (type == ConstructType.ENEMY_GROUND){
+        if(array_type == "day"){
+            int index = rand_in_range(0, gLength);
+            //io::printfn("name -> %s  type -> %s  texture -> %s !",groundTypes[index],type);
+             return groundTypes[index];
+        }else{
+            int index = rand_in_range(0, ngLength);
+            //io::printfn("name -> %s  type -> %s  texture -> %s !",nightGround[index],type);
+            return nightGround[index];
+        }
+    }
 
       if (type == ConstructType.ENEMEY_FLY){
-      int index = rand_in_range(0, fLength);
-      //io::printfn("name -> %s  type -> %s  texture -> %s !",flyingTypes[index],type);
-      return flyingTypes[index];
-      }
+          if(array_type == "day"){
+             int index = rand_in_range(0, fLength);
+             //io::printfn("name -> %s  type -> %s  texture -> %s !",groundTypes[index],type);
+             return flyingTypes[index];
+          }else{
+             int index = rand_in_range(0, nfLength);
+             //io::printfn("name -> %s  type -> %s  texture -> %s !",nightFlying[index],type);
+             return nightFlying[index];
+            }
+        }
 
       if (type == ConstructType.OBS){
       int index = rand_in_range(0, oLength);
