@@ -15,7 +15,6 @@ import std::math;
 //Game globals and consts -------------------------------------------------
 const float GRAVITY = 760.0f;//200 for grav boots //650
 const float MOVE_VELOCITY = -330.0f;
-const float SKY_LEVEL = 0.0f;
 const float ACCELERATION = 350.0f; //175
 const float FRICTION = 34.0f;
 const float NIGHTB_FREQUENCY = 0.02f;
@@ -34,7 +33,7 @@ const float POWERUP_SOFFSET = 43.0f;
 const float MOUSE_SOFFSET = 44.0f;//40
 const float COUGAR_SOFFSET = 45.0f;//40
 const float RACOON_SOFFSET = 44.0f;//35
-const float ACCEL_MOD = 4.0; //entity movement speed mod//3.7 good
+const float ACCEL_MOD = 4.1; //entity movement speed mod//3.7 good
 const int ENTITY_HITBOX_WIDTH = 64;
 const int ENTITY_HITBOX_HEIGHT = 64;
 const int BOSS_HITBOX_WIDTH = 100;
@@ -236,9 +235,9 @@ fn String getRandomConstructName (ConstructType type, String array_type){
         }
 
       if (type == ConstructType.OBS){
-      int index = rand_in_range(0, oLength);
-      //io::printfn("name -> %s  type -> %s  texture -> %s !",obsticlesTypes[index],type);
-      return obstacleTypes[index];
+        int index = rand_in_range(0, oLength);
+        //io::printfn("name -> %s  type -> %s  texture -> %s !",obsticlesTypes[index],type);
+        return obstacleTypes[index];
       }
 
       if (type == ConstructType.POWER_UP) {
@@ -382,6 +381,7 @@ fn Construct forgeCronstructPlayer(TexMap *tMap, String name) {
       io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
 }
+
 fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
 
       Construct c;
@@ -422,7 +422,6 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
       //io::printfn("name -> %s  type -> %s  texture -> %s !",c.name,c.type,c.texture);
       return c;
 }
-
 
 //creates game objects
 fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = forge_main::MAX_CONSTRUCTS) {
