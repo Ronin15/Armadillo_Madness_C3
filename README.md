@@ -6,7 +6,7 @@ SPECS:
 
     MAC OS: M series only
 
-    Linux: Ubuntu 20.04 LTS
+    Linux: Ubuntu 24.04 LTS
     **Fullscreen on Linux not working do to raylib wayland openGL issue possibly**
 GRAPHICS: any video device supports Open GL 3.0
 
