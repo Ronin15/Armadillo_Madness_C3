@@ -144,10 +144,7 @@ fn void toggleFullScreen (int gsWidth, int gsHeight){
 
 fn Music playRandomSong(MusicMap* mMap){
     String[*] playList = {"bicycle","banjo","banana"};
-    int playListLength = playList.len -1;
-    int min = 0;
-    int max = playListLength;
-    int selectedSong = rand_in_range(min,max);
+    int selectedSong = rand_in_range(0, playList.len - 1);
     String randSong = playList[selectedSong];
    //io::printfn("Playing random song: %s", randSong);
     Music song = mMap.get(randSong)!!;
@@ -165,14 +162,8 @@ fn ConstructType getRandomType(){
 }
 
 fn bool randChanceCheck(){
-   int chance;
-   chance = rand_in_range(0, 8000);
-
-   if (chance == 500){
-      return true;
-   }else{
-      return false;
-   }
+   int chance = rand_in_range(0, 8000);
+   return chance == 500;
 }
 
 // Function to reset all power-up counters when game resets
@@ -495,25 +486,25 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
          return 0;
       }
 
-      // Apply screen boundaries for player
+      // Apply screen boundaries for player - restrict movement within the visible window
+      // This prevents the player from moving off either edge of the screen
+      // Demo player is excluded so it can move freely in demo mode
       if (c.type == PLAYER && c.name != "demo") {
-          // Left boundary
+          // Left boundary - don't allow player to move past left edge of screen
           if (c.pos.x < 0) {
               c.pos.x = 0;
           }
-          // Right boundary (taking into account player texture width)
+          // Right boundary - don't allow player to move past right edge (accounting for player width)
           if (c.pos.x > (float)forge_main::WINDOW_WIDTH - c.texture.width) {
               c.pos.x = (float)forge_main::WINDOW_WIDTH - c.texture.width;
           }
       }
 
-      // SPECIAL HANDLING FOR ALIEN LASER - preserve X position and apply proper velocity
-            float savedLaserX = 0.0f;
-            bool isLaser = false;
-            if (c.name == "laser") {
-               isLaser = true;
-               savedLaserX = c.pos.x;
-            }
+      // SPECIAL HANDLING FOR ALIEN LASER - any laser-specific initialization
+      // Position and movement updates are handled in the projectile case below
+                  if (c.name == "laser") {
+                     // Laser specific processing happens in PROJECTILE case
+                  }
 
       //all construct update info-------------------------------------------------
       //Frame updates
@@ -1235,10 +1226,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
       return score;
 }
 
-fn void drawPoopShot(Construct* c, Construct* b, float rotation = 90.0, float scale = 1.0) {
-   scale = 1.5;
-   rotation = rotation;
-   //b is the player for poop location.
+fn void drawPoopShot(Construct* c, Construct* b, float rotation = 90.0, float scale = 1.5) {
+   // b is the player construct used for positioning the projectile
 
    if (c.expired && b.isProjectileActive == false){
       c.pos.x = b.pos.x + b.texture.width;
@@ -1296,10 +1285,8 @@ fn void drawAlienLaser(Construct* c, Construct* b, float rotation = 270.0, float
    }
 }
 
-//draw sprites without animation
-fn void drawConstruct(Construct* c, float rotation = 0.0, float scale = 2.0){ //Construct *b = {}
-   scale = scale;
-   rotation = rotation;
+// Draw sprites that don't need animation
+fn void drawConstruct(Construct* c, float rotation = 0.0, float scale = 2.0){
 
 	rl::drawTextureEx(c.texture, c.pos, rotation, scale, rl::WHITE);
 }

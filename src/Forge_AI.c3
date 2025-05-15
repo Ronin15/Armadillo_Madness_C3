@@ -37,7 +37,7 @@ fn void moveRight(Construct* c, float deltaTime){
                c.powerUpTimer -= 1.0;
             }else{
 
-              if (c.gravity == 400.0) {c.gravity = c.gravity;}
+              // No change needed for gravity when it's already at the special value
               if (c.invulnTimer <= 0.0) c.invlunerable = false;
               if (poopPenatrate){poopPenatrate = false;}
             }
@@ -93,7 +93,7 @@ fn void moveLeft(Construct* c, float deltaTime){
                c.powerUpTimer -= 1.0;
             }else{
 
-              if (c.gravity == 400.0) {c.gravity = c.gravity;}
+              // No change needed for gravity when it's already at the special value
               if (c.invulnTimer <= 0.0) c.invlunerable = false;
               if (poopPenatrate){poopPenatrate = false;}
             }
@@ -143,7 +143,7 @@ fn void jump(Construct* c, float deltaTime){
                c.powerUpTimer -= 1.0;
             }else{
 
-              if (c.gravity == 400.0) {c.gravity = c.gravity;}
+              // No change needed for gravity when it's already at the special value
               if (c.invulnTimer <= 0.0) c.invlunerable = false;
               if (poopPenatrate){poopPenatrate = false;}
             }
