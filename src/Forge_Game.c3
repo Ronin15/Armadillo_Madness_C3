@@ -212,7 +212,7 @@ fn String getRandomConstructName (ConstructType type, String array_type){
    int nfLength = nightFlying.len -1;
 
     if (type == ConstructType.ENEMY_GROUND){
-        if(array_type == "day"){
+        if(array_type == "day" || array_type == "day_boss"){
             int index = rand_in_range(0, gLength);
             //io::printfn("name -> %s  type -> %s  texture -> %s !",groundTypes[index],type);
              return groundTypes[index];
@@ -224,7 +224,7 @@ fn String getRandomConstructName (ConstructType type, String array_type){
     }
 
       if (type == ConstructType.ENEMEY_FLY){
-          if(array_type == "day"){
+          if(array_type == "day" || array_type == "day_boss"){
              int index = rand_in_range(0, fLength);
              //io::printfn("name -> %s  type -> %s  texture -> %s !",groundTypes[index],type);
              return flyingTypes[index];
@@ -971,6 +971,10 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
           c.vel.y += c.gravity * deltaTime;
           c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
           c.pos.x -= (POWERUP_SOFFSET * ACCEL_MOD) * deltaTime;
+          // Set powerup to expired if it goes off the right side of the screen
+          if (c.pos.x > 1900) {
+             c.expired = true;
+          }
           c.groundLevel = groundLevel - 40;
 
          break;
