@@ -972,7 +972,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
           c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
           c.pos.x -= (POWERUP_SOFFSET * ACCEL_MOD) * deltaTime;
           // Set powerup to expired if it goes off the right side of the screen
-          if (c.pos.x > 1900) {
+          if (c.pos.x < -300.0f) {
              c.expired = true;
           }
           c.groundLevel = groundLevel - 40;
