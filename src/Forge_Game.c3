@@ -19,7 +19,7 @@ const float SKY_LEVEL = 0.0f;
 const float ACCELERATION = 350.0f; //175
 const float FRICTION = 34.0f;
 const float NIGHTB_FREQUENCY = 0.02f;
-const float NIGHTB_AMPLITUDE = 315.0f;//
+const float NIGHTB_AMPLITUDE = 305.0f;//
 const float AMPLITUDE = 300.0f;//300
 const float FREQUENCY = 0.03f;//0.05
 const int MAX_HEARTS = 6;
@@ -65,7 +65,17 @@ bool shouldPlayHitAnim;
 //AI BOSS movement
 float jumpCounter;
 float shootCounter;
+float initialBossX;
 bool movingLeft = true;
+
+// Getter/setter for initial boss X position
+fn float getInitialBossX() {
+   return initialBossX;
+}
+
+fn void setInitialBossX(float x) {
+   initialBossX = x;
+}
 
 //GAME Structures Types ---------------------------------------------------------
  enum ConstructType : int {
@@ -370,8 +380,10 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
           c.pos = {2200,200};
           c.lives = 20;//20 hard
       }else{
-          c.pos = {2200,280};
+          c.pos = {2200,100};
           c.lives = 25;//30 hard
+          // Store initial X position for alien boss
+          initialBossX = c.pos.x;
       }
       c.hitBox = {c.pos.x,c.pos.y,ENTITY_HITBOX_WIDTH,ENTITY_HITBOX_HEIGHT};
       c.maxFrames = 2;
@@ -1141,7 +1153,13 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                    c.pos.y += NIGHTB_AMPLITUDE * math::sin(NIGHTB_FREQUENCY * (c.pos.x + c.acceleration)) * deltaTime;
                    c.pos.x += (125 * 3) * deltaTime;//125 * 4
                    c.texFlip = true;
-				      if(c.pos.x >= forge_main::WINDOW_WIDTH + 300) {movingLeft = true;}
+				      if(c.pos.x >= initialBossX) {
+                      movingLeft = true;
+                      // Exactly reset to initial X position when turning around
+                      c.pos.x = initialBossX;
+                      // Log the return to initial position
+                      io::printfn("Night boss returning to initial X position: %f", initialBossX);
+                   }
 
 					// Check if it's time to shoot
 					if (shootCounter > 200){

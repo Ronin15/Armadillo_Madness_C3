@@ -1099,6 +1099,8 @@ fn int main(String[] args) {
 							if (nightBossCounter >= BOSS_TIMER){
 								io::printfn("ALIEN_BOSS Triggered! Counter: %f", nightBossCounter);
 								nightBoss.active = true;
+								// Store the initial X position for proper return
+								forge_game::setInitialBossX(nightBoss.pos.x);
 								nightConstructs = forge_game::forgeConstructs(&tMap,"night_boss",MAX_BOSS_CONSTRUCTS);
 							}
 						}
