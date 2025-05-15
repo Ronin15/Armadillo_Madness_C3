@@ -443,6 +443,9 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
    constructs[i].active = true;
     if (capacity <= forge_main::MAX_CONSTRUCTS){
         constructs[i].pos = {(float)rand_in_range(2000,40000) + (float)rand_in_range(100,200),(float)rand_in_range(500,550) + (float)rand_in_range(64,100)};//21000 26000
+      }else{
+        //for boss entities
+        constructs[i].pos = {(float)rand_in_range(2000,20000) + (float)rand_in_range(100,200),(float)rand_in_range(500,550) + (float)rand_in_range(64,100)};//21000 26000
       }
 
     constructs[i].texture = tMap.get(constructs[i].name)!!;
