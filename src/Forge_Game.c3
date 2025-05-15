@@ -143,15 +143,15 @@ fn void toggleFullScreen (int gsWidth, int gsHeight){
 }
 
 fn Music playRandomSong(MusicMap* mMap){
+    // Array of available songs
     String[*] playList = {"bicycle","banjo","banana"};
-    int selectedSong = rand_in_range(0, playList.len - 1);
-    String randSong = playList[selectedSong];
-   //io::printfn("Playing random song: %s", randSong);
+    // Select a random song directly
+    String randSong = playList[rand_in_range(0, playList.len - 1)];
+    // Get, stop any current instance, and play the music
     Music song = mMap.get(randSong)!!;
-    rl::stopMusicStream(song); // Stop any currently playing instance
-    rl::playMusicStream(song); // Start playing the song
-    // Return the selected song name for reference
-   return song;
+    rl::stopMusicStream(song);
+    rl::playMusicStream(song);
+    return song;
 }
 
 fn ConstructType getRandomType(){
@@ -490,14 +490,11 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
       // This prevents the player from moving off either edge of the screen
       // Demo player is excluded so it can move freely in demo mode
       if (c.type == PLAYER && c.name != "demo") {
-          // Left boundary - don't allow player to move past left edge of screen
-          if (c.pos.x < 0) {
-              c.pos.x = 0;
-          }
-          // Right boundary - don't allow player to move past right edge (accounting for player width)
-          if (c.pos.x > (float)forge_main::WINDOW_WIDTH - c.texture.width) {
-              c.pos.x = (float)forge_main::WINDOW_WIDTH - c.texture.width;
-          }
+          // Clamp player position to screen boundaries
+          c.pos.x = math::clamp(c.pos.x, 0.0f, (float)forge_main::WINDOW_WIDTH - c.texture.width);
+          
+          // Adjust hitbox to match updated position
+          c.hitBox.x = ((float)c.pos.x + (float)c.texture.width / 2.0f) - PLAYER_HITBOX_OFFSET;
       }
 
       // SPECIAL HANDLING FOR ALIEN LASER - preserve X position for proper movement
@@ -553,15 +550,16 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             if (raining && c.name != "demo"){c.acceleration = 100;}//125
             if (!raining && c.acceleration == 100){c.acceleration = ACCELERATION;}
 
+            // Update animation and invulnerability timers
             if(c.animTimer >= 0.0){
                c.animTimer -= 1.0;
-            }else{
-               c.anim = false;}
+               if(c.animTimer < 0.0) c.anim = false;
+            }
 
             if(c.invulnTimer >= 0.0){
                c.invulnTimer -= 1.0;
-            }else{
-               c.invlunerable = false;}
+               if(c.invulnTimer < 0.0) c.invlunerable = false;
+            }
 
             if(c.powerUpTimer >= 0.0){
                c.powerUpTimer -= 1.0;
@@ -635,8 +633,13 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             //powerup
             // Use the appropriate max timer based on current FPS setting
             float maxTimer = forge_main::useHighFPS ? MAX_POWERUP_TIME_120FPS : MAX_POWERUP_TIME_60FPS;
-            if (c.fHit){c.powerUpTimer = math::min(c.powerUpTimer + 500, maxTimer); poopPenatrate = true; c.fHit = false;}
-            if (c.gHit){c.powerUpTimer = math::min(c.powerUpTimer + 500, maxTimer); c.gravity = 400.0; c.gHit = false;}
+            // Handle food and gravity power-ups
+            if (c.fHit || c.gHit){
+                c.powerUpTimer = math::min(c.powerUpTimer + 500, maxTimer);
+                if (c.fHit) poopPenatrate = true;
+                if (c.gHit) c.gravity = 400.0;
+                c.fHit = c.gHit = false;
+            }
 
             // Skip input processing if player is dead
             if (c.isDead) {
@@ -653,48 +656,25 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             bool movingRight = false;
             bool jumping = false;
 
-            // Check keyboard input
-            if (rl::isKeyDown(rl::KEY_LEFT)) {
-                movingLeft = true;
-            }
-            if (rl::isKeyDown(rl::KEY_RIGHT)) {
-                movingRight = true;
-            }
-            if (rl::isKeyDown(rl::KEY_SPACE) && c.isGrounded) {
-                jumping = true;
-            }
-            if (rl::isKeyPressed(rl::KEY_DOWN)) {
-                c.shootRequested = true;
-            }
-
-            // Check controller input
-            // D-pad movement
-            if (forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_LEFT.ordinal)) {
-                movingLeft = true;
-            }
-            if (forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_RIGHT.ordinal)) {
-                movingRight = true;
-            }
-
-            // Left analog stick movement
-            float leftStickX = forge_controller::get_axis(rl::GamepadAxis.LEFT_X.ordinal);
-            if (leftStickX < 0) {
-                movingLeft = true;
-            } else if (leftStickX > 0) {
-                movingRight = true;
-            }
-
-            // Jump button
-            if ((forge_controller::is_button_down(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal) ||
-                 forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_UP.ordinal)) &&
-                c.isGrounded) {
-                jumping = true;
-            }
-
-            // Poop shoot with controller (using B button)
-            if (forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_RIGHT.ordinal)) {
-                c.shootRequested = true;
-            }
+            // Collect input from both keyboard and controller
+            // Movement input
+            movingLeft = rl::isKeyDown(rl::KEY_LEFT) || 
+                         forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_LEFT.ordinal) ||
+                         forge_controller::get_axis(rl::GamepadAxis.LEFT_X.ordinal) < 0;
+                         
+            movingRight = rl::isKeyDown(rl::KEY_RIGHT) || 
+                          forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_RIGHT.ordinal) ||
+                          forge_controller::get_axis(rl::GamepadAxis.LEFT_X.ordinal) > 0;
+            
+            // Jump input (only when grounded)
+            jumping = c.isGrounded && (
+                      rl::isKeyDown(rl::KEY_SPACE) || 
+                      forge_controller::is_button_down(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal) ||
+                      forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_UP.ordinal));
+            
+            // Shoot input
+            c.shootRequested = rl::isKeyPressed(rl::KEY_DOWN) || 
+                               forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_RIGHT.ordinal);
 
             // Handle movement based on inputs
             if (movingLeft) {
@@ -762,13 +742,13 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                c.isProjectileActive = false;
             }
              if (c.hHit && poopPenatrate){
-                if(!rl::isSoundPlaying(sMap.get("poopHit")!!)){
-                rl::playSound(sMap.get("poopHit")!!);
-                }
-               c.expired = false;
-               c.isProjectileActive = true;
-               c.hHit = false;
-             }
+              // Play sound only if not already playing
+              if(!rl::isSoundPlaying(sMap.get("poopHit")!!)){
+                  rl::playSound(sMap.get("poopHit")!!);
+              }
+              // With penetration, projectile continues
+              c.hHit = false;
+           }
 
                c.groundLevel = groundLevel - c.texture.height + 80;
 
@@ -1202,28 +1182,20 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
       }
 
       // RESTORE LASER X POSITION - ensures laser moves straight down
-      if (isLaser && c.isProjectileActive) {
-         // Save current hitbox X position
-         float savedHitboxX = c.hitBox.x;
-
-         // Restore the X position
-         c.pos.x = savedLaserX;
-         c.vel.x = 0.0f;
-
-         // Apply laser's downward movement - 900 units per second
-         if (c.name == "laser") {
-            c.pos.y += 900.0f * deltaTime;
-         }
-
-         // Update hitbox X position to match laser's center
-         c.hitBox.x = savedLaserX - (c.hitBox.width / 2);
-
-         // Force expiration when laser reaches ground level
-         if (c.pos.y >= groundLevel) {
-            c.expired = true;
-            c.isProjectileActive = false;
-         }
-      }
+            if (isLaser && c.isProjectileActive) {
+               // Restore the X position and prevent horizontal movement
+               c.pos.x = savedLaserX;
+               c.vel.x = 0.0f;
+         
+               // Update hitbox X position to match laser's center
+               c.hitBox.x = savedLaserX - (c.hitBox.width / 2);
+         
+               // Force expiration when laser reaches ground level
+               if (c.pos.y >= groundLevel) {
+                  c.expired = true;
+                  c.isProjectileActive = false;
+               }
+            }
 
       return score;
 }
@@ -1231,14 +1203,14 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 fn void drawPoopShot(Construct* c, Construct* b, float rotation = 90.0, float scale = 1.5) {
    // b is the player construct used for positioning the projectile
 
-   if (c.expired && b.isProjectileActive == false){
+   if (c.expired && !b.isProjectileActive){
+      // Position projectile at player for next shot
       c.pos.x = b.pos.x + b.texture.width;
       c.pos.y = b.pos.y + b.texture.height;
-
    }else{
+      // Draw active projectile
       rl::drawTextureEx(c.texture, {c.pos.x,c.pos.y}, rotation, scale, rl::WHITE);
    }
-
 }
 
 // Draw alien boss laser beam
@@ -1289,7 +1261,7 @@ fn void drawAlienLaser(Construct* c, Construct* b, float rotation = 270.0, float
 
 // Draw sprites that don't need animation
 fn void drawConstruct(Construct* c, float rotation = 0.0, float scale = 2.0){
-
+	// Simple texture drawing with provided rotation and scale
 	rl::drawTextureEx(c.texture, c.pos, rotation, scale, rl::WHITE);
 }
 
@@ -1302,12 +1274,12 @@ fn void drawHitBox(Construct* c, Color color = rl::RED){
 fn void drawAnimatedConstruct(Construct* c, float rotation = 0.0){
    //setting up animation data on contructs
    Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
-   float obsSize = 3.5; //scaling up onbsticles 3.5
-   float normal = 2.0; // normal scale size without camera zoom 2.0
-   float powerUpSize = 1.0;
-   float bossSize = 3.5;
-   float super = 2.5; //2.5
-   float scale @noinit;
+   const float OBS_SIZE = 3.5; //scaling up onbsticles 3.5
+   const float NORMAL_SIZE = 2.0; // normal scale size without camera zoom 2.0
+   const float POWERUP_SIZE = 1.0;
+   const float BOSS_SIZE = 3.5;
+   const float SUPER_SIZE = 2.5; //2.5
+   float scale = NORMAL_SIZE; // Default scale
    rl::Color tint = rl::WHITE; // Default tint color
    // Colors for player flash effect
    rl::Color blueShade = {200, 200, 255, 255}; // Lighter blue with more transparency
@@ -1315,61 +1287,64 @@ fn void drawAnimatedConstruct(Construct* c, float rotation = 0.0){
    rl::Color purpleShade = {230, 200, 255, 255}; // Lighter purple with more transparency
 
    Rectangle srcRec = {
-     srcRec.x = (float)c.currentFrame * c.texture.width / c.maxFrames,
-     srcRec.y = 0.0,
-     srcRec.width = (float)c.texture.width / c.maxFrames,
-     srcRec.height = (float)c.texture.height,
+      (float)c.texture.width / (float)c.maxFrames * (float)c.currentFrame,
+      0,
+      (float)c.texture.width / (float)c.maxFrames,
+      (float)c.texture.height
    };
 
-         scale = normal;
-         if (c.type == OBS){
-               scale = obsSize;
-      }
-         if (c.type == POWER_UP){
-               scale = powerUpSize;
-      }
-         if(c.type == PLAYER && c.powerUpTimer > 0){
-               scale = super;
-      }
-         if(c.type == BOSS){
-            scale = bossSize;
-         }
+   // Set scale based on entity type
+   if (c.type == OBS){
+      scale = OBS_SIZE;
+   } else if (c.type == POWER_UP){
+      scale = POWERUP_SIZE;
+   } else if(c.type == PROJECTILE){
+      scale = 0.4;
+   }
+   
+   // Special scaling cases
+   if(c.type == PLAYER && c.powerUpTimer > 0){
+      scale = SUPER_SIZE;
+   }
+   if(c.type == BOSS){
+      scale = BOSS_SIZE;
+   }
+   if(c.name == "catEndAnim"){
+      scale = 3.5;
+   }
 
-         if(c.name == "catEndAnim"){
-            scale = 3.5;
-         }
-
+   // Set up destination rectangle for drawing
    Rectangle destRec = {
-      destRec.x = c.pos.x,
-      destRec.y = c.pos.y,
-      destRec.width = (float)c.texture.width * scale / c.maxFrames,
-      destRec.height = (float)c.texture.height * scale,
-     };
+      c.pos.x,
+      c.pos.y,
+      (float)c.texture.width * scale / c.maxFrames,
+      (float)c.texture.height * scale
+   };
 
-         if(c.isDead) {c.texFlip = true; rotation = 180.0;}
-         if (c.texFlip) {srcRec.width =- srcRec.width;}
+   // Handle flipping and rotation for dead entities
+   if(c.isDead) {
+      c.texFlip = true; 
+      rotation = 180.0;
+   }
+   if (c.texFlip) {
+      srcRec.width = -srcRec.width;
+   }
 
-      // Apply flashing effect when the entity is invulnerable after being hit
-      if(c.invlunerable) {
-         if(c.type == PLAYER) {
-            // Subtle multi-color flash effect for player
-            int colorIndex = (int)(c.invulnTimer / 15) % 3;
-            if(colorIndex == 0) {
-               tint = blueShade;
-            } else if(colorIndex == 1) {
-               tint = greenShade;
-            } else {
-               tint = purpleShade;
-            }
-         } else if(c.type == BOSS) {
-            // Standard red flash for bosses
-            if((int)(c.invulnTimer / 10) % 2 == 0) {
-               tint = rl::RED;
-            } else {
-               tint = rl::WHITE;
-            }
+   // Apply flashing effects for invulnerable entities
+   if(c.invlunerable) {
+      if(c.type == PLAYER) {
+         // Cycle through colors based on timer value
+         switch((int)(c.invulnTimer / 15) % 3) {
+            case 0: tint = blueShade; break;
+            case 1: tint = greenShade; break;
+            case 2: tint = purpleShade; break;
          }
+      } else if(c.type == BOSS) {
+         // Simple flashing for bosses
+         tint = ((int)(c.invulnTimer / 10) % 2 == 0) ? rl::RED : rl::WHITE;
       }
+   }
 
-      rl::drawTexturePro(c.texture, srcRec, destRec, origin, rotation, tint);
+   // Draw the texture with all calculated parameters
+   rl::drawTexturePro(c.texture, srcRec, destRec, origin, rotation, tint);
 }
