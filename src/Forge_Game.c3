@@ -500,11 +500,13 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
           }
       }
 
-      // SPECIAL HANDLING FOR ALIEN LASER - any laser-specific initialization
-      // Position and movement updates are handled in the projectile case below
-                  if (c.name == "laser") {
-                     // Laser specific processing happens in PROJECTILE case
-                  }
+      // SPECIAL HANDLING FOR ALIEN LASER - preserve X position for proper movement
+      float savedLaserX = 0.0f;
+      bool isLaser = false;
+      if (c.name == "laser") {
+         isLaser = true;
+         savedLaserX = c.pos.x;
+      }
 
       //all construct update info-------------------------------------------------
       //Frame updates
