@@ -8,7 +8,7 @@ SPECS:
 
     Linux: Ubuntu 24.04 LTS
     **Fullscreen on Linux not working do to raylib wayland openGL issue possibly**
-GRAPHICS: any video device supports Open GL 3.0
+GRAPHICS: any video device supports OpenGL 3.3 core.
 
     CPU:2GHz Dual core or better
 
