@@ -119,7 +119,7 @@ fn int main(String[] args) {
 	float weatherTimer;
 
 	//transition between states and misc
-	float bossTransitionTimer = 0.0;
+	float bossTransitionTimer = 0.0f;
 	bool inTransition = false;
 	bool gameReset = false;
 
@@ -128,12 +128,12 @@ fn int main(String[] args) {
 	float demoCounter2;
 
 	// Boss spawn timers - separate counters for each boss
-	float dayBossCounter = 0.0;
-	float nightBossCounter = 0.0;
+	float dayBossCounter = 0.0f;
+	float nightBossCounter = 0.0f;
 
 	// Initialize timing and debugging variables
-	float accumulator = 0.0;
-	float frameCounter = 0.0;
+	float accumulator = 0.0f;
+	float frameCounter = 0.0f;
 	float lastTime = (float)rl::getTime(); // Initialize lastTime to current time
 	bool showFPS = false; // Toggle for FPS display
 
@@ -190,7 +190,7 @@ fn int main(String[] args) {
 	}
 
     //set intial game state --- switch to LOGO for normal OP
-	GameState state = MAIN;
+	GameState state = LOGO;
 	// Auto-configure controller mouse control for initial state
 	forge_controller::auto_enable_mouse_mode(state.ordinal);
 	// Keep track of previous state to detect state changes
@@ -290,7 +290,7 @@ fn int main(String[] args) {
 					foreach (&construct : constructs) {
 						// Skip already expired entities
 							if (construct.expired) continue;
-						
+
 							// Dead entities need to be processed until they fall off the bottom of screen
 							// but we skip collision checks for them
 							if (construct.isDead) {
@@ -298,7 +298,7 @@ fn int main(String[] args) {
 								score += forge_game::updateConstruct(construct, &sMap, &tMap, raining, fixedDeltaTime);
 								continue;
 							}
-						
+
 						// Check collision between player and constructs
 						if (forge_physics::checkCollision(&player, construct)) {
 							forge_physics::resolveCollision(&player, construct, fixedDeltaTime);
@@ -429,7 +429,7 @@ fn int main(String[] args) {
 					foreach (&nightConstruct : nightConstructs) {
 						// Skip already expired entities
 							if (nightConstruct.expired) continue;
-						
+
 							// Dead entities need to be processed until they fall off the bottom of screen
 							// but we skip collision checks for them
 							if (nightConstruct.isDead) {
@@ -437,7 +437,7 @@ fn int main(String[] args) {
 								score += forge_game::updateConstruct(nightConstruct, &sMap, &tMap, raining, fixedDeltaTime);
 								continue;
 							}
-						
+
 						// Check collision between player and night constructs
 						if (forge_physics::checkCollision(&player, nightConstruct)) {
 							forge_physics::resolveCollision(&player, nightConstruct, fixedDeltaTime);
@@ -659,7 +659,7 @@ fn int main(String[] args) {
 					foreach (&demoConstruct : demoConstructs) {
 						// Skip already expired entities
 							if (demoConstruct.expired) continue;
-						
+
 							// Dead entities need to be processed until they fall off the bottom of screen
 							// but we skip collision checks for them
 							if (demoConstruct.isDead) {
@@ -667,7 +667,7 @@ fn int main(String[] args) {
 								forge_game::updateConstruct(demoConstruct, &sMap, &tMap, raining, fixedDeltaTime);
 								continue;
 							}
-						
+
 						// Check collision between demo player and demo constructs
 						if (forge_physics::checkCollision(&demoPlayer, demoConstruct)) {
 							forge_physics::resolveCollision(&demoPlayer, demoConstruct, fixedDeltaTime);
@@ -899,7 +899,7 @@ fn int main(String[] args) {
 						if (!dayBoss.active) {
 							// Half the boss counter increment when High FPS is enabled to make bosses spawn in double the time
 							dayBossCounter += useHighFPS ? 0.5 : 1;
-							
+
 							// Log boss counter progress every 1000 frames
 							//if ((int)dayBossCounter % 1000 == 0) {
 								//io::printfn("Day Boss Counter: %f / %d", dayBossCounter, BOSS_TIMER);
@@ -1093,7 +1093,7 @@ fn int main(String[] args) {
 						if (!nightBoss.active) {
 							// Half the boss counter increment when High FPS is enabled to make bosses spawn in double the time
 							nightBossCounter += useHighFPS ? 0.5 : 1;
-							
+
 							// Log boss counter progress every 1000 frames
 							//if ((int)nightBossCounter % 1000 == 0) {
 								//io::printfn("Night Boss Counter: %f / %d", nightBossCounter, BOSS_TIMER);
@@ -1670,7 +1670,7 @@ fn int main(String[] args) {
                     state = MAIN;
 					//clean all assetes needed here to fully reset. Use Diffrent Demo Array.
 				}
-				
+
 				if (demoCounter2 > 12000){//10000
 					demoCounter2 = 0;
 					demoPlayer = forge_game::forgeCronstructPlayer(&tMap, "demo");
