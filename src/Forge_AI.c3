@@ -12,9 +12,9 @@ import std::math;
 bool poopPenatrate = false;
 
 // Common logic for all AI movement functions
-fn void updateAICommon(Construct* c, float deltaTime){
-      // Ground collision
-      if (c.pos.y >= c.groundLevel){
+fn void updateAICommon(Construct* c, float deltaTime, bool skipGroundCheck = false){
+      // Ground collision (can be skipped for jump function)
+      if (!skipGroundCheck && c.pos.y >= c.groundLevel){
             c.isGrounded = true;
             c.pos.y = c.groundLevel;
             c.vel.y = 0.0;
@@ -79,7 +79,7 @@ fn void updateAICommon(Construct* c, float deltaTime){
 
 fn void moveRight(Construct* c, float deltaTime){
       // Update common AI logic
-      updateAICommon(c, deltaTime);
+      updateAICommon(c, deltaTime, false);
       
       // Right movement
       c.pos.x += c.acceleration * deltaTime;
@@ -91,7 +91,7 @@ fn void moveRight(Construct* c, float deltaTime){
 
 fn void moveLeft(Construct* c, float deltaTime){
       // Update common AI logic
-      updateAICommon(c, deltaTime);
+      updateAICommon(c, deltaTime, false);
       
       // Left movement
       c.pos.x -= c.acceleration * deltaTime;
@@ -105,10 +105,11 @@ fn void jump(Construct* c, float deltaTime){
       }
       
       if (c.isGrounded) {
-         c.vel.y = c.jumpVelocity * 1.2f;
-         c.isGrounded = false;
+         // Apply jump velocity and mark as no longer grounded
+          c.vel.y = c.jumpVelocity * 1.2f;
+          c.isGrounded = false;
       }
       
-      // Update common AI logic 
-      updateAICommon(c, deltaTime);
+      // Update common AI logic but skip the ground check to preserve jump state
+      updateAICommon(c, deltaTime, true);
 }

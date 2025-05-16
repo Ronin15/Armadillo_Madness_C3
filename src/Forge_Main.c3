@@ -638,6 +638,8 @@ fn int main(String[] args) {
 
 					// Handle jumping
 					if (shouldJump && demoPlayer.isGrounded) {
+						// Play jump sound before applying jump
+						rl::playSound(sMap.get("jump")!!);
 						forge_ai::jump(&demoPlayer, fixedDeltaTime);
 						shouldJump = false; // Reset jump flag after processing
 					}

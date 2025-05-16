@@ -490,11 +490,19 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
       // This prevents the player from moving off either edge of the screen
       // Demo player is excluded so it can move freely in demo mode
       if (c.type == PLAYER && c.name != "demo") {
+          // Store original collision flags before applying boundaries
+          bool originalVHit = c.vHit;
+          bool originalHHit = c.hHit;
+          
           // Clamp player position to screen boundaries
           c.pos.x = math::clamp(c.pos.x, 0.0f, (float)forge_main::WINDOW_WIDTH - c.texture.width);
           
           // Adjust hitbox to match updated position
           c.hitBox.x = ((float)c.pos.x + (float)c.texture.width / 2.0f) - PLAYER_HITBOX_OFFSET;
+          
+          // Restore original collision flags to prevent boundary checking from interfering with collision response
+          c.vHit = originalVHit;
+          c.hHit = originalHHit;
       }
 
       // SPECIAL HANDLING FOR ALIEN LASER - preserve X position for proper movement
@@ -560,6 +568,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                c.invulnTimer -= 1.0;
                if(c.invulnTimer < 0.0) c.invlunerable = false;
             }
+            
+            // Process vertical collision flag for the boing sound (debugging info)
+            //io::printfn("vHit status: %s", c.vHit ? "true" : "false");
 
             if(c.powerUpTimer >= 0.0){
                c.powerUpTimer -= 1.0;
@@ -572,13 +583,15 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
               if (poopPenatrate){poopPenatrate = false;}
             }
 
+            // Handle vertical hit (boing sound)
             if(c.vHit){
-                  c.vHit = false;
+                  // Play the sound before clearing the flag
                   // Generate random pitch between 0 and .5
                   float randomPitch = 0.5f + (float)rand_in_range(0, 5) / 100.0f; // 0.0 to .5
                   randomPitch += 0.5f; // Shift to 0.5 to 1.5
                   rl::setSoundPitch(sMap.get("boing")!!, randomPitch);
                   rl::playSound(sMap.get("boing")!!);
+                  c.vHit = false;
                }
 
             if (c.bHit && c.lives < MAX_HEARTS){ // beatle hit and moth hit
@@ -657,7 +670,10 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             bool jumping = false;
 
             // Collect input from both keyboard and controller
-            // Movement input
+            // Movement input (store previous flags first)
+            bool wasVHit = c.vHit; // Preserve collision flags during input processing
+            bool wasHHit = c.hHit;
+            
             movingLeft = rl::isKeyDown(rl::KEY_LEFT) || 
                          forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_LEFT.ordinal) ||
                          forge_controller::get_axis(rl::GamepadAxis.LEFT_X.ordinal) < 0;
@@ -665,6 +681,10 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             movingRight = rl::isKeyDown(rl::KEY_RIGHT) || 
                           forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_RIGHT.ordinal) ||
                           forge_controller::get_axis(rl::GamepadAxis.LEFT_X.ordinal) > 0;
+                          
+            // Restore collision flags to prevent input handling from interfering
+            c.vHit = wasVHit;
+            c.hHit = wasHHit;
             
             // Jump input (only when grounded)
             jumping = c.isGrounded && (
@@ -705,6 +725,10 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                }
                c.vel.y = c.jumpVelocity;
                c.isGrounded = false;
+               
+               // Make sure collision flags are preserved during jump
+               c.vHit = wasVHit;
+               c.hHit = wasHHit;
             }
 
             c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
