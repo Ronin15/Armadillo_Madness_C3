@@ -736,8 +736,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
          case PROJECTILE:
             // Special case for laser (using the projectile type but different behavior)
             if (c.name == "laser") {
-               // Move laser downward at the same speed as in drawAlienLaser
-               c.pos.y += 900.0f * 1.6f * deltaTime; // Use same value as drawAlienLaser
+			   //laser speed
+               c.pos.y += 900.0f * 3.0f * deltaTime;
 
                // Update laser hitbox to match laser position
                c.hitBox.x = c.pos.x - (c.hitBox.width / 2);
