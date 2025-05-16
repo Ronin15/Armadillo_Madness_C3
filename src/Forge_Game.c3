@@ -310,7 +310,6 @@ fn Construct forgeCronstructProjectile(TexMap *tMap, String name) {
       c.jumpVelocity = MOVE_VELOCITY;
       c.groundLevel = groundLevel;
       c.acceleration = ACCELERATION;
-      c.friction = FRICTION;
       c.frameLength = 0.1; // Slowed down from 0.1 to 0.25
       c.currentFrame = 1;
       c.texFlip = false;
@@ -396,7 +395,6 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
       c.jumpVelocity = MOVE_VELOCITY;
       c.groundLevel = groundLevel;
       c.acceleration = ACCELERATION;
-      c.friction = 0;
       c.frameLength = 0.1; // Slowed down from 0.1 to 0.25
       c.currentFrame = 1;
       c.texFlip = false;
@@ -493,13 +491,13 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
           // Store original collision flags before applying boundaries
           bool originalVHit = c.vHit;
           bool originalHHit = c.hHit;
-          
+
           // Clamp player position to screen boundaries
           c.pos.x = math::clamp(c.pos.x, 0.0f, (float)forge_main::WINDOW_WIDTH - c.texture.width);
-          
+
           // Adjust hitbox to match updated position
           c.hitBox.x = ((float)c.pos.x + (float)c.texture.width / 2.0f) - PLAYER_HITBOX_OFFSET;
-          
+
           // Restore original collision flags to prevent boundary checking from interfering with collision response
           c.vHit = originalVHit;
           c.hHit = originalHHit;
@@ -568,7 +566,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                c.invulnTimer -= 1.0;
                if(c.invulnTimer < 0.0) c.invlunerable = false;
             }
-            
+
             // Process vertical collision flag for the boing sound (debugging info)
             //io::printfn("vHit status: %s", c.vHit ? "true" : "false");
 
@@ -583,7 +581,6 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
               if (poopPenatrate){poopPenatrate = false;}
             }
 
-            // Handle vertical hit (boing sound)
             if(c.vHit){
                   // Play the sound before clearing the flag
                   // Generate random pitch between 0 and .5
@@ -673,27 +670,27 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             // Movement input (store previous flags first)
             bool wasVHit = c.vHit; // Preserve collision flags during input processing
             bool wasHHit = c.hHit;
-            
-            movingLeft = rl::isKeyDown(rl::KEY_LEFT) || 
+
+            movingLeft = rl::isKeyDown(rl::KEY_LEFT) ||
                          forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_LEFT.ordinal) ||
                          forge_controller::get_axis(rl::GamepadAxis.LEFT_X.ordinal) < 0;
-                         
-            movingRight = rl::isKeyDown(rl::KEY_RIGHT) || 
+
+            movingRight = rl::isKeyDown(rl::KEY_RIGHT) ||
                           forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_RIGHT.ordinal) ||
                           forge_controller::get_axis(rl::GamepadAxis.LEFT_X.ordinal) > 0;
-                          
+
             // Restore collision flags to prevent input handling from interfering
             c.vHit = wasVHit;
             c.hHit = wasHHit;
-            
+
             // Jump input (only when grounded)
             jumping = c.isGrounded && (
-                      rl::isKeyDown(rl::KEY_SPACE) || 
+                      rl::isKeyDown(rl::KEY_SPACE) ||
                       forge_controller::is_button_down(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal) ||
                       forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_UP.ordinal));
-            
+
             // Shoot input
-            c.shootRequested = rl::isKeyPressed(rl::KEY_DOWN) || 
+            c.shootRequested = rl::isKeyPressed(rl::KEY_DOWN) ||
                                forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_RIGHT.ordinal);
 
             // Handle movement based on inputs
@@ -725,7 +722,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                }
                c.vel.y = c.jumpVelocity;
                c.isGrounded = false;
-               
+
                // Make sure collision flags are preserved during jump
                c.vHit = wasVHit;
                c.hHit = wasHHit;
@@ -740,7 +737,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             // Special case for laser (using the projectile type but different behavior)
             if (c.name == "laser") {
                // Move laser downward at the same speed as in drawAlienLaser
-               c.pos.y += 900.0f * deltaTime; // Use same value as drawAlienLaser
+               c.pos.y += 900.0f * 1.2f * deltaTime; // Use same value as drawAlienLaser
 
                // Update laser hitbox to match laser position
                c.hitBox.x = c.pos.x - (c.hitBox.width / 2);
@@ -1210,10 +1207,10 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                // Restore the X position and prevent horizontal movement
                c.pos.x = savedLaserX;
                c.vel.x = 0.0f;
-         
+
                // Update hitbox X position to match laser's center
                c.hitBox.x = savedLaserX - (c.hitBox.width / 2);
-         
+
                // Force expiration when laser reaches ground level
                if (c.pos.y >= groundLevel) {
                   c.expired = true;
@@ -1325,7 +1322,7 @@ fn void drawAnimatedConstruct(Construct* c, float rotation = 0.0){
    } else if(c.type == PROJECTILE){
       scale = 0.4;
    }
-   
+
    // Special scaling cases
    if(c.type == PLAYER && c.powerUpTimer > 0){
       scale = SUPER_SIZE;
@@ -1347,7 +1344,7 @@ fn void drawAnimatedConstruct(Construct* c, float rotation = 0.0){
 
    // Handle flipping and rotation for dead entities
    if(c.isDead) {
-      c.texFlip = true; 
+      c.texFlip = true;
       rotation = 180.0;
    }
    if (c.texFlip) {
