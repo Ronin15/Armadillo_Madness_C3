@@ -202,7 +202,7 @@ fn String getRandomConstructName (ConstructType type, String array_type){
    int nfLength = nightFlying.len -1;
 
     if (type == ConstructType.ENEMY_GROUND){
-        if(array_type == "day" || array_type == "day_boss"){
+        if(array_type == "day" || array_type == "day_boss" || array_type == "demo"){
             int index = rand_in_range(0, gLength);
             //io::printfn("name -> %s  type -> %s  texture -> %s !",groundTypes[index],type);
              return groundTypes[index];
@@ -214,7 +214,7 @@ fn String getRandomConstructName (ConstructType type, String array_type){
     }
 
       if (type == ConstructType.ENEMEY_FLY){
-          if(array_type == "day" || array_type == "day_boss"){
+          if(array_type == "day" || array_type == "day_boss" || array_type == "demo"){
              int index = rand_in_range(0, fLength);
              //io::printfn("name -> %s  type -> %s  texture -> %s !",groundTypes[index],type);
              return flyingTypes[index];
