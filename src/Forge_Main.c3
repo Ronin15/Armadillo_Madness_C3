@@ -29,14 +29,14 @@ const float HIGH_FPS_VALUE = 120.0;
 bool useHighFPS = false;
 const int WINDOW_WIDTH = 1920;
 const int WINDOW_HEIGHT = 1080;
-const String GAME_NAME = "Armadillo Madness 1.0.0"; //ui update, options update, and almost all game states complete
-const int MAX_CONSTRUCTS = 275;//100 // 200//
-const int MAX_BOSS_CONSTRUCTS = 50;
+const String GAME_NAME = "Armadillo Madness 1.0.0"; //just more are more lvs and animations core game complete!
+const int MAX_CONSTRUCTS = 300;//100 // 200//
+const int MAX_BOSS_CONSTRUCTS = 55;
 const int MAX_BOSS_POWER_UPS = 6;
 const int MAX_POWERUPS = 16;//6
 const int MAX_BUTTONS = 7;
 const float MASTER_VOLUME = 0.8;
-const float MUSIC_VOLUME = 0.5;
+const float MUSIC_VOLUME = 0.4;
 const int BOSS_TIMER = 12500;//13700
 const float BOSS_TRANSITION_TIME = 4.5f; // Time in seconds to display transition after boss death
 const float ANIM_SPEED_MULTIPLIER = 1.2f; // Animation speed: 1.0 = normal, lower = slower
@@ -168,7 +168,7 @@ fn int main(String[] args) {
 	Construct dayBoss = forge_game::forgeCronstructBoss(&tMap,"cougar_boss");
 	Construct nightBoss = forge_game::forgeCronstructBoss(&tMap,"alien_boss");
 
-	//set postion for end player and end cat
+	//set postion for end player and end cat char animations
 	endPlayer.pos = {750, 600};
 	endCat.pos = {1020, 660};
 
@@ -236,8 +236,6 @@ fn int main(String[] args) {
 
 		// Process inputs (should be done once per frame, outside the fixed timestep loop)
 		float renderDeltaTime = smoothedDeltaTime; // Use smoothed delta time for rendering
-		// Make deltaTime variable also available for compatibility with existing code
-		float deltaTime = renderDeltaTime;
 
 		// -------------------- FIXED TIMESTEP UPDATES --------------------
 		// Use fixed timestep for game logic updates to ensure consistent gameplay
@@ -609,48 +607,37 @@ fn int main(String[] args) {
                     // This sets the flag only, actual shooting happens in fixed timestep
                 }
 
-                // Poop shot is now updated in fixed timestep
+    
+				// Apply AI movement
+				if(demoMovingLeft) {
+					// Move left (with 2.0x speed multiplier)
+					float originalAcceleration = demoPlayer.acceleration;
+					demoPlayer.acceleration;
+					forge_ai::moveLeft(&demoPlayer, fixedDeltaTime);
+					demoPlayer.acceleration = originalAcceleration; // Restore original value
+				} else {
+					// Move right (with 1.8x speed multiplier)
+					float originalAcceleration = demoPlayer.acceleration;
+					demoPlayer.acceleration; // 80% faster movement
+					forge_ai::moveRight(&demoPlayer, fixedDeltaTime);
+					demoPlayer.acceleration = originalAcceleration; // Restore original value
+				}
 
-				/*	if (demoCounter2 > 12000){//10000
-						demoCounter2 = 0;
-						demoPlayer = forge_game::forgeCronstructPlayer(&tMap, "demo");
-						forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
-						demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
-						frameCounter = 0;
-						state = MAIN;
-					}
-				*/
-					// AI movement in fixed timestep
-					// Apply AI movement
-					if(demoMovingLeft) {
-						// Move left (with 2.0x speed multiplier)
-						float originalAcceleration = demoPlayer.acceleration;
-						demoPlayer.acceleration;
-						forge_ai::moveLeft(&demoPlayer, fixedDeltaTime);
-						demoPlayer.acceleration = originalAcceleration; // Restore original value
-					} else {
-						// Move right (with 1.8x speed multiplier)
-						float originalAcceleration = demoPlayer.acceleration;
-						demoPlayer.acceleration; // 80% faster movement
-						forge_ai::moveRight(&demoPlayer, fixedDeltaTime);
-						demoPlayer.acceleration = originalAcceleration; // Restore original value
-					}
+				// Handle jumping
+				if (shouldJump && demoPlayer.isGrounded) {
+					// Play jump sound before applying jump
+					rl::playSound(sMap.get("jump")!!);
+					forge_ai::jump(&demoPlayer, fixedDeltaTime);
+					shouldJump = false; // Reset jump flag after processing
+				}
 
-					// Handle jumping
-					if (shouldJump && demoPlayer.isGrounded) {
-						// Play jump sound before applying jump
-						rl::playSound(sMap.get("jump")!!);
-						forge_ai::jump(&demoPlayer, fixedDeltaTime);
-						shouldJump = false; // Reset jump flag after processing
-					}
-
-					// Check if player requested to shoot poop
-					if (demoPlayer.shootRequested) {
-						poopShot.isProjectileActive = true;
-						poopShot.expired = false;
-						rl::playSound(sMap.get("poop")!!);
-						demoPlayer.shootRequested = false; // Reset the flag
-					}
+				// Check if player requested to shoot poop
+				if (demoPlayer.shootRequested) {
+					poopShot.isProjectileActive = true;
+					poopShot.expired = false;
+					rl::playSound(sMap.get("poop")!!);
+					demoPlayer.shootRequested = false; // Reset the flag
+				}
 
 					// Update projectile
 					forge_game::updateConstruct(&poopShot, &sMap, &tMap, raining, fixedDeltaTime);
@@ -820,7 +807,7 @@ fn int main(String[] args) {
 			case GAME:
 
 				if (!constructs){
-			        io::printfn("init_array -> Day");
+			        //io::printfn("init_array -> Day");
 					constructs = forge_game::forgeConstructs(&tMap,"day");
 				}
 
@@ -871,8 +858,6 @@ fn int main(String[] args) {
 					}
 				}
 
-				    // Physics updates for objects are now handled in the fixed timestep section only
-
 					// Check day boss state - using the isDead flag that was set in the fixed timestep update
 					if(dayBoss.active){
 							if (dayBoss.isDead && !inTransition){
@@ -883,11 +868,9 @@ fn int main(String[] args) {
 
 							// Boss transition for level change
 							if (inTransition && dayBoss.isDead && !player.isDead) {
-								// Timer countdown happens in fixed timestep
 								if (bossTransitionTimer <= 0.0) {
 									state = NIGHTLVL;
 									frameCounter = 0;
-									// Reset boss counters for the new level
 									dayBossCounter = 0;
 									nightBossCounter = 0;
 									inTransition = false;
@@ -905,9 +888,7 @@ fn int main(String[] args) {
 								//io::printfn("Day Boss Counter: %f / %d", dayBossCounter, BOSS_TIMER);
 							//}
 							if (dayBossCounter >= BOSS_TIMER){
-								io::printfn("COUGAR_BOSS Triggered! Counter: %f", dayBossCounter);
-								// Don't reset the counter here, only reset when boss is re-created
-
+								//io::printfn("COUGAR_BOSS Triggered! Counter: %f", dayBossCounter);
 								dayBoss.active = true;
 								constructs = forge_game::forgeConstructs(&tMap,"day_boss",MAX_BOSS_CONSTRUCTS);
 							}
@@ -968,7 +949,6 @@ fn int main(String[] args) {
 				if(dayBoss.active){
 					forge_game::drawAnimatedConstruct(&dayBoss);
 					//forge_game::drawHitBox(&dayBoss);//debug
-					//dayboss life bar
 					rl::drawRectangle(5, 225, 270, 40, FORGE_GRAY);
 					rl::drawText("MAD COUGAR", 20, 230, 35, rl::RED);
 					if (&dayBoss.lives == &dayBoss.lives){
@@ -981,9 +961,7 @@ fn int main(String[] args) {
 
 				// Draw transition effect if boss is dead
 				if (inTransition && dayBoss.isDead) {
-					// Add a transparent overlay
 					rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(FORGE_GRAY, 0.3f));
-					// Display transition message
 					rl::drawText("VICTORY!", (WINDOW_WIDTH / 2) - 200, WINDOW_HEIGHT / 2 - 100, 80, rl::ORANGE);
 					rl::drawText("PREPARING NIGHT LEVEL...", (WINDOW_WIDTH / 2) - 400, WINDOW_HEIGHT / 2, 60, rl::WHITE);
 					rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
@@ -992,9 +970,7 @@ fn int main(String[] args) {
 
     			// Draw game over transition effect
     			if (inTransition && player.isDead) {
-    				// Add a transparent overlay (darker for game over)
     				rl::drawRectangle(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT, rl::fade(rl::BLACK, 0.5f));
-    				// Display transition message
     				rl::drawText("GAME OVER", (WINDOW_WIDTH / 2) - 250, WINDOW_HEIGHT / 2 - 100, 80, rl::RED);
     				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), (WINDOW_WIDTH / 2) - 350, WINDOW_HEIGHT / 2, 60, rl::WHITE);
     				rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2), WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
@@ -1008,14 +984,12 @@ fn int main(String[] args) {
 			case NIGHTLVL:
 
     			if (!nightConstructs){
-    			         io::printfn("init_array -> Night");
-    					//creating game entities
-    					nightConstructs = forge_game::forgeConstructs(&tMap,"night");
+    			    //io::printfn("init_array -> Night");
+    				nightConstructs = forge_game::forgeConstructs(&tMap,"night");
     			}
 				//nightBoss.active = true;//debug
 				night = true;
 				day = false;
-				//misc game stuff
 				rl::hideCursor();
 				rl::clearBackground(rl::BLACK);
 				rl::playMusicStream(mMap.get("night")!!);
@@ -1027,19 +1001,14 @@ fn int main(String[] args) {
 				if(scrollClouds <= - WINDOW_WIDTH) {scrollClouds = 0;}
 				if(scrollGround <= - WINDOW_WIDTH) {scrollGround = 0;}
 
-		  		//update input and check events -----------------------------------------------------------------------------------
 		  		if (rl::isKeyPressed(rl::KEY_P) || forge_controller::is_button_pressed(rl::GamepadButton.MIDDLE_RIGHT.ordinal)){
 		  			state = PAUSE;
 		  			rl::playSound(sMap.get("pause")!!);
 		  		}
 
-				// Collision checks are now handled entirely in the fixed timestep update
-				//update game logic-------------------------------------------------------------------------------
 				frameCounter +=1;
 
-				// Only handle transition-related state changes here
 				if (inTransition && player.isDead) {
-					// Timer countdown happens in fixed timestep
 					if (bossTransitionTimer <= 0.0) {
 						// Check if this is a high score before going to GAME_OVER
 						io::printfn("Night level transition: Checking if score %d is a high score", score);
@@ -1069,7 +1038,6 @@ fn int main(String[] args) {
 
 							// Boss transition for game win
 							if (inTransition && nightBoss.isDead && !player.isDead) {
-								// Timer countdown happens in fixed timestep
 								if (bossTransitionTimer <= 0.0) {
 									// Check if this is a high score before going to GAME_WIN
 									io::printfn("Game win transition: Checking if score %d is a high score", score);
@@ -1201,7 +1169,6 @@ fn int main(String[] args) {
 					rl::drawText(rl::textFormat("%.1f", bossTransitionTimer), (WINDOW_WIDTH / 2) - 20, WINDOW_HEIGHT / 2 + 80, 50, rl::WHITE);
 				}
 
-
     			// Weather visual effects only
     			if (raining){
     				forge_fx::forgeFXManager(&mMap, &sMap,"rain", renderDeltaTime);
@@ -1254,7 +1221,7 @@ fn int main(String[] args) {
        					for (int i = 0; i < player.lives; i++){
       						Vector2 lifePos = {lifeSpace * (float)(i + 1) - 63 , 160};
       						rl::drawTextureEx(tMap.get("lifeCount")!!,{lifePos.x, lifePos.y - tMap.get("lifeCount")!!.height}, 0, 0.8, rl::WHITE);
-       					}
+							}
         				}
 
         				if(player.invlunerable){
@@ -1323,18 +1290,15 @@ fn int main(String[] args) {
 						forge_game::drawAnimatedConstruct(&player);
         				forge_game::drawPoopShot(&poopShot,&player);
 
-        				// Draw alien laser if night boss is active
-					    if (nightBoss.active) {
-									forge_game::drawAlienLaser(&alienLaser, &nightBoss);
-						}
-
        					foreach ( &nightConstruct : nightConstructs){
         								forge_game::drawAnimatedConstruct(nightConstruct);
       						}
-
+						
+						// Draw night boss and laser if active
 						if(nightBoss.active){
 							forge_game::drawAnimatedConstruct(&nightBoss);
-							}
+							forge_game::drawAlienLaser(&alienLaser, &nightBoss);
+						}
         				//if raining it should be raining when paused.
         				if (raining){
        					forge_fx::forgeFXManager(&mMap, &sMap, "rain", renderDeltaTime);
@@ -1434,18 +1398,15 @@ fn int main(String[] args) {
 				forge_game::drawAnimatedConstruct(&endPlayer);
 				forge_game::drawAnimatedConstruct(&endCat);
 
-				//rl::drawTextureEx(tMap.get("armadillo")!!, {750, 925}, 0.0, 2.0, rl::WHITE);
-				//rl::drawTextureEx(tMap.get("catLeft")!!, {1020, 925}, 0.0, 3.0, rl::WHITE);
 				//rl::drawTextureEx(tMap.get("sun")!!, {1650, 10}, 0.0, 4.0, rl::WHITE);
 
 				rl::drawText("You Win Congratulations!!", ((WINDOW_WIDTH / 2) - 700), 150, 105, rl::ORANGE);
 				rl::drawText(rl::textFormat("FINAL SCORE: %08i", score), ((WINDOW_WIDTH / 2) - 400), 90, 60, rl::WHITE);
 
                 if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
-					// Reset player,Bosses, Entities
+					// Reset player,Bosses, Entities, counters ect.
 					player = forge_game::forgeCronstructPlayer(&tMap,"player");
 					score = 0;
-					// Reset boss counters
 					dayBossCounter = 0;
 					nightBossCounter = 0;
 					forge_game::resetPowerUpCounters();
@@ -1456,13 +1417,13 @@ fn int main(String[] args) {
 					randSong = forge_game::playRandomSong(&mMap);
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
 					frameCounter = 0;
-					weatherTimer = 0; //reseting weather
+					weatherTimer = 0;
 					state = MAIN;
 				}
 				break;
 
 			case GAME_OVER:
-				//rl::showCursor();
+				
 				rl::clearBackground(rl::BLACK);
 				if(!soundPlayed){rl::playSound(sMap.get("gameOver")!!); soundPlayed = true;}
 
@@ -1488,22 +1449,22 @@ fn int main(String[] args) {
 				}
 
 				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
-					// Reset player,Bosses, Entities
+					// Reset player,Bosses, Entities, counters ect.
 					player = forge_game::forgeCronstructPlayer(&tMap,"player");
 					score = 0;
 					dayBossCounter = 0;
 					nightBossCounter = 0;
-					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
+					forge_game::resetPowerUpCounters();
 					dayBoss = forge_game::forgeCronstructBoss(&tMap, "cougar_boss");
 					nightBoss = forge_game::forgeCronstructBoss(&tMap, "alien_boss");
 					constructs = forge_game::forgeConstructs(&tMap, "day");
 					nightConstructs = forge_game::forgeConstructs(&tMap, "night");
 					randSong = forge_game::playRandomSong(&mMap);
 					__force_reset_score_processed = true; // Make sure score processed is reset for next game
-					state = MAIN;
 					soundPlayed = false;
 					frameCounter = 0;
 					weatherTimer = 0;
+					state = MAIN;
 				}
 				break;
 
@@ -1646,9 +1607,8 @@ fn int main(String[] args) {
 
 			case DEMO:
 
-			     if (!demoConstructs){
-			         io::printfn("init_array -> Demo");
-					 //creating demo entities
+			    if (!demoConstructs){
+			         //io::printfn("init_array -> Demo");
 					 demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
 				}
 
@@ -1663,26 +1623,22 @@ fn int main(String[] args) {
 
 				if (rl::isKeyPressed(rl::KEY_ENTER) || forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_DOWN.ordinal)){
     				demoPlayer = forge_game::forgeCronstructPlayer(&tMap,"demo");
-    				forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
+    				forge_game::resetPowerUpCounters();
     				demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
 					frameCounter = 0;
 					weatherTimer = 0;
                     state = MAIN;
-					//clean all assetes needed here to fully reset. Use Diffrent Demo Array.
 				}
 
 				if (demoCounter2 > 12000){//10000
 					demoCounter2 = 0;
 					demoPlayer = forge_game::forgeCronstructPlayer(&tMap, "demo");
-					forge_game::resetPowerUpCounters(); //reset counters before  re-initializing the arrays
+					forge_game::resetPowerUpCounters();
 					demoConstructs = forge_game::forgeConstructs(&tMap, "demo");
 					frameCounter = 0;
 					weatherTimer = 0;
 					state = MAIN;
 				}
-
-
-				// Collision checks and physics updates now handled in fixed timestep
 
 				//draw game elements------------------------------------------------------------------------------
 				rl::drawTexture(tMap.get("sky")!!, 0, 0, rl::WHITE);
