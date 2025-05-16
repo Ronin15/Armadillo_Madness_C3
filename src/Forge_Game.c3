@@ -187,6 +187,7 @@ fn void resetPowerUpCounters() {
 }
 
 fn String getRandomConstructName (ConstructType type, String array_type){
+   //io::printfn("array type -> %s",array_type);//debug
    String[*] nightGround = {"scorpion","spider","mouse","racoon"};
    String[*] nightFlying = {"owl","moth","alien_boss"};
    String[*] groundTypes = {"ant","turtle","snake","fox","cougar_boss"};
@@ -382,7 +383,7 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
       //c.sound = sMap.get(c.name)!!;
       if (c.name == "cougar_boss"){
           c.pos = {2200,200};
-          c.lives = 20;//20 hard
+          c.lives = 20;//25 hard
       }else{
           c.pos = {2200,100};
           c.lives = 25;//30 hard
@@ -430,10 +431,10 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
    // Set active state to true by default
    constructs[i].active = true;
     if (capacity <= forge_main::MAX_CONSTRUCTS){
-        constructs[i].pos = {(float)rand_in_range(2000,40000) + (float)rand_in_range(100,200),(float)rand_in_range(500,550) + (float)rand_in_range(64,100)};//21000 26000
+        constructs[i].pos = {(float)rand_in_range(2000,41000) + (float)rand_in_range(100,200),(float)rand_in_range(500,550) + (float)rand_in_range(64,100)};//40000
       }else{
         //for boss entities
-        constructs[i].pos = {(float)rand_in_range(2000,20000) + (float)rand_in_range(100,200),(float)rand_in_range(500,550) + (float)rand_in_range(64,100)};//21000 26000
+        constructs[i].pos = {(float)rand_in_range(2000,15000) + (float)rand_in_range(100,200),(float)rand_in_range(500,550) + (float)rand_in_range(64,100)};//20000
       }
 
     constructs[i].texture = tMap.get(constructs[i].name)!!;
@@ -582,7 +583,6 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             }
 
             if(c.vHit){
-                  // Play the sound before clearing the flag
                   // Generate random pitch between 0 and .5
                   float randomPitch = 0.5f + (float)rand_in_range(0, 5) / 100.0f; // 0.0 to .5
                   randomPitch += 0.5f; // Shift to 0.5 to 1.5
@@ -668,7 +668,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
             // Collect input from both keyboard and controller
             // Movement input (store previous flags first)
-            bool wasVHit = c.vHit; // Preserve collision flags during input processing
+            bool wasVHit = c.vHit; // Preserve collision flags during input processing ----------------------------- don't think this is needed
             bool wasHHit = c.hHit;
 
             movingLeft = rl::isKeyDown(rl::KEY_LEFT) ||
@@ -679,7 +679,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                           forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_RIGHT.ordinal) ||
                           forge_controller::get_axis(rl::GamepadAxis.LEFT_X.ordinal) > 0;
 
-            // Restore collision flags to prevent input handling from interfering
+            // Restore collision flags to prevent input handling from interfering ------------------------------------ don't think this is needed
             c.vHit = wasVHit;
             c.hHit = wasHHit;
 
@@ -737,7 +737,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             // Special case for laser (using the projectile type but different behavior)
             if (c.name == "laser") {
                // Move laser downward at the same speed as in drawAlienLaser
-               c.pos.y += 900.0f * 1.2f * deltaTime; // Use same value as drawAlienLaser
+               c.pos.y += 900.0f * 1.6f * deltaTime; // Use same value as drawAlienLaser
 
                // Update laser hitbox to match laser position
                c.hitBox.x = c.pos.x - (c.hitBox.width / 2);
@@ -881,7 +881,6 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             if(c.vHit){c.vHit = false;c.lives -= 1;}
             if(c.hHit){c.hHit = false;c.lives -= 1;}
                c.pos.x -= (50 * ACCEL_MOD) * deltaTime;//125
-               c.texFlip = false;//15
             if (!c.isDead){
             c.pos.y += AMPLITUDE * math::sin(FREQUENCY * (c.pos.x + c.acceleration * ACCEL_MOD)) * deltaTime;
             }else{
@@ -935,18 +934,17 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                  }
          }
 
-          if(c.vHit){c.vHit = false;}
-          if(c.hHit){c.hHit = false;}
-
-          c.vel.y += c.gravity * deltaTime;
-          c.pos.y += c.vel.y * ACCEL_MOD *  deltaTime;
-          // Use a fixed velocity instead of adding friction for smoother movement
-          c.pos.x -=  (OBS_SOFFSET * ACCEL_MOD) * deltaTime;
+		 if(c.vHit){c.vHit = false;}
+		 if(c.hHit){c.hHit = false;}
+		 c.vel.y += c.gravity * deltaTime;
+		 c.pos.y += c.vel.y * ACCEL_MOD *  deltaTime;
+		 // Use a fixed velocity instead of adding friction for smoother movement
+		 c.pos.x -=  (OBS_SOFFSET * ACCEL_MOD) * deltaTime;
 
          break;
 
          case POWER_UP:
-          //io::printfn("Power ups update reached");
+
          if((c.hHit || c.vHit)){
 
                score += 100;
@@ -974,21 +972,21 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                  }
          }
 
-          if(c.vHit){c.vHit = false;}
-          if(c.hHit){c.hHit = false;}
-          c.vel.y += c.gravity * deltaTime;
-          c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
-          c.pos.x -= (POWERUP_SOFFSET * ACCEL_MOD) * deltaTime;
-          // Set powerup to expired if it goes off the right side of the screen
-          if (c.pos.x < -300.0f) {
+         if(c.vHit){c.vHit = false;}
+         if(c.hHit){c.hHit = false;}
+         c.vel.y += c.gravity * deltaTime;
+         c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
+         c.pos.x -= (POWERUP_SOFFSET * ACCEL_MOD) * deltaTime;
+         // Set powerup to expired if it goes off the right side of the screen
+         if (c.pos.x < -300.0f) {
              c.expired = true;
-          }
-          c.groundLevel = groundLevel - 40;
+         }
+         c.groundLevel = groundLevel - 40;
 
          break;
 
          case BOSS:
-            //io::printfn("BOSS update reached
+            
             c.hitBox = {((float)c.pos.x + (float)c.texture.width / 2.0f),
                        ((float)c.pos.y + (float)c.texture.height / 2.0f),
                        BOSS_HITBOX_WIDTH,
@@ -1050,7 +1048,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                            }else{
                               // Restore normal texture when invulnerability ends
                               if (c.invlunerable) {
-                                 c.texture = tMap.get("cougar_boss")!!;
+                                  c.texture = tMap.get("cougar_boss")!!;
                               }
                               c.invlunerable = false;
                            }
@@ -1183,8 +1181,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                       movingLeft = true;
                       // Exactly reset to initial X position when turning around
                       c.pos.x = initialBossX;
-                      // Log the return to initial position
-                      io::printfn("Night boss returning to initial X position: %f", initialBossX);
+                      //Log the return to initial position
+                      //io::printfn("Night boss returning to initial X position: %f", initialBossX);
                    }
 
 					// Check if it's time to shoot
@@ -1270,14 +1268,11 @@ fn void drawAlienLaser(Construct* c, Construct* b, float rotation = 270.0, float
       rl::drawCircle((int)c.pos.x, (int)groundLevel - 40, explosionRadius * 0.7f, rl::fade(rl::YELLOW, 0.9f));
    }
 
-   // NOTE: We no longer update the position here since physics is handled in fixed timestep
-   // Visual effects only - no physics updates in drawing functions
-
    // Check if it's reached the ground level (visual indicator only)
-   if (c.pos.y > groundLevel) {
+   //if (c.pos.y > groundLevel) {
       // Laser has hit ground (should have been marked as expired in physics update)
       //io::printfn("Laser reached ground level");
-   }
+   //}
 }
 
 // Draw sprites that don't need animation
@@ -1296,7 +1291,7 @@ fn void drawAnimatedConstruct(Construct* c, float rotation = 0.0){
    //setting up animation data on contructs
    Vector2 origin = {0.0,0.0}; // for drawtexture pro origin
    const float OBS_SIZE = 3.5; //scaling up onbsticles 3.5
-   const float NORMAL_SIZE = 2.0; // normal scale size without camera zoom 2.0
+   const float NORMAL_SIZE = 2.0; // normal scale size 2.0
    const float POWERUP_SIZE = 1.0;
    const float BOSS_SIZE = 3.5;
    const float SUPER_SIZE = 2.5; //2.5
@@ -1309,7 +1304,7 @@ fn void drawAnimatedConstruct(Construct* c, float rotation = 0.0){
 
    Rectangle srcRec = {
       (float)c.texture.width / (float)c.maxFrames * (float)c.currentFrame,
-      0,
+	  0,
       (float)c.texture.width / (float)c.maxFrames,
       (float)c.texture.height
    };
