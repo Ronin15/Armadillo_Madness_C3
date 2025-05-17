@@ -58,6 +58,7 @@ Armadillo Madness is an exciting and fast-paced game where players control an ar
  - Music promoted by https://www.chosic.com/free-music/all/
  - Artists : Komiku and Alexander Nakrada.
  - SFX : Soundly - https://getsoundly.com/
+ - SFX : Raylib Tech rFXgenerator https://raylibtech.itch.io/rfxgen
  - Title Page - Desert Dusk https://ansimuz.itch.io/
  - for individual accreditation see third-party-notice.md
 
