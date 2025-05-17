@@ -86,7 +86,7 @@ enum GameState {
 	QUIT,
 }
 
-fn int main(String[] args) {
+fn int main() {
 
     //init Game Systems
 	rl::initWindow(WINDOW_WIDTH, WINDOW_HEIGHT, GAME_NAME);

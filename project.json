@@ -4,15 +4,14 @@
   "dependency-search-paths": ["lib"],
   "dependencies": ["raylib5"],
   "authors": ["roninxv <simsjohn15@gmail.com>"],
-  "version": "0.1.0",
+  "version": "1.0.0",
   "sources": ["src/**"],
   "output": "build",
   "targets": {
-    "Armadillo_Madness": {
+    "Armadillo_Madness-1.0.0": {
       "type": "executable"
     }
   },
   "cpu": "generic",
-  "opt": "O0",
-  "single-module": true
+  "opt": "O0"
 }

@@ -201,7 +201,7 @@ fn void drawRainDrops(Raindrop []rainDrops, int count) {
 }
 
 fn void rainFall(float deltaTime){
-	static bool initRain @noinit;
+	static bool initRain;
 	if (!initRain) {
 		initRainDrops(&rainDrops, MAX_RAINDROPS);
 		initRain = true;
@@ -406,7 +406,7 @@ ShootingStar star;
 Star_Particle [MAX_STAR_P]starParticles;
 
 fn void shootingStars() {
-	static bool resetStar @noinit;
+	static bool resetStar;
 		if (!resetStar) {
 			resetShootingStar(&star);
 			resetStar = true;
@@ -463,7 +463,7 @@ fn void drawFireParticles() {
 }
 
 fn void fireEffect(float deltaTime) {
-	static bool initFireP @noinit;
+	static bool initFireP;
 	if (!initFireP) {
 		initFireParticles();
 		initFireP = true;
@@ -502,7 +502,7 @@ fn void drawStars(Star []stars, int count) {
 }
 
 fn void starrySky(){
-    static bool initStars @noinit;
+    static bool initStars;
 	if (!initStars) {
 
 		createStars(&stars, MAX_STARS);
