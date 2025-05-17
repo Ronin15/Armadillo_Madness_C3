@@ -2,7 +2,7 @@
 
 ## Game Summary
 
-Armadillo Madness is an exciting and fast-paced game where players control an armadillo navigating through 2 levels. The game features obstacles, power-ups, and enemies that test the player's skills and reflexes. The goal is to complete each level while shooting enemies and avoiding hazards and collecting power-ups. Game is Aracade style with HighScore tracking and boss fights at the end of each level.
+Armadillo Madness is an exciting and fast-paced game where players control an armadillo navigating through 2 levels. The game features obstacles, power-ups, and enemies that test the player's skills and reflexes. The goal is to complete each level while shooting enemies and avoiding hazards and collecting power-ups. Game is Arcade style with HighScore tracking and boss fights at the end of each level.
 
 ### SPECS:
 
