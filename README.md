@@ -1,10 +1,10 @@
-### Armadillo Madness
+# Armadillo Madness
 
-# Game Summary
+## Game Summary
 
 Armadillo Madness is an exciting and fast-paced game where players control an armadillo navigating through 2 levels. The game features obstacles, power-ups, and enemies that test the player's skills and reflexes. The goal is to complete each level while shooting enemies and avoiding hazards and collecting power-ups. Game is Aracade style with HighScore tracking and boss fights at the end of each level.
 
-# SPECS:
+### SPECS:
 
  - OS: Windows 10/11
     
@@ -23,7 +23,7 @@ Armadillo Madness is an exciting and fast-paced game where players control an ar
  
     **Fullscreen on Linux not working do to raylib wayland openGL issue possibly**
     
-# GRAPHICS: any video device supports OpenGL 3.3 core.
+### GRAPHICS: any video device supports OpenGL 3.3 core.
 
     - GPU: Support fpr OpenGL 3.3 or better
     - CPU: 2GHz Dual core or better    
@@ -32,7 +32,7 @@ Armadillo Madness is an exciting and fast-paced game where players control an ar
     - Monitior: 1920x1080 lowest resolution supported. WideScreen not supported. 
     - Mobile support will come later if demand is there.
 
-# Key Features:
+### Key Features:
 
     - Engaging game play with multiple levels * see notes at bottom
     - Unique power-ups High-quality graphics and sound effects
@@ -42,7 +42,7 @@ Armadillo Madness is an exciting and fast-paced game where players control an ar
 
     **Join the adventure and experience the madness!**
 
-# Notes:
+### Notes:
 
     - Need to implement more levels only two planned so far. If successful will add more. This is a game that my 6-year-old at the time helped design and provided inspiration for the art.
     - The Title page song with the Harmonica is her playing her Harmonica.
@@ -51,9 +51,9 @@ Armadillo Madness is an exciting and fast-paced game where players control an ar
     - Generative AI used for game summary, itch.io backdrop, game credits page background, game options page background, High Score Page background, Game Studio, Engine Logos and game cover art. Game title page, background picture only, from itch.io Ansimuz. All other assets created in Aseprite by Hammer Forged Games.
     - Music from Chosic.com. Credit for artists is in game on credits screen and below.
 
-# GAME RELEASE DATE : Q2 2025 or maybe earlier.
+### GAME RELEASE DATE : Q2 2025 or maybe earlier.
 
-# CREDITS:
+### CREDITS:
 
     - Music promoted by https://www.chosic.com/free-music/all/
     - Artists : Komiku and Alexander Nakrada.
@@ -61,7 +61,7 @@ Armadillo Madness is an exciting and fast-paced game where players control an ar
     - Title Page - Desert Dusk https://ansimuz.itch.io/
     - for individual accreditation see third-party-notice.md
 
-# Armadillo Madness Licensing
+### Armadillo Madness Licensing
 
     - Dual Licensing Approach
     - Source Code: MIT License
@@ -70,6 +70,6 @@ Armadillo Madness is an exciting and fast-paced game where players control an ar
     - art assets cannot be reused commercially
     - See custom-art-license.md
 
-# Third-Party Assets: Various Licenses
+### Third-Party Assets: Various Licenses
 
     - See third-party-notice.md
