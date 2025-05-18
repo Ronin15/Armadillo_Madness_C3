@@ -528,6 +528,9 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
          }
       }
 
+      // Define sliding constants if they don't exist elsewhere
+      const float SLIDE_FRICTION = 4.0f; // Friction factor when sliding (higher = less slide)
+
       //stationairy ground movement
       if (c.pos.y >= c.groundLevel && !c.isDead){
                c.isGrounded = true;
@@ -556,8 +559,8 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
                        PLAYER_HITBOX_HEIGHT};
 
 
-            if (raining && c.name != "demo"){c.acceleration = 100;}//125
-            if (!raining && c.acceleration == 100){c.acceleration = ACCELERATION;}
+            if (raining && c.name != "demo"){c.acceleration = ACCELERATION / 2.0f;}//125
+            if (!raining && c.acceleration == ACCELERATION / 2.0f){c.acceleration = ACCELERATION;}
 
             // Update animation and invulnerability timers
             if(c.animTimer >= 0.0){
@@ -673,13 +676,17 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             bool wasVHit = c.vHit; // Preserve collision flags during input processing ----------------------------- don't think this is needed
             bool wasHHit = c.hHit;
 
+            // Get controller analog stick value for proportional input
+            float analogX = forge_controller::get_axis(rl::GamepadAxis.LEFT_X.ordinal);
+            float inputStrength = math::abs(analogX); // How strongly is input being applied (0.0-1.0)
+
             movingLeft = rl::isKeyDown(rl::KEY_LEFT) ||
                          forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_LEFT.ordinal) ||
-                         forge_controller::get_axis(rl::GamepadAxis.LEFT_X.ordinal) < 0;
+                         analogX < 0;
 
             movingRight = rl::isKeyDown(rl::KEY_RIGHT) ||
                           forge_controller::is_button_down(rl::GamepadButton.LEFT_FACE_RIGHT.ordinal) ||
-                          forge_controller::get_axis(rl::GamepadAxis.LEFT_X.ordinal) > 0;
+                          analogX > 0;
 
             // Restore collision flags to prevent input handling from interfering ------------------------------------ don't think this is needed
             c.vHit = wasVHit;
@@ -695,22 +702,51 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
             c.shootRequested = rl::isKeyPressed(rl::KEY_DOWN) ||
                                forge_controller::is_button_pressed(rl::GamepadButton.RIGHT_FACE_RIGHT.ordinal);
 
-            // Handle movement based on inputs
+            // Handle movement based on inputs - using velocity for smoother sliding
+            float maxSpeed = c.acceleration; // Maximum horizontal speed
+
             if (movingLeft) {
                if (rl::isKeyPressed(rl::KEY_LEFT) || forge_controller::is_button_pressed(rl::GamepadButton.LEFT_FACE_LEFT.ordinal)) {
                    rl::playSound(sMap.get("moving")!!);
                }
-                c.pos.x -= c.acceleration * deltaTime;
-                c.texFlip = true;
+
+               // Use analog input strength if available, otherwise full acceleration
+               float accelFactor = (analogX < 0) ? math::abs(analogX) : 1.0f;
+
+               // Apply acceleration based on input strength
+               c.vel.x -= c.acceleration * accelFactor * deltaTime * 3.0f;
+
+               // Cap maximum speed
+               if (c.vel.x < -maxSpeed) c.vel.x = -maxSpeed;
+
+               c.texFlip = true;
             } else if (movingRight) {
                if (rl::isKeyPressed(rl::KEY_RIGHT) || forge_controller::is_button_pressed(rl::GamepadButton.LEFT_FACE_RIGHT.ordinal)) {
                   rl::playSound(sMap.get("moving")!!);
                }
-                c.pos.x += c.acceleration * deltaTime;
-                c.texFlip = false;
+
+               // Use analog input strength if available, otherwise full acceleration
+               float accelFactor = (analogX > 0) ? math::abs(analogX) : 1.0f;
+
+               // Apply acceleration based on input strength
+               c.vel.x += c.acceleration * accelFactor * deltaTime * 3.0f;
+
+               // Cap maximum speed
+               if (c.vel.x > maxSpeed) c.vel.x = maxSpeed;
+
+               c.texFlip = false;
             } else {
-                c.vel.x = 0.0;
+                // Apply friction to slow down when no input
+                c.vel.x *= (1.0f - (SLIDE_FRICTION * deltaTime));
+
+                // Stop completely if very slow
+                if (math::abs(c.vel.x) < 10.0f) {
+                    c.vel.x = 0.0f;
+                }
             }
+
+            // Update position based on velocity
+            c.pos.x += c.vel.x * deltaTime;
 
             c.vel.y += c.gravity * deltaTime;
 
