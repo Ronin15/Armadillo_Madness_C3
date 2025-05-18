@@ -15,10 +15,12 @@ import std::math;
 //Game globals and consts -------------------------------------------------
 const float GRAVITY = 760.0f;//200 for grav boots //650
 const float MOVE_VELOCITY = -330.0f;
-const float ACCELERATION = 350.0f; //175
+const float ACCELERATION = 450.0f; //175
 const float FRICTION = 34.0f;
 const float NIGHTB_FREQUENCY = 0.02f;
 const float NIGHTB_AMPLITUDE = 305.0f;//
+const float NIGHTB_ACCEL_MOD = 4.1f;
+const float NIGHTB_ACCEL = 350.0f;
 const float AMPLITUDE = 300.0f;//300
 const float FREQUENCY = 0.03f;//0.05
 const int MAX_HEARTS = 6;
@@ -33,7 +35,7 @@ const float POWERUP_SOFFSET = 43.0f;
 const float MOUSE_SOFFSET = 44.0f;//40
 const float COUGAR_SOFFSET = 45.0f;//40
 const float RACOON_SOFFSET = 44.0f;//35
-const float ACCEL_MOD = 4.1; //entity movement speed mod//3.7 good
+const float ACCEL_MOD = 4.5f; //entity movement speed mod
 const int ENTITY_HITBOX_WIDTH = 64;
 const int ENTITY_HITBOX_HEIGHT = 64;
 const int BOSS_HITBOX_WIDTH = 100;
@@ -385,7 +387,7 @@ fn Construct forgeCronstructBoss(TexMap *tMap, String name) {
           c.pos = {2200,200};
           c.lives = 20;//25 hard
       }else{
-          c.pos = {2200,100};
+          c.pos = {2200,500};
           c.lives = 25;//30 hard
           // Store initial X position for alien boss
           initialBossX = c.pos.x;
@@ -431,7 +433,7 @@ fn Construct[] forgeConstructs(TexMap *tMap, String array_type, int capacity = f
    // Set active state to true by default
    constructs[i].active = true;
     if (capacity <= forge_main::MAX_CONSTRUCTS){
-        constructs[i].pos = {(float)rand_in_range(2000,41000) + (float)rand_in_range(100,200),(float)rand_in_range(500,550) + (float)rand_in_range(64,100)};//40000
+        constructs[i].pos = {(float)rand_in_range(2000,43500) + (float)rand_in_range(100,200),(float)rand_in_range(500,550) + (float)rand_in_range(64,100)};//40000
       }else{
         //for boss entities
         constructs[i].pos = {(float)rand_in_range(2000,15000) + (float)rand_in_range(100,200),(float)rand_in_range(500,550) + (float)rand_in_range(64,100)};//20000
@@ -986,7 +988,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
          break;
 
          case BOSS:
-            
+
             c.hitBox = {((float)c.pos.x + (float)c.texture.width / 2.0f),
                        ((float)c.pos.y + (float)c.texture.height / 2.0f),
                        BOSS_HITBOX_WIDTH,
@@ -1097,7 +1099,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
                          if(c.isDead){
                               //Stops AI movement when dead.
-                              c.pos.y += c.vel.y * ACCEL_MOD * deltaTime;
+                              c.pos.y += c.vel.y * NIGHTB_ACCEL_MOD * deltaTime;
                               c.vel.y += c.gravity * deltaTime;
                               c.groundLevel = groundLevel - 140;
                               break;
@@ -1158,7 +1160,7 @@ fn int updateConstruct(Construct *c, SoundMap *sMap, TexMap *tMap, bool raining,
 
 				if(movingLeft) {
                    //left
-                   c.pos.y -= NIGHTB_AMPLITUDE * math::sin(NIGHTB_FREQUENCY * (c.pos.x + c.acceleration)) * ACCEL_MOD * deltaTime;
+                   c.pos.y -= NIGHTB_AMPLITUDE * math::sin(NIGHTB_FREQUENCY * (c.pos.x + NIGHTB_ACCEL)) * NIGHTB_ACCEL_MOD * deltaTime;
                    c.pos.x -= 125 * deltaTime;//125//100
                    c.texFlip = false;
                       if(c.pos.x < 0.0) {movingLeft = false;}
