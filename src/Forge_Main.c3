@@ -607,7 +607,7 @@ fn int main() {
                     // This sets the flag only, actual shooting happens in fixed timestep
                 }
 
-    
+
 				// Apply AI movement
 				if(demoMovingLeft) {
 					// Move left (with 2.0x speed multiplier)
@@ -1293,7 +1293,7 @@ fn int main() {
        					foreach ( &nightConstruct : nightConstructs){
         								forge_game::drawAnimatedConstruct(nightConstruct);
       						}
-						
+
 						// Draw night boss and laser if active
 						if(nightBoss.active){
 							forge_game::drawAnimatedConstruct(&nightBoss);
@@ -1423,7 +1423,7 @@ fn int main() {
 				break;
 
 			case GAME_OVER:
-				
+
 				rl::clearBackground(rl::BLACK);
 				if(!soundPlayed){rl::playSound(sMap.get("gameOver")!!); soundPlayed = true;}
 
@@ -1734,7 +1734,7 @@ fn int main() {
 		// Render FPS display if enabled
 		if (showFPS) {
 			// Draw FPS in top-right corner
-			rl::drawRectangle(WINDOW_WIDTH - 100, 10, 90, 30, rl::fade(FORGE_GRAY, 0.7f));
+			rl::drawRectangle(WINDOW_WIDTH - 100, 10, 95, 30, rl::fade(FORGE_GRAY, 0.7f));
 			rl::drawText(rl::textFormat("FPS: %d", currentFPS), WINDOW_WIDTH - 90, 15, 20, rl::YELLOW);
 		}
 
