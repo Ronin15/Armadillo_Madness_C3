@@ -135,13 +135,12 @@ fn void setInitialBossX(float x) {
 }
 
 //GAME Functions ------------------------------------------------------------
-//checks and toggles fullscreen if screen is smaller or equal to 1920 by 1080
+//enables fullscreen by default at startup
 fn void toggleFullScreen (int gsWidth, int gsHeight){
-	//if screen size is 1920 X 1080 nativley then set full screen
-	int width = rl::getMonitorWidth(0);
-	int height = rl::getMonitorHeight(0);
-	if (width <= gsWidth || height <= gsHeight && rl::isWindowFullscreen() == false) {rl::toggleFullscreen();}
-	//rl::toggleFullscreen();
+	// Enable fullscreen at startup since it's now the default
+	if (!rl::isWindowFullscreen()) {
+		rl::toggleFullscreen();
+	}
 }
 
 fn Music playRandomSong(MusicMap* mMap){

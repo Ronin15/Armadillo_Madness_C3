@@ -24,7 +24,7 @@ struct Option {
 Option [NUM_OPTIONS] options = {
     {"Master Volume", forge_main::MASTER_VOLUME, false},
     {"Music Volume", forge_main::MUSIC_VOLUME, false},
-    {"Fullscreen", 0.0, true},  // 0.0 for off, 1.0 for on
+    {"Fullscreen", 1.0, true},  // 0.0 for off, 1.0 for on
     {"High FPS (120)", 0.0, true}  // 0.0 for 60 FPS, 1.0 for 120 FPS
 };
 
