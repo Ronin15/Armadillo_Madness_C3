@@ -52,7 +52,7 @@ fn void adjustUpdateOptions(Music song) {
             }
         } else if (optionIndex == 2) { // Toggle Fullscreen
             options[optionIndex].value = 0.0; // Turn off
-            if (rl::isWindowFullscreen()) rl::toggleFullscreen();
+            // if (rl::isWindowFullscreen()) rl::toggleFullscreen();
         } else if (optionIndex == 3) { // Toggle Frame Rate
             options[optionIndex].value = 0.0; // Set to 60 FPS
             forge_main::useHighFPS = false;
@@ -72,7 +72,7 @@ fn void adjustUpdateOptions(Music song) {
             }
         } else if (optionIndex == 2) { // Toggle Fullscreen
             options[optionIndex].value = 1.0; // Turn on
-            if (!rl::isWindowFullscreen()) rl::toggleFullscreen();
+            // if (!rl::isWindowFullscreen()) rl::toggleFullscreen();
         } else if (optionIndex == 3) { // Toggle Frame Rate
             options[optionIndex].value = 1.0; // Set to 120 FPS
             forge_main::useHighFPS = true;
@@ -115,4 +115,7 @@ fn void drawOptions() {
             }
         }
     }
+
+    // Display platform notification for fullscreen
+    rl::drawText("!*Fullscreen disabled due to platform issues*!", 50, forge_main::WINDOW_HEIGHT - 50, 30, rl::RED);
 }
