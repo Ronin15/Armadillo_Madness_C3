@@ -21,7 +21,7 @@ Armadillo Madness is an exciting and fast-paced game where players control an ar
     - 64-bit only
     - Should work on other distros but not tested.
  
-    **Fullscreen on Linux not working do to raylib wayland openGL issue possibly**
+    **Fullscreen on Linux not working do to raylib wayland openGL issue possibly** use the Linux branch :)
     
 ### GRAPHICS: any video device supports OpenGL 3.3 core.
 
@@ -50,8 +50,6 @@ Armadillo Madness is an exciting and fast-paced game where players control an ar
  - Any support is extremely appreciated.
  - Generative AI used for game summary, itch.io backdrop, game credits page background, game options page background, High Score Page background, Game Studio, Engine Logos and game cover art. Game title page, background picture only, from itch.io Ansimuz. All other assets created in Aseprite by Hammer Forged Games.
  - Music from Chosic.com. Credit for artists is in game on credits screen and below.
-
-### GAME RELEASE DATE : Q2 2025 or maybe earlier.
 
 ### CREDITS:
 
