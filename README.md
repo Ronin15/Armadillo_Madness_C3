@@ -22,7 +22,8 @@ Armadillo Madness is an exciting and fast-paced game where players control an ar
     - Should work on other distros but not tested.
  
     **Fullscreen on Linux not working do to raylib wayland openGL issue possibly**
-       - use the Linux branch :)
+
+     - use the Linux branch :)
     
 ### GRAPHICS: any video device supports OpenGL 3.3 core.
 
