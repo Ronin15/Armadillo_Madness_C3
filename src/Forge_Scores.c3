@@ -38,7 +38,7 @@ fn bool try_load_high_scores_from_file(String filename) {
         return false;
     }
 
-    // THE SAFEST APPROACH: Parse line by line instead of loading the entire file
+    // Parse line by line instead of loading the entire file
     // This completely avoids any buffer overflow issues with the file content
 
     // Open the file for reading manually
